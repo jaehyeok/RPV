@@ -56,6 +56,9 @@ root -b -q limits.cc
 
 ## References
 [1]  https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideHiggsAnalysisCombinedLimit
+
 [2] https://root.cern.ch/phpBB3/viewtopic.php?t=16764
+
 [3] http://root.cern.ch/root/htmldoc/ROOT__Minuit2__Minuit2Minimizer.html#ROOT__Minuit2__Minuit2Minimizer:Hesse
+
 [4] http://root.cern.ch/root/htmldoc/ROOT__Minuit2__Minuit2Minimizer.html#ROOT__Minuit2__Minuit2Minimizer:GetMinosError

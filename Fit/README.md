@@ -1,24 +1,64 @@
-# Instruction on how to do the fit and extratct the fit information
+Instruction on how to do the fit and extratct the fit information
+=== 
 
 This instruciton assumes that you have generated RPV datacards already.
 
-(1) Set up combine 
+### Set up combine [1] 
 
-cmsrel CMSSW_7_4_7_patch1
-cd CMSSW_7_4_7_patch1/src
-cmsenv
-git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
-cd HiggsAnalysis/CombinedLimit
-git checkout 74x-root6
+```
+source SetupComibine/setup.sh
+```
 
-(2) Perform Maximum Likelihood fit  
+### Perform Maximum Likelihood fit  
 
-(3) Extract the post-fit information  
+(1) Copy datacards   
+```
+mkdir datacards 
+cd datacards 
+cp /homes/jaehyeokyoo/cmssw/CMSSW_7_4_7_patch1/src/workspace/unblinding/datacard_M1200.dat . 
+```
 
-* Pull of nuiscance parameters 
-* Post-fit Nb distribution 
-* Post-fit normalizations
+(2) Convert datacards to workspace  
+```
+for mass in {1000,1100,1200,1300,1400}; do echo $mass; text2workspace.py datacard_M${mass}.dat -o workspace_M${mass}.root -P HiggsAnalysis.CombinedLimit.RPVModel:rpvModel
+```
 
-(4) Run the limit 
+(3) Run combine 
+```
+for mass in {1000,1100,1200,1300,1400}; do echo $mass; combine -M MaxLikelihoodFit  -n M${mass}  workspace_M${mass}.root --saveNorm --minimizerTolerance 0.9999999; done
+```
+You might need to check the convergence of the fit and change `--minimizerTolerance` to make it converge. The convergence of fit can be checked by `fit_s->status()` in `mlfitM1200.root` file. It should be 0 for a good fit. The meaning of the number is `status = 100 * hesseStatus + 10 * minosStatus +  minuit2SummaryStatus` [2-4].
 
-(5) Signal injection test
+### Extract the post-fit information  
+
+(1) Make a directory where the plots will go
+```
+mkdir plots
+```
+(2) Generate the pull of nuiscance parameters and Post-fit Nb distribution 
+```
+root -b -q plotresults.cc
+```
+(3) Print post-fit normalizations
+```
+python mlfitNormsToText.py mlfitM1200.root
+```
+
+### Run the limit 
+
+```
+for mass in {1000,1100,1200,1300,1400}; do echo $mass; combine -M Asymptotic -n M${mass}  workspace_M${mass}.root; done
+root -b -q limits.cc
+```
+
+### Signal injection test
+
+
+## References
+[1]  https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideHiggsAnalysisCombinedLimit
+
+[2] https://root.cern.ch/phpBB3/viewtopic.php?t=16764
+
+[3] http://root.cern.ch/root/htmldoc/ROOT__Minuit2__Minuit2Minimizer.html#ROOT__Minuit2__Minuit2Minimizer:Hesse
+
+[4] http://root.cern.ch/root/htmldoc/ROOT__Minuit2__Minuit2Minimizer.html#ROOT__Minuit2__Minuit2Minimizer:GetMinosError

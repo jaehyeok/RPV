@@ -40,7 +40,7 @@ void drawHeader()
 
 void pulls()
 {
-  std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400};
+  std::vector<float> gluinoMasses = {750, 1000, 1100, 1200, 1300, 1400};
   std::vector<float> mean;
   std::vector<float> meanError;
   std::vector<float> dummy;
@@ -81,7 +81,7 @@ void pulls()
 
 void limit()
 {
-  std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400};
+  std::vector<float> gluinoMasses = {750, 1000, 1100, 1200, 1300, 1400};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
   std::vector<float> observed;
   std::vector<float> dummy;
@@ -141,7 +141,7 @@ void limit()
   gr->GetXaxis()->SetNdivisions(505);
   gr->SetLineWidth(3);
   gr->SetMinimum(10);
-  gr->SetMaximum(1000);
+  gr->SetMaximum(10000);
 
   // expected limit +/- 1 sigma
   TGraphAsymmErrors *grMean = new TGraphAsymmErrors(mean.size(), &gluinoMasses.at(0), &mean.at(0), 

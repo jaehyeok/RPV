@@ -85,9 +85,11 @@ for i in range(fpf_s.getSize()):
     row += [ "%+4.2f"  % fit_s.correlation(name, options.poi) ]
     if flag or options.all: table[name] = row
 
-fmtstring = "%-40s     %15s    %15s  %10s"
-highlight = "*%s*"
-morelight = "!%s!"
+fmtstring = "%-20s     %15s    %15s  %10s"
+#highlight = "*%s*"
+#morelight = "!%s!"
+highlight = "%s"
+morelight = "%s"
 pmsub, sigsub = None, None
 if options.format == 'text':
     if options.abs:
@@ -98,8 +100,10 @@ if options.format == 'text':
 elif options.format == 'latex':
     pmsub  = (r"(\S+) \+/- (\S+)", r"$\1 \\pm \2$")
     sigsub = ("sig", r"$\\sigma$")
-    highlight = "\\textbf{%s}"
-    morelight = "{{\\color{red}\\textbf{%s}}}"
+    #highlight = "\\textbf{%s}"
+    #morelight = "{{\\color{red}\\textbf{%s}}}"
+    highlight = "%s"
+    morelight = "%s"
     if options.abs:
         fmtstring = "%-40s &  %15s & %30s & %30s & %6s \\\\"
         print "\\begin{tabular}{|l|r|r|r|r|} \\hline ";

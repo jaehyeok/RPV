@@ -40,7 +40,7 @@ void drawHeader()
 
 void pulls()
 {
-  std::vector<float> gluinoMasses = {750, 1000, 1100, 1200, 1300, 1400};
+  std::vector<float> gluinoMasses = {750, 1000, 1100, 1200, 1300, 1400, 1500};
   std::vector<float> mean;
   std::vector<float> meanError;
   std::vector<float> dummy;
@@ -81,7 +81,7 @@ void pulls()
 
 void limit()
 {
-  std::vector<float> gluinoMasses = {750, 1000, 1100, 1200, 1300, 1400};
+  std::vector<float> gluinoMasses = {750, 1000, 1100, 1200, 1300, 1400, 1500};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
   std::vector<float> observed;
   std::vector<float> dummy;
@@ -133,13 +133,14 @@ void limit()
   c->SetLogy();
 
   TGraph *gr = new TGraph(mean.size(), &gluinoMasses.at(0), &mean.at(0));
-  gr->SetTitle(";Gluino mass (GeV);#sigma (fb)");
+  gr->SetTitle(";m_{#tilde{g}} [GeV];#sigma(pp #rightarrow #tilde{g}#tilde{g}) (fb)");
   gr->SetMarkerStyle(kFullCircle);
   gr->GetYaxis()->SetTitleOffset(1.4);
   gr->GetYaxis()->SetTitleSize(0.04);
   gr->GetXaxis()->SetTitleSize(0.04);
   gr->GetXaxis()->SetNdivisions(505);
   gr->SetLineWidth(3);
+  gr->SetLineStyle(2);
   gr->SetMinimum(10);
   gr->SetMaximum(10000);
 
@@ -176,12 +177,12 @@ void limit()
   grObserved->Draw("LP");
 
   
-  TLegend *leg = new TLegend(0.5, 0.6, 0.85, 0.9);
-  leg->AddEntry(grObserved, "Observed", "LP");
-  leg->AddEntry(grMean, "Expected", "L");
-  leg->AddEntry(grTheory, "Gluino cross section", "LF");
-  leg->AddEntry(grMean, "#pm 1 std. deviation", "F");
-  leg->AddEntry(grMean2Sigma, "#pm 2 std. deviation", "F");
+  TLegend *leg = new TLegend(0.45, 0.6, 0.85, 0.9);
+  leg->AddEntry(grObserved, "Observed 95% CL limit", "LP");
+  leg->AddEntry(grMean, "Expected 95% CL limit", "L");
+  leg->AddEntry(grMean, "Expected #pm 1#sigma", "F");
+  leg->AddEntry(grMean2Sigma, "Expected #pm 2#sigma", "F");
+  leg->AddEntry(grTheory, "#sigma^{NLO+NLL} (pp #rightarrow #tilde{g}#tilde{g})", "LF");
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
   leg->Draw();

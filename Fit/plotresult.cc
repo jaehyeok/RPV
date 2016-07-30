@@ -35,6 +35,9 @@ void printYieldBin(int bin, int nb, float data, float qcd, float ttbar, float wj
 void printYieldBin(int bin, int nb, float data, 
                    float qcd, float ttbar, float wjets, float other, float sig, 
                    float qcd_err, float ttbar_err, float wjets_err, float other_err);
+void printYieldBin(int bin, int nb, float data, 
+                   float qcd, float ttbar, float wjets, float other, float sig, 
+                   float qcd_err, float ttbar_err, float wjets_err, float other_err, float allbkg_err);
 //
 // h1 cosmetics
 //
@@ -106,7 +109,6 @@ void plotresult(int gluinoMass=1200)
   } 
   else
   {
-///* 
     binname = {"nlep0_nj45_lowmj", "nlep0_nj67_lowmj", "nlep1_nj45_lowmj",
   			  "nlep0_nj45_highmj", "nlep0_nj67_highmj", "nlep1_nj45_highmj",
   			  "nlep0_nj10_lowmj", "nlep1_nj67_lowmj", "nlep1_nj8_lowmj", "nlep0_nj10_highmj",
@@ -115,14 +117,15 @@ void plotresult(int gluinoMass=1200)
                  3,4,5,
                  10,11,12,13,
                  14,15,16,17};
-//*/
+
+// FIXME : this is for debug
 //    binname = {"nlep0_nj45_lowmj"}; 
 //    binnumber = {0};
   } 
   
   // for yield table  
-  float data[18][5], qcd[18][5], ttbar[18][5], wjets[18][5], other[18][5], sig[18][5]; 
-  float err[4][18][4];
+  float data[18][5], qcd[18][5], ttbar[18][5], wjets[18][5], other[18][5], sig1200[18][5], sig1400[18][5]; 
+  float err[5][18][4]; // first index : qcd, ttbar, wjets, other, all bkg
   
   for(int ibin=0; ibin<18; ibin++)
   {
@@ -133,107 +136,67 @@ void plotresult(int gluinoMass=1200)
           ttbar[ibin][inb] = 0;
           wjets[ibin][inb] = 0;
           other[ibin][inb] = 0;
-          sig[ibin][inb] = 0;
+          sig1200[ibin][inb] = 0;
+          sig1400[ibin][inb] = 0;
           err[0][ibin][inb] = 0;
           err[1][ibin][inb] = 0;
           err[2][ibin][inb] = 0;
           err[3][ibin][inb] = 0;
+          err[4][ibin][inb] = 0;
       }
   }
   
-  //Get prefit signal  
-  TH1D* h1_prefit_sig[18]; 
+  // Get prefit signal  
+  TH1D* h1_prefit_sig1200[18]; 
+  TH1D* h1_prefit_sig1400[18]; 
   TFile* infile  = TFile::Open("/net/top/homes/jaehyeokyoo/RPV/ra4_macros/variations/sum_rescaled.root", "READ");
   for(int i=0; i<binname.size(); i++) {   
     int ibin = binnumber.at(i);
-    h1_prefit_sig[ibin] = new TH1D(Form("h1_prefit_sig_bin%i",ibin), 
-                                   Form("h1_prefit_sig_bin%i",ibin), 
+    if(ibin>=6 && ibin<=9) continue;
+    h1_prefit_sig1200[ibin] = new TH1D(Form("h1_prefit_sig1200_bin%i",ibin), 
+                                   Form("h1_prefit_sig1200_bin%i",ibin), 
+                                   4, 1, 5); 
+    h1_prefit_sig1400[ibin] = new TH1D(Form("h1_prefit_sig1400_bin%i",ibin), 
+                                   Form("h1_prefit_sig1400_bin%i",ibin), 
                                    4, 1, 5); 
     //
     for(int inb=1; inb<5; inb++)
     {
-        sig[ibin][inb-1]= (static_cast<TH1D*>(infile->Get(Form("bin%i/signal_M1200", ibin))))->GetBinContent(inb+1);  
-        h1_prefit_sig[ibin]->SetBinContent(inb, sig[ibin][inb-1]);
+        sig1200[ibin][inb-1]= (static_cast<TH1D*>(infile->Get(Form("bin%i/signal_M1200", ibin))))->GetBinContent(inb+1);  
+        h1_prefit_sig1200[ibin]->SetBinContent(inb, sig1200[ibin][inb-1]);
+        sig1400[ibin][inb-1]= (static_cast<TH1D*>(infile->Get(Form("bin%i/signal_M1400", ibin))))->GetBinContent(inb+1);  
+        h1_prefit_sig1400[ibin]->SetBinContent(inb, sig1400[ibin][inb-1]);
     }  
-
-    if(ibin>=6 && ibin<=9) continue;
-    
-    for(int iproc=0; iproc<4; iproc++)
-    {
-        std::string process;
-        if(iproc==0)  process = "qcd";
-        if(iproc==1)  process = "ttbar";
-        if(iproc==2)  process = "wjets";
-        if(iproc==3)  process = "other";
-
-        // loop over nb bins
-        for(int inb=1; inb<5; inb++)
-        {
-            cout << "... " << process << endl;
-            float central;
-            float up;
-
-            if(infile->Get(Form("bin%i/%s", ibin, process.c_str()))==0x0) continue;
-            central = ((TH1F*)infile->Get(Form("bin%i/%s", ibin, process.c_str())))->GetBinContent(inb+1);
-
-            if(central !=0)
-            {
-                // btag bc
-                up = ((TH1F*)infile->Get(Form("bin%i/%s_btag_bcUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                err[iproc][ibin][inb-1] = TMath::Abs(up-central)/central;
-                
-                // btag udsg   
-                up = ((TH1F*)infile->Get(Form("bin%i/%s_btag_udsgUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
-                
-                // pileup   
-                up = ((TH1F*)infile->Get(Form("bin%i/%s_pileupUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
-                
-                // qcd flavor
-                if(iproc==0)   
-                {
-                    up = ((TH1F*)infile->Get(Form("bin%i/%s_qcd_flavorUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                    err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
-                }
-                
-                // scale variations
-                up = ((TH1F*)infile->Get(Form("bin%i/%s_%s_murUp", ibin, process.c_str(), process.c_str())))->GetBinContent(inb+1);
-                err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
-                up = ((TH1F*)infile->Get(Form("bin%i/%s_%s_mufUp", ibin, process.c_str(), process.c_str())))->GetBinContent(inb+1);
-                err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
-                up = ((TH1F*)infile->Get(Form("bin%i/%s_%s_murfUp", ibin, process.c_str(), process.c_str())))->GetBinContent(inb+1);
-                err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
-
-                // jer jes
-                up = ((TH1F*)infile->Get(Form("bin%i/%s_jerUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
-                up = ((TH1F*)infile->Get(Form("bin%i/%s_jesUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
-
-                // pdf
-                float pdferr=0;
-                for(int ipdf=0; ipdf<100; ipdf++) 
-                { 
-                    up = ((TH1F*)infile->Get(Form("bin%i/%s_w_pdf%iUp", ibin, process.c_str(), ipdf)))->GetBinContent(inb+1);
-                    pdferr  = AddInQuad(pdferr,TMath::Abs(up-central)/central);
-                }
-                err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],pdferr/10);
-                cout << "pdf: " <<  ibin << " " << inb << " " << pdferr << endl;
-            
-                // Stats
-                if(infile->Get(Form("bin%i/%s_mcstat_%s_bin%i_nb%iUp", ibin, process.c_str(), process.c_str(),ibin,inb))!=0x0)
-                {
-                    up = ((TH1F*)infile->Get(Form("bin%i/%s_mcstat_%s_bin%i_nb%iUp", ibin, process.c_str(), process.c_str(),ibin,inb)))->GetBinContent(inb+1);
-                    err[iproc][ibin][inb-1] = AddInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
-                }
-            }
-            cout << "both: " <<  ibin << " " << inb << " " << err[iproc][ibin][inb-1]<< endl;
-        }
-     }
   } 
   //infile->Close();
 
+  cout << "post-fit uncertatinty " << endl;
+
+  // Get post-fit uncertainty 
+  TFile* errfile  = TFile::Open("rpv_postfit_err_ANv7.root", "READ");
+  for(int i=0; i<binname.size(); i++) {   
+      int ibin = binnumber.at(i);
+      
+      if(ibin>=6 && ibin<=9) continue;
+
+      for(int iproc=0; iproc<5; iproc++)
+      {
+          std::string process;
+          if(iproc==0)  process = "qcd";
+          if(iproc==1)  process = "ttbar";
+          if(iproc==2)  process = "wjets";
+          if(iproc==3)  process = "other";
+          if(iproc==4)  process = "allbkg";
+
+          // loop over nb bins
+          for(int inb=1; inb<5; inb++)
+          { 
+            err[iproc][ibin][inb-1] = ((TH1F*)errfile->Get(Form("h_bin%i_%s",  ibin, process.c_str())))->GetBinContent(inb); 
+            cout << iproc << " ::: " << ibin << " " << inb << " :: " << err[iproc][ibin][inb-1] << endl;
+          }
+      }
+  }
+  
   std::string workspaceFilename;
   std::string resultsFilename;
   if(doControl) 
@@ -279,7 +242,7 @@ void plotresult(int gluinoMass=1200)
     c = new TCanvas("c","c",300,300);
     c->cd();
 
-    pad_stack = new TPad(Form("p_main_%i",i), Form("p_main_%i",i), 0.0, 0.3, 1.0, 1.0);
+    pad_stack = new TPad(Form("p_main_%i",i), Form("p_main_%i",i), 0.0, 0.28, 1.0, 1.0);
     pad_stack->SetTopMargin(0.1);
     pad_stack->SetBottomMargin(0.04);
     pad_stack->SetRightMargin(0.1);
@@ -325,7 +288,6 @@ void plotresult(int gluinoMass=1200)
     TH1D *h1_other   = makeHistogram((TGraphAsymmErrors*)xframe->getObject(4)); 
     TH1D *h1_signal; 
     if(plotSPlusB) h1_signal = makeHistogram((TGraphAsymmErrors*)xframe->getObject(5)); 
-    cout << __LINE__ << endl;
 
     //fill yields 
     for(int inb=1; inb<5; inb++)
@@ -337,18 +299,28 @@ void plotresult(int gluinoMass=1200)
         other[ibin][inb-1] = h1_other->GetBinContent(inb); 
     }
 
-    cout << __LINE__ << endl;
     // cosmetics
     h1cosmetic(h1_data,          Form("Data bin%i", ibin),               kBlack, 2, 1,           "N_{b}");
-    h1cosmetic(h1_qcd,           Form("QCD bin%i", ibin),                kBlack, 2, kYellow,     "N_{b}");
-    h1cosmetic(h1_ttbar,         Form("ttbar bin%i", ibin),              kBlack, 2, kAzure+4,        "N_{b}");
-    h1cosmetic(h1_wjets,         Form("Wjets bin%i", ibin),              kBlack, 2, kOrange,        "N_{b}");
-    h1cosmetic(h1_other,         Form("other bin%i", ibin),              kBlack, 2, kBlue+4,     "N_{b}");
-    if(plotSPlusB) h1cosmetic(h1_signal,        Form("signal bin%i", ibin),             kBlack,   2, kRed,           "N_{b}");
-    cout << __LINE__ << endl;
-    if(plotSPlusB) h1cosmetic(h1_prefit_sig[ibin],        Form("prefit signal bin%i", ibin),             kRed,   2, 0,           "N_{b}");
-   
-    cout << __LINE__ << endl;
+    h1cosmetic(h1_qcd,           Form("QCD bin%i", ibin),                kBlack, 2, kYellow-7,     "N_{b}");
+    h1cosmetic(h1_ttbar,         Form("ttbar bin%i", ibin),              kBlack, 2, kAzure+7,        "N_{b}");
+    h1cosmetic(h1_wjets,         Form("Wjets bin%i", ibin),              kBlack, 2, kGreen+2,        "N_{b}");
+    h1cosmetic(h1_other,         Form("other bin%i", ibin),              kBlack, 2, kGray+1,     "N_{b}");
+    //if(plotSPlusB) h1cosmetic(h1_signal,        Form("signal bin%i", ibin),             kBlack,   3, kRed,           "N_{b}");
+    h1cosmetic(h1_prefit_sig1200[ibin],        Form("prefit signal 1200 bin%i", ibin),             kRed,   3, 0,           "N_{b}");
+    h1cosmetic(h1_prefit_sig1400[ibin],        Form("prefit signal 1400 bin%i", ibin),             kRed,   3, 0,           "N_{b}");
+    h1_prefit_sig1400[ibin]->SetLineStyle(2); 
+
+    // uncertainty band 
+    TH1D *h1_mc = (TH1D*)h1_qcd->Clone("h1_qcd");
+    h1_mc->Add(h1_ttbar);
+    h1_mc->Add(h1_wjets);
+    h1_mc->Add(h1_other);
+    for(int inb=1; inb<5; inb++)  h1_mc->SetBinError(inb,err[4][ibin][inb-1]*h1_mc->GetBinContent(inb));
+    h1_mc->SetMarkerSize(0);
+    h1_mc->SetFillColor(kBlack);
+    h1_mc->SetLineColor(kBlack);
+    h1_mc->SetFillStyle(3354);
+
     // stack
     THStack *st = new THStack(Form("Bin %i", ibin), Form("Bin %i", ibin));
     st->Add(h1_other); 
@@ -356,23 +328,23 @@ void plotresult(int gluinoMass=1200)
     st->Add(h1_ttbar); 
     st->Add(h1_qcd);  // can change order of ttbat and qcd in 1-lepton bins  
     if(plotSPlusB) st->Add(h1_signal); 
-    cout << __LINE__ << endl;
 
-    st->SetMaximum(h1_data->GetMaximum()*100);
+    st->SetMaximum(h1_data->GetMaximum()*2000);
     st->SetMinimum(0.1);
     st->Draw("hist");
+    h1_mc->Draw("e2 same");
     h1_data->Draw("e same"); 
     //if(plotSPlusB) h1_signal->Draw("hist same"); 
     st->GetYaxis()->SetTitle("Events");
     st->GetXaxis()->SetLabelSize(0.0);
     st->GetXaxis()->SetTitle("N_{b}");
     st->GetYaxis()->SetLabelSize(0.06);
-    cout << __LINE__ << endl;
     
-    h1_prefit_sig[ibin]->Draw("hist same"); 
-
+    if(!doControl) h1_prefit_sig1200[ibin]->Draw("hist same"); 
+    if(!doControl) h1_prefit_sig1400[ibin]->Draw("hist same"); 
+    
     // legend
-    TLegend *leg = new TLegend(0.55, 0.55, 0.85, 0.85);
+    TLegend *leg = new TLegend(0.55, 0.45, 0.85, 0.87);
     leg->SetBorderSize(0);
     leg->SetFillStyle(0);
     leg->AddEntry(h1_data,  "Data",     "ELP");
@@ -380,13 +352,15 @@ void plotresult(int gluinoMass=1200)
     leg->AddEntry(h1_ttbar, "t#bar{t}", "F");
     leg->AddEntry(h1_wjets, "W+jets",   "F");
     leg->AddEntry(h1_other, "Other",    "F");
-    if(plotSPlusB) 
+    if(!doControl) 
     {
         //leg->AddEntry(h1_signal, Form("m_{#tilde{g}}=%i GeV",gluinoMass), "F");
-        leg->AddEntry(h1_prefit_sig[ibin], Form("Expected m_{#tilde{g}}=%i GeV",gluinoMass), "L");
+        //leg->AddEntry(h1_prefit_sig1200[ibin], Form("Expected m_{#tilde{g}}=%i GeV",gluinoMass), "L");
+        leg->AddEntry(h1_prefit_sig1200[ibin], Form("Expected m_{#tilde{g}}=%i GeV",1200), "L");
+        leg->AddEntry(h1_prefit_sig1400[ibin], Form("Expected m_{#tilde{g}}=%i GeV",1400), "L");
     }
+    leg->AddEntry(h1_mc,    "Post-fit uncertainty",    "F");
     leg->Draw();
-    cout << __LINE__ << endl;
 
     // CMS and lumi labels
     float textSize = 0.05;
@@ -406,7 +380,7 @@ void plotresult(int gluinoMass=1200)
 
     
     // display cuts
-    textSize=textSize-0.01;
+    //textSize=textSize-0.01;
     TLatex *TexNlep, *TexNjets, *TexMJ;
     TString binname_tstr = binname[i]; 
     if(binname_tstr.Contains("nlep1"))   TexNlep = new TLatex(0.25,0.80,"N_{lep} = 1");
@@ -414,16 +388,16 @@ void plotresult(int gluinoMass=1200)
     TexNlep->SetNDC();
     TexNlep->SetTextSize(textSize);
     //TexNlep->SetLineWidth(2);
-    if(binname_tstr.Contains("nj45_"))   TexNjets = new TLatex(0.25,0.75,"4 #leq N_{jet} #leq 5");
-    if(binname_tstr.Contains("nj67_"))   TexNjets = new TLatex(0.25,0.75,"6 #leq N_{jet} #leq 7");
-    if(binname_tstr.Contains("nj89_"))   TexNjets = new TLatex(0.25,0.75,"8 #leq N_{jet} #leq 9");
-    if(binname_tstr.Contains("nj8_"))    TexNjets = new TLatex(0.25,0.75,"N_{jet} #geq 8");
-    if(binname_tstr.Contains("nj10_"))   TexNjets = new TLatex(0.25,0.75,"N_{jet} #geq 10");
+    if(binname_tstr.Contains("nj45_"))   TexNjets = new TLatex(0.25,0.73,"4 #leq N_{jet} #leq 5");
+    if(binname_tstr.Contains("nj67_"))   TexNjets = new TLatex(0.25,0.73,"6 #leq N_{jet} #leq 7");
+    if(binname_tstr.Contains("nj89_"))   TexNjets = new TLatex(0.25,0.73,"8 #leq N_{jet} #leq 9");
+    if(binname_tstr.Contains("nj8_"))    TexNjets = new TLatex(0.25,0.73,"N_{jet} #geq 8");
+    if(binname_tstr.Contains("nj10_"))   TexNjets = new TLatex(0.25,0.73,"N_{jet} #geq 10");
     TexNjets->SetNDC();
     TexNjets->SetTextSize(textSize);
     //TexNjets->SetLineWidth(2);
-    if(binname_tstr.Contains("lowmj"))    TexMJ = new TLatex(0.25,0.70,"500 < M_{J} < 800 GeV");
-    if(binname_tstr.Contains("highmj"))   TexMJ = new TLatex(0.25,0.70,"M_{J} > 800 GeV");
+    if(binname_tstr.Contains("lowmj"))    TexMJ = new TLatex(0.25,0.66,"500 < M_{J} < 800 GeV");
+    if(binname_tstr.Contains("highmj"))   TexMJ = new TLatex(0.25,0.66,"M_{J} > 800 GeV");
     TexMJ->SetNDC();
     TexMJ->SetTextSize(textSize);
     //TexMJ->SetLineWidth(2);
@@ -441,33 +415,48 @@ void plotresult(int gluinoMass=1200)
     pad_ratio->SetRightMargin(0.1);
     pad_ratio->SetBottomMargin(0.4);
    
-    TH1D *h1_mc = (TH1D*)h1_qcd->Clone("h1_qcd");
-    h1_mc->Add(h1_ttbar);
-    h1_mc->Add(h1_wjets);
-    h1_mc->Add(h1_other);
-    if(plotSPlusB) h1_mc->Add(h1_signal);
 
-    TH1D *h1_ratio = (TH1D*)h1_data->Clone("h1_ratio");
+    TH1D *h1_ratio = (TH1D*)h1_data->Clone("h1_ratio"); 
     h1_ratio->Divide(h1_mc); 
     h1_ratio->SetLabelSize(0.15,"XY");
-    h1_ratio->GetXaxis()->SetLabelSize(0.3);
+    h1_ratio->GetXaxis()->SetLabelSize(0.25);
     h1_ratio->SetTitleSize(0.16,"XY");
     h1_ratio->SetTitleOffset(1.0);
-    h1_ratio->GetYaxis()->SetNdivisions(4,true);
+    h1_ratio->GetYaxis()->SetNdivisions(/*3,false*/706);
     h1_ratio->GetXaxis()->SetNdivisions(5,true);
-    h1_ratio->SetMinimum(0.0);
-    h1_ratio->SetMaximum(2.0);
+    h1_ratio->SetMinimum(0.1);
+    h1_ratio->SetMaximum(1.9);
     h1_ratio->GetYaxis()->SetTitle("Data/Fit");
     h1_ratio->GetYaxis()->SetTitleOffset(0.4);
     h1_ratio->Draw("e");  
- 
+    
+    TH1D *h1_ratio_err = (TH1D*)h1_ratio->Clone("h1_ratio_err");  
+    for(int inb=1; inb<5; inb++)  
+    { 
+        h1_ratio_err->SetBinContent(inb, 1);
+        h1_ratio_err->SetBinError(inb, err[4][ibin][inb-1]);
+    }
+    h1_ratio_err->SetMarkerSize(0);
+    h1_ratio_err->SetFillColor(kBlack);
+    h1_ratio_err->SetLineColor(kBlack);
+    h1_ratio_err->SetFillStyle(3354);
+    h1_ratio_err->Draw("e2 same");
+
     TLine *l = new TLine(1,1,5,1);
     l->SetLineStyle(2);
     l->Draw("same");
 
     c->Print(Form("plots/fit_%s.pdf", binname[i].c_str()));
+    c->Print(Form("plots/fit_%s.png", binname[i].c_str()));
     
-  
+    //debug
+    for(int inb=1; inb<5; inb++)
+    {   
+        cout << inb << " ratio " <<h1_ratio_err->GetBinContent(inb) << endl;;
+        cout << inb << " ratio " <<h1_ratio_err->GetBinError(inb) << endl;;
+        cout << inb << " mc " <<h1_mc->GetBinContent(inb) << endl;;
+        cout << inb << " mc " <<h1_mc->GetBinError(inb) << endl;;
+    } 
     delete pad_stack; 
     delete pad_ratio; 
     delete c; 
@@ -480,35 +469,38 @@ void plotresult(int gluinoMass=1200)
     delete h1_ratio; 
     if(plotSPlusB) delete h1_signal; 
   }
-
+  
+  // -------------------------------------------------------------------------------
   // ------------------- Print table  ----------------------------------------------
+  // -------------------------------------------------------------------------------
   
   TString binLatex[18] = {
       // control regions
-      "N_{leps}=0,H_{T}>1500~\\GeV,4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\GeV",
-      "N_{leps}=0,H_{T}>1500~\\GeV,6\\leq N_{jets}\\leq7, 500<M_{J}<800~\\GeV",
-      "N_{leps}=1,H_{T}>1200~\\GeV,4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\GeV",
-      "N_{leps}=0,H_{T}>1500~\\GeV,4\\leq N_{jets}\\leq5, M_{J}>800~\\GeV",
-      "N_{leps}=0,H_{T}>1500~\\GeV,6\\leq N_{jets}\\leq7, M_{J}>800~\\GeV",
-      "N_{leps}=1,H_{T}>1200~\\GeV,4\\leq N_{jets}\\leq5, M_{J}>800~\\GeV",
+      "4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\GeV",
+      "6\\leq N_{jets}\\leq7, 500<M_{J}<800~\\GeV",
+      "4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\GeV",
+      "4\\leq N_{jets}\\leq5, M_{J}>800~\\GeV",
+      "6\\leq N_{jets}\\leq7, M_{J}>800~\\GeV",
+      "4\\leq N_{jets}\\leq5, M_{J}>800~\\GeV",
       // low M_{J} control regions
-      "N_{leps}=0,H_{T}>1500~\\GeV,4\\leq N_{jets}\\leq5,300<M_{J}<500~\\GeV",  // 6
-      "N_{leps}=0,H_{T}>1500~\\GeV,6\\leq N_{jets}\\leq7,300<M_{J}<500~\\GeV",
-      "N_{leps}=0,H_{T}>1500~\\GeV,8\\leq N_{jets}\\leq9,300<M_{J}<500~\\GeV",
-      "N_{leps}=0,H_{T}>1500~\\GeV,N_{jets}\\geq10,300<M_{J}<500~\\GeV",
+      "4\\leq N_{jets}\\leq5,300<M_{J}<500~\\GeV",  // 6
+      "6\\leq N_{jets}\\leq7,300<M_{J}<500~\\GeV",
+      "8\\leq N_{jets}\\leq9,300<M_{J}<500~\\GeV",
+      "N_{jets}\\geq10,300<M_{J}<500~\\GeV",
       // signal regions, low M_{J}
-      "N_{leps}=0,H_{T}>1500~\\GeV,N_{jets}\\geq10,500<M_{J}<800~\\GeV",       // 10
-      "N_{leps}=1,H_{T}>1200~\\GeV,6\\leq N_{jets}\\leq7,500<M_{J}<800~\\GeV",
-      "N_{leps}=1,H_{T}>1200~\\GeV,N_{jets}\\geq8,500<M_{J}<800~\\GeV",
+      "N_{jets}\\geq10,500<M_{J}<800~\\GeV",       // 10
+      "6\\leq N_{jets}\\leq7,500<M_{J}<800~\\GeV",
+      "N_{jets}\\geq8,500<M_{J}<800~\\GeV",
       // signal regions, high M_{J}
-      "N_{leps}=0,H_{T}>1500~\\GeV,N_{jets}\\geq10,M_{J}>800~\\GeV",           // 13
-      "N_{leps}=1,H_{T}>1200~\\GeV,6\\leq N_{jets}\\leq7,M_{J}>800~\\GeV",
-      "N_{leps}=1,H_{T}>1200~\\GeV,N_{jets}\\geq8,M_{J}>800~\\GeV",
+      "N_{jets}\\geq10,M_{J}>800~\\GeV",           // 13
+      "6\\leq N_{jets}\\leq7,M_{J}>800~\\GeV",
+      "N_{jets}\\geq8,M_{J}>800~\\GeV",
       //Missing regions
-      "N_{leps}=0,H_{T}>1500~\\GeV,8\\leq N_{jets}\\leq9,500<M_{J}<800~\\GeV",  // 16
-      "N_{leps}=0,H_{T}>1500~\\GeV,8\\leq N_{jets}\\leq9,M_{J}>800~\\GeV"
+      "8\\leq N_{jets}\\leq9,500<M_{J}<800~\\GeV",  // 16
+      "8\\leq N_{jets}\\leq9,M_{J}>800~\\GeV"
   }; 
-/*  
+
+/* // This is for debug 
   int tablebin=0; 
   for(int inb=3; inb<5; inb++) 
     printYieldBin(tablebin, inb,  
@@ -517,13 +509,14 @@ void plotresult(int gluinoMass=1200)
                 ttbar[tablebin][inb-1], 
                 wjets[tablebin][inb-1], 
                 other[tablebin][inb-1],
-                sig[tablebin][inb-1],
+                sig1200[tablebin][inb-1],
                 err[0][tablebin][inb-1]*qcd[tablebin][inb-1], 
                 err[1][tablebin][inb-1]*ttbar[tablebin][inb-1], 
                 err[2][tablebin][inb-1]*wjets[tablebin][inb-1], 
-                err[3][tablebin][inb-1]*other[tablebin][inb-1]);
+                err[3][tablebin][inb-1]*other[tablebin][inb-1],
+                err[4][tablebin][inb-1]*(qcd[tablebin][inb-1]+ttbar[tablebin][inb-1]+wjets[tablebin][inb-1]+other[tablebin][inb-1]));
 */
-///*
+
   // 0-lepton
   int tablebin_0lep[4]={16,17,10,13};
   cout << "\\begin{table}" << endl;
@@ -538,21 +531,22 @@ void plotresult(int gluinoMass=1200)
     int tablebin=tablebin_0lep[ibin]; 
   cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$} \\\\" << endl;
   cout << "\\hline" << endl;
-  for(int inb=3; inb<5; inb++) 
+  for(int inb=1; inb<5; inb++) 
     printYieldBin(tablebin, inb,  
                 data[tablebin][inb-1], 
                 qcd[tablebin][inb-1], 
                 ttbar[tablebin][inb-1], 
                 wjets[tablebin][inb-1], 
                 other[tablebin][inb-1],
-                sig[tablebin][inb-1],
+                sig1200[tablebin][inb-1],
                 err[0][tablebin][inb-1]*qcd[tablebin][inb-1], 
                 err[1][tablebin][inb-1]*ttbar[tablebin][inb-1], 
                 err[2][tablebin][inb-1]*wjets[tablebin][inb-1], 
-                err[3][tablebin][inb-1]*other[tablebin][inb-1]);
+                err[3][tablebin][inb-1]*other[tablebin][inb-1],
+                err[4][tablebin][inb-1]*(qcd[tablebin][inb-1]+ttbar[tablebin][inb-1]+wjets[tablebin][inb-1]+other[tablebin][inb-1]));
   cout << "\\hline" << endl;
   }
-  cout<< "\\hline\\hline" << endl;
+  cout<< "\\hline" << endl;
   cout << "\\end{tabular}"<<endl;
   cout << "\\end{table}\n"<< endl;
 
@@ -573,28 +567,30 @@ void plotresult(int gluinoMass=1200)
     int tablebin=tablebin_1lep[ibin]; 
   cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$}\\\\" << endl;
   cout << "\\hline" << endl;
-  for(int inb=3; inb<5; inb++) 
+  for(int inb=1; inb<5; inb++) 
     printYieldBin(tablebin, inb,  
                 data[tablebin][inb-1], 
                 qcd[tablebin][inb-1], 
                 ttbar[tablebin][inb-1], 
                 wjets[tablebin][inb-1], 
                 other[tablebin][inb-1],
-                sig[tablebin][inb-1],
+                sig1200[tablebin][inb-1],
                 err[0][tablebin][inb-1]*qcd[tablebin][inb-1], 
                 err[1][tablebin][inb-1]*ttbar[tablebin][inb-1], 
                 err[2][tablebin][inb-1]*wjets[tablebin][inb-1], 
-                err[3][tablebin][inb-1]*other[tablebin][inb-1]);
+                err[3][tablebin][inb-1]*other[tablebin][inb-1],
+                err[4][tablebin][inb-1]*(qcd[tablebin][inb-1]+ttbar[tablebin][inb-1]+wjets[tablebin][inb-1]+other[tablebin][inb-1]));
   cout << "\\hline" << endl;
   }  
-  cout<< "\\hline\\hline" << endl;
+  cout<< "\\hline" << endl;
   cout << "\\end{tabular}"<<endl;
   cout << "\\end{table}\n"<< endl;
-//*/
 
-  // --------------------- end table -------------------------------------
+  // -------------------------------------------------------------------------------
+  // ------------------------------- end table -------------------------------------
+  // -------------------------------------------------------------------------------
  
- 
+/* 
  if(plotSPlusB) {
     plotFitPulls(result_s->floatParsFinal(), "plots/pulls_nopdf.pdf", "base");
     plotFitPulls(result_s->floatParsFinal(), "plots/pulls_pdf.pdf", "pdf");
@@ -605,7 +601,7 @@ void plotresult(int gluinoMass=1200)
     plotFitPulls(result_b->floatParsFinal(), "plots/pulls_pdf.pdf", "pdf");
     plotFitPulls(result_b->floatParsFinal(), "plots/pulls_mcstats.pdf", "mcstat");
   }
-
+*/
 }
 
 void setValues(RooWorkspace *work, RooFitResult *result)
@@ -635,6 +631,11 @@ void printYieldBin(int bin, int nb, float data, float qcd, float ttbar, float wj
 void printYieldBin(int bin, int nb, float data, float qcd, float ttbar, float wjets, float other, float sig, 
                                     float qcd_err, float ttbar_err, float wjets_err, float other_err)
 { 
+    if(qcd==0) qcd_err=0;
+    if(ttbar==0) ttbar_err=0;
+    if(wjets==0) wjets_err=0;
+    if(other==0) other_err=0;
+    
     float tot_err = TMath::Sqrt(qcd_err*qcd_err+ttbar_err*ttbar_err+wjets_err*wjets_err+other_err*other_err);
     cout << ((nb==3)?"$3$":"$\\geq 4$") << " & "
         << Form("$%.1f \\pm %.1f$",qcd,qcd_err)  << " & "
@@ -645,6 +646,31 @@ void printYieldBin(int bin, int nb, float data, float qcd, float ttbar, float wj
         << Form("$%.0f$",data) << " & "
         << Form("$%.1f$",sig) << " \\\\ " << endl;
 }
+
+void printYieldBin(int bin, int nb, float data, float qcd, float ttbar, float wjets, float other, float sig, 
+                                    float qcd_err, float ttbar_err, float wjets_err, float other_err, float allbkg_err)
+{ 
+    if(qcd==0) qcd_err=0;
+    if(ttbar==0) ttbar_err=0;
+    if(wjets==0) wjets_err=0;
+    if(other==0) other_err=0;
+
+    string nbbin; 
+    if(nb==1) nbbin="$1$";
+    if(nb==2) nbbin="$2$";
+    if(nb==3) nbbin="$3$";
+    if(nb==4) nbbin="$\\geq 4$";
+
+    cout << nbbin << " & "
+        << Form("$%.1f \\pm %.1f$",qcd,qcd_err)  << " & "
+        << Form("$%.1f \\pm %.1f$",ttbar,ttbar_err) << " & "
+        << Form("$%.1f \\pm %.1f$",wjets,wjets_err) << " & "
+        << Form("$%.1f \\pm %.1f$",other,other_err) << " & "
+        << Form("$%.1f \\pm %.1f$",qcd+ttbar+wjets+other,allbkg_err) << " & "
+        << Form("$%.0f$",data) << " & "
+        << Form("$%.1f$",sig) << " \\\\ " << endl;
+}
+
 
 float AddInQuad(float a, float b)
 {

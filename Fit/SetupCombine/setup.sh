@@ -5,8 +5,8 @@
 
 # Get CMSSW and combine tool
 cmsrel CMSSW_7_4_7_patch1
-cd CMSSW_7_4_7_patch1/src
 CURRENT=$PWD
+cd CMSSW_7_4_7_patch1/src
 cmsenv
 git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
 cd HiggsAnalysis/CombinedLimit

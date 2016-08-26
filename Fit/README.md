@@ -1,7 +1,7 @@
-Instruction on how to do the fit and extratct the fit information
+Instructions on how to do the fit and extract the fit information
 === 
 
-This instruciton assumes that you have generated RPV datacards already.
+This instruction assumes that you have generated RPV datacards already.
 
 ### Set up combine [1] 
 

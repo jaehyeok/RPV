@@ -1,0 +1,288 @@
+// small_tree_quick: quick version of small_tree to handle reduce tree ntuples
+// File generated with generate_small_tree.exe
+
+#ifndef H_SMALL_TREE_QUICK
+#define H_SMALL_TREE_QUICK
+
+#include <vector>
+#include <string>
+
+#include "TTree.h"
+#include "TChain.h"
+
+#include "small_tree.hpp"
+
+class small_tree_quick : public small_tree{
+public:
+  small_tree_quick(); // Constructor to create tree
+  small_tree_quick(const std::string &filename); // Constructor to read tree
+
+  virtual void GetEntry(const long entry);
+
+  virtual void Fill();
+
+  virtual std::string Type() const;
+
+  virtual ~small_tree_quick();
+
+  virtual float  const & dphi_wlep() const;
+  virtual float  & dphi_wlep();
+  virtual float  const & dphi_wlep_reliso() const;
+  virtual float  & dphi_wlep_reliso();
+  virtual float  const & ht40() const;
+  virtual float  & ht40();
+  virtual float  const & ht_reliso() const;
+  virtual float  & ht_reliso();
+  virtual float  const & lep_eta() const;
+  virtual float  & lep_eta();
+  virtual float  const & lep_eta_reliso() const;
+  virtual float  & lep_eta_reliso();
+  virtual float  const & lep_phi() const;
+  virtual float  & lep_phi();
+  virtual float  const & lep_phi_reliso() const;
+  virtual float  & lep_phi_reliso();
+  virtual float  const & lep_pt() const;
+  virtual float  & lep_pt();
+  virtual float  const & lep_pt_reliso() const;
+  virtual float  & lep_pt_reliso();
+  virtual float  const & mindphin_metjet() const;
+  virtual float  & mindphin_metjet();
+  virtual float  const & mt_reliso() const;
+  virtual float  & mt_reliso();
+  virtual float  const & st() const;
+  virtual float  & st();
+  virtual float  const & st_reliso() const;
+  virtual float  & st_reliso();
+  virtual float  const & trutop1_phi() const;
+  virtual float  & trutop1_phi();
+  virtual float  const & trutop1_pt() const;
+  virtual float  & trutop1_pt();
+  virtual float  const & trutop2_phi() const;
+  virtual float  & trutop2_phi();
+  virtual float  const & trutop2_pt() const;
+  virtual float  & trutop2_pt();
+  virtual int  const & lep_charge() const;
+  virtual int  & lep_charge();
+  virtual int  const & lep_charge_reliso() const;
+  virtual int  & lep_charge_reliso();
+  virtual int  const & nbl40() const;
+  virtual int  & nbl40();
+  virtual int  const & nbm40() const;
+  virtual int  & nbm40();
+  virtual int  const & nbt40() const;
+  virtual int  & nbt40();
+  virtual int  const & nels_reliso() const;
+  virtual int  & nels_reliso();
+  virtual int  const & njets40() const;
+  virtual int  & njets40();
+  virtual int  const & nleps_reliso() const;
+  virtual int  & nleps_reliso();
+  virtual int  const & nmus_reliso() const;
+  virtual int  & nmus_reliso();
+  virtual int  const & ntks_chg() const;
+  virtual int  & ntks_chg();
+  virtual int  const & ntks_chg_mini() const;
+  virtual int  & ntks_chg_mini();
+  virtual int  const & ntrumeisr() const;
+  virtual int  & ntrumeisr();
+  virtual int  const & nvels_reliso() const;
+  virtual int  & nvels_reliso();
+  virtual int  const & nvmus_reliso() const;
+  virtual int  & nvmus_reliso();
+  virtual std::vector<bool>  const & els_tru_tm() const;
+  virtual std::vector<bool>  & els_tru_tm();
+  virtual std::vector<bool>  const & mus_tru_tm() const;
+  virtual std::vector<bool>  & mus_tru_tm();
+  virtual std::vector<float>  const & els_miniso_tr10() const;
+  virtual std::vector<float>  & els_miniso_tr10();
+  virtual std::vector<float>  const & els_mt() const;
+  virtual std::vector<float>  & els_mt();
+  virtual std::vector<float>  const & els_reliso() const;
+  virtual std::vector<float>  & els_reliso();
+  virtual std::vector<float>  const & els_tru_dr() const;
+  virtual std::vector<float>  & els_tru_dr();
+  virtual std::vector<float>  const & jets_id() const;
+  virtual std::vector<float>  & jets_id();
+  virtual std::vector<float>  const & jets_pt_res() const;
+  virtual std::vector<float>  & jets_pt_res();
+  virtual std::vector<float>  const & mus_miniso_tr10() const;
+  virtual std::vector<float>  & mus_miniso_tr10();
+  virtual std::vector<float>  const & mus_mt() const;
+  virtual std::vector<float>  & mus_mt();
+  virtual std::vector<float>  const & mus_reliso() const;
+  virtual std::vector<float>  & mus_reliso();
+  virtual std::vector<float>  const & mus_tru_dr() const;
+  virtual std::vector<float>  & mus_tru_dr();
+  virtual std::vector<int>  const & els_tru_id() const;
+  virtual std::vector<int>  & els_tru_id();
+  virtual std::vector<int>  const & els_tru_momid() const;
+  virtual std::vector<int>  & els_tru_momid();
+  virtual std::vector<int>  const & mus_tru_id() const;
+  virtual std::vector<int>  & mus_tru_id();
+  virtual std::vector<int>  const & mus_tru_momid() const;
+  virtual std::vector<int>  & mus_tru_momid();
+
+private:
+  float  dphi_wlep_;
+  TBranch *b_dphi_wlep_;
+  mutable bool c_dphi_wlep_;
+  float  dphi_wlep_reliso_;
+  TBranch *b_dphi_wlep_reliso_;
+  mutable bool c_dphi_wlep_reliso_;
+  float  ht40_;
+  TBranch *b_ht40_;
+  mutable bool c_ht40_;
+  float  ht_reliso_;
+  TBranch *b_ht_reliso_;
+  mutable bool c_ht_reliso_;
+  float  lep_eta_;
+  TBranch *b_lep_eta_;
+  mutable bool c_lep_eta_;
+  float  lep_eta_reliso_;
+  TBranch *b_lep_eta_reliso_;
+  mutable bool c_lep_eta_reliso_;
+  float  lep_phi_;
+  TBranch *b_lep_phi_;
+  mutable bool c_lep_phi_;
+  float  lep_phi_reliso_;
+  TBranch *b_lep_phi_reliso_;
+  mutable bool c_lep_phi_reliso_;
+  float  lep_pt_;
+  TBranch *b_lep_pt_;
+  mutable bool c_lep_pt_;
+  float  lep_pt_reliso_;
+  TBranch *b_lep_pt_reliso_;
+  mutable bool c_lep_pt_reliso_;
+  float  mindphin_metjet_;
+  TBranch *b_mindphin_metjet_;
+  mutable bool c_mindphin_metjet_;
+  float  mt_reliso_;
+  TBranch *b_mt_reliso_;
+  mutable bool c_mt_reliso_;
+  float  st_;
+  TBranch *b_st_;
+  mutable bool c_st_;
+  float  st_reliso_;
+  TBranch *b_st_reliso_;
+  mutable bool c_st_reliso_;
+  float  trutop1_phi_;
+  TBranch *b_trutop1_phi_;
+  mutable bool c_trutop1_phi_;
+  float  trutop1_pt_;
+  TBranch *b_trutop1_pt_;
+  mutable bool c_trutop1_pt_;
+  float  trutop2_phi_;
+  TBranch *b_trutop2_phi_;
+  mutable bool c_trutop2_phi_;
+  float  trutop2_pt_;
+  TBranch *b_trutop2_pt_;
+  mutable bool c_trutop2_pt_;
+  int  lep_charge_;
+  TBranch *b_lep_charge_;
+  mutable bool c_lep_charge_;
+  int  lep_charge_reliso_;
+  TBranch *b_lep_charge_reliso_;
+  mutable bool c_lep_charge_reliso_;
+  int  nbl40_;
+  TBranch *b_nbl40_;
+  mutable bool c_nbl40_;
+  int  nbm40_;
+  TBranch *b_nbm40_;
+  mutable bool c_nbm40_;
+  int  nbt40_;
+  TBranch *b_nbt40_;
+  mutable bool c_nbt40_;
+  int  nels_reliso_;
+  TBranch *b_nels_reliso_;
+  mutable bool c_nels_reliso_;
+  int  njets40_;
+  TBranch *b_njets40_;
+  mutable bool c_njets40_;
+  int  nleps_reliso_;
+  TBranch *b_nleps_reliso_;
+  mutable bool c_nleps_reliso_;
+  int  nmus_reliso_;
+  TBranch *b_nmus_reliso_;
+  mutable bool c_nmus_reliso_;
+  int  ntks_chg_;
+  TBranch *b_ntks_chg_;
+  mutable bool c_ntks_chg_;
+  int  ntks_chg_mini_;
+  TBranch *b_ntks_chg_mini_;
+  mutable bool c_ntks_chg_mini_;
+  int  ntrumeisr_;
+  TBranch *b_ntrumeisr_;
+  mutable bool c_ntrumeisr_;
+  int  nvels_reliso_;
+  TBranch *b_nvels_reliso_;
+  mutable bool c_nvels_reliso_;
+  int  nvmus_reliso_;
+  TBranch *b_nvmus_reliso_;
+  mutable bool c_nvmus_reliso_;
+  std::vector<bool>  els_tru_tm_;
+  std::vector<bool>  *p_els_tru_tm_;
+  TBranch *b_els_tru_tm_;
+  mutable bool c_els_tru_tm_;
+  std::vector<bool>  mus_tru_tm_;
+  std::vector<bool>  *p_mus_tru_tm_;
+  TBranch *b_mus_tru_tm_;
+  mutable bool c_mus_tru_tm_;
+  std::vector<float>  els_miniso_tr10_;
+  std::vector<float>  *p_els_miniso_tr10_;
+  TBranch *b_els_miniso_tr10_;
+  mutable bool c_els_miniso_tr10_;
+  std::vector<float>  els_mt_;
+  std::vector<float>  *p_els_mt_;
+  TBranch *b_els_mt_;
+  mutable bool c_els_mt_;
+  std::vector<float>  els_reliso_;
+  std::vector<float>  *p_els_reliso_;
+  TBranch *b_els_reliso_;
+  mutable bool c_els_reliso_;
+  std::vector<float>  els_tru_dr_;
+  std::vector<float>  *p_els_tru_dr_;
+  TBranch *b_els_tru_dr_;
+  mutable bool c_els_tru_dr_;
+  std::vector<float>  jets_id_;
+  std::vector<float>  *p_jets_id_;
+  TBranch *b_jets_id_;
+  mutable bool c_jets_id_;
+  std::vector<float>  jets_pt_res_;
+  std::vector<float>  *p_jets_pt_res_;
+  TBranch *b_jets_pt_res_;
+  mutable bool c_jets_pt_res_;
+  std::vector<float>  mus_miniso_tr10_;
+  std::vector<float>  *p_mus_miniso_tr10_;
+  TBranch *b_mus_miniso_tr10_;
+  mutable bool c_mus_miniso_tr10_;
+  std::vector<float>  mus_mt_;
+  std::vector<float>  *p_mus_mt_;
+  TBranch *b_mus_mt_;
+  mutable bool c_mus_mt_;
+  std::vector<float>  mus_reliso_;
+  std::vector<float>  *p_mus_reliso_;
+  TBranch *b_mus_reliso_;
+  mutable bool c_mus_reliso_;
+  std::vector<float>  mus_tru_dr_;
+  std::vector<float>  *p_mus_tru_dr_;
+  TBranch *b_mus_tru_dr_;
+  mutable bool c_mus_tru_dr_;
+  std::vector<int>  els_tru_id_;
+  std::vector<int>  *p_els_tru_id_;
+  TBranch *b_els_tru_id_;
+  mutable bool c_els_tru_id_;
+  std::vector<int>  els_tru_momid_;
+  std::vector<int>  *p_els_tru_momid_;
+  TBranch *b_els_tru_momid_;
+  mutable bool c_els_tru_momid_;
+  std::vector<int>  mus_tru_id_;
+  std::vector<int>  *p_mus_tru_id_;
+  TBranch *b_mus_tru_id_;
+  mutable bool c_mus_tru_id_;
+  std::vector<int>  mus_tru_momid_;
+  std::vector<int>  *p_mus_tru_momid_;
+  TBranch *b_mus_tru_momid_;
+  mutable bool c_mus_tru_momid_;
+};
+
+#endif

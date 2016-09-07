@@ -46,46 +46,22 @@ int main(int argc, char *argv[]){
         }
     }
 
-    TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_st1200/";
+    TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
     TString folder_sig = "/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/";
-    TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_st1200/";
+    TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
 
-    vector<TString> s_rpv_m1300;
-    s_rpv_m1300.push_back(folder_sig+"*mGluino-1300*");
-    vector<TString> s_rpv_m1500;
-    s_rpv_m1500.push_back(folder_sig+"*mGluino-1500*");
+    vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
+    
+    vector<TString> s_rpv_m1300 = getRPVProcess(folder_sig,"rpv_m1300");
+    vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
 
-    vector<TString> s_tt_had;
-    s_tt_had.push_back(folder_bkg+"*_TTJets_Tune*");
-    vector<TString> s_tt;
-    s_tt.push_back(folder_bkg+"*_TTJets_DiLept*");
-    s_tt.push_back(folder_bkg+"*_TTJets_SingleLept*");
-    s_tt.push_back(folder_bkg+"*_TTJets_HT*");
-    vector<TString> s_wjets;
-    s_wjets.push_back(folder_bkg+"*_WJetsToLNu_HT*");
-    vector<TString> s_singlet;
-    s_singlet.push_back(folder_bkg+"*_ST_*");
-    vector<TString> s_qcd;
-    s_qcd.push_back(folder_bkg+"*_QCD_HT1000to1500_*");
-    s_qcd.push_back(folder_bkg+"*_QCD_HT1500to2000_*");
-    s_qcd.push_back(folder_bkg+"*_QCD_HT2000toInf_*");
-    vector<TString> s_other;
-    s_other.push_back(folder_bkg+"*_DYJetsToLL_M-50_HT-600to800_*");
-    s_other.push_back(folder_bkg+"*_DYJetsToLL_M-50_HT-800to1200_*");
-    s_other.push_back(folder_bkg+"*_DYJetsToLL_M-50_HT-1200to2500_*");
-    s_other.push_back(folder_bkg+"*_DYJetsToLL_M-50_HT-2500toInf_*");
-    s_other.push_back(folder_bkg+"*_TTWJetsToLNu_*");
-    s_other.push_back(folder_bkg+"*_TTWJetsToQQ_*");
-    s_other.push_back(folder_bkg+"*_TTZToQQ_*");
-    s_other.push_back(folder_bkg+"*_TTZToLLNuNu_*");
-    s_other.push_back(folder_bkg+"*_ttHJetTobb_*");
-    s_other.push_back(folder_bkg+"*_TTTT_*");
-    vector<TString> s_w_had;
-    s_w_had.push_back(folder_bkg+"*WJetsToQQ_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8");
-    vector<TString> s_z_had;
-    s_z_had.push_back(folder_bkg+"*ZJetsToQQ_HT600toInf_13TeV-madgraph");
-    vector<TString> s_jetht;
-    s_jetht.push_back(folder_dat+"*Run2016_HTMHT_MET_JetHT_SingleElectron_SingleMuon*");
+    vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar");
+    vector<TString> s_tt_had = getRPVProcess(folder_bkg,"ttbar_had");
+    vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
+    vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
+    vector<TString> s_singlet = getRPVProcess(folder_bkg,"singlet");
+    vector<TString> s_zjets = getRPVProcess(folder_bkg,"zjets");
+    vector<TString> s_other = getRPVProcess(folder_bkg,"other");
 
     // Reading ntuples
     vector<sfeats> Samples; 
@@ -101,12 +77,12 @@ int main(int argc, char *argv[]){
     //    Samples.back().doStack = false;
     //    Samples.back().isSig = true;
     Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1, cutandweight("stitch&&pass",extraWeight))); 
-    Samples.push_back(sfeats(s_w_had, "W+jets, 0 l", ra4::c_wjets, 1, cutandweight("stitch&&pass",extraWeight)));
-    Samples.push_back(sfeats(s_z_had, "Z+jets, 0 l", kBlack, 1, cutandweight("stitch&&pass",extraWeight)));
+    Samples.push_back(sfeats(s_wjets, "W+jets, 0 l", ra4::c_wjets, 1, cutandweight("stitch&&pass&&ntruleps==0",extraWeight)));
+    Samples.push_back(sfeats(s_zjets, "Z+jets, 0 l", kBlack, 1, cutandweight("stitch&&pass",extraWeight)));
     Samples.push_back(sfeats(s_tt, "t#bar{t}, 1 l", ra4::c_tt_1l, 1, cutandweight("stitch&&pass&&ntruleps==1", extraWeight)));
     Samples.push_back(sfeats(s_tt, "t#bar{t}, 2 l", ra4::c_tt_2l, 1, cutandweight("stitch&&pass&&ntruleps==2", extraWeight)));
-    Samples.push_back(sfeats(s_tt_had, "t#bar{t}, 0 l", kTeal, 1, cutandweight("stitch&&pass&&ntruleps==0", extraWeight)));
-    Samples.push_back(sfeats(s_wjets, "W+jets, 1 l", ra4::c_wjets, 1, cutandweight("stitch&&pass",extraWeight)));
+    Samples.push_back(sfeats(s_tt_had, "t#bar{t}, 0 l", kTeal, 1, cutandweight("pass&&ntruleps==0", extraWeight)));
+    Samples.push_back(sfeats(s_wjets, "W+jets, 1 l", ra4::c_wjets, 1, cutandweight("stitch&&pass&&ntruleps==1",extraWeight)));
     Samples.push_back(sfeats(s_singlet, "Single t", ra4::c_singlet, 1, cutandweight("stitch&&pass",extraWeight)));
     Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweight("stitch&&pass",extraWeight))); 
 

@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
 
     bool showData=true;
     bool nminus1=false;
-    TString outDir("rpv_base/ichep/");
+    TString outDir("rpv_base/");
     if(argc==2) {
         TString nMinus1String("nminus1");
         if(argv[1]!=nMinus1String) {
@@ -56,7 +56,6 @@ int main(int argc, char *argv[]){
     vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
 
     vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar");
-    vector<TString> s_tt_had = getRPVProcess(folder_bkg,"ttbar_had");
     vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
     vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
     vector<TString> s_singlet = getRPVProcess(folder_bkg,"singlet");
@@ -79,9 +78,9 @@ int main(int argc, char *argv[]){
     Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1, cutandweight("stitch&&pass",extraWeight))); 
     Samples.push_back(sfeats(s_wjets, "W+jets, 0 l", ra4::c_wjets, 1, cutandweight("stitch&&pass&&ntruleps==0",extraWeight)));
     Samples.push_back(sfeats(s_zjets, "Z+jets, 0 l", kBlack, 1, cutandweight("stitch&&pass",extraWeight)));
-    Samples.push_back(sfeats(s_tt, "t#bar{t}, 1 l", ra4::c_tt_1l, 1, cutandweight("stitch&&pass&&ntruleps==1", extraWeight)));
-    Samples.push_back(sfeats(s_tt, "t#bar{t}, 2 l", ra4::c_tt_2l, 1, cutandweight("stitch&&pass&&ntruleps==2", extraWeight)));
-    Samples.push_back(sfeats(s_tt_had, "t#bar{t}, 0 l", kTeal, 1, cutandweight("pass&&ntruleps==0", extraWeight)));
+    Samples.push_back(sfeats(s_tt, "t#bar{t}, 1 l", ra4::c_tt_1l, 1, cutandweight("pass&&ntruleps==1", extraWeight)));
+    Samples.push_back(sfeats(s_tt, "t#bar{t}, 2 l", ra4::c_tt_2l, 1, cutandweight("pass&&ntruleps==2", extraWeight)));
+    Samples.push_back(sfeats(s_tt, "t#bar{t}, 0 l", kTeal, 1, cutandweight("pass&&ntruleps==0", extraWeight)));
     Samples.push_back(sfeats(s_wjets, "W+jets, 1 l", ra4::c_wjets, 1, cutandweight("stitch&&pass&&ntruleps==1",extraWeight)));
     Samples.push_back(sfeats(s_singlet, "Single t", ra4::c_singlet, 1, cutandweight("stitch&&pass",extraWeight)));
     Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweight("stitch&&pass",extraWeight))); 

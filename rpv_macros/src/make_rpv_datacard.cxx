@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   std::string signalBinName;
   std::string cardType;
   if(argc<3) {
-    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control]" << std::endl;
+    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [true]" << std::endl;
     return 1;
   }
   else {
@@ -73,46 +73,89 @@ int main(int argc, char *argv[])
 
   nprocesses=processes.size();
 
-  std::vector<std::string> bins = {"bin0", "bin1", "bin2",
-				   "bin3", "bin4", "bin5"};
+  // separate cards  
+  // CR: bin 0 1 2
+  // CR: bin 3 4 5 
+  // low njet, low MJ  : bin 16 11
+  // low njet, high MJ : bin 17 14
+  // high njet, low MJ  : bin 10 12
+  // high njet, high MJ : bin 13 15
+
+  std::vector<std::vector<std::string> > bins;
+
+  std::vector<std::string> bins_cr_lowmj        = {"bin0", "bin1", "bin2"};
+  std::vector<std::string> bins_cr_highmj       = {"bin3", "bin4", "bin5"};
+  std::vector<std::string> bins_sr_lownj_lowmj  = {"bin16", "bin11"};
+  std::vector<std::string> bins_sr_lownj_highmj = {"bin17", "bin14"};
+  std::vector<std::string> bins_sr_highnj_lowmj  = {"bin10", "bin12"};
+  std::vector<std::string> bins_sr_highnj_highmj = {"bin13", "bin15"};
+    
+  std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
 
   if(includeLowMJ) {
-    bins.push_back("bin6");
-    bins.push_back("bin7");
-    bins.push_back("bin8");
-    bins.push_back("bin9");
+    bins_all.push_back("bin6");
+    bins_all.push_back("bin7");
+    bins_all.push_back("bin8");
+    bins_all.push_back("bin9");
   }
   if(cardType=="default" || cardType=="mconly") {
-    bins.push_back("bin10");
-    bins.push_back("bin11");
-    bins.push_back("bin12");
-    bins.push_back("bin13");
-    bins.push_back("bin14");
-    bins.push_back("bin15");
-    bins.push_back("bin16");
-    bins.push_back("bin17");
+    bins_all.push_back("bin10");
+    bins_all.push_back("bin11");
+    bins_all.push_back("bin12");
+    bins_all.push_back("bin13");
+    bins_all.push_back("bin14");
+    bins_all.push_back("bin15");
+    bins_all.push_back("bin16");
+    bins_all.push_back("bin17");
   }
-  nbins = bins.size();
 
-  std::string dataCardPath = gSystem->pwd();
-  if(cardType=="mconly") dataCardPath += "/variations/sum_rescaled_mconly.root";
-  else dataCardPath += "/variations/sum_rescaled.root";
-  TFile *variations = TFile::Open(dataCardPath.c_str());
-  std::ofstream file;
-  std::string filename("datacard_M");
-  filename+=gluinoMass;
-  if(cardType=="control") filename+="_control";
-  else if(cardType=="mconly") filename+="_mconly";
-
+  bins.push_back(bins_cr_lowmj);
+  bins.push_back(bins_cr_highmj);
+  if(cardType=="default" || cardType=="mconly") {
+      bins.push_back(bins_sr_lownj_lowmj);
+      bins.push_back(bins_sr_lownj_highmj);
+      bins.push_back(bins_sr_highnj_lowmj);
+      bins.push_back(bins_sr_highnj_highmj); 
+  }
+  bins.push_back(bins_all);
+ 
+  // include pdf syst to the shapeSysts
   if(includePDFUncert) {
     for(unsigned int i=0; i<100; i++) {
       TString pdf(Form("w_pdf%d", i));
       shapeSysts.push_back(pdf.Data());
     }
   }
-  else {
-    filename+="_nopdf";
-  }
+   
+  // loop over the first indext of the bins vector  
+  for(unsigned int ipair=0; ipair<bins.size(); ipair++) 
+  { 
+
+  nbins = bins.at(ipair).size(); 
+
+  // which variation file
+  std::string dataCardPath = gSystem->pwd();
+  if(cardType=="mconly") dataCardPath += "/variations/sum_rescaled_mconly.root";
+  else dataCardPath += "/variations/sum_rescaled.root";
+  TFile *variations = TFile::Open(dataCardPath.c_str());
+  std::ofstream file;
+  // card name
+  std::string filename("datacard_M");
+  filename+=gluinoMass;
+  if(cardType=="control") filename+="_control";
+  else if(cardType=="mconly") filename+="_mconly";
+
+  if(ipair==0) filename+="_cr_lowmj";
+  if(ipair==1) filename+="_cr_highmj"; 
+  if(cardType!="control") 
+  {
+      if(ipair==2) filename+="_sr_lownj_lowmj";
+      if(ipair==3) filename+="_sr_lownj_highmj";
+      if(ipair==4) filename+="_sr_highnj_lowmj";
+      if(ipair==5) filename+="_sr_highnj_highmj";
+  } 
+  if(!includePDFUncert) filename+="_nopdf";
+
   filename+=".dat";
   file.open(filename);
 
@@ -123,20 +166,20 @@ int main(int argc, char *argv[])
   file << "------------------------------------" << std::endl;
 
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
-    file << "shapes * " << bins.at(ibin) << " " << dataCardPath << " " << bins.at(ibin)
-	 << "/$PROCESS " << bins.at(ibin) << "/$PROCESS_$SYSTEMATIC" << std::endl;
+    file << "shapes * " << bins.at(ipair).at(ibin) << " " << dataCardPath << " " << bins.at(ipair).at(ibin)
+	 << "/$PROCESS " << bins.at(ipair).at(ibin) << "/$PROCESS_$SYSTEMATIC" << std::endl;
   }
   file << "------------------------------------" << std::endl;
   file << "bin          ";
 
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
-    variations->cd(bins.at(ibin).c_str());
-    file << bins.at(ibin) << " ";
+    variations->cd(bins.at(ipair).at(ibin).c_str());
+    file << bins.at(ipair).at(ibin) << " ";
   }
   file << "\n";
   file << "observation  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
-    TString binName(bins.at(ibin));
+    TString binName(bins.at(ipair).at(ibin));
     TH1F *hist = static_cast<TH1F*>(variations->Get(Form("%s/data_obs",binName.Data())));
     file << hist->Integral() << " ";
     hist->Delete();
@@ -146,7 +189,7 @@ int main(int argc, char *argv[])
   file << "bin  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     for(unsigned int iprocess=0; iprocess<nprocesses; iprocess++) {
-      file << bins.at(ibin) << " ";
+      file << bins.at(ipair).at(ibin) << " ";
     }
   }
   file << "\n";
@@ -160,7 +203,7 @@ int main(int argc, char *argv[])
   file << "rate  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     for(unsigned int iprocess=0; iprocess<nprocesses; iprocess++) {
-      TString histName(Form("%s/%s", bins.at(ibin).c_str(), processes.at(iprocess).c_str()));
+      TString histName(Form("%s/%s", bins.at(ipair).at(ibin).c_str(), processes.at(iprocess).c_str()));
       TH1F *hist = static_cast<TH1F*>(variations->Get(histName));
       file << hist->Integral() << "  ";
     }
@@ -168,7 +211,7 @@ int main(int argc, char *argv[])
   file << "\n------------------------------------" << std::endl;
 
   //output the normalization sharing between lepton bins
-  outputNormSharing(file, bins);
+  outputNormSharing(file, bins.at(ipair));
 
   // output shape systematics
   outputShapeSystematics(file, shapeSysts);
@@ -177,10 +220,13 @@ int main(int argc, char *argv[])
   outputLognormalSystematics(file);
 
   // output MC statistics nuisance parameters
-  outputMCStatisticsSyst(file, bins, signalBinName);
+  // FIXME: the treatment of emtpy bins should be updated
+  //        right now this is done by hand basically using "hasEntry" function at the end of this code
+  //        this should be done by checking the bins in the nominal shape 
+  outputMCStatisticsSyst(file, bins.at(ipair), signalBinName);
 
   file.close();
-
+  }
 }
 
 // Assumes that processes is of the format {signal, "qcd", "ttbar", ... } 

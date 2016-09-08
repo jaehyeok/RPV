@@ -45,7 +45,13 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   }
   // For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
   else if(process=="ttbar"){
+    files.push_back(folder+"*_TTJets_DiLept*");
+    files.push_back(folder+"*_TTJets_SingleLept*");
     files.push_back(folder+"*_TTJets_HT*");
+  }
+  else if(process=="ttbar_had"){
+    files.push_back(folder+"*_TTJets_Tune*"); //Skimmed so that it has only ntruleps==0
+    files.push_back(folder+"*_TTJets_HT*");    
   }
   else if(process=="qcd"){
     files.push_back(folder+"*_QCD_HT1000to1500_Tune*");
@@ -88,7 +94,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.insert(files.end(),tmp_other.begin(),tmp_other.end());
   }
   else{
-    std::cout<<"Process not found. Allowed processes are \"ttbar\", \"qcd\", \"wjets\", \"singlet\", \"zjets\", \"other\" and \"other_public\"."<<std::endl;
+    std::cout<<"Process not found. Allowed processes are \"ttbar\", \"ttbar_had\", \"qcd\", \"wjets\", \"singlet\", \"zjets\", \"other\" and \"other_public\"."<<std::endl;
   }
   
   return files;

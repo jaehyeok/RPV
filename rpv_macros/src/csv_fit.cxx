@@ -11,13 +11,15 @@
 #include "TROOT.h"
 #include <iostream>
 
+#include "utilities_macros_rpv.hpp"
+
 int main(int argc, char *argv[])
 {
   bool fitCharmWithLight=false;
   bool excludeHighCSV=false;
   
-  TString luminosity = "2.7";
-  int maxbin=22;
+  TString luminosity = rpv::luminosity;
+  int maxbin=20;
 
   // by default, want to look at low njet region
   TString fitType="low_njet";
@@ -30,7 +32,8 @@ int main(int argc, char *argv[])
        fitType!="low_njet_low_mj" && 
        fitType!="low_njet_high_mj" && 
        fitType!="exclude_high_csv") {
-      std::cout << "Invalid fit type: " << fitType << std::endl;
+      std::cout << "Invalid fit type: " << fitType 
+		<< "\nValid fit types are: low_njet, high_njet, low_njet_low_mj, low_njet_high_mj, exclude_high_csv"  << std::endl;
       return 1;
     }
     if(fitType=="exclude_high_csv") {
@@ -46,7 +49,9 @@ int main(int argc, char *argv[])
   gStyle->SetPadLeftMargin(0.18);
   gStyle->SetTitleOffset(1.43,"y");
 
-  TFile *f = TFile::Open("csv_newmethod.root");
+  TString filename = "csv_newmethod.root";
+  if(argc>2) filename = argv[2];
+  TFile *f = TFile::Open(filename);
 
   std::cout << "Getting weighted histograms" << std::endl;
   TH1F *qcd_b = static_cast<TH1F*>(f->Get(Form("QCD_b_%s", fitType.Data())));
@@ -87,19 +92,33 @@ int main(int argc, char *argv[])
   qcd_l_weights->Scale(scaling);
   qcd_cl_weights->Scale(scaling);
   
-  float total_yield = qcd_b->Integral()+qcd_c->Integral()+qcd_l->Integral()+other->Integral();
-  float qcd_b_fracbefore = qcd_b->Integral()/total_yield;
-  float qcd_c_fracbefore = qcd_c->Integral()/total_yield;
-  float qcd_l_fracbefore = qcd_l->Integral()/total_yield;
-  float qcd_cl_fracbefore = (qcd_c->Integral()+qcd_l->Integral())/total_yield;
-  float other_fracbefore = other->Integral()/total_yield;
+  TH1F *mc_total = static_cast<TH1F*>(qcd_b->Clone());
+  mc_total->Add(qcd_c);
+  mc_total->Add(qcd_l);
+  mc_total->Add(other);
   
+  double total_err(0), qcd_b_err(0), qcd_c_err(0), qcd_l_err(0), qcd_cl_err(0), other_err(0);
+
+  float total_yield = mc_total->IntegralAndError(1,maxbin,total_err);
+  std::cout<<"Total Yield: "<<total_yield<<std::endl;
+  float qcd_b_fracbefore = qcd_b->IntegralAndError(1,maxbin,qcd_b_err)/total_yield;
+  float qcd_c_fracbefore = qcd_c->IntegralAndError(1,maxbin,qcd_c_err)/total_yield;
+  float qcd_l_fracbefore = qcd_l->IntegralAndError(1,maxbin,qcd_l_err)/total_yield;
+  float qcd_cl_fracbefore = (qcd_cl->IntegralAndError(1,maxbin,qcd_cl_err))/total_yield;
+  float other_fracbefore = other->IntegralAndError(1,maxbin,other_err)/total_yield;
+
+  float qcd_b_fracbefore_err = qcd_b_fracbefore*sqrt(pow(qcd_b_err/qcd_b->Integral(1,maxbin),2)+pow(total_err/total_yield,2));
+  float qcd_c_fracbefore_err = qcd_c_fracbefore*sqrt(pow(qcd_c_err/qcd_c->Integral(1,maxbin),2)+pow(total_err/total_yield,2));
+  float qcd_l_fracbefore_err = qcd_l_fracbefore*sqrt(pow(qcd_l_err/qcd_l->Integral(1,maxbin),2)+pow(total_err/total_yield,2));
+  float qcd_cl_fracbefore_err = qcd_cl_fracbefore*sqrt(pow(qcd_cl_err/qcd_cl->Integral(1,maxbin),2)+pow(total_err/total_yield,2));
+  float other_fracbefore_err = other_fracbefore*sqrt(pow(other_err/other->Integral(1,maxbin),2)+pow(total_err/total_yield,2));
+
   std::cout << "fractions before fit:\n"
-  	    << "b: " << qcd_b_fracbefore << std::endl
-  	    << "c: " << qcd_c_fracbefore << std::endl
-  	    << "l: " << qcd_l_fracbefore << std::endl
-  	    << "cl: " << qcd_cl_fracbefore << std::endl
-  	    << "other: " << other_fracbefore << std::endl;
+  	    << "b: " << qcd_b_fracbefore << " +/- " << qcd_b_fracbefore_err << std::endl
+  	    << "c: " << qcd_c_fracbefore << " +/- " << qcd_c_fracbefore_err <<std::endl
+  	    << "l: " << qcd_l_fracbefore << " +/- " << qcd_l_fracbefore_err <<std::endl
+  	    << "cl: " << qcd_cl_fracbefore << " +/- " << qcd_cl_fracbefore_err <<std::endl
+  	    << "other: " << other_fracbefore << " +/- " << other_fracbefore_err <<std::endl;
 
   TObjArray *mc = new TObjArray(4);
   mc->Add(qcd_b_raw);
@@ -257,7 +276,6 @@ int main(int argc, char *argv[])
     double qcd_c_fracafter, qcd_c_fracafter_err;    
     fit->GetResult(0, qcd_b_fracafter, qcd_b_fracafter_err);
     fit->GetResult(2, qcd_c_fracafter, qcd_c_fracafter_err);
-    //    float qcd_b_fracafter = fitter->Config().ParSettings(0).Value();
     float other_fracafter = fitter->Config().ParSettings(1).Value();
     float qcd_l_fracafter = -1.0;
     float qcd_cl_fracafter = -1.0;
@@ -268,8 +286,9 @@ int main(int argc, char *argv[])
       qcd_c_fracafter = fitter->Config().ParSettings(2).Value();
       qcd_l_fracafter = fitter->Config().ParSettings(3).Value();
     }
+
     float qcd_b_ratio=qcd_b_fracafter/qcd_b_fracbefore;
-    float qcd_b_ratio_err=qcd_b_fracafter_err/qcd_b_fracbefore;
+    float qcd_b_ratio_err=qcd_b_ratio*sqrt(pow(qcd_b_fracafter_err/qcd_b_fracafter,2)+pow(qcd_b_fracbefore_err/qcd_b_fracbefore,2));
     float other_ratio=other_fracafter/other_fracbefore;
     float qcd_l_ratio, qcd_c_ratio, qcd_cl_ratio;
     float qcd_l_ratio_err=0.0;
@@ -281,28 +300,29 @@ int main(int argc, char *argv[])
       qcd_c_ratio = qcd_c_fracafter/qcd_c_fracbefore;
       qcd_l_ratio = qcd_l_fracafter/qcd_l_fracbefore;
     }
-    float qcd_c_ratio_err=qcd_c_fracafter_err/qcd_c_fracbefore;
+
+    float qcd_c_ratio_err=qcd_c_ratio*sqrt(pow(qcd_c_fracafter_err/qcd_c_fracafter,2)+pow(qcd_c_fracbefore_err/qcd_c_fracbefore,2));
 
     std::cout << "fractions before fit:\n"
-    	      << "b: " << qcd_b_fracbefore << std::endl
-    	      << "c: " << qcd_c_fracbefore << std::endl
-    	      << "l: " << qcd_l_fracbefore << std::endl
-    	      << "cl: " << qcd_cl_fracbefore << std::endl
-    	      << "other: " << other_fracbefore << std::endl;
+	      << "b: " << qcd_b_fracbefore << " +/- " << qcd_b_fracbefore_err << std::endl
+	      << "c: " << qcd_c_fracbefore << " +/- " << qcd_c_fracbefore_err <<std::endl
+	      << "l: " << qcd_l_fracbefore << " +/- " << qcd_l_fracbefore_err <<std::endl
+	      << "cl: " << qcd_cl_fracbefore << " +/- " << qcd_cl_fracbefore_err <<std::endl
+	      << "other: " << other_fracbefore << " +/- " << other_fracbefore_err <<std::endl;
     std::cout << "fractions after fit:\n"
-    	      << "b: " << qcd_b_fracafter << std::endl
-    	      << "c: " << qcd_c_fracafter << std::endl
+    	      << "b: " << qcd_b_fracafter << " +/- " << qcd_b_fracafter_err << std::endl
+    	      << "c: " << qcd_c_fracafter << " +/- " << qcd_c_fracafter_err << std::endl
     	      << "l: " << qcd_l_fracafter << std::endl
     	      << "cl: " << qcd_cl_fracafter << std::endl
     	      << "other: " << other_fracafter << std::endl;
     std::cout << "after/before fit ratio:\n"
-    	      << "b: " << qcd_b_ratio << " +/ " << qcd_b_ratio_err << std::endl
-    	      << "c: " << qcd_c_ratio << " +/ " << qcd_c_ratio_err  << std::endl
-    	      << "l: " << qcd_l_ratio << std::endl
+    	      << "b: " << qcd_b_ratio << " +/- " << qcd_b_ratio_err << std::endl
+    	      << "c: " << qcd_c_ratio << " +/- " << qcd_c_ratio_err << std::endl
+    	      << "l: " << qcd_l_ratio << " +/- " << qcd_l_ratio_err << std::endl
     	      << "cl: " << qcd_cl_ratio << std::endl
     	      << "other: " << other_ratio << std::endl;
-    c->Print(Form("plots/csvfit_%s.pdf", fitType.Data()));
-
+    c->Print(Form("plots/csv/csvfit_%s.pdf", fitType.Data()));
+  
     std::cout << "chi^2/ndof from TFractionFitter: " << fit->GetChisquare() << "/" << ndof << ", prob = " << fit->GetProb() << std::endl;
     float chi2 =0.;
     for(int ib =1; ib<=sum->GetNbinsX();ib++){
@@ -337,7 +357,7 @@ int main(int argc, char *argv[])
     }
     std::cout<<"Total chi2 for c hist is "<<chi2_c<<std::endl;
 
-    std::cout<<"Total chi2 for b,c, and sum"<<chi2_c+chi2_b+chi2<<std::endl;
+    std::cout<<"Total chi2 for b,c, and sum is "<<chi2_c+chi2_b+chi2<<std::endl;
     // don't want to recreate files for variations
     TFile *out;
     if(fitType=="low_njet" && !excludeHighCSV) {

@@ -40,6 +40,16 @@ namespace dps{
 
 }
 
+namespace seq{
+  enum{
+    one = 2051,
+    two = 2052,
+    three = 2053,
+    four = 2054,
+    five = 2055
+  };
+}
+
 struct pfeats{
   pfeats(const std::vector<int> &isamples, const TString &icut = "1", const TString &itagname="");
 
@@ -68,6 +78,7 @@ public:
   bool skiplog;
   TString whichPlots; // String that determines which of the [log_]lumi and [log_]shapes plots to make
   bool normalize; //normalizes isData to sum of histograms
+  bool normalizeByBin; //Normalizes each bin to show composition of bin by process
   bool PU_reweight; 
   float moveRLegend; // Moves the right legend by this amount
   bool addOverflow; // If true, the overflow is added to the last bin

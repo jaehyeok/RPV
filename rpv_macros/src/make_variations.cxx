@@ -81,6 +81,7 @@ void setOverflow(TH1F *hist)
   float lastBinContent = hist->GetBinContent(maxBin-1);
   float overflow = hist->GetBinContent(maxBin);
   hist->SetBinContent(maxBin-1, lastBinContent+overflow);
+  hist->SetBinContent(maxBin, 0.);
 }
 
 // need to avoid negative weights from single top samples

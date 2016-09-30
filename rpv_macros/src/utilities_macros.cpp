@@ -52,6 +52,11 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     CMStype = "Preliminary";
     namestyle.ReplaceAll("_Preliminary","");
   }
+  bool normByBin=false;
+  if(namestyle.Contains("_normalizeByBin")) {
+    normByBin=true;
+    namestyle.ReplaceAll("_normalizeByBin","");
+  }
 
   if (doRatio) namestyle = "CMSPaper";
   styles style(namestyle);
@@ -63,6 +68,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     style.yTitleOffset /= 1.3;
     style.xTitleOffset /= 1.08;
   }
+
+  if(normByBin) style.xTitleOffset *= 0.86;
+
   if(showcuts) style.LegendSize *= 0.85;
   style.setDefaultStyle();
   TCanvas can;
@@ -172,7 +180,11 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       nentries[sam] = histo[0][var][sam]->Integral(1,vars[var].nbins);
       if(nentries[sam]<0) nentries[sam]=0;
       ytitle = "Events";
-      
+      if(vars[var].normalizeByBin){
+	ytitle = "Events [% by bin]";
+      }      
+
+
       if(!namestyle.Contains("CMSPaper") || showcuts) {
         // ytitle = "Events for "+luminosity+" fb^{-1}";
         lumilabel = "";
@@ -241,8 +253,13 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
             if(someBands) histo[0][var][sam]->SetLineWidth(3);
 	    else histo[0][var][sam]->SetLineWidth(6);
             histo[0][var][sam]->SetLineStyle(abs(Samples[isam].style));
+	    if(vars[var].normalizeByBin){
+	      histo[0][var][sam]->SetLineColor(Samples[isam].color);
+	      histo[0][var][sam]->SetLineWidth(0);
+	      }
           }
           if(Samples[isam].doStack)  histo[0][var][sam]->Add(histo[0][var][bkgind]);
+	  if(vars[var].normalizeByBin){ histo[0][var][sam]->SetLineWidth(0);histo[0][var][sam]->SetLineColor(Samples[isam].color);}
         }
 
       }
@@ -269,6 +286,17 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	  nentries[sam]*= normalization_ratio;
 	}
 	
+	if(vars[var].normalizeByBin){
+	  for(int ibin=1;ibin<=histo[0][var][sam]->GetNbinsX();ibin++){
+	    cout<<"bin content "<<ibin<<": "<<histo[0][var][sam]->GetBinContent(ibin)<<endl;
+	    cout<<"denominator :"<<histo[0][var][last_hist]->GetBinContent(ibin)<<endl;
+	    float fractional_content = 100.*histo[0][var][sam]->GetBinContent(ibin)/histo[0][var][last_hist]->GetBinContent(ibin);
+	    cout<<"fraction content: "<<fractional_content<<endl;
+	    histo[0][var][sam]->SetBinContent(ibin,fractional_content);
+	  }
+	}
+
+
         if(Samples[isam].mcerr){ histo[0][var][sam]->SetLineWidth(4);  histo[0][var][sam]->SetMarkerStyle(20); 
           //histo[0][var][sam]->SetMarkerColor(Samples[isam].color);
           histo[0][var][sam]->SetMarkerSize(1.2);
@@ -307,6 +335,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 		TH1F *hclone = static_cast<TH1F*>(histo[0][var][sam]->Clone(hcname));
 		hclone->SetLineColor(Samples[isam].color);
 		hclone->SetLineWidth(3);
+		if(vars[var].normalizeByBin) hclone->SetLineWidth(0);
 		hclone->SetFillColor(0);
 		hclone->Draw("hist same");
 	      }
@@ -412,6 +441,41 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	if(vars[var].cuts.Contains("nbm==1")) tla.DrawLatexNDC(0.73,0.64,"#font[62]{N_{b} = 1}");
 	if(vars[var].cuts.Contains("nbm>=2")) tla.DrawLatexNDC(0.73,0.64,"#font[62]{N_{b} #geq 2}");
       }
+
+      if(vars[var].normalizeByBin){
+
+	float textSize = 0.05;
+	TLatex *TexNlep = new TLatex();
+	TLatex *TexNjets = new TLatex();
+	TLatex *TexMJ = new TLatex();
+	TString binname_tstr = vars[var].cuts;
+	if(binname_tstr.Contains("(nmus+nels)==1"))   TexNlep = new TLatex(0.22,0.33,"N_{lep} = 1");
+	if(binname_tstr.Contains("(nmus+nels)==0"))   TexNlep = new TLatex(0.22,0.33,"N_{lep} = 0");
+	TexNlep->SetNDC();
+	TexNlep->SetTextSize(textSize);
+	//TexNlep->SetLineWidth(2);
+	if(binname_tstr.Contains("njets<="))   TexNjets = new TLatex(0.22,0.26,"4 #leq N_{jet} #leq 5");
+	if(binname_tstr.Contains("njets<=7"))   TexNjets = new TLatex(0.22,0.26,"6 #leq N_{jet} #leq 7");
+	if(binname_tstr.Contains("njets<=9"))   TexNjets = new TLatex(0.22,0.26,"8 #leq N_{jet} #leq 9");
+	if(binname_tstr.Contains("njets>=8")&&!binname_tstr.Contains("njets<=9"))    TexNjets = new TLatex(0.22,0.26,"N_{jet} #geq 8");
+	if(binname_tstr.Contains("njets>=10"))   TexNjets = new TLatex(0.22,0.26,"N_{jet} #geq 10");
+	TexNjets->SetNDC();
+	TexNjets->SetTextSize(textSize);
+	//TexNjets->SetLineWidth(2);
+	if(binname_tstr.Contains("mj>500"))    TexMJ = new TLatex(0.22,0.19,"500 < M_{J} < 800 GeV");
+	if(binname_tstr.Contains("mj>800"))   TexMJ = new TLatex(0.22,0.19,"M_{J} > 800 GeV");
+	TexMJ->SetNDC();
+	TexMJ->SetTextSize(textSize);
+	//TexMJ->SetLineWidth(2);
+
+	TexNlep->Draw("same");
+	TexNjets->Draw("same");
+	TexMJ->Draw("same");
+
+
+
+      }
+
 
       //save canvas
       pad->SetLogy(1);
@@ -749,6 +813,7 @@ hfeats::hfeats(TString ivarname, int inbins, float iminx, float imaxx, vector<in
   if(nevents.size() != samples.size() ) cout<<"hfeats samples/nevents size mismatch: "<<ititle<<endl;
   whichPlots = "0"; // Make all 4 [log_]lumi and [log_]shapes plots; For 2D: 1=linear, 2=log
   normalize=false;
+  normalizeByBin=false;
   PU_reweight=false;
   moveRLegend = 0;
   addOverflow = true;
@@ -1023,6 +1088,15 @@ namespace dps{
   // TColor purple(2019, 172/255.,46/255.,135/255.);
   TColor purple(2019, 183/255.,66/255.,176/255.);
   TColor ucsb_gold(2020, 255/255.,200/255.,47/255);
+
+}
+
+namespace seq{
+  TColor one1(2051,239/255.,243/255.,1.);
+  TColor two2(2052,189/255.,215/255.,231/255.);
+  TColor three3(2053,107/255.,174/255.,214/255.);
+  TColor four4(2054,49/255.,130/255.,189/255.);
+  TColor five5(2055,8/255.,81/255.,156/255.);
 
 }
 

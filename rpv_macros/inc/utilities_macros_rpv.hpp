@@ -48,8 +48,24 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.push_back(folder+"*_TTJets_DiLept*");
     files.push_back(folder+"*_TTJets_SingleLept*");
     files.push_back(folder+"*_TTJets_HT*");
-    files.push_back(folder+"*_TTJets_Tune*"); //Skimmed so that it has only ntruleps==0 && ht_me_isr<=600
+    files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*"); //Skimmed so that it has only ntruleps==0 && ht_me_isr<=600
   }
+
+  //Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
+  else if(process=="ttbar_2l"){
+    files.push_back(folder+"*_TTJets_DiLept*");
+    files.push_back(folder+"*_TTJets_HT*");
+  }
+  else if(process=="ttbar_1l"){
+    files.push_back(folder+"*_TTJets_SingleLept*");
+    files.push_back(folder+"*_TTJets_HT*");
+  }
+  
+  else if(process=="ttbar_had"){
+    files.push_back(folder+"*_TTJets_HT*");
+    files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*"); //Skimmed so that it has only ntruleps==0 && ht_me_isr<=600
+  }
+
   else if(process=="qcd"){
     files.push_back(folder+"*_QCD_HT1000to1500_Tune*");
     files.push_back(folder+"*_QCD_HT1500to2000_Tune*");
@@ -90,9 +106,23 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     tmp_other = getRPVProcess(folder,"other");
     files.insert(files.end(),tmp_other.begin(),tmp_other.end());
   }
-  else{
-    std::cout<<"Process not found. Allowed processes are \"ttbar\", \"qcd\", \"wjets\", \"singlet\", \"zjets\", \"other\" and \"other_public\"."<<std::endl;
-  }
+ 
   
+  else if(process=="all_bg"){
+    std::vector<TString> tmp_allbg;
+    tmp_allbg =  getRPVProcess(folder,"ttbar");
+    files.insert(files.end(),tmp_allbg.begin(),tmp_allbg.end());
+    tmp_allbg =  getRPVProcess(folder,"qcd");
+    files.insert(files.end(),tmp_allbg.begin(),tmp_allbg.end());
+    tmp_allbg =  getRPVProcess(folder,"wjets");
+    files.insert(files.end(),tmp_allbg.begin(),tmp_allbg.end());
+    tmp_allbg =  getRPVProcess(folder,"other_public");
+    files.insert(files.end(),tmp_allbg.begin(),tmp_allbg.end());
+    
+  }
+
+ else{
+    std::cout<<"Process not found. Allowed processes are \"ttbar\",\"ttbar_1l\",\"ttbar_2l\",\"ttbar_had\", \"qcd\", \"wjets\", \"singlet\", \"zjets\", \"other\" and \"other_public\" and \"all_bg\" ."<<std::endl;
+  }
   return files;
 }

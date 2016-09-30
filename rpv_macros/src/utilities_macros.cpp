@@ -290,7 +290,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	  for(int ibin=1;ibin<=histo[0][var][sam]->GetNbinsX();ibin++){
 	    cout<<"bin content "<<ibin<<": "<<histo[0][var][sam]->GetBinContent(ibin)<<endl;
 	    cout<<"denominator :"<<histo[0][var][last_hist]->GetBinContent(ibin)<<endl;
-	    float fractional_content = 100.*histo[0][var][sam]->GetBinContent(ibin)/histo[0][var][last_hist]->GetBinContent(ibin);
+	    float fractional_content;
+	    if(histo[0][var][last_hist]->GetBinContent(ibin)>0) fractional_content = 100.*histo[0][var][sam]->GetBinContent(ibin)/histo[0][var][last_hist]->GetBinContent(ibin);
+	    else fractional_content=0.;
 	    cout<<"fraction content: "<<fractional_content<<endl;
 	    histo[0][var][sam]->SetBinContent(ibin,fractional_content);
 	  }

@@ -38,7 +38,7 @@ def writescript():
     outfile.write('#!/bin/bash\n')
     # set up CMSSW environment
     outfile.write('. /cvmfs/cms.cern.ch/cmsset_default.sh\n')
-    outfile.write('cd /homes/cawest/CMSSW_7_4_14\n')
+    outfile.write('cd /homes/jaehyeokyoo/babymaker/CMSSW_8_0_16/src/\n')
     outfile.write('eval `scramv1 runtime -sh`\n')
     outfile.write('cd ' + PATH + '\n')
     # and then run script
@@ -46,11 +46,11 @@ def writescript():
     outfile.close()
 
 #default path should be changed
-PATH = '/homes/jaehyeokyoo/RPV/ra4_macros_heller'
+PATH = '/homes/jaehyeokyoo/RPV/ra4_macros'
 VARLIST = ['nominal','btag_bc', 'btag_udsg',
            'gs45', 'gs67', 'gs89', 'gs10Inf',
            'jes', 'jer',
-           'lep_eff', 'ttbar_pt', 'pileup',
+           'lep_eff', 'ttbar_pt', #'pileup',
            'isr',
            'qcd_flavor',
            # the following are njet-dependent
@@ -79,8 +79,8 @@ writescript()
 
 
 # add PDF variations
-for i in range(0, 100):
-    VARLIST.append('w_pdf ' + str(i))
+#for i in range(0, 100):
+#    VARLIST.append('w_pdf ' + str(i)) #FIXME
 
 for vartype in VARLIST:
     newfilename = copytemplate('TEMPLATE.cmd', vartype)

@@ -20,6 +20,8 @@
 #include "utilities_macros.hpp"
 #include "utilities_macros_rpv.hpp"
 
+using namespace std;
+
 void makeVariations(std::string &syst);
 std::string cutandweightForVariations(std::string cut, std::string weight);
 std::string cutandweightForVariationsQCD(std::string cut, std::string weight, std::string flavorWeight);
@@ -39,7 +41,7 @@ std::string cutandweightForVariations(std::string cut, std::string weight)
   // the default weight includes the RA4 trigger efficiency; need to exclude this
   newcut+="*";
   newcut+=rpv::luminosity.Data();
-  newcut+="*weight*w_pu_rpv/eff_trig)*(";
+  newcut+="*weight)*(";
   newcut+=cut;
   newcut+="";
 
@@ -54,7 +56,7 @@ std::string cutandweightForVariationsQCD(std::string cut, std::string weight, st
   newcut+=weight;
   newcut+="*";
   newcut+=rpv::luminosity.Data();
-  newcut+="*weight*w_pu_rpv/eff_trig*";
+  newcut+="*weight*";
   newcut+=flavorWeight;
   newcut+=")*(";
   newcut+=cut;
@@ -108,21 +110,21 @@ void jetVariations(TString &nbm, TString &cut, const std::string &variation)
     cut.ReplaceAll("ht", "sys_ht[0]");
     cut.ReplaceAll("njets", "sys_njets[0]");
     cut.ReplaceAll("nbm", "sys_nbm[0]");
-    cut.ReplaceAll("mj", "sys_mj[0]");
+    //cut.ReplaceAll("mj12", "sys_mj[0]"); // capybara doesn't have sys_mj12
     nbm.ReplaceAll("nbm", "sys_nbm[0]");
   }
   if(variation.find("jesUp")!=std::string::npos) {
     cut.ReplaceAll("ht", "sys_ht[1]");
     cut.ReplaceAll("njets", "sys_njets[1]");
     cut.ReplaceAll("nbm", "sys_nbm[1]");
-    cut.ReplaceAll("mj", "sys_mj[1]");
+    //cut.ReplaceAll("mj12", "sys_mj[1]"); // capybara doesn't have sys_mj12
     nbm.ReplaceAll("nbm", "sys_nbm[1]");
   }
   if(variation.find("jesDown")!=std::string::npos) {
     cut.ReplaceAll("ht", "sys_ht[2]");
     cut.ReplaceAll("njets", "sys_njets[2]");
     cut.ReplaceAll("nbm", "sys_nbm[2]");
-    cut.ReplaceAll("mj", "sys_mj[2]");
+    //cut.ReplaceAll("mj12", "sys_mj[2]"); // capybara doesn't have sys_mj12
     nbm.ReplaceAll("nbm", "sys_nbm[2]");
   }
 
@@ -134,32 +136,32 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
   std::cout << "outputHistograms(): " << variation << std::endl;
 
   std::string plotVar("nbm");
-  
-  std::vector<std::string> cuts = {"nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj>=500&&mj<800","nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj>=500&&mj<800",
-				   "nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj>=500&&mj<800", 
-  				   "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj>=800","nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj>=800",
-				   "nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj>=800",
+ 
+  std::vector<std::string> cuts = {"nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=500&&mj12<800","nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=500&&mj12<800",
+				   "nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj12>=500&&mj12<800", 
+  				   "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800","nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=800",
+				   "nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj12>=800",
 				   // low MJ control regions
-				   "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj>=300&&mj<500",
-				   "nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj>=300&&mj<500",
-				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj>=300&&mj<500",
-				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj>=300&&mj<500",
-				   // signal regions, low mj
-				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj>=500&&mj<800",
-				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj>=500&&mj<800",
-				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj>=500&&mj<800",
-				   // signal regions, high mj
-				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj>=800",
-				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj>=800",
-				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj>=800",
+				   "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=300&&mj12<500",
+				   "nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=300&&mj12<500",
+				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=300&&mj12<500",
+				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj12>=300&&mj12<500",
+				   // signal regions, low mj12
+				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj12>=500&&mj12<800",
+				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj12>=500&&mj12<800",
+				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=500&&mj12<800",
+				   // signal regions, high mj12
+				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj12>=800",
+				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj12>=800",
+				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=800",
 
 				   //Missing regions
-				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj>=500&&mj<800",
-				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj>=800",
+				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=500&&mj12<800",
+				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=800",
 
   };
   
-  //std::vector<std::string> cuts = {"nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj>=800"};
+//  std::vector<std::string> cuts = {"nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=800"};
 
   // maximum number of b-tagged jets
   int nBBins=4;
@@ -275,7 +277,7 @@ void makeVariations(std::string &syst){
   //Get values for GS syst
   if(std::string::npos != syst.find("gs")){
 
-    TFile *gs_file = TFile::Open("syst_gs.root");
+    TFile *gs_file = TFile::Open("data/syst_gs.root");
     TGraphErrors* h_gs_dmc = static_cast<TGraphErrors*>(gs_file->Get("dmc_ldrbb_allmj"));
     
     double temp_val;
@@ -288,10 +290,10 @@ void makeVariations(std::string &syst){
   }
 
   // weights directly affecting b-tagging in all samples
-  if(syst=="btag_bcUp") extraWeight="sys_bctag[0]";
-  if(syst=="btag_bcDown") extraWeight="sys_bctag[1]";
-  if(syst=="btag_udsgUp") extraWeight="sys_udsgtag[0]";
-  if(syst=="btag_udsgDown") extraWeight="sys_udsgtag[1]";
+  if(syst=="btag_bcUp") extraWeight="sys_bctag[0]/w_btag";
+  if(syst=="btag_bcDown") extraWeight="sys_bctag[1]/w_btag";
+  if(syst=="btag_udsgUp") extraWeight="sys_udsgtag[0]/w_btag";
+  if(syst=="btag_udsgDown") extraWeight="sys_udsgtag[1]/w_btag";
   if(syst=="gsUp") extraWeight="(1+0.2*fromGS)";
   if(syst=="gsDown") extraWeight="(1-0.2*fromGS)";
   if(syst=="gs45Up") extraWeight="(1+"+std::to_string(gs_dmc_syst[0])+"*fromGS*(njets==4 || njets==5))";
@@ -306,8 +308,8 @@ void makeVariations(std::string &syst){
   // other weights affecting all samples
   if(syst=="lep_effUp") extraWeight="w_lep";
   if(syst=="lep_effDown") extraWeight="(2-w_lep)";
-  if(syst=="pileupUp") extraWeight="sys_pu_rpv[0]";
-  if(syst=="pileupDown") extraWeight="sys_pu_rpv[1]";
+  //if(syst=="pileupUp") extraWeight="sys_pu_rpv[0]";
+  //if(syst=="pileupDown") extraWeight="sys_pu_rpv[1]";
 
   // pdf weights
   if(syst.find("w_pdf")!=std::string::npos) {
@@ -441,15 +443,15 @@ void makeVariations(std::string &syst){
   if(syst=="signal_murfUp") signalWeight="sys_murf[0]";
   if(syst=="signal_murfDown") signalWeight="sys_murf[1]";
   // only apply ISR systematic to signal
-  if(syst=="isrUp") signalWeight="sys_isr[0]";
-  if(syst=="isrDown") signalWeight="sys_isr[1]";
+  if(syst=="isrUp") signalWeight="sys_isr[0]/w_isr";
+  if(syst=="isrDown") signalWeight="sys_isr[1]/w_isr";
   // fastsim related systematics 
-  if(syst=="fs_btag_bcUp") signalWeight="sys_fs_bctag[0]";
-  if(syst=="fs_btag_bcDown") signalWeight="sys_fs_bctag[1]";
-  if(syst=="fs_btag_udsgUp") signalWeight="sys_fs_udsgtag[0]";
-  if(syst=="fs_btag_udsgDown") signalWeight="sys_fs_udsgtag[1]";
-  if(syst=="fs_lep_effUp") signalWeight="sys_fs_lep[0]";
-  if(syst=="fs_lep_effDown") signalWeight="sys_fs_lep[1]";
+  if(syst=="fs_btag_bcUp") signalWeight="sys_fs_bctag[0]/w_bctag";
+  if(syst=="fs_btag_bcDown") signalWeight="sys_fs_bctag[1]/w_bctag";
+  if(syst=="fs_btag_udsgUp") signalWeight="sys_fs_udsgtag[0]/w_bctag";
+  if(syst=="fs_btag_udsgDown") signalWeight="sys_fs_udsgtag[1]/w_bctag";
+  if(syst=="fs_lep_effUp") signalWeight="sys_fs_lep[0]/w_lep";
+  if(syst=="fs_lep_effDown") signalWeight="sys_fs_lep[1]/w_lep";
 
   if(syst=="wjets_mufUp") wjetsWeight="sys_muf[0]";
   if(syst=="wjets_mufDown") wjetsWeight="sys_muf[1]";
@@ -458,73 +460,27 @@ void makeVariations(std::string &syst){
   if(syst=="wjets_murfUp") wjetsWeight="sys_murf[0]";
   if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]";
 
-  TString folder_links="/homes/cawest/links/";
+  // Define samples
+  TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
+  TString folder_sig = "/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/";
+  TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
 
-  std::vector<TString> s_rpv_750;
-  s_rpv_750.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-750*");
-  std::vector<TString> s_rpv_1000;
-  s_rpv_1000.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1000*");
-  std::vector<TString> s_rpv_1100;
-  s_rpv_1100.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1100*");
-  std::vector<TString> s_rpv_1200;
-  s_rpv_1200.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1200*");
-  std::vector<TString> s_rpv_1300;
-  s_rpv_1300.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1300*");
-  std::vector<TString> s_rpv_1400;
-  s_rpv_1400.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1400*");
-  std::vector<TString> s_tt;
-  s_tt.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/skim_ht1200/*TTJets_TuneCUETP8M1_13TeV-madgraphMLM*");
-  //  s_tt.push_back(filestring("TT_TuneCUETP8M1_13TeV-powheg-pythia8"));
-  s_tt.push_back(filestring("TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"));
-  s_tt.push_back(filestring("TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1"));
-  s_tt.push_back(filestring("TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"));
-  s_tt.push_back(filestring("TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1"));
-  s_tt.push_back(filestring("TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"));
-  s_tt.push_back(filestring("TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1"));
+  vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 
-  std::vector<TString> s_qcd;
-  s_qcd.push_back(filestring("QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"));
-  s_qcd.push_back(filestring("QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1"));
-  s_qcd.push_back(filestring("QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"));
-  s_qcd.push_back(filestring("QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1"));
-  s_qcd.push_back(filestring("QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"));
-  s_qcd.push_back(filestring("QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1"));
-  std::vector<TString> s_wjets;
-  s_wjets.push_back(filestring("WJetsToQQ_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"));
-  s_wjets.push_back(filestring("WJetsToLNu_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"));
-  std::vector<TString> s_other;
-  s_other.push_back(filestring("ZJetsToQQ_HT600toInf_13TeV-madgraph"));
-  s_other.push_back(filestring("ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"));
-  s_other.push_back(filestring("ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"));
-  s_other.push_back(filestring("ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"));
-  s_other.push_back(filestring("ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"));
-  s_other.push_back(filestring("ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"));
-  s_other.push_back(filestring("DYJetsToLL_M-50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"));
-  s_other.push_back(filestring("TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8"));
-  s_other.push_back(filestring("TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8"));
-  s_other.push_back(filestring("TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"));
-  s_other.push_back(filestring("TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8"));
-  s_other.push_back(filestring("ttHJetTobb_M125_13TeV_amcatnloFXFX_madspin_pythia8"));
-  s_other.push_back(filestring("TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8"));
-  std::vector<TString> s_jetht;
-  s_jetht.push_back(filestring("JetHT_Run2015C_25ns-05Oct2015-v1"));
-  s_jetht.push_back(filestring("JetHT_Run2015D-05Oct2015-v1"));
-  s_jetht.push_back(filestring("JetHT_Run2015D-PromptReco-v4"));
+  //vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
+
+  vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
+  vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar");
+  vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
+  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
 
   // Reading ntuples
   std::string blinding("((njets<10 && (nmus+nels)==0) || (nmus+nels==1 && njets<6))");
   std::vector<sfeats> Samples; 
-  Samples.push_back(sfeats(s_rpv_750, "#tilde{g}(750)", ra4::c_t1tttt, 1,cutandweightForVariations("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1000, "#tilde{g}(1000)", ra4::c_t1tttt, 1,cutandweightForVariations("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1100, "#tilde{g}(1100)", ra4::c_t1tttt, 1,cutandweightForVariations("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1200, "#tilde{g}(1200)", ra4::c_t1tttt, 1,cutandweightForVariations("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1300, "#tilde{g}(1300)", ra4::c_t1tttt, 1,cutandweightForVariations("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1400, "#tilde{g}(1400)", ra4::c_t1tttt, 1,cutandweightForVariations("1",signalWeight)));
-  Samples.push_back(sfeats(s_wjets, "W+jets", kTeal, 1,cutandweightForVariations("1", wjetsWeight)));
-  Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1,cutandweightForVariationsQCD("1",qcdWeight, qcdFlavorWeight))); 
-  Samples.push_back(sfeats(s_tt, "t#bar{t}", kTeal, 1,cutandweightForVariations("1", ttbarWeight)));
-  Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweightForVariations("1", otherWeight)));
-  //Samples.push_back(sfeats(s_jetht, "Data",kBlack,1,cutandweightForVariationsdata("trig[12] && pass && " + blinding, "1")));
+  Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1,cutandweightForVariationsQCD("stitch&&pass",qcdWeight, qcdFlavorWeight))); 
+  Samples.push_back(sfeats(s_tt, "t#bar{t}", kTeal, 1,cutandweightForVariations("stitch&&pass", ttbarWeight)));
+  Samples.push_back(sfeats(s_wjets, "W+jets", kTeal, 1,cutandweightForVariations("stitch&&pass", wjetsWeight)));
+  Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweightForVariations("stitch&&pass", otherWeight)));
   Samples.push_back(sfeats(s_jetht, "Data",kBlack,1,cutandweightForVariationsdata("trig[12] && pass", "1")));
   Samples.back().isData = true;
   Samples.back().doStack = false;
@@ -537,6 +493,7 @@ void makeVariations(std::string &syst){
   prettySampleName["#tilde{g}(1200)"] = "signal_M1200";
   prettySampleName["#tilde{g}(1300)"] = "signal_M1300";
   prettySampleName["#tilde{g}(1400)"] = "signal_M1400";
+  prettySampleName["#tilde{g}(1500)"] = "signal_M1500";
   prettySampleName["QCD"] = "qcd";
   prettySampleName["W+jets"] = "wjets";
   prettySampleName["t#bar{t}"] = "ttbar";

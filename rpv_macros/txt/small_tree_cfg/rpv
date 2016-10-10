@@ -65,6 +65,7 @@ std::vector<float> jets_csv
 std::vector<bool> jets_islep
 std::vector<int>   jets_fjet_index
 std::vector<int>   jets_fjet08_index
+std::vector<int>   jets_hflavor
 
 std::vector<float> dr_bb
 

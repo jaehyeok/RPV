@@ -71,6 +71,8 @@ if not os.path.isdir('variations'):
 if not os.path.isdir('varscripts'):
     os.mkdir('varscripts')
 os.chdir('varscripts')
+if not os.path.isdir('logs'):
+    os.mkdir('logs')
 
 # write condor submission template file
 # and script for running condor jobs
@@ -89,4 +91,10 @@ for vartype in VARLIST:
     replacestringinfile(newfilename, '/w_pdf ', '/w_pdf_')
 
 # remove the TEMPLATE.cmd temporary file
-os.remove('TEMPLATE.cmd')
+os.remove('TEMPLATE.cmd') 
+
+# change permission of run_variations.ch to 777 
+os.system('chmod 777 run_variations.sh')
+
+# dump all condor submit files to all.cmd 
+os.system('cat submit_*cmd > all.cmd')

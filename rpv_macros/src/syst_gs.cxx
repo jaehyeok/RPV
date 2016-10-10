@@ -128,7 +128,7 @@ int main(){
   dmc_ldrbb_highmj->SetName("dmc_ldrbb_highmj");
 
   // Write out values
-  TFile *out = new TFile("syst_gs.root","recreate");
+  TFile *out = new TFile("data/syst_gs.root","recreate");
   out->cd();
   dmc_ldrbb_allmj->Write();
   dmc_ldrbb_lowmj->Write();

@@ -136,7 +136,7 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
   std::cout << "outputHistograms(): " << variation << std::endl;
 
   std::string plotVar("nbm");
- 
+///* 
   std::vector<std::string> cuts = {"nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=500&&mj12<800","nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=500&&mj12<800",
 				   "nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj12>=500&&mj12<800", 
   				   "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800","nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=800",
@@ -160,8 +160,8 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
 				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=800",
 
   };
-  
-//  std::vector<std::string> cuts = {"nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=800"};
+//*/ 
+//  std::vector<std::string> cuts = {"nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800"};
 
   // maximum number of b-tagged jets
   int nBBins=4;
@@ -338,18 +338,58 @@ void makeVariations(std::string &syst){
   // for the variations that do not depend on sample type
   signalWeight=qcdWeight=otherWeight=wjetsWeight=ttbarWeight=extraWeight;
 
-  TFile *csv_weight_file = TFile::Open("data/low_njet.root");
+  // QCD flavor systematics 
+  TFile *csv_weight_file = TFile::Open("data/csvfit_low_njet.root");
   TH1F *csv_weight = static_cast<TH1F*>(csv_weight_file->Get("csv_weight"));
+  
+  TFile *csv_weight_file_highnjet = TFile::Open("data/csvfit_high_njet.root");
+  TH1F *csv_weight_highnjet = static_cast<TH1F*>(csv_weight_file_highnjet->Get("csv_weight"));
+
+//  TFile *csv_weight_file_nohighcsv = TFile::Open("data/csvfit_exclude_high_csv.root");
+//  TH1F *csv_weight_nohighcsv = static_cast<TH1F*>(csv_weight_file_nohighcsv->Get("csv_weight"));
+
   float bflavorValCentral = csv_weight->GetBinContent(1);
   float bflavorValError = csv_weight->GetBinError(1);
   float cflavorValCentral = csv_weight->GetBinContent(2);
   // negative sign implements anticorrelation between b and c reweightings
   float cflavorValError = -csv_weight->GetBinError(2);
   float lflavorValCentral = csv_weight->GetBinContent(3);
-  float lflavorValError = csv_weight->GetBinError(3);
-  csv_weight_file->Close();
-  f->cd();
+  float lflavorValError = csv_weight->GetBinError(3); 
+
+  std::cout << "CSV fit low Njets results: " << std::endl; 
+  std::cout << "Reweight b jets by " << bflavorValCentral << " +/- " << bflavorValError << std::endl;
+  std::cout << "Reweight c jets by " << cflavorValCentral << " +/- " << cflavorValError << std::endl;
+  std::cout << "Reweight l jets by " << lflavorValCentral << " +/- " << lflavorValError << std::endl;
+  std::cout << "CSV fit high Njets results: " << std::endl; 
+  std::cout << "Reweight b jets by " << csv_weight_highnjet->GetBinContent(1) 
+                                     << " +/ " << csv_weight_highnjet->GetBinError(1) << std::endl;
+  std::cout << "Reweight c jets by " << csv_weight_highnjet->GetBinContent(2) 
+                                     << " +/ " << csv_weight_highnjet->GetBinError(2) << std::endl;
+  std::cout << "Reweight l jets by " << csv_weight_highnjet->GetBinContent(3) 
+                                     << " +/ " << csv_weight_highnjet->GetBinError(3) << std::endl;
+
+   //Increase uncertainty on variation by difference between nominal and high njet fit (from Pieter's comment)
+  float bflavorValDiff_low_high = bflavorValCentral - csv_weight_highnjet->GetBinContent(1);
+  //float bflavorValDiff_nohighcsv = bflavorValCentral - csv_weight_nohighcsv->GetBinContent(1);
+  bflavorValError = sqrt(pow(bflavorValError,2) + pow(bflavorValDiff_low_high,2)); //+ pow(bflavorValDiff_nohighcsv,2));
+  float cflavorValDiff_low_high = cflavorValCentral - csv_weight_highnjet->GetBinContent(2);
+  //float cflavorValDiff_nohighcsv = cflavorValCentral - csv_weight_nohighcsv->GetBinContent(2);
+  // cflavorValError = sqrt(pow(cflavorValError,2) + pow(cflavorValDiff_low_high,2) + pow(cflavorValDiff_nohighcsv,2));
+  cflavorValError = sqrt(pow(cflavorValError,2) + pow(cflavorValDiff_low_high,2));
+  float lflavorValDiff_low_high = lflavorValCentral - csv_weight_highnjet->GetBinContent(3);
+  //float lflavorValDiff_nohighcsv = lflavorValCentral - csv_weight_nohighcsv->GetBinContent(3);
+  //lflavorValError = sqrt(pow(lflavorValError,2) + pow(lflavorValDiff_low_high,2) + pow(lflavorValDiff_nohighcsv,2));
+  lflavorValError = sqrt(pow(lflavorValError,2) + pow(lflavorValDiff_low_high,2));
+
+  //float must_use_all_variables_once = bflavorValDiff_nohighcsv +cflavorValDiff_nohighcsv + lflavorValDiff_nohighcsv;
+  //if(must_use_all_variables_once > 9999) std::cout<<"Wow"<<std::endl;
   
+  csv_weight_file->Close();
+  csv_weight_file_highnjet->Close();
+  //csv_weight_file_nohighcsv->Close();
+  f->cd();
+
+  std::cout << "CSV fit combined results: " << std::endl; 
   std::cout << "Reweight b jets by " << bflavorValCentral << " +/ " << bflavorValError << std::endl;
   std::cout << "Reweight c jets by " << cflavorValCentral << " +/ " << cflavorValError << std::endl;
   std::cout << "Reweight l jets by " << lflavorValCentral << " +/ " << lflavorValError << std::endl;
@@ -428,6 +468,8 @@ void makeVariations(std::string &syst){
 
   if(syst=="ttbar_ptUp") ttbarWeight="w_toppt";
   if(syst=="ttbar_ptDown") ttbarWeight="(2-w_toppt)";
+  if(syst=="isrUp") ttbarWeight="sys_isr[0]/w_isr";
+  if(syst=="isrDown") ttbarWeight="sys_isr[1]/w_isr";
 
   if(syst=="other_mufUp") otherWeight="sys_muf[0]";
   if(syst=="other_mufDown") otherWeight="sys_muf[1]";
@@ -442,14 +484,14 @@ void makeVariations(std::string &syst){
   if(syst=="signal_murDown") signalWeight="sys_mur[1]";
   if(syst=="signal_murfUp") signalWeight="sys_murf[0]";
   if(syst=="signal_murfDown") signalWeight="sys_murf[1]";
-  // only apply ISR systematic to signal
+  // apply ISR systematic to signal
   if(syst=="isrUp") signalWeight="sys_isr[0]/w_isr";
   if(syst=="isrDown") signalWeight="sys_isr[1]/w_isr";
   // fastsim related systematics 
-  if(syst=="fs_btag_bcUp") signalWeight="sys_fs_bctag[0]/w_bctag";
-  if(syst=="fs_btag_bcDown") signalWeight="sys_fs_bctag[1]/w_bctag";
-  if(syst=="fs_btag_udsgUp") signalWeight="sys_fs_udsgtag[0]/w_bctag";
-  if(syst=="fs_btag_udsgDown") signalWeight="sys_fs_udsgtag[1]/w_bctag";
+  if(syst=="fs_btag_bcUp") signalWeight="sys_fs_bctag[0]/w_btag";
+  if(syst=="fs_btag_bcDown") signalWeight="sys_fs_bctag[1]/w_btag";
+  if(syst=="fs_btag_udsgUp") signalWeight="sys_fs_udsgtag[0]/w_btag";
+  if(syst=="fs_btag_udsgDown") signalWeight="sys_fs_udsgtag[1]/w_btag";
   if(syst=="fs_lep_effUp") signalWeight="sys_fs_lep[0]/w_lep";
   if(syst=="fs_lep_effDown") signalWeight="sys_fs_lep[1]/w_lep";
 

@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 {
   bool fitCharmWithLight=false;
   bool excludeHighCSV=false;
-  
+
   TString luminosity = rpv::luminosity;
   int maxbin=20;
 
@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
     }
     if(fitType=="exclude_high_csv") {
       maxbin=16;
+      excludeHighCSV=true;
       // still want to fit low_njet region
       fitType="low_njet";
     }
@@ -321,7 +322,10 @@ int main(int argc, char *argv[])
     	      << "l: " << qcd_l_ratio << " +/- " << qcd_l_ratio_err << std::endl
     	      << "cl: " << qcd_cl_ratio << std::endl
     	      << "other: " << other_ratio << std::endl;
-    c->Print(Form("plots/csv/csvfit_%s.pdf", fitType.Data()));
+    if(excludeHighCSV)
+      c->Print(Form("plots/csv/csvfit_%s.pdf", "exclude_high_csv"));
+    else
+      c->Print(Form("plots/csv/csvfit_%s.pdf", fitType.Data()));
   
     std::cout << "chi^2/ndof from TFractionFitter: " << fit->GetChisquare() << "/" << ndof << ", prob = " << fit->GetProb() << std::endl;
     float chi2 =0.;
@@ -360,22 +364,22 @@ int main(int argc, char *argv[])
     std::cout<<"Total chi2 for b,c, and sum is "<<chi2_c+chi2_b+chi2<<std::endl;
     // don't want to recreate files for variations
     TFile *out;
-    if(fitType=="low_njet" && !excludeHighCSV) {
-      out = new TFile(Form("data/%s.root", fitType.Data()), "recreate");
-      TH1F *csv_weight = new TH1F("csv_weight", "csv_weight", 3, 0, 3);
-      csv_weight->SetBinContent(1, qcd_b_ratio);
-      csv_weight->SetBinError(1, qcd_b_ratio_err);
-      csv_weight->GetXaxis()->SetBinLabel(1, "b");
-      csv_weight->SetBinContent(2, qcd_c_ratio);
-      csv_weight->SetBinError(2, qcd_c_ratio_err);
-      csv_weight->GetXaxis()->SetBinLabel(2, "c");
-      csv_weight->SetBinContent(3, qcd_l_ratio);
-      csv_weight->SetBinError(3, qcd_l_ratio_err);
-      csv_weight->GetXaxis()->SetBinLabel(3, "l");
-      csv_weight->Write();
-      out->Close();
-    }
+    if(excludeHighCSV)
+      out = new TFile(Form("data/csvfit_%s.root","exclude_high_csv"), "recreate");
+    else 
+      out = new TFile(Form("data/csvfit_%s.root", fitType.Data()), "recreate");
+    TH1F *csv_weight = new TH1F("csv_weight", "csv_weight", 3, 0, 3);
+    csv_weight->SetBinContent(1, qcd_b_ratio);
+    csv_weight->SetBinError(1, qcd_b_ratio_err);
+    csv_weight->GetXaxis()->SetBinLabel(1, "b");
+    csv_weight->SetBinContent(2, qcd_c_ratio);
+    csv_weight->SetBinError(2, qcd_c_ratio_err);
+    csv_weight->GetXaxis()->SetBinLabel(2, "c");
+    csv_weight->SetBinContent(3, qcd_l_ratio);
+    csv_weight->SetBinError(3, qcd_l_ratio_err);
+    csv_weight->GetXaxis()->SetBinLabel(3, "l");
+    csv_weight->Write();
+    out->Close();
   }
-  
   return 0;
 }

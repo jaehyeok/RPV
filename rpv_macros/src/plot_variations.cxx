@@ -154,7 +154,10 @@ void drawUpDown(int bin, vector<TString> variations)
 
             // display cuts
             textSize=textSize-0.01;
-            TLatex *TexNlep, *TexNjets, *TexMJ, *TexSyst;
+            TLatex *TexNlep=0;
+            TLatex *TexNjets=0;
+            TLatex *TexMJ=0;
+            TLatex *TexSyst=0;
             TString binname_tstr = getBinName(bin); 
             if(binname_tstr.Contains("nlep1"))   TexNlep = new TLatex(0.6,0.75,"N_{lep} = 1,");
             if(binname_tstr.Contains("nlep0"))   TexNlep = new TLatex(0.6,0.75,"N_{lep} = 0,");

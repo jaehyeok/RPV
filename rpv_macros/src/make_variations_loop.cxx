@@ -129,7 +129,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
     std::vector<double> gs_dmc={1,1,1,1};
     std::vector<double> gs_dmc_err={0,0,0,0};
     std::vector<double> gs_dmc_syst={0,0,0,0};
-    if(std::string::npos != variations.Contains("gs")){
+    if(variations.Contains("gs")){
 
         TFile *gs_file = TFile::Open("data/syst_gs.root");
         TGraphErrors* h_gs_dmc = static_cast<TGraphErrors*>(gs_file->Get("dmc_ldrbb_allmj"));

@@ -80,7 +80,8 @@ void drawUpDown(int bin, vector<TString> variations)
 	gStyle->SetMarkerSize(2.5);
 
     //TFile* infile = TFile::Open("variations/sum_rescaled_before.root");
-    TFile* infile = TFile::Open("variations/sum_rescaled_beforerescale.root");
+    //TFile* infile = TFile::Open("variations/sum_rescaled_beforerescale.root");
+    TFile* infile = TFile::Open("variations/sum_rescaled_mconly.root");
 
     for(unsigned int iprocess=0; iprocess<4; iprocess++) 
     {
@@ -235,7 +236,7 @@ void drawUpDown(int bin, vector<TString> variations)
             //cout << hname  << h1_central->GetBinError(5) << " " <<  h1_central->GetBinContent(5) << " = " <<  h1_central->GetBinError(5) / h1_central->GetBinContent(5)<< endl; 
 
             gSystem->mkdir(Form("plots/variations/bin%i",bin), kTRUE); 
-            c->Print(Form("plots/variations/bin%i/bin%i_%s_%s.pdf", bin, bin, hname.Data(), haltername));
+            c->Print(Form("plots/variations/bin%i/bin%i_%s_%s_mconly.pdf", bin, bin, hname.Data(), haltername));
 
             delete h1_central; 
             delete h1_up; 

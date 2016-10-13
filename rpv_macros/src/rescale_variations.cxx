@@ -12,7 +12,7 @@ int main()
     //    For signal injection studies(mconly), only want to use MC as nuisance parameters
     //    are different for data in sideband regions and MC
     std::string cardType="mconly"; 
-    cardType="data"; 
+    //cardType="data"; 
 
     std::string rootfile("variations/sum_rescaled.root");
     if(cardType=="mconly") rootfile = "variations/sum_rescaled_mconly.root";
@@ -20,7 +20,8 @@ int main()
 
     // samples for which MC statistics should be considered
     std::vector<std::string> mcStatisticsList = {
-        "signal_M750", "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500", "qcd", "ttbar"};
+        //"signal_M750", "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500", "qcd", "ttbar"};
+        "qcd", "ttbar"};
     // systematics for which the template should be rescaled
     std::vector<std::string> rescaleList = {
         "qcd_flavor", "qcd_mur", "qcd_muf", "qcd_murf",
@@ -28,8 +29,9 @@ int main()
         "ttbar_mur", "ttbar_muf", "ttbar_murf"};
     
     // signal list
-    std::vector<std::string> signalList = {
-        "signal_M750", "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500"};
+    //std::vector<std::string> signalList = {
+    //    "signal_M750", "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500"};
+    std::vector<std::string> signalList = {};
     std::vector<std::string> signalRescaleList = {};
         //"signal_mur", "signal_muf", "signal_murf"};
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
@@ -38,7 +40,7 @@ int main()
     std::vector<std::string> binNames = { 
         "bin0", "bin1", "bin2",                     // bins for control region fit
         "bin3", "bin4", "bin5",                     // bins for control region fit
-        "bin6", "bin7", "bin8", "bin9",             // lower mj bins
+        //"bin6", "bin7", "bin8", "bin9",             // lower mj bins
         "bin10", "bin11", "bin12",                  // signal bins
         "bin13", "bin14", "bin15","bin16","bin17"}; // signal bins
     std::vector<std::string> blindedBins={};        // bins where data_obs = sum of bkg mc
@@ -55,10 +57,10 @@ int main()
     for(unsigned int i=0; i<100; i++) {
         std::string qcd_pdf("qcd_w_pdf");
         qcd_pdf+=std::to_string(i);
-        rescaleList.push_back(qcd_pdf);
+        //rescaleList.push_back(qcd_pdf);
         std::string ttbar_pdf("ttbar_w_pdf");
         ttbar_pdf+=std::to_string(i);    
-        rescaleList.push_back(ttbar_pdf);
+        //rescaleList.push_back(ttbar_pdf);
         //for(auto isignal : signalList) {
         //    std::string signal_pdf("w_pdf");
         //    signal_pdf+=std::to_string(i);

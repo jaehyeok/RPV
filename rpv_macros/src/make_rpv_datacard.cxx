@@ -423,16 +423,16 @@ bool hasEntry(const std::string &sample, const std::string &bin, const int nB)
   if(sample.find("signal_M1400")!=std::string::npos) {
     if(bin=="bin0" && nB==4) return false;
   }
-  if(sample=="ttbar") {
-    if(bin=="bin0" && nB==4) return false;
-    if(bin=="bin5" && nB==4) return false;
-  }
+  //if(sample=="ttbar") {
+    //if(bin=="bin0" && nB==4) return false;
+    //if(bin=="bin5" && nB==4) return false;
+  //}
   if(sample=="qcd") {
-    if(bin=="bin5" && nB==3) return false;
+    //if(bin=="bin5" && nB==3) return false;
     if(bin=="bin5" && nB==4) return false;
-    if(bin=="bin11" && nB==4) return false;
-    if(bin=="bin14" && nB==4) return false;
-    if(bin=="bin15" && nB==4) return false;
+    //if(bin=="bin11" && nB==4) return false;
+    //if(bin=="bin14" && nB==4) return false;
+    //if(bin=="bin15" && nB==4) return false;
   }
   return true;
 }

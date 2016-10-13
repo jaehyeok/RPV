@@ -499,11 +499,12 @@ void makeVariations(std::string &syst){
   if(syst=="wjets_mufDown") wjetsWeight="sys_muf[1]";
   if(syst=="wjets_murUp") wjetsWeight="sys_mur[0]";
   if(syst=="wjets_murDown") wjetsWeight="sys_mur[1]";
-  if(syst=="wjets_murfUp") wjetsWeight="sys_murf[0]";
-  if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]";
+  if(syst=="wjets_murfUp") wjetsWeight="sys_murf[0]*1.3"; // FIXME: 30% normalization by hand
+  if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]*0.7"; // FIXME: 30% normalization by hand
 
   // Define samples
-  TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
+  TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_fit/";
+  //TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/mc/skim_rpv_fit/";
   TString folder_sig = "/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/";
   TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
 

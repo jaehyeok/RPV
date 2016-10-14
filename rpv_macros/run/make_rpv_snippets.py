@@ -81,8 +81,8 @@ writescript()
 
 
 # add PDF variations
-#for i in range(0, 100):
-#    VARLIST.append('w_pdf ' + str(i)) #FIXME
+for i in range(0, 100):
+    VARLIST.append('w_pdf ' + str(i))
 
 for vartype in VARLIST:
     newfilename = copytemplate('TEMPLATE.cmd', vartype)

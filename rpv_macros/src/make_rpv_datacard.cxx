@@ -26,7 +26,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  bool includePDFUncert = true;
+  bool includePDFUncert = false;
   bool includeLowMJ = false;
 //  bool includeSignalRegion = true;
 
@@ -35,14 +35,14 @@ int main(int argc, char *argv[])
   std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg",
 					                     "gs45", "gs67", "gs89", "gs10Inf",
 					                     "jes", "jer",
-					                     "pileup","lep_eff", "ttbar_pt",
+					                     /*"pileup",*/"lep_eff", "ttbar_pt",
 					                     "qcd_flavor",
 					                     "qcd_muf", "qcd_mur", "qcd_murf", 
 					                     "isr",
 					                     "ttbar_muf", "ttbar_mur", "ttbar_murf",
 					                     "wjets_muf", "wjets_mur", "wjets_murf",
 					                     "other_muf", "other_mur", "other_murf",
-					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"};
+					                     /*"fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"*/}; // temporarily removed
 
   std::string gluinoMass;
   std::string signalBinName;
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
   file << "------------------------------------" << std::endl;
 
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
-    file << "shapes * " << bins.at(ipair).at(ibin) << " " << dataCardPath << " " << bins.at(ipair).at(ibin)
+    file << "shapes * " << bins.at(ipair).at(ibin) << " " << (cardType=="mconly"?"sum_rescaled_mconly.root":"sum_rescaled.root") << " " << bins.at(ipair).at(ibin)
 	 << "/$PROCESS " << bins.at(ipair).at(ibin) << "/$PROCESS_$SYSTEMATIC" << std::endl;
   }
   file << "------------------------------------" << std::endl;
@@ -368,23 +368,23 @@ void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> 
   // only signal, qcd, and ttbar have non-negligible MC statistics uncertainties
   std::vector<std::string> samples = {signalBinName, "qcd", "ttbar"};
   for(auto isample : samples) {
-    for(unsigned int ibin = 0; ibin<bins.size(); ibin++) {
-      for(unsigned int ibbin=1; ibbin<maxB+1; ibbin++) {
-	if(!hasEntry(isample, bins.at(ibin), ibbin)) continue;
-	file << "mcstat_" << isample << "_" << bins.at(ibin) << "_nb" << ibbin << " shape ";
-	for(unsigned int ientry = 0; ientry<bins.size(); ientry++) {
-	  if(ientry == ibin ) {
-	    if( isample.find("signal")!=std::string::npos) file << "1 - - - - ";
-	    else if( isample == "qcd") file << "- 1 - - - ";
-	    else if( isample == "ttbar" ) file << "- - 1 - - ";
-	    else if( isample == "wjets" ) file << "- - - 1 - ";
-	    else if( isample == "other" ) file << "- - - - 1 ";
-	  }
-	  else file << "- - - - - ";
-	}
-	file << "\n";
+      for(unsigned int ibin = 0; ibin<bins.size(); ibin++) {
+          for(unsigned int ibbin=1; ibbin<maxB+1; ibbin++) {
+              if(!hasEntry(isample, bins.at(ibin), ibbin)) continue;
+              file << "mcstat_" << isample << "_" << bins.at(ibin) << "_nb" << ibbin << " shape ";
+              for(unsigned int ientry = 0; ientry<bins.size(); ientry++) {
+                  if(ientry == ibin ) {
+                      if( isample.find("signal")!=std::string::npos) file << "1 - - - - ";
+                      else if( isample == "qcd") file << "- 1 - - - ";
+                      else if( isample == "ttbar" ) file << "- - 1 - - ";
+                      else if( isample == "wjets" ) file << "- - - 1 - ";
+                      else if( isample == "other" ) file << "- - - - 1 ";
+                  }
+                  else file << "- - - - - ";
+              }
+              file << "\n";
+          }
       }
-    }
   }
 }
 

@@ -137,9 +137,12 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
 
   std::string plotVar("nbm");
 ///* 
-  std::vector<std::string> cuts = {"nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=500&&mj12<800","nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=500&&mj12<800",
+  std::vector<std::string> cuts = {
+                   "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=500&&mj12<800",
+                   "nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=500&&mj12<800",
 				   "nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj12>=500&&mj12<800", 
-  				   "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800","nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=800",
+  				   "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800",
+                   "nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=800",
 				   "nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj12>=800",
 				   // low MJ control regions
 				   "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=300&&mj12<500",
@@ -154,14 +157,12 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
 				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj12>=800",
 				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj12>=800",
 				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=800",
-
 				   //Missing regions
 				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=500&&mj12<800",
 				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=800",
-
   };
 //*/ 
-//  std::vector<std::string> cuts = {"nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800"};
+//  std::vector<std::string> cuts = {"nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800"};
 
   // maximum number of b-tagged jets
   int nBBins=4;
@@ -345,14 +346,10 @@ void makeVariations(std::string &syst){
   TFile *csv_weight_file_highnjet = TFile::Open("data/csvfit_high_njet.root");
   TH1F *csv_weight_highnjet = static_cast<TH1F*>(csv_weight_file_highnjet->Get("csv_weight"));
 
-//  TFile *csv_weight_file_nohighcsv = TFile::Open("data/csvfit_exclude_high_csv.root");
-//  TH1F *csv_weight_nohighcsv = static_cast<TH1F*>(csv_weight_file_nohighcsv->Get("csv_weight"));
-
   float bflavorValCentral = csv_weight->GetBinContent(1);
   float bflavorValError = csv_weight->GetBinError(1);
   float cflavorValCentral = csv_weight->GetBinContent(2);
-  // negative sign implements anticorrelation between b and c reweightings
-  float cflavorValError = -csv_weight->GetBinError(2);
+  float cflavorValError = csv_weight->GetBinError(2);
   float lflavorValCentral = csv_weight->GetBinContent(3);
   float lflavorValError = csv_weight->GetBinError(3); 
 
@@ -368,25 +365,17 @@ void makeVariations(std::string &syst){
   std::cout << "Reweight l jets by " << csv_weight_highnjet->GetBinContent(3) 
                                      << " +/ " << csv_weight_highnjet->GetBinError(3) << std::endl;
 
-   //Increase uncertainty on variation by difference between nominal and high njet fit (from Pieter's comment)
+  // Increase uncertainty on variation by difference between nominal and high njet fit (from Pieter's comment)
   float bflavorValDiff_low_high = bflavorValCentral - csv_weight_highnjet->GetBinContent(1);
-  //float bflavorValDiff_nohighcsv = bflavorValCentral - csv_weight_nohighcsv->GetBinContent(1);
-  bflavorValError = sqrt(pow(bflavorValError,2) + pow(bflavorValDiff_low_high,2)); //+ pow(bflavorValDiff_nohighcsv,2));
+  bflavorValError = sqrt(pow(bflavorValError,2) + pow(bflavorValDiff_low_high,2)); 
   float cflavorValDiff_low_high = cflavorValCentral - csv_weight_highnjet->GetBinContent(2);
-  //float cflavorValDiff_nohighcsv = cflavorValCentral - csv_weight_nohighcsv->GetBinContent(2);
-  // cflavorValError = sqrt(pow(cflavorValError,2) + pow(cflavorValDiff_low_high,2) + pow(cflavorValDiff_nohighcsv,2));
-  cflavorValError = sqrt(pow(cflavorValError,2) + pow(cflavorValDiff_low_high,2));
+  // Negative sign implements anticorrelation between b and c reweightings
+  cflavorValError = -1*(sqrt(pow(cflavorValError,2) + pow(cflavorValDiff_low_high,2)));
   float lflavorValDiff_low_high = lflavorValCentral - csv_weight_highnjet->GetBinContent(3);
-  //float lflavorValDiff_nohighcsv = lflavorValCentral - csv_weight_nohighcsv->GetBinContent(3);
-  //lflavorValError = sqrt(pow(lflavorValError,2) + pow(lflavorValDiff_low_high,2) + pow(lflavorValDiff_nohighcsv,2));
   lflavorValError = sqrt(pow(lflavorValError,2) + pow(lflavorValDiff_low_high,2));
 
-  //float must_use_all_variables_once = bflavorValDiff_nohighcsv +cflavorValDiff_nohighcsv + lflavorValDiff_nohighcsv;
-  //if(must_use_all_variables_once > 9999) std::cout<<"Wow"<<std::endl;
-  
   csv_weight_file->Close();
   csv_weight_file_highnjet->Close();
-  //csv_weight_file_nohighcsv->Close();
   f->cd();
 
   std::cout << "CSV fit combined results: " << std::endl; 
@@ -499,12 +488,11 @@ void makeVariations(std::string &syst){
   if(syst=="wjets_mufDown") wjetsWeight="sys_muf[1]";
   if(syst=="wjets_murUp") wjetsWeight="sys_mur[0]";
   if(syst=="wjets_murDown") wjetsWeight="sys_mur[1]";
-  if(syst=="wjets_murfUp") wjetsWeight="sys_murf[0]*1.3"; // FIXME: 30% normalization by hand
-  if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]*0.7"; // FIXME: 30% normalization by hand
+  if(syst=="wjets_murfUp") wjetsWeight="sys_murf[0]*0.7"; // FIXME: 30% normalization by hand
+  if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]*1.3"; // FIXME: 30% normalization by hand
 
   // Define samples
   TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_fit/";
-  //TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/mc/skim_rpv_fit/";
   TString folder_sig = "/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/";
   TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
 

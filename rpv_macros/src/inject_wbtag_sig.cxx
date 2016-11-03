@@ -13,8 +13,8 @@ int main(int argc, char *argv[]){
   TString btagType = "bc"; // bc or udsg  
   bool doSigInject = true;
 
-  vector<double> strength = {0.5, 1, 2, 3, 4, 5};
-  vector<double> sigStrength = {0.5, 1, 2};
+  vector<TString> btagStrength = {"0", "1", "3", "5"};
+  vector<TString> sigStrength = {"0", "0.5", "1", "2"};
 
 
   vector<string> binNames = { 
@@ -62,9 +62,10 @@ int main(int argc, char *argv[]){
   f->Close();
   
   // Do the btag variations
-  for(unsigned int istr=0; istr<strength.size(); istr++){
+  for(unsigned int istr=0; istr<btagStrength.size(); istr++){
     TString newfile = rootfile;
-    newfile.ReplaceAll(".root","_"+btagType+"tag"+to_string(static_cast<int>(strength[istr]))+".root");
+    TString tmpstr = btagStrength[istr];
+    newfile.ReplaceAll(".root","_"+btagType+"tag"+tmpstr.ReplaceAll(".","p")+".root");
     TFile::Cp(rootfile, newfile);
 
     cout<<"Opening "<<newfile<<"\n"<<endl;
@@ -80,12 +81,12 @@ int main(int argc, char *argv[]){
       
       double norm = h_data->Integral();
       
-      cout<<"-----"<<binname<<"-----Strength="<<strength[istr]<<"-----"<<endl;
+      cout<<"-----"<<binname<<"-----btag Strength="<<btagStrength[istr]<<"-----"<<endl;
       for(int i=0; i<4; i++){
 	//Bin 2 is Nb=1
 	double yield = h_data->GetBinContent(i+2);
-	h_data->SetBinContent(i+2, yield*(1+(strength[istr]*(diff[ibin][i]-1))));
-	cout<<"Nb = "<<(i+1)<<": Nominal yield = "<<yield<<", Up yield = "<<h_data->GetBinContent(i+2)<<endl;
+	h_data->SetBinContent(i+2, yield*(1+(btagStrength[istr].Atof()*(diff[ibin][i]-1))));
+	cout<<"Nb = "<<(i+1)<<": Nominal yield = "<<yield<<", Variation yield = "<<h_data->GetBinContent(i+2)<<endl;
       }
       cout<<endl;
       
@@ -102,7 +103,8 @@ int main(int argc, char *argv[]){
     if(doSigInject){
       for(unsigned int isig=0; isig<sigStrength.size(); isig++){
 	TString newsigfile = newfile;
-	newsigfile.ReplaceAll(".root","_sig"+to_string(static_cast<int>(sigStrength[isig]))+".root");
+	TString tmpstr2 = sigStrength[isig];
+	newsigfile.ReplaceAll(".root","_sig"+tmpstr2.ReplaceAll(".","p")+".root");
 	TFile::Cp(newfile, newsigfile);
 
 	cout<<"Opening "<<newsigfile<<"\n"<<endl;
@@ -119,9 +121,9 @@ int main(int argc, char *argv[]){
 
 	  double ndata = h_data->Integral();
 
-	  h_data->Add(h_sig, sigStrength[isig]);
+	  h_data->Add(h_sig, sigStrength[isig].Atof());
 
-	  cout<<"-----"<<binname<<"-----Strength="<<strength[istr]<<"-----"<<"-----Sig Strength="<<sigStrength[isig]<<"-----"<<endl;
+	  cout<<"-----"<<binname<<"-----btag Strength="<<btagStrength[istr]<<"-----"<<"-----Sig Strength="<<sigStrength[isig]<<"-----"<<endl;
 	  cout<<"Data = "<<ndata<<", Signal = "<<h_sig->Integral()<<", Variation = "<<h_data->Integral()<<endl;
 	  cout<<endl;
 

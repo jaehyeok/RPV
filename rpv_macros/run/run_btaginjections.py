@@ -6,7 +6,7 @@ import sys
 makeCards = True
 makeWorkspaces = True
 runCombine = True
-makePlots = True
+makePlots = False
 
 # Setup directories
 dirBase = "/net/top/homes/rohan/RPV/Fit/CMSSW_7_4_7_patch1/src/HiggsAnalysis/" 
@@ -61,30 +61,40 @@ if runCombine:
     # Make text files of the results
     if os.path.isfile("bctag_results.txt"): os.system("rm bctag_results.txt")
     if os.path.isfile("udsgtag_results.txt"): os.system("rm udsgtag_results.txt")
+    if os.path.isfile("bc_udsgtag_results.txt"): os.system("rm bc_udsgtag_results.txt")
 
     os.system("touch bctag_results.txt")
     os.system("touch udsgtag_results.txt")
+    os.system("touch bc_udsgtag_results.txt")
 
     os.system("echo ")
 
     # For each bctag variation, get signal strength and pulls and output to bctag_results
-    for workspace in sorted([i for i in os.listdir(dirWS) if identifier in i and "bctag" in i]):
+    for workspace in sorted([i for i in os.listdir(dirWS) if identifier in i and "bctag" in i and "udsgtag" not in i]):
         print("Running combine for workspace: " + workspace)
         os.system("echo " + workspace + " >> bctag_results.txt")
         os.system("combine -M MaxLikelihoodFit  -n " + workspace.lstrip("ws").rstrip(".root") + " ../workspaces/"+ workspace +" --saveNorm --minimizerTolerance 0.9999999 | grep Best\\ fit >> bctag_results.txt")
-        os.system("python test/diffNuisances.py --vtol=0.3 --vtol2=0.75 --stol=1000 --stol2=1000 mlfit" + workspace.lstrip("ws") + " >> bctag_results.txt")
+        os.system("python test/diffNuisances.py --vtol=0.25 --vtol2=0.75 --stol=1000 --stol2=1000 mlfit" + workspace.lstrip("ws") + " >> bctag_results.txt")
         os.system("echo >> bctag_results.txt")
 
     # For each udsgtag variation, get signal strength and pulls and output to udsgtag_results
-    for workspace in sorted([i for i in os.listdir(dirWS) if identifier in i and "udsgtag" in i]):
+    for workspace in sorted([i for i in os.listdir(dirWS) if identifier in i and "udsgtag" in i and "bctag" not in i]):
         print("Running combine for workspace: " + workspace)
         os.system("echo " + workspace + " >> udsgtag_results.txt")
         os.system("combine -M MaxLikelihoodFit  -n " + workspace.lstrip("ws").rstrip(".root") + " ../workspaces/"+ workspace +" --saveNorm --minimizerTolerance 0.9999999 | grep Best\\ fit >> udsgtag_results.txt")
-        os.system("python test/diffNuisances.py --vtol=0.3 --vtol2=0.75 --stol=1000 --stol2=1000 mlfit" + workspace.lstrip("ws") + " >> udsgtag_results.txt")
+        os.system("python test/diffNuisances.py --vtol=0.25 --vtol2=0.75 --stol=1000 --stol2=1000 mlfit" + workspace.lstrip("ws") + " >> udsgtag_results.txt")
         os.system("echo >> udsgtag_results.txt")
 
+    # For each udsgtag variation, get signal strength and pulls and output to bc_udsgtag_results
+    for workspace in sorted([i for i in os.listdir(dirWS) if identifier in i and "udsgtag" in i and "bctag" in i]):
+        print("Running combine for workspace: " + workspace)
+        os.system("echo " + workspace + " >> bc_udsgtag_results.txt")
+        os.system("combine -M MaxLikelihoodFit  -n " + workspace.lstrip("ws").rstrip(".root") + " ../workspaces/"+ workspace +" --saveNorm --minimizerTolerance 0.9999999 | grep Best\\ fit >> bc_udsgtag_results.txt")
+        os.system("python test/diffNuisances.py --vtol=0.25 --vtol2=0.75 --stol=1000 --stol2=1000 mlfit" + workspace.lstrip("ws") + " >> bc_udsgtag_results.txt")
+        os.system("echo >> bc_udsgtag_results.txt")
+
     # Move the results into a directory
-    os.mkdir("M1500_" + identifier)
+    if not os.path.isdir("M1500_" + identifier): os.mkdir("M1500_" + identifier)
     os.system("mv *_results.txt M1500_" + identifier  + "/")
 
 # Make plots using plotresult.cc

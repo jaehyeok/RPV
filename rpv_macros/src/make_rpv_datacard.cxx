@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 					                     /*"pileup",*/"lep_eff", "ttbar_pt",
 					                     "qcd_flavor",
 					                     "qcd_muf", "qcd_mur", "qcd_murf", 
-					                     "isr",
+					                     /*"isr",*/
 					                     "ttbar_muf", "ttbar_mur", "ttbar_murf",
 					                     "wjets_muf", "wjets_mur", "wjets_murf",
 					                     "other_muf", "other_mur", "other_murf",
@@ -47,8 +47,9 @@ int main(int argc, char *argv[])
   std::string gluinoMass;
   std::string signalBinName;
   std::string cardType;
+  TString inputname;
   if(argc<3) {
-    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [true]" << std::endl;
+    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename]" << std::endl;
     return 1;
   }
   else {
@@ -63,7 +64,10 @@ int main(int argc, char *argv[])
     if(cardType!="control" && cardType!="default" && cardType!="mconly") {
       std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly]" << std::endl;
       return 1;
+
     }
+    if(argc>3)
+      inputname = argv[3];
 //    else {
 //      if(cardType=="control") includeSignalRegion=false;
 //      if(cardType=="default") includeSignalRegion=true;
@@ -135,7 +139,8 @@ int main(int argc, char *argv[])
 
   // which variation file
   std::string dataCardPath = gSystem->pwd();
-  if(cardType=="mconly") dataCardPath += "/variations/sum_rescaled_mconly.root";
+  if(argc>3) dataCardPath += "/variations/" + inputname;
+  else if(cardType=="mconly") dataCardPath += "/variations/sum_rescaled_mconly.root";
   else dataCardPath += "/variations/sum_rescaled.root";
   TFile *variations = TFile::Open(dataCardPath.c_str());
   std::ofstream file;
@@ -156,6 +161,12 @@ int main(int argc, char *argv[])
   } 
   if(!includePDFUncert) filename+="_nopdf";
 
+  if(argc>3){
+    TString tmpname = inputname;
+    tmpname.ReplaceAll("sum_rescaled_mconly","").ReplaceAll(".root","");
+    filename += tmpname;
+  }
+
   filename+=".dat";
   file.open(filename);
 
@@ -166,8 +177,11 @@ int main(int argc, char *argv[])
   file << "------------------------------------" << std::endl;
 
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
-    file << "shapes * " << bins.at(ipair).at(ibin) << " " << (cardType=="mconly"?"sum_rescaled_mconly.root":"sum_rescaled.root") << " " << bins.at(ipair).at(ibin)
-	 << "/$PROCESS " << bins.at(ipair).at(ibin) << "/$PROCESS_$SYSTEMATIC" << std::endl;
+    if(argc>3)
+      file << "shapes * " << bins.at(ipair).at(ibin) << " " << inputname.Data() << " " << bins.at(ipair).at(ibin);
+    else
+      file << "shapes * " << bins.at(ipair).at(ibin) << " " << (cardType=="mconly"?"sum_rescaled_mconly.root":"sum_rescaled.root") << " " << bins.at(ipair).at(ibin);
+    file << "/$PROCESS " << bins.at(ipair).at(ibin) << "/$PROCESS_$SYSTEMATIC" << std::endl;
   }
   file << "------------------------------------" << std::endl;
   file << "bin          ";

@@ -1,0 +1,8 @@
+CMSSW*
+*.root
+*.log
+*.pdf
+*.eps
+*.tex
+*.aux
+.nfs*

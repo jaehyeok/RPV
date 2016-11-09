@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 					                     /*"pileup",*/"lep_eff", "ttbar_pt",
 					                     "qcd_flavor",
 					                     "qcd_muf", "qcd_mur", "qcd_murf", 
-					                     /*"isr",*/
+					                     //"isr",
 					                     "ttbar_muf", "ttbar_mur", "ttbar_murf",
 					                     "wjets_muf", "wjets_mur", "wjets_murf",
 					                     "other_muf", "other_mur", "other_murf",
@@ -47,9 +47,8 @@ int main(int argc, char *argv[])
   std::string gluinoMass;
   std::string signalBinName;
   std::string cardType;
-  TString inputname;
   if(argc<3) {
-    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename]" << std::endl;
+    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [true]" << std::endl;
     return 1;
   }
   else {
@@ -64,10 +63,8 @@ int main(int argc, char *argv[])
     if(cardType!="control" && cardType!="default" && cardType!="mconly") {
       std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly]" << std::endl;
       return 1;
-
     }
-    if(argc>3)
-      inputname = argv[3];
+
 //    else {
 //      if(cardType=="control") includeSignalRegion=false;
 //      if(cardType=="default") includeSignalRegion=true;
@@ -91,8 +88,10 @@ int main(int argc, char *argv[])
   std::vector<std::string> bins_cr_highmj       = {"bin3", "bin4", "bin5"};
   std::vector<std::string> bins_sr_lownj_lowmj  = {"bin16", "bin11"};
   std::vector<std::string> bins_sr_lownj_highmj = {"bin17", "bin14"};
+  std::vector<std::string> bins_sr_lownj_vhighmj = {"bin18", "bin20"};
   std::vector<std::string> bins_sr_highnj_lowmj  = {"bin10", "bin12"};
   std::vector<std::string> bins_sr_highnj_highmj = {"bin13", "bin15"};
+  std::vector<std::string> bins_sr_highnj_vhighmj = {"bin19", "bin21"};
     
   std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
 
@@ -111,6 +110,10 @@ int main(int argc, char *argv[])
     bins_all.push_back("bin15");
     bins_all.push_back("bin16");
     bins_all.push_back("bin17");
+    bins_all.push_back("bin18");
+    bins_all.push_back("bin19");
+    bins_all.push_back("bin20");
+    bins_all.push_back("bin21");
   }
 
   bins.push_back(bins_cr_lowmj);
@@ -118,8 +121,10 @@ int main(int argc, char *argv[])
   if(cardType=="default" || cardType=="mconly") {
       bins.push_back(bins_sr_lownj_lowmj);
       bins.push_back(bins_sr_lownj_highmj);
+      bins.push_back(bins_sr_lownj_vhighmj); 
       bins.push_back(bins_sr_highnj_lowmj);
       bins.push_back(bins_sr_highnj_highmj); 
+      bins.push_back(bins_sr_highnj_vhighmj); 
   }
   bins.push_back(bins_all);
  
@@ -139,8 +144,8 @@ int main(int argc, char *argv[])
 
   // which variation file
   std::string dataCardPath = gSystem->pwd();
-  if(argc>3) dataCardPath += "/variations/" + inputname;
-  else if(cardType=="mconly") dataCardPath += "/variations/sum_rescaled_mconly.root";
+  if(cardType=="mconly") dataCardPath += "/variations/sum_rescaled_mconly.root";
+  else if(cardType=="control") dataCardPath += "/variations/sum_rescaled_control.root";
   else dataCardPath += "/variations/sum_rescaled.root";
   TFile *variations = TFile::Open(dataCardPath.c_str());
   std::ofstream file;
@@ -156,16 +161,12 @@ int main(int argc, char *argv[])
   {
       if(ipair==2) filename+="_sr_lownj_lowmj";
       if(ipair==3) filename+="_sr_lownj_highmj";
-      if(ipair==4) filename+="_sr_highnj_lowmj";
-      if(ipair==5) filename+="_sr_highnj_highmj";
+      if(ipair==4) filename+="_sr_lownj_vhighmj";
+      if(ipair==5) filename+="_sr_highnj_lowmj";
+      if(ipair==6) filename+="_sr_highnj_highmj";
+      if(ipair==7) filename+="_sr_highnj_vhighmj";
   } 
   if(!includePDFUncert) filename+="_nopdf";
-
-  if(argc>3){
-    TString tmpname = inputname;
-    tmpname.ReplaceAll("sum_rescaled_mconly","").ReplaceAll(".root","");
-    filename += tmpname;
-  }
 
   filename+=".dat";
   file.open(filename);
@@ -177,13 +178,10 @@ int main(int argc, char *argv[])
   file << "------------------------------------" << std::endl;
 
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
-    if(argc>3)
-      file << "shapes * " << bins.at(ipair).at(ibin) << " " << inputname.Data() << " " << bins.at(ipair).at(ibin);
-    else
-      file << "shapes * " << bins.at(ipair).at(ibin) << " " << (cardType=="mconly"?"sum_rescaled_mconly.root":"sum_rescaled.root") << " " << bins.at(ipair).at(ibin);
-    file << "/$PROCESS " << bins.at(ipair).at(ibin) << "/$PROCESS_$SYSTEMATIC" << std::endl;
+    file << "shapes * " << bins.at(ipair).at(ibin) << " " << (cardType=="mconly"?"sum_rescaled_mconly.root":"sum_rescaled.root") << " " << bins.at(ipair).at(ibin)
+	 << "/$PROCESS " << bins.at(ipair).at(ibin) << "/$PROCESS_$SYSTEMATIC" << std::endl;
   }
-  file << "------------------------------------" << std::endl;
+  file << "------------------------------------" << std::endl;  
   file << "bin          ";
 
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
@@ -342,6 +340,30 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(2*(bindex[jbin]*nprocesses+1),1,"5");
       tmpLine.Replace(2*(bindex["bin14"]*nprocesses+1),1,"5");
       tmpLine.Prepend("normqcd_bin17_14 lnU  ");
+      file << tmpLine.Data() << endl;
+    }    
+    else if(jbin=="bin18"){
+      tmpLine.Replace(2*(bindex[jbin]*nprocesses+1),1,"5");
+      tmpLine.Replace(2*(bindex["bin20"]*nprocesses+1),1,"5");
+      tmpLine.Prepend("normqcd_bin18_20 lnU  ");
+      file << tmpLine.Data() << endl;
+    }    
+    else if(jbin=="bin19"){
+      tmpLine.Replace(2*(bindex[jbin]*nprocesses+1),1,"5");
+      tmpLine.Replace(2*(bindex["bin21"]*nprocesses+1),1,"5");
+      tmpLine.Prepend("normqcd_bin19_21 lnU  ");
+      file << tmpLine.Data() << endl;
+    }    
+    else if(jbin=="bin20"){
+      tmpLine.Replace(2*(bindex[jbin]*nprocesses+2),1,"5");
+      tmpLine.Replace(2*(bindex["bin18"]*nprocesses+2),1,"5");
+      tmpLine.Prepend("normttbar_bin18_20 lnU  ");
+      file << tmpLine.Data() << endl;
+    }    
+    else if(jbin=="bin21"){
+      tmpLine.Replace(2*(bindex[jbin]*nprocesses+2),1,"5");
+      tmpLine.Replace(2*(bindex["bin19"]*nprocesses+2),1,"5");
+      tmpLine.Prepend("normttbar_bin19_21 lnU  ");
       file << tmpLine.Data() << endl;
     }    
   }

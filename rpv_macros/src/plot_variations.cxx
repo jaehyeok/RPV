@@ -38,7 +38,7 @@ int main()
         "other_mur", "other_muf", "other_murf"};
    
     vector<int> bins={0,1,2,3,4,5, // CR
-                      10,11,12,13,14,15,16,17}; // SR
+                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
     
     //for(int i=0; i<100; i++) variations.push_back(Form("w_pdf%i",i)); 
     
@@ -79,17 +79,15 @@ void drawUpDown(int bin, vector<TString> variations)
 	gStyle->SetPaintTextFormat(".1f");
 	gStyle->SetMarkerSize(2.5);
 
-    //TFile* infile = TFile::Open("variations/sum_rescaled_before.root");
-    //TFile* infile = TFile::Open("variations/sum_rescaled_beforerescale.root");
-    TFile* infile = TFile::Open("variations/sum_rescaled_mconly.root");
+    TFile* infile = TFile::Open("variations/nov8/7p7/sum_rescaled_mconly.root");
 
-    for(unsigned int iprocess=0; iprocess<4; iprocess++) 
+    for(unsigned int iprocess=0; iprocess<5; iprocess++) 
     {
         TString hname = "ttbar";
         if(iprocess==1) hname = "qcd";
         if(iprocess==2) hname = "wjets";
         if(iprocess==3) hname = "other";
-        if(iprocess==4) hname = "signal_M1200";
+        if(iprocess==4) hname = "signal_M1500";
 
         for(unsigned int ivariation=0; ivariation<variations.size(); ivariation++) 
         { 

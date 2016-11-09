@@ -36,12 +36,12 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.push_back(folder+"*Run2016_HTMHT_MET_JetHT_SingleElectron_SingleMuon*");
   }
   else if(process.Contains("rpv")){
-    if(process=="rpv_m1000") files.push_back(folder+"*mGluino-1000*");
-    else if(process=="rpv_m1100") files.push_back(folder+"*mGluino-1100*");
-    else if(process=="rpv_m1200") files.push_back(folder+"*mGluino-1200*");
-    else if(process=="rpv_m1300") files.push_back(folder+"*mGluino-1300*");
-    else if(process=="rpv_m1400") files.push_back(folder+"*mGluino-1400*");
-    else if(process=="rpv_m1500") files.push_back(folder+"*mGluino-1500*");
+    if(process=="rpv_m1000") files.push_back(folder+"*mGluino*1000*");
+    else if(process=="rpv_m1100") files.push_back(folder+"*mGluino*1100*");
+    else if(process=="rpv_m1200") files.push_back(folder+"*mGluino*1200*");
+    else if(process=="rpv_m1300") files.push_back(folder+"*mGluino*1300*");
+    else if(process=="rpv_m1400") files.push_back(folder+"*mGluino*1400*");
+    else if(process=="rpv_m1500") files.push_back(folder+"*mGluino*1500*");
   }
   // For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
   else if(process=="ttbar"){

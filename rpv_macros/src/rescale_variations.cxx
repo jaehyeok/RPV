@@ -12,10 +12,11 @@ int main()
     //    For signal injection studies(mconly), only want to use MC as nuisance parameters
     //    are different for data in sideband regions and MC
     std::string cardType="mconly"; 
-    //cardType="data"; 
+    //cardType="control"; 
 
     std::string rootfile("variations/sum_rescaled.root");
     if(cardType=="mconly") rootfile = "variations/sum_rescaled_mconly.root";
+    else if(cardType=="control") rootfile = "variations/sum_rescaled_control.root";
     TFile *f = TFile::Open(rootfile.c_str(), "update");
 
     // samples for which MC statistics should be considered
@@ -34,10 +35,10 @@ int main()
            "ttbar_mur", "ttbar_muf", "ttbar_murf"};
     
     // signal list
-    std::vector<std::string> signalList = {
+    std::vector<std::string> signalList = 
+    {
         "signal_M750", "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500"};
     std::vector<std::string> signalRescaleList = {};
-        //"signal_mur", "signal_muf", "signal_murf"};
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
 
     // Bins
@@ -46,11 +47,13 @@ int main()
         "bin3", "bin4", "bin5",                     // bins for control region fit
         //"bin6", "bin7", "bin8", "bin9",             // lower mj bins
         "bin10", "bin11", "bin12",                  // signal bins
-        "bin13", "bin14", "bin15","bin16","bin17"}; // signal bins
+        "bin13", "bin14", "bin15","bin16","bin17",  // signal bins
+        "bin18", "bin19", "bin20","bin21"};         // signal bins
     std::vector<std::string> blindedBins={};        // bins where data_obs = sum of bkg mc
     if(cardType=="control") blindedBins = {
         "bin10", "bin11", "bin12",
-        "bin13", "bin14", "bin15","bin16","bin17"}; 
+        "bin13", "bin14", "bin15","bin16","bin17", 
+        "bin18", "bin19", "bin20","bin21"};         // signal bins
     else if (cardType=="mconly") blindedBins=binNames; 
 
     unsigned int nbins=binNames.size();
@@ -161,7 +164,7 @@ int main()
             TH1F *wjets = static_cast<TH1F*>(f->Get(Form("%s/wjets", binNames.at(ibin).c_str())));
             TH1F *other = static_cast<TH1F*>(f->Get(Form("%s/other", binNames.at(ibin).c_str())));
             for(int i=1; i<=data_obs->GetNbinsX(); i++) {
-                data_obs->SetBinContent(i, static_cast<int>(qcd->GetBinContent(i)
+                data_obs->SetBinContent(i, (qcd->GetBinContent(i)
                             + ttbar->GetBinContent(i)
                             + wjets->GetBinContent(i)
                             + other->GetBinContent(i)));

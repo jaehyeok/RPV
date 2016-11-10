@@ -10,18 +10,21 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-  TString btagType = "bc"; // bc or udsg  
+  TString btagType = "udsg"; // bc or udsg  
   bool doSigInject = true;
 
   vector<TString> btagStrength = {"0", "1", "3", "5"};
   vector<TString> sigStrength = {"0", "0.5", "1", "2"};
+  //  vector<TString> btagStrength = {"1", "3"};
+  //  vector<TString> sigStrength = {"0", "1"};
 
 
   vector<string> binNames = { 
     "bin0", "bin1", "bin2",                     // bins for control region fit
     "bin3", "bin4", "bin5",                     // bins for control region fit
     "bin10", "bin11", "bin12",                  // signal bins
-    "bin13", "bin14", "bin15","bin16","bin17"}; // signal bins
+    "bin13", "bin14", "bin15","bin16","bin17",  // signal bins
+    "bin18", "bin19", "bin20", "bin21"};        // signal bins
 
   if(argc<=1){
     cout<<"Please provide a sum_rescaled root file."<<endl;
@@ -32,7 +35,8 @@ int main(int argc, char *argv[]){
   TString rootfile(argv[1]);
   TFile *f = TFile::Open(rootfile);
   
-  double diff[14][4];
+  //Number of bins and number of Nb bins
+  double diff[18][4];
   for(unsigned int ibin=0; ibin<binNames.size(); ibin++){ 
     
     TString binname(binNames.at(ibin).c_str());

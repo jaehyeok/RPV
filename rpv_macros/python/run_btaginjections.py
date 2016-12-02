@@ -69,6 +69,8 @@ if runCombine:
 
     os.system("echo ")
 
+    print("Running combine for heavy flavor variations\n")
+
     # For each bctag variation, get signal strength and pulls and output to bctag_results
     for workspace in sorted([i for i in os.listdir(dirWS) if identifier in i and "bctag" in i and "udsgtag" not in i]):
         print("Running combine for workspace: " + workspace)
@@ -77,6 +79,8 @@ if runCombine:
         os.system("python test/diffNuisances.py --vtol=0.25 --vtol2=0.75 --stol=1000 --stol2=1000 mlfit" + workspace.lstrip("ws") + " >> bctag_results.txt")
         os.system("echo >> bctag_results.txt")
 
+    print("Running combine for light flavor variations\n")
+
     # For each udsgtag variation, get signal strength and pulls and output to udsgtag_results
     for workspace in sorted([i for i in os.listdir(dirWS) if identifier in i and "udsgtag" in i and "bctag" not in i]):
         print("Running combine for workspace: " + workspace)
@@ -84,6 +88,8 @@ if runCombine:
         os.system("combine -M MaxLikelihoodFit  -n " + workspace.lstrip("ws").rstrip(".root") + " ../workspaces/"+ workspace +" --saveNorm --minimizerTolerance 0.9999999 | grep Best\\ fit >> udsgtag_results.txt")
         os.system("python test/diffNuisances.py --vtol=0.25 --vtol2=0.75 --stol=1000 --stol2=1000 mlfit" + workspace.lstrip("ws") + " >> udsgtag_results.txt")
         os.system("echo >> udsgtag_results.txt")
+
+    print("Running combine for heavy+light flavor variations\n")
 
     # For each udsgtag variation, get signal strength and pulls and output to bc_udsgtag_results
     for workspace in sorted([i for i in os.listdir(dirWS) if identifier in i and "udsgtag" in i and "bctag" in i]):

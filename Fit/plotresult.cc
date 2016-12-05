@@ -91,7 +91,7 @@ TH1D* makeHistogram(TGraphAsymmErrors* graph){
     return hist;
 }
 
-void plotresult(int gluinoMass=1200)
+void plotresult(int gluinoMass=1500)
 {
   bool plotSPlusB=true;
   bool doControl=false;
@@ -110,13 +110,15 @@ void plotresult(int gluinoMass=1200)
   else
   {
     binname = {"nlep0_nj45_lowmj", "nlep0_nj67_lowmj", "nlep1_nj45_lowmj",
-  			  "nlep0_nj45_highmj", "nlep0_nj67_highmj", "nlep1_nj45_highmj",
-  			  "nlep0_nj10_lowmj", "nlep1_nj67_lowmj", "nlep1_nj8_lowmj", "nlep0_nj10_highmj",
-  			  "nlep1_nj67_highmj", "nlep1_nj8_highmj", "nlep0_nj89_lowmj", "nlep0_nj89_highmj"};
+	       "nlep0_nj45_highmj", "nlep0_nj67_highmj", "nlep1_nj45_highmj",
+	       "nlep0_nj10_lowmj", "nlep1_nj67_lowmj", "nlep1_nj8_lowmj", "nlep0_nj10_highmj",
+       	       "nlep1_nj67_highmj", "nlep1_nj8_highmj", "nlep0_nj89_lowmj", "nlep0_nj89_highmj",
+               "nlep0_nj89_vhighmj", "nlep0_nj10_vhighmj", "nlep1_nj67_vhighmj", "nlep1_nj8_vhighmj"};
     binnumber = {0,1,2,
                  3,4,5,
                  10,11,12,13,
-                 14,15,16,17};
+                 14,15,16,17,
+                 18,19,20,21};
 
 // FIXME : this is for debug
 //    binname = {"nlep0_nj45_lowmj"}; 
@@ -149,7 +151,7 @@ void plotresult(int gluinoMass=1200)
   // Get prefit signal  
   TH1D* h1_prefit_sig1200[18]; 
   TH1D* h1_prefit_sig1400[18]; 
-  TFile* infile  = TFile::Open("/net/top/homes/jaehyeokyoo/RPV/ra4_macros/variations/sum_rescaled.root", "READ");
+  TFile* infile  = TFile::Open("/net/top/homes/rohan/RPV/rpv_macros/variations/sum_rescaled_mconly_7p7_mj1000.root", "READ");
   for(int i=0; i<binname.size(); i++) {   
     int ibin = binnumber.at(i);
     if(ibin>=6 && ibin<=9) continue;
@@ -172,7 +174,7 @@ void plotresult(int gluinoMass=1200)
 
   cout << "post-fit uncertatinty " << endl;
 
-  // Get post-fit uncertainty 
+  /*  // Get post-fit uncertainty 
   TFile* errfile  = TFile::Open("rpv_postfit_err_ANv7.root", "READ");
   for(int i=0; i<binname.size(); i++) {   
       int ibin = binnumber.at(i);
@@ -195,7 +197,7 @@ void plotresult(int gluinoMass=1200)
             cout << iproc << " ::: " << ibin << " " << inb << " :: " << err[iproc][ibin][inb-1] << endl;
           }
       }
-  }
+      }*/
   
   std::string workspaceFilename;
   std::string resultsFilename;
@@ -206,8 +208,8 @@ void plotresult(int gluinoMass=1200)
   }
   else 
   { 
-    workspaceFilename=Form("workspace_M%d.root", gluinoMass);
-    resultsFilename=Form("mlfitM%d.root", gluinoMass); 
+    workspaceFilename="workspace.root";;
+  resultsFilename="mlfit.root";
   }
 
   TFile *f = TFile::Open(workspaceFilename.c_str());
@@ -590,7 +592,7 @@ void plotresult(int gluinoMass=1200)
   // ------------------------------- end table -------------------------------------
   // -------------------------------------------------------------------------------
  
-/* 
+ 
  if(plotSPlusB) {
     plotFitPulls(result_s->floatParsFinal(), "plots/pulls_nopdf.pdf", "base");
     plotFitPulls(result_s->floatParsFinal(), "plots/pulls_pdf.pdf", "pdf");
@@ -601,7 +603,7 @@ void plotresult(int gluinoMass=1200)
     plotFitPulls(result_b->floatParsFinal(), "plots/pulls_pdf.pdf", "pdf");
     plotFitPulls(result_b->floatParsFinal(), "plots/pulls_mcstats.pdf", "mcstat");
   }
-*/
+
 }
 
 void setValues(RooWorkspace *work, RooFitResult *result)
@@ -696,7 +698,7 @@ void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std:
   std::cout << "Found " << goodVars << " nuisances to plot" << std::endl;
 
   TH1D *h = new TH1D("h", "h", goodVars, 0, goodVars);
-  double pullRange=2.0;
+  double pullRange=3.0;
   h->SetMaximum(pullRange);
   h->SetMinimum(-pullRange);
 
@@ -730,7 +732,7 @@ void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std:
   
   std::cout << "pull chi2/ndof: " << sumChi2 << "/" << iGood << std::endl;
 
-  h->Draw();
+  h->Draw("EP");
 
   TBox *b = new TBox(0, -1, goodVars, 1);
   b->SetFillStyle(3003);

@@ -17,7 +17,9 @@ float mht
 float mt
 
 std::vector<bool> trig;
-bool pass;
+bool stitch
+bool pass
+bool json7p65
 
 ##################   MC   ################
 int ntruleps
@@ -71,6 +73,7 @@ std::vector<float> dr_bb
 
 ################  Fat Jets   ##################
 int nfjets
+float mj12
 float mj
 std::vector<float> fjets_pt
 std::vector<float> fjets_eta

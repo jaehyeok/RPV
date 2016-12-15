@@ -1,3 +1,5 @@
+#include <iostream>
+
 namespace rpv
 {
   TString luminosity="12.9";
@@ -50,7 +52,6 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.push_back(folder+"*_TTJets_HT*");
     files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*"); //Skimmed so that it has only ntruleps==0 && ht_me_isr<=600
   }
-
   //Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
   else if(process=="ttbar_2l"){
     files.push_back(folder+"*_TTJets_DiLept*");
@@ -98,7 +99,6 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   //Contains all processes except for QCD, ttbar, and wjets. Typically used for public plots. Recursive so only need to change samples in one place
   else if(process=="other_public"){
     std::vector<TString> tmp_other;
-    
     tmp_other = getRPVProcess(folder,"singlet");
     files.insert(files.end(),tmp_other.begin(),tmp_other.end());
     tmp_other = getRPVProcess(folder,"zjets");
@@ -106,8 +106,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     tmp_other = getRPVProcess(folder,"other");
     files.insert(files.end(),tmp_other.begin(),tmp_other.end());
   }
- 
-  
+  // For all background processes
   else if(process=="all_bg"){
     std::vector<TString> tmp_allbg;
     tmp_allbg =  getRPVProcess(folder,"ttbar");
@@ -118,11 +117,9 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.insert(files.end(),tmp_allbg.begin(),tmp_allbg.end());
     tmp_allbg =  getRPVProcess(folder,"other_public");
     files.insert(files.end(),tmp_allbg.begin(),tmp_allbg.end());
-    
   }
-
  else{
-    std::cout<<"Process not found. Allowed processes are \"ttbar\",\"ttbar_1l\",\"ttbar_2l\",\"ttbar_had\", \"qcd\", \"wjets\", \"singlet\", \"zjets\", \"other\" and \"other_public\" and \"all_bg\" ."<<std::endl;
+   std::cout<<"Process not found. Allowed processes are \"ttbar\",\"ttbar_1l\",\"ttbar_2l\",\"ttbar_had\", \"qcd\", \"wjets\", \"singlet\", \"zjets\", \"other\" and \"other_public\" and \"all_bg\"."<<std::endl;
   }
   return files;
 }

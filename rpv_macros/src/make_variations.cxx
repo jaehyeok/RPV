@@ -152,7 +152,8 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
   std::cout << "outputHistograms(): " << variation << std::endl;
 
   std::string plotVar("nbm");
-///* 
+
+
   std::vector<std::string> cuts = {
                    "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=500&&mj12<800",
                    "nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=500&&mj12<800",
@@ -170,22 +171,23 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
 				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj12>=500&&mj12<800",
 				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=500&&mj12<800",
 				   // signal regions, high mj12
-				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj12>=800&&mj12<1100",
-				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj12>=800&&mj12<1100",
-				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=800&&mj12<1100",
+				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj12>=800&&mj12<1000",
+				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj12>=800&&mj12<1000",
+				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=800&&mj12<1000",
 				   // Missing regions
 				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=500&&mj12<800",
-				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=800&&mj12<1100",
+				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=800&&mj12<1000",
 				   // High MJ regions 
-				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=1100",
-				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj12>=1100",
-				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj12>=1100",
-				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=1100"
+				   "nbm>0&&ht>1500&&njets>=8&&njets<=9&&(nmus+nels)==0&&mj12>=1000",
+				   "nbm>0&&ht>1500&&njets>=10&&(nmus+nels)==0&&mj12>=1000",
+				   "nbm>0&&ht>1200&&njets>=6&&njets<=7&&(nmus+nels)==1&&mj12>=1000",
+				   "nbm>0&&ht>1200&&njets>=8&&(nmus+nels)==1&&mj12>=1000" 
   }; 
-
-//*/ 
-//  std::vector<std::string> cuts = {"nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800"};
-
+/* 
+  std::vector<std::string> cuts = {
+                    "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800",
+                    "nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj12>=800"};
+*/
   // maximum number of b-tagged jets
   int nBBins=4;
   
@@ -242,7 +244,8 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
 int main(int argc, char* argv[])
 {
   std::vector<std::string> variations;
-  std::vector<std::string> valid_variations = {"btag_bc", "btag_udsg", "gs",
+  std::vector<std::string> valid_variations = {
+                           "btag_bc", "btag_udsg", "gs",
 					       "qcd_mur", "qcd_muf", "qcd_murf",
 					       "ttbar_mur", "ttbar_muf", "ttbar_murf"
 					       "wjets_mur", "wjets_muf", "wjets_murf",
@@ -294,7 +297,6 @@ void makeVariations(std::string &syst){
   std::string wjetsWeight("1");
   std::string otherWeight("1");
   std::string signalWeight("1");
-
 
   std::vector<double> gs_dmc={1,1,1,1};
   std::vector<double> gs_dmc_err={0,0,0,0};
@@ -362,6 +364,9 @@ void makeVariations(std::string &syst){
 
   // for the variations that do not depend on sample type
   signalWeight=qcdWeight=otherWeight=wjetsWeight=ttbarWeight=extraWeight;
+
+  // Scale factore for W+jets derived from DY at 12.9 fb-1: FIXME (needs to be updated with 36 fb-1)
+  wjetsWeight=wjetsWeight+"*1.53";
 
   // QCD flavor systematics 
   TFile *csv_weight_file = TFile::Open("data/csvfit_low_njet.root");
@@ -507,20 +512,17 @@ void makeVariations(std::string &syst){
   if(syst=="fs_btag_udsgDown") signalWeight="sys_fs_udsgtag[1]/w_btag";
   if(syst=="fs_lep_effUp") signalWeight="sys_fs_lep[0]/w_lep";
   if(syst=="fs_lep_effDown") signalWeight="sys_fs_lep[1]/w_lep";
-
-  // Add normalizations by hand because babies were renormalized 
-  // Took the numbers from last year's variations in bin15(1-lep,high njets,high mj)
-  if(syst=="wjets_mufUp") wjetsWeight="sys_muf[0]*0.8";     // 20%
-  if(syst=="wjets_mufDown") wjetsWeight="sys_muf[1]*1.2";   // 20% 
-  if(syst=="wjets_murUp") wjetsWeight="sys_mur[0]*0.8";     // 20%
-  if(syst=="wjets_murDown") wjetsWeight="sys_mur[1]*1.2";   // 20%
-  if(syst=="wjets_murfUp") wjetsWeight="sys_murf[0]*0.7";   // 30%
-  if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]*1.4"; // 40%
+  if(syst=="wjets_mufUp") wjetsWeight="sys_muf[0]*1.53";     
+  if(syst=="wjets_mufDown") wjetsWeight="sys_muf[1]*1.53";   
+  if(syst=="wjets_murUp") wjetsWeight="sys_mur[0]*1.53";     
+  if(syst=="wjets_murDown") wjetsWeight="sys_mur[1]*1.53";   
+  if(syst=="wjets_murfUp") wjetsWeight="sys_murf[0]*1.53";   
+  if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]*1.53"; 
 
   // Define samples
   TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_fit/";
   TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2016_10_24/mc/tbs_74x/";
-  TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
+  TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_fit/";
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 
@@ -548,7 +550,7 @@ void makeVariations(std::string &syst){
 
   // Reading ntuples
   std::string blinding("((njets<10 && (nmus+nels)==0) || (nmus+nels==1 && njets<6))");
-  std::vector<sfeats> Samples;  
+  std::vector<sfeats> Samples; 
   Samples.push_back(sfeats(s_rpv_750,  "#tilde{g}(750)",  ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
   Samples.push_back(sfeats(s_rpv_1000, "#tilde{g}(1000)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
   Samples.push_back(sfeats(s_rpv_1100, "#tilde{g}(1100)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
@@ -560,11 +562,11 @@ void makeVariations(std::string &syst){
   Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1,cutandweightForVariationsQCD("stitch&&pass",qcdWeight, qcdFlavorWeight))); 
   Samples.push_back(sfeats(s_tt, "t#bar{t}", kTeal, 1,cutandweightForVariations("stitch&&pass", ttbarWeight)));
   Samples.push_back(sfeats(s_wjets, "W+jets", kTeal, 1,cutandweightForVariations("stitch&&pass", wjetsWeight)));
-  Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweightForVariations("stitch&&pass", otherWeight)));
-  Samples.push_back(sfeats(s_jetht, "Data",kBlack,1,cutandweightForVariationsdata("trig[12] && pass && !json7p65 && json12p9", "1")));
+  Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweightForVariations("stitch&&pass", otherWeight))); 
+  Samples.push_back(sfeats(s_jetht, "Data",kBlack,1,cutandweightForVariationsdata("trig[12] && pass && json12p9", "1")));
   Samples.back().isData = true;
   Samples.back().doStack = false;
-  //Samples.push_back(sfeats(s_rpv_m1500, "#tilde{g}(1500)", ra4::c_other, 1, cutandweightForVariations("w_pu_rpv/eff_trig", signalWeight)));
+  
 
   // convert pretty sample name to the name used in the datacard
   prettySampleName["Data"] = "data_obs";

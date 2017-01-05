@@ -58,17 +58,17 @@ int main()
         "1-lepton,HT>1200,6#leq N_{jets}#leq7,500<MJ<800",
         "1-lepton,HT>1200,N_{jets}#geq8,500<MJ<800",
         // signal regions, high MJ
-        "0-lepton,HT>1500,N_{jets}#geq10,800<MJ<1100",           // 13
-        "1-lepton,HT>1200,6#leq N_{jets}#leq7,800<MJ<1100",
-        "1-lepton,HT>1200,N_{jets}#geq8,800<MJ<1100",
+        "0-lepton,HT>1500,N_{jets}#geq10,800<MJ<1000",           // 13
+        "1-lepton,HT>1200,6#leq N_{jets}#leq7,800<MJ<100",
+        "1-lepton,HT>1200,N_{jets}#geq8,800<MJ<100",
         // Missing regions
         "0-lepton,HT>1500,8#leq N_{jets}#leq9,500<MJ<800",  // 16
-        "0-lepton,HT>1500,8#leq N_{jets}#leq9,800<MJ<1100", 
+        "0-lepton,HT>1500,8#leq N_{jets}#leq9,800<MJ<100", 
         // Very high MJ bins
-        "0-lepton,HT>1500,8#leq N_{jets}#leq9,MJ>1100",      // 18
-        "0-lepton,HT>1500,N_{jets}#geq10,MJ>1100",           
-        "1-lepton,HT>1200,6#leq N_{jets}#leq7,MJ>1100",
-        "1-lepton,HT>1200,N_{jets}#geq8,MJ>1100"
+        "0-lepton,HT>1500,8#leq N_{jets}#leq9,MJ>100",      // 18
+        "0-lepton,HT>1500,N_{jets}#geq10,MJ>100",           
+        "1-lepton,HT>1200,6#leq N_{jets}#leq7,MJ>100",
+        "1-lepton,HT>1200,N_{jets}#geq8,MJ>1000"
     };
 
     TString binLatex[22] = {
@@ -89,20 +89,20 @@ int main()
         "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,500<M_{J}<800~\\textrm{GeV}",
         "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,500<M_{J}<800~\\textrm{GeV}",
         // signal regions, high M_{J}
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,800<M_{J}<1100~\\textrm{GeV}",           // 13
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,800<M_{J}<1100~\\textrm{GeV}",
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,800<M_{J}<1100~\\textrm{GeV}",
+        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,800<M_{J}<1000~\\textrm{GeV}",           // 13
+        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,800<M_{J}<1000~\\textrm{GeV}",
+        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,800<M_{J}<1000~\\textrm{GeV}",
         // Missing regions
         "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,500<M_{J}<800~\\textrm{GeV}",  // 16
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,800<M_{J}<1100~\\textrm{GeV}",
+        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,800<M_{J}<1000~\\textrm{GeV}",
         // Very high MJ bins
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,M_{J}>1100~\\textrm{GeV}",
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,M_{J}>1100~\\textrm{GeV}",           // 13
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,M_{J}>1100~\\textrm{GeV}",
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,M_{J}>1100~\\textrm{GeV}"
+        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,M_{J}>1000~\\textrm{GeV}",
+        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,M_{J}>1000~\\textrm{GeV}",           // 13
+        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,M_{J}>1000~\\textrm{GeV}",
+        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,M_{J}>1000~\\textrm{GeV}"
     };
 
-    TFile* infile  = TFile::Open("variations/sum_rescaled_mconly.root", "READ");
+    TFile* infile  = TFile::Open("variations/03jan2017/output_nominal.root", "READ");
   
     float data[22][5], qcd[22][5], ttbar[22][5], wjets[22][5], other[22][5],
           sig1500[22][5], sig1100[22][5], sig1200[22][5], sig1300[22][5], sig1400[22][5];
@@ -143,7 +143,7 @@ int main()
         if(ibin>=6 && ibin<=9) continue;
         //TDirectory* dir = infile->GetDirectory(Form("bin%i", ibin));
 
-        for(int inb=1; inb<5; inb++) 
+        for(int inb=0; inb<5; inb++) 
         {
             data[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin)))->GetBinContent(inb+1);
             qcd[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinContent(inb+1);
@@ -176,7 +176,7 @@ int main()
     for(int ibin=0; ibin<22; ibin++) 
     {
       if(ibin>5 && ibin<10) continue; // skip low MJ bins 
-      for(int inb=1; inb<5; inb++)  
+      for(int inb=0; inb<5; inb++)  
       {
           sig1500sum = sig1500sum + sig1500[ibin][inb-1]; 
           sig1100sum = sig1100sum + sig1100[ibin][inb-1]; 
@@ -223,7 +223,7 @@ int main()
 
 
 /*
-        for(int inb=1; inb<5; inb++) 
+        for(int inb=0; inb<5; inb++) 
         { 
             printOneLine(inb,
                     data[ibin][inb-1], qcd[ibin][inb-1], ttbar[ibin][inb-1], wjets[ibin][inb-1], other[ibin][inb-1],
@@ -282,7 +282,7 @@ int main()
             if(iproc==3)  process = "other";
 
             // loop over nb bins
-            for(int inb=1; inb<5; inb++)
+            for(int inb=0; inb<5; inb++)
             {
                 float central;
                 float up;
@@ -347,6 +347,52 @@ int main()
         }
     }
 */   
+
+    //
+    // CR 
+    //
+    int tablebin_cr[6]={0,1,2,3,4,5};
+    cout << "\\begin{table}" << endl;
+    cout << "\\centering" << endl;
+    cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
+    cout << "\\hline" << endl;
+    cout << "$N_{b}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1500\\textrm{GeV}$\\\\"  << endl;
+    cout << "\\hline\\hline" << endl;
+
+    for(int ibin=0; ibin<6; ibin++)
+    { 
+        int tablebin=tablebin_cr[ibin];
+        
+        float databin(0), mcbin(0); 
+        for(int inb=1; inb<5; inb++) 
+        { 
+            databin = databin + data[tablebin][inb-1]; 
+            mcbin = mcbin + qcd[tablebin][inb-1] + ttbar[tablebin][inb-1] + wjets[tablebin][inb-1] + other[tablebin][inb-1]; 
+        }
+
+        cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$} \\\\" << endl;
+        cout << "\\hline" << endl;
+        for(int inb=1; inb<5; inb++)
+            printYieldBin(inb,
+                    data[tablebin][inb-1],
+                    qcd[tablebin][inb-1],
+                    ttbar[tablebin][inb-1],
+                    wjets[tablebin][inb-1],
+                    other[tablebin][inb-1],
+                    sig1500[tablebin][inb-1],
+                    err[0][tablebin][inb-1]*qcd[tablebin][inb-1],
+                    err[1][tablebin][inb-1]*ttbar[tablebin][inb-1],
+                    err[2][tablebin][inb-1]*wjets[tablebin][inb-1],
+                    err[3][tablebin][inb-1]*other[tablebin][inb-1],
+                    databin/mcbin, false /*renormalize to data*/, false);
+        cout << "\\hline" << endl;
+    }
+    cout<< "\\hline" << endl;
+    cout << "\\end{tabular}"<<endl;
+    cout << "\\end{table}\n"<< endl;
+
+    cout << endl;
+    cout << endl;
     //
     // 0-lepton
     //
@@ -358,7 +404,7 @@ int main()
     cout << "$N_{b}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1500\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
-    for(int ibin=0; ibin<6; ibin++)
+    for(int ibin=1; ibin<6; ibin++)
     { 
         int tablebin=tablebin_0lep[ibin];
         
@@ -532,6 +578,7 @@ void printYieldBin(int nb, float data,
     if(other==0) other_err=0;
 
     string nbbin;
+    if(nb==0) nbbin="$0$";
     if(nb==1) nbbin="$1$";
     if(nb==2) nbbin="$2$";
     if(nb==3) nbbin="$3$";

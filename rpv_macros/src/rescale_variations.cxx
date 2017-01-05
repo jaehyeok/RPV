@@ -23,7 +23,7 @@ int main()
     std::vector<std::string> mcStatisticsList = {
         "signal_M750", "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500", "qcd", "ttbar"};
     // systematics for which the template should be rescaled for qcd and ttbar
-    std::vector<std::string> rescaleProcess = {"ttbar","qcd"};
+    std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets"};
     std::vector<std::string> rescaleList = {
            "btag_bc", "btag_udsg",
            "gs45", "gs67", "gs89", "gs10Inf",
@@ -32,7 +32,8 @@ int main()
            "isr",
            "qcd_flavor",
            "qcd_mur", "qcd_muf", "qcd_murf",
-           "ttbar_mur", "ttbar_muf", "ttbar_murf"};
+           "ttbar_mur", "ttbar_muf", "ttbar_murf",
+           "wjets_mur", "wjets_muf", "wjets_murf"};
     
     // signal list
     std::vector<std::string> signalList = 
@@ -158,6 +159,7 @@ int main()
 
         if(isBlinded(binNames.at(ibin), blindedBins)) {
             // add fake data_obs histogram for blinded bins
+            std::cout << "Getting histogram " << Form("%s/data_obs", binNames.at(ibin).c_str()) << std::endl;
             TH1F *data_obs = static_cast<TH1F*>(f->Get(Form("%s/data_obs", binNames.at(ibin).c_str())));
             TH1F *qcd = static_cast<TH1F*>(f->Get(Form("%s/qcd", binNames.at(ibin).c_str())));
             TH1F *ttbar = static_cast<TH1F*>(f->Get(Form("%s/ttbar", binNames.at(ibin).c_str())));

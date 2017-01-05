@@ -13,6 +13,17 @@
 #include "TChain.h"
 #include "small_tree_full.hpp"
 
+namespace rpv{
+  // Had to define the TColor objects in the cpp
+  enum {
+    c_t1tttt   = 2,
+    c_qcd      = kYellow-7, 
+    c_tt       = kAzure+7, 
+    c_wjets    = kGreen+2, 
+    c_other    = kGray+1
+  };
+}
+
 namespace ra4{
   // Had to define the TColor objects in the cpp
   enum {
@@ -24,7 +35,6 @@ namespace ra4{
     c_ttv      = 2002, // penn_red
     c_other    = kBlue+4
   };
-
 }
 
 namespace dps{

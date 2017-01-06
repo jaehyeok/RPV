@@ -534,7 +534,7 @@ void outputLognormalSystematics(std::ofstream &file)
   // luminosity uncertainty is 2.7%
   file << "lumi  lnN  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
-    file << "1.027 - - 1.027 1.027 ";
+    file << "1.062 - - - 1.062 ";
   }
   file << std::endl;
 

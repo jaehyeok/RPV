@@ -47,16 +47,16 @@ int main()
   gROOT->ForceStyle(); 
 
   // variation file 
-  TFile* infile  = TFile::Open("~jaehyeokyoo/RPV/rpv_macros/variations/nov28/35/sum_rescaled_mconly.root", "READ");
+  TFile* infile  = TFile::Open("variations/03jan2017/12p9/sum_rescaled_control.root", "READ");
   
   // bin definition
   std::vector<std::string> binname;
   std::vector<int> binnumber;
   binname = {"nlep0_nj45_lowmj", "nlep0_nj67_lowmj", "nlep1_nj45_lowmj",
-  		  "nlep0_nj45_highmj", "nlep0_nj67_highmj", "nlep1_nj45_highmj",
-  		  "nlep0_nj10_lowmj", "nlep1_nj67_lowmj", "nlep1_nj8_lowmj", "nlep0_nj10_highmj",
-  		  "nlep1_nj67_highmj", "nlep1_nj8_highmj", "nlep0_nj89_lowmj", "nlep0_nj89_highmj",
-  		  "nlep0_nj89_vhighmj", "nlep0_nj10_vhighmj", "nlep1_nj67_vhighmj", "nlep1_nj8_vhighmj"
+  		     "nlep0_nj45_highmj", "nlep0_nj67_highmj", "nlep1_nj45_highmj",
+  		     "nlep0_nj10_lowmj", "nlep1_nj67_lowmj", "nlep1_nj8_lowmj", "nlep0_nj10_highmj",
+  		     "nlep1_nj67_highmj", "nlep1_nj8_highmj", "nlep0_nj89_lowmj", "nlep0_nj89_highmj",
+  		     "nlep0_nj89_vhighmj", "nlep0_nj10_vhighmj", "nlep1_nj67_vhighmj", "nlep1_nj8_vhighmj"
           };
   binnumber = {0,1,2,
                3,4,5,
@@ -235,7 +235,7 @@ int main()
     pad_stack->SetLeftMargin(0.2);
     pad_stack->Draw();
     pad_stack->cd();
-    pad_stack->cd()->SetLogy(0);
+    pad_stack->cd()->SetLogy(1);
     
     TH1D *h1_data; 
     TH1D *h1_qcd;     
@@ -295,8 +295,8 @@ int main()
     st->Add(h1_ttbar); 
     st->Add(h1_qcd);  // can change order of ttbat and qcd in 1-lepton bins  
 
-    //st->SetMaximum(h1_data->GetMaximum()*2000);
-    st->SetMaximum(h1_data->GetMaximum()*2);
+    st->SetMaximum(h1_data->GetMaximum()*2000);
+    //st->SetMaximum(h1_data->GetMaximum()*2);
     st->SetMinimum(0.1);
     st->Draw("hist");
     //h1_mc->Draw("e2 same");
@@ -324,7 +324,7 @@ int main()
 
     // CMS and lumi labels
     float textSize = 0.05;
-    TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", 35.));
+    TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", 12.9));
     TexEnergyLumi->SetNDC();
     TexEnergyLumi->SetTextSize(textSize);
     TexEnergyLumi->SetTextAlign (31);
@@ -355,7 +355,16 @@ int main()
     TexNjets->SetTextSize(textSize);
     //TexNjets->SetLineWidth(2);
     TexMJ = new TLatex(0.25,0.66,"500 < M_{J} < 800 GeV");
-    if(binname_tstr.Contains("highmj"))   TexMJ = new TLatex(0.25,0.66,"M_{J} > 800 GeV");
+    if(binname_tstr.Contains("vhighmj"))   TexMJ = new TLatex(0.25,0.66,"M_{J} > 1000 GeV");
+    else if(binname_tstr.Contains("highmj"))
+    {   
+        if(binname_tstr.Contains("nlep0_nj45") || 
+           binname_tstr.Contains("nlep0_nj67") || 
+           binname_tstr.Contains("nlep1_nj45"))
+            TexMJ = new TLatex(0.25,0.66,"M_{J} > 800 GeV");   
+        else 
+            TexMJ = new TLatex(0.25,0.66,"800 < M_{J} < 1000 GeV");   
+    }
     TexMJ->SetNDC();
     TexMJ->SetTextSize(textSize);
     //TexMJ->SetLineWidth(2);

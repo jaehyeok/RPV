@@ -35,12 +35,12 @@ void drawHeader()
   lat->SetTextSize(0.038);
   lat->DrawLatexNDC(0.12, 0.93, "CMS #font[52]{Preliminary}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.66, 0.93, "2.7 fb^{-1} (13 TeV)");
+  lat->DrawLatexNDC(0.66, 0.93, "35 fb^{-1} (13 TeV)");
 }
 
 void pulls()
 {
-  std::vector<float> gluinoMasses = {750, 1000, 1100, 1200, 1300, 1400, 1500};
+  std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000};
   std::vector<float> mean;
   std::vector<float> meanError;
   std::vector<float> dummy;
@@ -81,7 +81,7 @@ void pulls()
 
 void limit()
 {
-  std::vector<float> gluinoMasses = {750, 1000, 1100, 1200, 1300, 1400, 1500};
+  std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
   std::vector<float> observed;
   std::vector<float> dummy;
@@ -141,7 +141,7 @@ void limit()
   gr->GetXaxis()->SetNdivisions(505);
   gr->SetLineWidth(3);
   gr->SetLineStyle(2);
-  gr->SetMinimum(10);
+  gr->SetMinimum(1);
   gr->SetMaximum(10000);
 
   // expected limit +/- 1 sigma
@@ -188,7 +188,8 @@ void limit()
   leg->Draw();
 
   drawHeader();
-  c->Print("plots/limits.pdf");
+  c->Print("limits.pdf");
+  c->Print("limits.png");
 }
 
 TGraphErrors * theoryGraph()

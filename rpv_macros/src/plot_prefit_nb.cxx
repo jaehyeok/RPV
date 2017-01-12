@@ -47,7 +47,7 @@ int main()
   gROOT->ForceStyle(); 
 
   // variation file 
-  TFile* infile  = TFile::Open("variations/03jan2017/12p9/sum_rescaled_control.root", "READ");
+  TFile* infile  = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root", "READ");
   
   // bin definition
   std::vector<std::string> binname;
@@ -100,6 +100,7 @@ int main()
       int ibin = binnumber.at(i);
         
       if(ibin>=6 && ibin<=9) continue; 
+      //if(ibin!=21) continue; 
 
       // Two categrories of systemtatics 
       // - correlated across processes
@@ -319,7 +320,7 @@ int main()
     leg->AddEntry(h1_wjets, "W+jets",   "F");
     leg->AddEntry(h1_other, "Other",    "F");
     leg->AddEntry(h1_signal, Form("Expected m_{#tilde{g}}=%i GeV",1500), "L");
-    leg->AddEntry(h1_mc,    "Pre-fit uncertainty",    "F");
+    //leg->AddEntry(h1_mc,    "Pre-fit uncertainty",    "F");
     leg->Draw();
 
     // CMS and lumi labels
@@ -395,7 +396,7 @@ int main()
     h1_ratio->SetMaximum(1.9);
     h1_ratio->GetYaxis()->SetTitle("Data/Fit");
     h1_ratio->GetYaxis()->SetTitleOffset(0.4);
-    h1_ratio->Draw("e");  
+    h1_ratio->Draw("e0");  
     
     TH1D *h1_ratio_err = static_cast<TH1D*>(h1_ratio->Clone("h1_ratio_err"));  
     for(int inb=1; inb<5; inb++)  

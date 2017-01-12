@@ -17,9 +17,9 @@ bool formatLatex=false;
 float addInQuad(float a, float b);
 void printOneLine(int nb, 
                   float data, float qcd, float ttbar, float wjets, float other, 
-                  float sig1500, float sig1100, float sig1200, float sig1300, float sig1400,
+                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900,
                   float data_err, float qcd_err, float ttbar_err, float wjets_err, float other_err, 
-                  float sig1500_err, float sig1100_err, float sig1200_err, float sig1300_err, float sig1400_err, bool doLatex);
+                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, bool doLatex);
 //void printOneLine(int nb, 
 //                  float qcd, float ttbar, float wjets, float other, 
 //                  float sig1500, 
@@ -102,12 +102,12 @@ int main()
         "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,M_{J}>1000~\\textrm{GeV}"
     };
 
-    TFile* infile  = TFile::Open("variations/03jan2017/output_nominal.root", "READ");
+    TFile* infile  = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root", "READ");
   
     float data[22][5], qcd[22][5], ttbar[22][5], wjets[22][5], other[22][5],
-          sig1500[22][5], sig1100[22][5], sig1200[22][5], sig1300[22][5], sig1400[22][5];
+          sig1500[22][5], sig1600[22][5], sig1700[22][5], sig1800[22][5], sig1900[22][5];
 //    float data_err[22][5], qcd_err[22][5], ttbar_err[22][5], wjets_err[22][5], other_err[22][5],
-//          sig1500_err[22][5], sig1100_err[22][5], sig1200_err[22][5], sig1300_err[22][5], sig1400_err[22][5];
+//          sig1500_err[22][5], sig1600_err[22][5], sig1700_err[22][5], sig1800_err[22][5], sig1900_err[22][5];
     for(int ibin=0; ibin<22; ibin++)  
     { 
         if(ibin>=6 && ibin<=9) continue;
@@ -119,10 +119,10 @@ int main()
             wjets[ibin][inb] = 0;
             other[ibin][inb] = 0;
             sig1500[ibin][inb] = 0;
-            sig1100[ibin][inb] = 0;
-            sig1200[ibin][inb] = 0;
-            sig1300[ibin][inb] = 0;
-            sig1400[ibin][inb] = 0;
+            sig1600[ibin][inb] = 0;
+            sig1700[ibin][inb] = 0;
+            sig1800[ibin][inb] = 0;
+            sig1900[ibin][inb] = 0;
  /*           
             data_err[ibin][inb] = 0;
             qcd_err[ibin][inb] = 0;
@@ -130,10 +130,10 @@ int main()
             wjets_err[ibin][inb] = 0;
             other_err[ibin][inb] = 0;
             sig1500_err[ibin][inb] = 0;
-            sig1100_err[ibin][inb] = 0;
-            sig1200_err[ibin][inb] = 0;
-            sig1300_err[ibin][inb] = 0;
-            sig1400_err[ibin][inb] = 0;
+            sig1600_err[ibin][inb] = 0;
+            sig1700_err[ibin][inb] = 0;
+            sig1800_err[ibin][inb] = 0;
+            sig1900_err[ibin][inb] = 0;
 */
         }
     }
@@ -152,10 +152,10 @@ int main()
             other[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinContent(inb+1);
             sig1500[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1500", ibin)))->GetBinContent(inb+1);
             data[ibin][inb-1]=qcd[ibin][inb-1]+ttbar[ibin][inb-1]+wjets[ibin][inb-1]+other[ibin][inb-1];
-            sig1100[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1100", ibin)))->GetBinContent(inb+1);
-            sig1200[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1200", ibin)))->GetBinContent(inb+1);
-            sig1300[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1300", ibin)))->GetBinContent(inb+1);
-            sig1400[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1400", ibin)))->GetBinContent(inb+1);
+            sig1600[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1600", ibin)))->GetBinContent(inb+1);
+            sig1700[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinContent(inb+1);
+            sig1800[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinContent(inb+1);
+            sig1900[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinContent(inb+1);
 /*            
             data_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin)))->GetBinError(inb+1);
             qcd_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinError(inb+1);
@@ -164,25 +164,25 @@ int main()
             other_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinError(inb+1);
             sig1500_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1500", ibin)))->GetBinError(inb+1);
             data_err[ibin][inb-1]= TMath::Sqrt(data[ibin][inb-1]);
-            sig1100_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1100", ibin)))->GetBinError(inb+1);
-            sig1200_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1200", ibin)))->GetBinError(inb+1);
-            sig1300_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1300", ibin)))->GetBinError(inb+1);
-            sig1400_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1400", ibin)))->GetBinError(inb+1);
+            sig1600_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1600", ibin)))->GetBinError(inb+1);
+            sig1700_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinError(inb+1);
+            sig1800_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinError(inb+1);
+            sig1900_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinError(inb+1);
 */
         }  
     }
         
-    float sig1500sum(0), sig1100sum(0), sig1200sum(0), sig1300sum(0), sig1400sum(0);
+    float sig1500sum(0), sig1600sum(0), sig1700sum(0), sig1800sum(0), sig1900sum(0);
     for(int ibin=0; ibin<22; ibin++) 
     {
       if(ibin>5 && ibin<10) continue; // skip low MJ bins 
       for(int inb=0; inb<5; inb++)  
       {
           sig1500sum = sig1500sum + sig1500[ibin][inb-1]; 
-          sig1100sum = sig1100sum + sig1100[ibin][inb-1]; 
-          sig1200sum = sig1200sum + sig1200[ibin][inb-1]; 
-          sig1300sum = sig1300sum + sig1300[ibin][inb-1]; 
-          sig1400sum = sig1400sum + sig1400[ibin][inb-1]; 
+          sig1600sum = sig1600sum + sig1600[ibin][inb-1]; 
+          sig1700sum = sig1700sum + sig1700[ibin][inb-1]; 
+          sig1800sum = sig1800sum + sig1800[ibin][inb-1]; 
+          sig1900sum = sig1900sum + sig1900[ibin][inb-1]; 
       }
     }
 
@@ -202,7 +202,7 @@ int main()
            cout << "\\caption{Yields for $" << binLatex[ibin].Data()<< "$. Uncertainties are statistical only.}" << endl;
            cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c  c  c  }" << endl;
            cout << "\\hline\\hline" << endl;
-           cout << "$N_{b}$ & QCD & $t\\bar{t}$ & W+jets & Other & $m_{\\tilde{g}}=1000$ & $m_{\\tilde{g}}=1200$ & $m_{\\tilde{g}}=1400$ \\\\"  << endl;
+           cout << "$N_{b}$ & QCD & $t\\bar{t}$ & W+jets & Other & $m_{\\tilde{g}}=1000$ & $m_{\\tilde{g}}=1700$ & $m_{\\tilde{g}}=1900$ \\\\"  << endl;
            cout << "\\hline" << endl;
        }
        else 
@@ -217,8 +217,8 @@ int main()
             setw(16) << "wjets" << " |" << 
             setw(16) << "other" << " |" << 
             setw(20) << "M=1000(S/B)"<< " |" << 
-            setw(20) << "M=1200(S/B)" << " |" << 
-            setw(20) << "M=1400(S/B)" << " |" << endl;
+            setw(20) << "M=1700(S/B)" << " |" << 
+            setw(20) << "M=1900(S/B)" << " |" << endl;
         } 
 
 
@@ -227,11 +227,11 @@ int main()
         { 
             printOneLine(inb,
                     data[ibin][inb-1], qcd[ibin][inb-1], ttbar[ibin][inb-1], wjets[ibin][inb-1], other[ibin][inb-1],
-                    sig1500[ibin][inb-1], sig1100[ibin][inb-1], sig1200[ibin][inb-1], sig1300[ibin][inb-1], sig1400[ibin][inb-1],
-                    //sig1500[ibin][inb-1]/sig1500sum, sig1100[ibin][inb-1]/sig1100sum, sig1200[ibin][inb-1]/sig1200sum, 
-                    //    sig1300[ibin][inb-1]/sig1300sum, sig1400[ibin][inb-1]/sig1400sum,
+                    sig1500[ibin][inb-1], sig1600[ibin][inb-1], sig1700[ibin][inb-1], sig1800[ibin][inb-1], sig1900[ibin][inb-1],
+                    //sig1500[ibin][inb-1]/sig1500sum, sig1600[ibin][inb-1]/sig1600sum, sig1700[ibin][inb-1]/sig1700sum, 
+                    //    sig1800[ibin][inb-1]/sig1800sum, sig1900[ibin][inb-1]/sig1900sum,
                     data_err[ibin][inb-1], qcd_err[ibin][inb-1], ttbar_err[ibin][inb-1], wjets_err[ibin][inb-1], other_err[ibin][inb-1],
-                    sig1500_err[ibin][inb-1], sig1100_err[ibin][inb-1], sig1200_err[ibin][inb-1], sig1300_err[ibin][inb-1], sig1400_err[ibin][inb-1],
+                    sig1500_err[ibin][inb-1], sig1600_err[ibin][inb-1], sig1700_err[ibin][inb-1], sig1800_err[ibin][inb-1], sig1900_err[ibin][inb-1],
                     formatLatex);
         } 
 */
@@ -404,7 +404,7 @@ int main()
     cout << "$N_{b}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1500\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
-    for(int ibin=1; ibin<6; ibin++)
+    for(int ibin=0; ibin<6; ibin++)
     { 
         int tablebin=tablebin_0lep[ibin];
         
@@ -491,18 +491,18 @@ int main()
 //
 void printOneLine(int nb, 
                   float data, float qcd, float ttbar, float wjets, float other, 
-                  float sig1500, float sig1100, float sig1200, float sig1300, float sig1400,
+                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900,
                   float data_err, float qcd_err, float ttbar_err, float wjets_err, float other_err, 
-                  float sig1500_err, float sig1100_err, float sig1200_err, float sig1300_err, float sig1400_err, float doLatex)
+                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, float doLatex)
 {
 
     float how_to_deal_with_unused_vars;
     how_to_deal_with_unused_vars=data;
     how_to_deal_with_unused_vars=data_err;
-    how_to_deal_with_unused_vars=sig1100;
-    how_to_deal_with_unused_vars=sig1100_err;
-    how_to_deal_with_unused_vars=sig1300;
-    how_to_deal_with_unused_vars=sig1300_err;
+    how_to_deal_with_unused_vars=sig1600;
+    how_to_deal_with_unused_vars=sig1600_err;
+    how_to_deal_with_unused_vars=sig1800;
+    how_to_deal_with_unused_vars=sig1800_err;
     how_to_deal_with_unused_vars=4;
 
     float totbkg=qcd+ttbar+wjets+other;
@@ -516,8 +516,8 @@ void printOneLine(int nb,
             << Form("$%.2f\\pm%.2f$",other,other_err) << " & " 
             //<< Form("$%.0f$",data) << " & " 
             << Form("$%.2f\\pm%.2f$",sig1500,sig1500_err) << " & " 
-            << Form("$%.2f\\pm%.2f$",sig1200,sig1200_err) << " & " 
-            << Form("$%.2f\\pm%.2f$",sig1400,sig1400_err) << " \\\\" << endl;
+            << Form("$%.2f\\pm%.2f$",sig1700,sig1700_err) << " & " 
+            << Form("$%.2f\\pm%.2f$",sig1900,sig1900_err) << " \\\\" << endl;
     } 
     else 
     { 
@@ -529,8 +529,8 @@ void printOneLine(int nb,
             setw(16) << Form("%.2f+-%.2f",other,other_err) << " |" << 
             //setw(16) << Form("%.2f+-%.2f",data) << " |" << 
             setw(20) << Form("%.2f+-%.2f(%.2f)",sig1500,sig1500_err,sig1500/totbkg ) << " |" << 
-            setw(20) << Form("%.2f+-%.2f(%.2f)",sig1200,sig1200_err,sig1200/totbkg) << " |" << 
-            setw(20) << Form("%.2f+-%.2f(%.2f)",sig1400,sig1400_err,sig1400/totbkg) << " |" << endl;
+            setw(20) << Form("%.2f+-%.2f(%.2f)",sig1700,sig1700_err,sig1700/totbkg) << " |" << 
+            setw(20) << Form("%.2f+-%.2f(%.2f)",sig1900,sig1900_err,sig1900/totbkg) << " |" << endl;
     }
 } 
 /*

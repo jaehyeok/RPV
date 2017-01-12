@@ -57,7 +57,8 @@ std::string cutandweightForVariationsSignal(std::string cut, std::string weight)
   // the default weight includes the RA4 trigger efficiency; need to exclude this
   newcut+="*";
   newcut+=rpv::luminosity.Data();
-  newcut+="*weight*w_pu_rpv/eff_trig)*(";
+  //newcut+="*weight*w_pu_rpv/eff_trig)*("; // for 74x babies
+  newcut+="*weight)*(";
   newcut+=cut;
   newcut+="";
 
@@ -225,7 +226,7 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
             histname.erase(histname.find(']'), 1);
         } 
         // Replace mj12 with mj for signal samples  // FIXME: need to be updated once we have new babies 
-        if(histname.find("signal")!=std::string::npos) tempCut.ReplaceAll("mj12","mj"); 
+        //if(histname.find("signal")!=std::string::npos) tempCut.ReplaceAll("mj12","mj"); 
         TH1F * hist = new TH1F(histname.c_str(), histname.c_str(), nBBins+1, 0, nBBins+1);
         TString fullCut(Form("%s&&%s)", Samples.at(i).cut.Data(), tempCut.Data()));
 
@@ -533,50 +534,68 @@ void makeVariations(std::string &syst){
   vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
   vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
 
-  std::vector<TString> s_rpv_750;
-  s_rpv_750.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-750*");
   std::vector<TString> s_rpv_1000;
-  s_rpv_1000.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1000*");
+  s_rpv_1000.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1000*");
   std::vector<TString> s_rpv_1100;
-  s_rpv_1100.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1100*");
+  s_rpv_1100.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1100*");
   std::vector<TString> s_rpv_1200;
-  s_rpv_1200.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1200*");
+  s_rpv_1200.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1200*");
   std::vector<TString> s_rpv_1300;
-  s_rpv_1300.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1300*");
+  s_rpv_1300.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1300*"); 
   std::vector<TString> s_rpv_1400;
-  s_rpv_1400.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1400*");
+  s_rpv_1400.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1400*");
   std::vector<TString> s_rpv_1500;
-  s_rpv_1500.push_back("/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/*mGluino-1500*");
+  s_rpv_1500.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1500*");
+  std::vector<TString> s_rpv_1600;
+  s_rpv_1600.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1600*");
+  std::vector<TString> s_rpv_1700;
+  s_rpv_1700.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1700*");
+  std::vector<TString> s_rpv_1800;
+  s_rpv_1800.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1800*");
+  std::vector<TString> s_rpv_1900;
+  s_rpv_1900.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1900*");
+  std::vector<TString> s_rpv_2000;
+  s_rpv_2000.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino2000*");
 
   // Reading ntuples
   std::string blinding("((njets<10 && (nmus+nels)==0) || (nmus+nels==1 && njets<6))");
   std::vector<sfeats> Samples; 
-  Samples.push_back(sfeats(s_rpv_750,  "#tilde{g}(750)",  ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
+
   Samples.push_back(sfeats(s_rpv_1000, "#tilde{g}(1000)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
   Samples.push_back(sfeats(s_rpv_1100, "#tilde{g}(1100)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
   Samples.push_back(sfeats(s_rpv_1200, "#tilde{g}(1200)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
   Samples.push_back(sfeats(s_rpv_1300, "#tilde{g}(1300)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
   Samples.push_back(sfeats(s_rpv_1400, "#tilde{g}(1400)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
   Samples.push_back(sfeats(s_rpv_1500, "#tilde{g}(1500)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1600, "#tilde{g}(1600)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1700, "#tilde{g}(1700)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1800, "#tilde{g}(1800)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1900, "#tilde{g}(1900)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_2000, "#tilde{g}(2000)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
 
   Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1,cutandweightForVariationsQCD("stitch&&pass",qcdWeight, qcdFlavorWeight))); 
   Samples.push_back(sfeats(s_tt, "t#bar{t}", kTeal, 1,cutandweightForVariations("stitch&&pass", ttbarWeight)));
   Samples.push_back(sfeats(s_wjets, "W+jets", kTeal, 1,cutandweightForVariations("stitch&&pass", wjetsWeight)));
   Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweightForVariations("stitch&&pass", otherWeight))); 
+  
+  //Samples.push_back(sfeats(s_jetht, "Data",kBlack,1,cutandweightForVariationsdata("(trig[12]||trig[54]||trig[56]) && pass && json12p9", "1")));
   Samples.push_back(sfeats(s_jetht, "Data",kBlack,1,cutandweightForVariationsdata("trig[12] && pass && json12p9", "1")));
   Samples.back().isData = true;
   Samples.back().doStack = false;
-  
 
   // convert pretty sample name to the name used in the datacard
   prettySampleName["Data"] = "data_obs";
-  prettySampleName["#tilde{g}(750)"] = "signal_M750";
   prettySampleName["#tilde{g}(1000)"] = "signal_M1000";
   prettySampleName["#tilde{g}(1100)"] = "signal_M1100";
   prettySampleName["#tilde{g}(1200)"] = "signal_M1200";
   prettySampleName["#tilde{g}(1300)"] = "signal_M1300";
   prettySampleName["#tilde{g}(1400)"] = "signal_M1400";
   prettySampleName["#tilde{g}(1500)"] = "signal_M1500";
+  prettySampleName["#tilde{g}(1600)"] = "signal_M1600";
+  prettySampleName["#tilde{g}(1700)"] = "signal_M1700";
+  prettySampleName["#tilde{g}(1800)"] = "signal_M1800";
+  prettySampleName["#tilde{g}(1900)"] = "signal_M1900";
+  prettySampleName["#tilde{g}(2000)"] = "signal_M2000";
   prettySampleName["QCD"] = "qcd";
   prettySampleName["W+jets"] = "wjets";
   prettySampleName["t#bar{t}"] = "ttbar";

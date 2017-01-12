@@ -150,8 +150,8 @@ int main(int argc, char *argv[])
   // which variation file
   std::string dataCardPath = gSystem->pwd();
   if(argc>3) dataCardPath += "/variations/" + inputname;
-  else if(cardType=="mconly") dataCardPath += "/variations/sum_rescaled_mconly.root";
-  else if(cardType=="control") dataCardPath += "/variations/03jan2017/12p9/sum_rescaled_control.root";
+  else if(cardType=="mconly") dataCardPath += "/variations/11jan2016/35/sum_rescaled_mconly.root";
+  else if(cardType=="control") dataCardPath += "/variations/11jan2016/12p9/sum_rescaled_control.root";
   else dataCardPath += "/variations/sum_rescaled.root";
   TFile *variations = TFile::Open(dataCardPath.c_str());
   std::ofstream file;
@@ -596,6 +596,7 @@ void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> 
 // should do this from the histograms themselves!
 bool hasEntry(const std::string &sample, const std::string &bin, const int nB)
 {
+/*
   if(sample.find("signal_M1000")!=std::string::npos) {
     if(bin=="bin2" && nB==4) return false;
     if(bin=="bin3" && nB==1) return false;
@@ -623,12 +624,15 @@ bool hasEntry(const std::string &sample, const std::string &bin, const int nB)
     //if(bin=="bin0" && nB==4) return false;
     //if(bin=="bin5" && nB==4) return false;
   //}
+*/
   if(sample=="qcd") {
     //if(bin=="bin5" && nB==3) return false;
-    if(bin=="bin5" && nB==4) return false;
+    //if(bin=="bin5" && nB==4) return false;
+    if(bin=="bin5" && nB==4) return true; 
     //if(bin=="bin11" && nB==4) return false;
     //if(bin=="bin14" && nB==4) return false;
     //if(bin=="bin15" && nB==4) return false;
   }
+
   return true;
 }

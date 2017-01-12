@@ -15,13 +15,16 @@ int main()
     //cardType="control"; 
 
     std::string rootfile("variations/sum_rescaled.root");
-    if(cardType=="mconly") rootfile = "variations/sum_rescaled_mconly.root";
-    else if(cardType=="control") rootfile = "variations/sum_rescaled_control.root";
+    if(cardType=="mconly") rootfile = "variations/11jan2016/35/sum_rescaled_mconly.root";
+    else if(cardType=="control") rootfile = "variations/11jan2016/12p9/sum_rescaled_control.root";
     TFile *f = TFile::Open(rootfile.c_str(), "update");
 
     // samples for which MC statistics should be considered
     std::vector<std::string> mcStatisticsList = {
-        "signal_M750", "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500", "qcd", "ttbar"};
+        "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", 
+        "signal_M1500", 
+        "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000", 
+        "qcd", "ttbar"};
     // systematics for which the template should be rescaled for qcd and ttbar
     std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets"};
     std::vector<std::string> rescaleList = {
@@ -38,7 +41,9 @@ int main()
     // signal list
     std::vector<std::string> signalList = 
     {
-        "signal_M750", "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500"};
+        "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", 
+        "signal_M1500", 
+        "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000"};
     std::vector<std::string> signalRescaleList = {};
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
 

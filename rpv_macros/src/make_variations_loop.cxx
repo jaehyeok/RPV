@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
+#include <stdlib.h>
 
 #include "TCanvas.h"
 #include "TFile.h"
@@ -18,82 +20,127 @@ using namespace std;
 void getSyst(small_tree_rpv &trees, TString variations, TFile *f, TString procname);
 double addError(double error, double added_error);
 double divideErrors(double x, double y, double dx, double dy);
+//void fillTH1F(TH1F* &h1, double var, double weight);
 
-float lumi = 2.69; // fb-1
+float lumi = 35; // fb-1
+const int nbins = 22;
+int w_pdf_index = 0;
 
-int main(){
-/*  
+int main(int argc, char *argv[])
+{
+  cout << argv[0] << endl;
+  cout << argv[1] << endl;
+  //
+  TString variations = "nominal";
+  if(argc<2) {
+    cout << "[Error] Provide name of variation" << endl; 
+    return 0;
+  }
+  else if(argc<3) 
+  { 
+    variations = argv[1];  
+    if(variations=="w_pdf") 
+    { 
+        cout << "[Error] Provide an index for w_pdf:" << endl;
+        return 0;
+    }
+    else 
+    {
+        cout << "Running variation: " << variations << endl;
+    }
+  }
+  else 
+  {
+    variations = argv[1];  
+    w_pdf_index = atoi(argv[2]);  
+    cout << "Running variation: " << variations;
+    cout << " with w_pdf index " << w_pdf_index; 
+    cout << endl; 
+  }
+
   // Define samples
-  TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
-  TString folder_sig = "/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/";
-  TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
+  //TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
+  //TString folder_sig = "/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/";
+  //TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
+  TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/mc/skim_rpv_fit/";
+  TString folder_dat = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/data/skim_rpv_fit/";
+  TString folder_sig = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_10/mc/T1tbs/";
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
-
-  //vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
 
   vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
   vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar");
   vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
   vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
-  string folder = "/net/cms29/cms29r0/cawest/skims/ht1200/";
-*/
   
-  string folder = "/net/cms29/cms29r0/cawest/skims/ht1200/";
-
+  vector<TString> s_rpv_m1000 = getRPVProcess(folder_sig,"rpv_m1000");
+  vector<TString> s_rpv_m1100 = getRPVProcess(folder_sig,"rpv_m1100");
+  vector<TString> s_rpv_m1200 = getRPVProcess(folder_sig,"rpv_m1200");
+  vector<TString> s_rpv_m1300 = getRPVProcess(folder_sig,"rpv_m1300");
+  vector<TString> s_rpv_m1400 = getRPVProcess(folder_sig,"rpv_m1400");
+  vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
+  vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");
+  vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700");
+  vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");
+  vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900");
+  vector<TString> s_rpv_m2000 = getRPVProcess(folder_sig,"rpv_m2000");
+  
+  small_tree_rpv data((static_cast<std::string>(s_jetht.at(0))));
+  
   // qcd ttbar wjets other 750 1000 1100 1200 1300 1400 1500
-  small_tree_rpv qcd(folder+"*QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8*");
-  qcd.Add(folder+"*QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1*");
-  qcd.Add(folder+"*QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8*");
-  qcd.Add(folder+"*QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1*");
-  qcd.Add(folder+"*QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8*");
-  qcd.Add(folder+"*QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1*");
-
-  small_tree_rpv ttbar("/net/cms2/cms2r0/jaehyeokyoo/babies/skim_ht1200/*TTJets_TuneCUETP8M1_13TeV-madgraphMLM*"); //ntruleps==0&&ht>1200
-  ttbar.Add(folder+"*TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8*");
-  ttbar.Add(folder+"*TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1*");
-  ttbar.Add(folder+"*TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8*");
-  ttbar.Add(folder+"*TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1*");
-  ttbar.Add(folder+"*TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8*");
-  ttbar.Add(folder+"*TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1*");
+  small_tree_rpv qcd((static_cast<std::string>(s_qcd.at(0))));
+  for(unsigned int iqcd=1; iqcd<s_qcd.size(); iqcd++) qcd.Add((static_cast<std::string>(s_qcd.at(iqcd))));
+  small_tree_rpv ttbar((static_cast<std::string>(s_tt.at(0))));
+  for(unsigned int ittbar=1; ittbar<s_tt.size(); ittbar++) ttbar.Add((static_cast<std::string>(s_tt.at(ittbar))));
+  small_tree_rpv wjets((static_cast<std::string>(s_wjets.at(0))));
+  for(unsigned int iwjets=1; iwjets<s_wjets.size(); iwjets++) wjets.Add((static_cast<std::string>(s_wjets.at(iwjets))));
+  small_tree_rpv other((static_cast<std::string>(s_other.at(0))));
+  for(unsigned int iother=1; iother<s_other.size(); iother++) other.Add((static_cast<std::string>(s_other.at(iother))));
   
-  small_tree_rpv wjets(folder+"*WJetsToLNu_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8*");
-  wjets.Add(folder+"*WJetsToQQ_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8*");
-  
-  small_tree_rpv other(folder+"*ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1*");
-  other.Add(folder+"*ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1*");
-  other.Add(folder+"*ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1*");
-  other.Add(folder+"*ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1*");
-  other.Add(folder+"*ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1*");
-  other.Add(folder+"*DYJetsToLL_M-50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8*");
-  other.Add(folder+"*ttHJetTobb_M125_13TeV_amcatnloFXFX_madspin_pythia8*");
-  other.Add(folder+"*TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8*");
-  other.Add(folder+"*TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8*");
-  other.Add(folder+"*TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8*");
-  other.Add(folder+"*TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8*");
-  other.Add(folder+"*TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8*");
-  other.Add(folder+"*ZJetsToQQ_HT600toInf_13TeV-madgraph*");
-
-
-  // signal...
+  // signal
+  small_tree_rpv rpv_m1000((static_cast<std::string>(s_rpv_m1000.at(0))));
+  small_tree_rpv rpv_m1100((static_cast<std::string>(s_rpv_m1100.at(0))));
+  small_tree_rpv rpv_m1200((static_cast<std::string>(s_rpv_m1200.at(0))));
+  small_tree_rpv rpv_m1300((static_cast<std::string>(s_rpv_m1300.at(0))));
+  small_tree_rpv rpv_m1400((static_cast<std::string>(s_rpv_m1400.at(0))));
+  small_tree_rpv rpv_m1500((static_cast<std::string>(s_rpv_m1500.at(0))));
+  small_tree_rpv rpv_m1600((static_cast<std::string>(s_rpv_m1600.at(0))));
+  small_tree_rpv rpv_m1700((static_cast<std::string>(s_rpv_m1700.at(0))));
+  small_tree_rpv rpv_m1800((static_cast<std::string>(s_rpv_m1800.at(0))));
+  small_tree_rpv rpv_m1900((static_cast<std::string>(s_rpv_m1900.at(0))));
+  small_tree_rpv rpv_m2000((static_cast<std::string>(s_rpv_m2000.at(0))));
 
   // open output root file
-  TString variations = "nominal";
-  TFile *f = new TFile(Form("variations/output_%s.root", variations.Data()), "recreate");
+  TFile *f = new TFile(Form("variations_loop/output_%s.root", variations.Data()), "recreate");
 
   // Depending on the process, turn on/off variation
-
+  
+  // data 
+  if(variations=="nominal") getSyst(data,  variations, f, "data_obs");
+  
   // loop over a tree and get up/dawn shapes for all bins at once 
-  getSyst(qcd,   variations, f, "qcd");
-  getSyst(ttbar, variations, f, "ttbar");
-  getSyst(wjets, variations, f, "wjets");
-  getSyst(other, variations, f, "other");
+  getSyst(qcd,       variations, f, "qcd");
+  getSyst(ttbar,     variations, f, "ttbar");
+  getSyst(wjets,     variations, f, "wjets");
+  getSyst(other,     variations, f, "other");
+  getSyst(rpv_m1000, variations, f, "signal_M1000");
+  getSyst(rpv_m1100, variations, f, "signal_M1100");
+  getSyst(rpv_m1200, variations, f, "signal_M1200");
+  getSyst(rpv_m1300, variations, f, "signal_M1300");
+  getSyst(rpv_m1400, variations, f, "signal_M1400");
+  getSyst(rpv_m1500, variations, f, "signal_M1500");
+  getSyst(rpv_m1600, variations, f, "signal_M1600");
+  getSyst(rpv_m1700, variations, f, "signal_M1700");
+  getSyst(rpv_m1800, variations, f, "signal_M1800");
+  getSyst(rpv_m1900, variations, f, "signal_M1900");
+  getSyst(rpv_m2000, variations, f, "signal_M2000");
 
   // close output root file
   f->Close();
 } 
 
-void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procname){
+void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procname)
+{
 
     cout << "Running syst: " << variations << endl;  
     //TString procname = "qcd";
@@ -101,24 +148,49 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
     TString upname      = nominalname+"Up";
     TString downname    = nominalname+"Down";
         
-    // Get QCD flavor weights 
-    TFile *csv_weight_file = TFile::Open("data/low_njet.root");
+    // Get QCD flavor weights/systematics
+    TFile *csv_weight_file = TFile::Open("data/csvfit_low_njet.root");
     TH1F *csv_weight = static_cast<TH1F*>(csv_weight_file->Get("csv_weight"));
+
+    TFile *csv_weight_file_highnjet = TFile::Open("data/csvfit_high_njet.root");
+    TH1F *csv_weight_highnjet = static_cast<TH1F*>(csv_weight_file_highnjet->Get("csv_weight"));
+
     float bflavorValCentral = csv_weight->GetBinContent(1);
     float bflavorValError = csv_weight->GetBinError(1);
     float cflavorValCentral = csv_weight->GetBinContent(2);
-    // negative sign implements anticorrelation between b and c reweightings
-    float cflavorValError = -csv_weight->GetBinError(2);
+    float cflavorValError = csv_weight->GetBinError(2);
     float lflavorValCentral = csv_weight->GetBinContent(3);
     float lflavorValError = csv_weight->GetBinError(3);
-    csv_weight_file->Close();
-    f->cd(); 
-  
-    bflavorValCentral = 1.0; 
-    cflavorValCentral = 1.0; 
-    lflavorValCentral = 1.0; 
 
-    if(procname.Contains("qcd")) 
+    if(procname=="qcd")  
+    {
+        std::cout << "CSV fit low Njets results: " << std::endl;
+        std::cout << "Reweight b jets by " << bflavorValCentral << " +/- " << bflavorValError << std::endl;
+        std::cout << "Reweight c jets by " << cflavorValCentral << " +/- " << cflavorValError << std::endl;
+        std::cout << "Reweight l jets by " << lflavorValCentral << " +/- " << lflavorValError << std::endl;
+        std::cout << "CSV fit high Njets results: " << std::endl;
+        std::cout << "Reweight b jets by " << csv_weight_highnjet->GetBinContent(1)
+            << " +/ " << csv_weight_highnjet->GetBinError(1) << std::endl;
+        std::cout << "Reweight c jets by " << csv_weight_highnjet->GetBinContent(2)
+            << " +/ " << csv_weight_highnjet->GetBinError(2) << std::endl;
+        std::cout << "Reweight l jets by " << csv_weight_highnjet->GetBinContent(3)
+            << " +/ " << csv_weight_highnjet->GetBinError(3) << std::endl;
+    }
+
+    // Increase uncertainty on variation by difference between nominal and high njet fit (from Pieter's comment)
+    float bflavorValDiff_low_high = bflavorValCentral - csv_weight_highnjet->GetBinContent(1);
+    bflavorValError = sqrt(pow(bflavorValError,2) + pow(bflavorValDiff_low_high,2));
+    float cflavorValDiff_low_high = cflavorValCentral - csv_weight_highnjet->GetBinContent(2);
+    // Negative sign implements anticorrelation between b and c reweightings
+    cflavorValError = -1*(sqrt(pow(cflavorValError,2) + pow(cflavorValDiff_low_high,2)));
+    float lflavorValDiff_low_high = lflavorValCentral - csv_weight_highnjet->GetBinContent(3);
+    lflavorValError = sqrt(pow(lflavorValError,2) + pow(lflavorValDiff_low_high,2));
+
+    csv_weight_file->Close();
+    csv_weight_file_highnjet->Close();
+    f->cd();
+
+    if(procname=="qcd") 
     { 
         std::cout << "Reweight b jets by " << bflavorValCentral << " +/ " << bflavorValError << std::endl;
         std::cout << "Reweight c jets by " << cflavorValCentral << " +/ " << cflavorValError << std::endl;
@@ -145,43 +217,46 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
 
     // nominal, up and down histrograms  
     int nBBins=4;
-    TH1F * h1nominal = new TH1F(nominalname.Data(), nominalname.Data(), nBBins+1, 0, nBBins+1);
-    TH1F * h1up     = new TH1F(upname.Data(), upname.Data(), nBBins+1, 0, nBBins+1);
-    TH1F * h1down   = new TH1F(downname.Data(), downname.Data(), nBBins+1, 0, nBBins+1);
+    TH1F * h1nominal[nbins];
+    TH1F * h1up[nbins];     
+    TH1F * h1down[nbins];   
+    
+    for(int ibin=0; ibin<nbins; ibin++)
+    {
+        //h1nominal[ibin]    = new TH1F(nominalname.Data(),  nominalname.Data(), nBBins+1, 0, nBBins+1);
+        //h1up[ibin]         = new TH1F(upname.Data(),       upname.Data(),      nBBins+1, 0, nBBins+1);
+        //h1down[ibin]       = new TH1F(downname.Data(),     downname.Data(),    nBBins+1, 0, nBBins+1);
+        h1nominal[ibin]    = new TH1F(Form("%s_bin%i",nominalname.Data(),ibin),    Form("%s_bin%i",nominalname.Data(),ibin), nBBins+1, 0, nBBins+1);
+        h1up[ibin]         = new TH1F(Form("%s_bin%i",upname.Data(),ibin),         Form("%s_bin%i",upname.Data(),ibin), nBBins+1, 0, nBBins+1);
+        h1down[ibin]       = new TH1F(Form("%s_bin%i",downname.Data(),ibin),       Form("%s_bin%i",downname.Data(),ibin), nBBins+1, 0, nBBins+1);
+    }
 
     // loop over tree 
-    for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++){
-
+    for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++)
+    {
         tree.GetEntry(ientry); 
 
         // 
         // Weights
         // 
-        float nominalweight = lumi*tree.weight()*tree.w_pu_rpv()/tree.eff_trig();   
-        float upweight      = nominalweight;
-        float downweight    = nominalweight;
+        float nominalweight = lumi*tree.weight();    
+        if(procname=="qcd" || procname=="ttbar" || 
+           procname=="wjets" || procname=="other" ) 
+            nominalweight = nominalweight * tree.stitch() * tree.pass();
+        //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||trig()[56]); // rereco
+        else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
+        else if (procname=="signal") nominalweight = nominalweight * 1; 
        
-        
         // jet flavor 
-        if(procname.Contains("qcd")) 
+        if(procname=="qcd") 
         { 
-            // To provide QCD flavor reweighting
-            //double bflavorValUp, bflavorValDown;
-            //bflavorValUp=bflavorValCentral+bflavorValError;
-            //bflavorValDown=bflavorValCentral-bflavorValError;
-            //double cflavorValUp, cflavorValDown;
-            //cflavorValUp=cflavorValCentral+cflavorValError;
-            //cflavorValDown=cflavorValCentral-cflavorValError;
-            //double lflavorValUp, lflavorValDown;
-            //lflavorValUp=lflavorValCentral=lflavorValDown=1.0;
-
             int n_bflavor=0;
             int n_cflavor=0;
             for(unsigned int j=0; j<tree.jets_hflavor().size(); j++)
-            { 
-                if(tree.jets_islep().at(j)) continue;
-                if(tree.jets_pt().at(j)<30) continue;
-                if(abs(tree.jets_eta().at(j))>2.4) continue; 
+            {   // FIXME: need to include these lines 
+                //if(tree.jets_islep().at(j)) continue;
+                //if(tree.jets_pt().at(j)<30) continue;
+                //if(abs(tree.jets_eta().at(j))>2.4) continue; 
             
                 if(tree.jets_hflavor().at(j)==5) n_bflavor++;
                 if(tree.jets_hflavor().at(j)==4) n_cflavor++;
@@ -189,39 +264,233 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
 
             if(n_bflavor>0)  
             { 
-                nominalweight = nominalweight * bflavorValCentral;
+                nominalweight = nominalweight*bflavorValCentral;
             }
             else if(n_cflavor>0)
             { 
-                nominalweight = nominalweight * cflavorValCentral;
+                nominalweight = nominalweight*cflavorValCentral;
             }
             else 
             { 
-                nominalweight = nominalweight * lflavorValCentral;
+                nominalweight = nominalweight*lflavorValCentral;
             }
-
-            //nominalweight = nominalweight * ((n_bflavor>0)*bflavorValCentral + (n_bflavor==0&&n_cflavor>0)*cflavorValCentral + (n_bflavor==0&&n_cflavor==0)*lflavorValCentral);
         }
 
-        // assigne up and down weights
+        // scale W+jet normialzation
+        if(procname=="wjets") nominalweight = nominalweight*1.53; 
+
+        //
+        // Now assign up and down weights
+        //
+        float upweight      = nominalweight;
+        float downweight    = nominalweight;
         
         //
-        // loop over bins   
+        // variations that are common in all processes
         //
-        if(tree.ht()>1500 && tree.nleps()==0 && tree.nbm()>0 && tree.njets()>=4 && tree.njets()<=5 && tree.mj()>500 && tree.mj()<800) { 
-            // nominal  
-            h1nominal->Fill(tree.nbm(), nominalweight);
-            // up  
-            h1up->Fill(tree.nbm(), upweight);
-            // down 
-            h1down->Fill(tree.nbm(), downweight);
+        if(variations=="btag_bc") 
+        { 
+            upweight    = upweight*tree.sys_bctag()[0]/tree.w_btag();
+            downweight  = downweight*tree.sys_bctag()[1]/tree.w_btag();
+        }
+        if(variations=="btag_udsg") 
+        { 
+            upweight    = upweight*tree.sys_udsgtag()[0]/tree.w_btag();
+            downweight  = downweight*tree.sys_udsgtag()[1]/tree.w_btag();
+        }
+        if(variations=="gs45") 
+        { 
+            if(tree.njets()==4 || tree.njets()==5)
+            {
+                upweight    = upweight*(1+gs_dmc_syst[0]*tree.fromGS());
+                downweight  = downweight*(1-gs_dmc_syst[0]*tree.fromGS()); 
+            } 
+        }
+        if(variations=="gs67") 
+        { 
+            if(tree.njets()==6 || tree.njets()==7)
+            {
+                upweight    = upweight*(1+gs_dmc_syst[1]*tree.fromGS());
+                downweight  = downweight*(1-gs_dmc_syst[1]*tree.fromGS()); 
+            } 
+        }
+        if(variations=="gs89") 
+        { 
+            if(tree.njets()==8 || tree.njets()==9)
+            {
+                upweight    = upweight*(1+gs_dmc_syst[2]*tree.fromGS());
+                downweight  = downweight*(1-gs_dmc_syst[2]*tree.fromGS()); 
+            } 
+        }
+        if(variations=="gs10Inf") 
+        { 
+            if(tree.njets()>=10)
+            {
+                upweight    = upweight*(1+gs_dmc_syst[3]*tree.fromGS());
+                downweight  = downweight*(1-gs_dmc_syst[3]*tree.fromGS()); 
+            } 
+        }
+        if(variations=="lep_eff") 
+        { 
+            upweight    = upweight*tree.w_lep();
+            downweight  = downweight*(2-tree.w_lep());
+        }
+        if(variations=="pileup") 
+        { 
+            upweight    = upweight*tree.sys_pu()[0];
+            downweight  = downweight*tree.sys_pu()[1];
+        }
+        if(variations=="muf") 
+        { 
+            upweight    = upweight*tree.sys_muf()[0];
+            downweight  = downweight*tree.sys_muf()[1];
+        }
+        if(variations=="mur") 
+        { 
+            upweight    = upweight*tree.sys_mur()[0];
+            downweight  = downweight*tree.sys_mur()[1];
+        }
+        if(variations=="murf") 
+        { 
+            upweight    = upweight*tree.sys_murf()[0];
+            downweight  = downweight*tree.sys_murf()[1];
+        }
+        if(variations=="w_pdf")  // PDF 
+        { 
+            upweight    = upweight*tree.w_pdf()[w_pdf_index];
+            downweight  = downweight*(2-tree.w_pdf()[w_pdf_index]);
         }
 
-    } //for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++){ 
-    f->cd();
-    h1up->Write();
-    h1down->Write();
+        //
+        // variations that depend on process 
+        //  - ttbar : ttbar_pt, isr
+        //  - signal: isr
+        //  - QCD   : qcd_flavor 
+        if(procname=="ttbar") 
+        { 
+            if(variations=="ttbar_pt")  
+            { 
+                upweight    = upweight*tree.w_toppt();
+                downweight  = downweight*(2-tree.w_toppt());
+            }
+            if(variations=="isr") 
+            { 
+                upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+                downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+            }
+        }
+        if(procname=="signal") 
+        { 
+            if(variations=="isr") 
+            { 
+                upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+                downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+            }
+        }
+        if(procname=="qcd") 
+        { 
+            if(variations=="qcd_flavor") 
+            {
+                // apply weights
+                int n_bflavor=0;
+                int n_cflavor=0;
+                for(unsigned int j=0; j<tree.jets_hflavor().size(); j++)
+                {   
+                    // FIXME: need to include these lines
+                    //if(tree.jets_islep().at(j)) continue;
+                    //if(tree.jets_pt().at(j)<30) continue;
+                    //if(abs(tree.jets_eta().at(j))>2.4) continue;
 
-    f->Print();
+                    if(tree.jets_hflavor().at(j)==5) n_bflavor++;
+                    if(tree.jets_hflavor().at(j)==4) n_cflavor++;
+                }
+
+                if(n_bflavor>0)
+                {
+                    upweight      = upweight*(bflavorValCentral+bflavorValError)/bflavorValCentral;
+                    downweight    = downweight*(bflavorValCentral-bflavorValError)/bflavorValCentral; 
+                }
+                else if(n_cflavor>0)
+                {
+                    upweight      = upweight*(cflavorValCentral+cflavorValError)/cflavorValCentral;
+                    downweight    = downweight*(cflavorValCentral-cflavorValError)/cflavorValCentral;
+                }
+                else
+                {
+                    upweight      = upweight*1;
+                    downweight    = downweight*1;
+                }
+            }
+        }
+
+        //
+        // fill Nb histograms   
+        //
+        for(int ibin=0; ibin<nbins; ibin++)  
+        {
+            // apply cuts
+            if(tree.nbm()<1) continue;
+            
+            if(!passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) continue; 
+
+            // nominal  
+            h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);
+            // up  
+            h1up[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), upweight);
+            // down 
+            h1down[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), downweight); 
+        }
+
+    } //for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++) 
+
+
+    // Write the histograms to output file 
+    f->cd();
+    for(int ibin=0; ibin<nbins; ibin++)
+    {
+        gDirectory->cd("/");
+        TString directory(Form("bin%d", ibin));
+        if(!gDirectory->GetDirectory(directory)) gDirectory->mkdir(directory);
+        gDirectory->cd(directory);
+
+/*
+        // rescale happens here //FIXME
+        if(variations=="qcd_flavor")
+        { 
+             h1up[ibin]->Scale( h1nominal[ibin]->Integral()/h1up[ibin]->Integral()); 
+             h1down[ibin]->Scale( h1nominal[ibin]->Integral()/h1down[ibin]->Integral()); 
+        }
+*/       
+        //
+        if(variations=="nominal")
+        {
+            //if(procname=="data_obs") h1nominal[ibin]->Reset(); // FIXME
+            h1nominal[ibin]->SetTitle(procname.Data());
+            h1nominal[ibin]->SetName(procname.Data());
+            h1nominal[ibin]->Write();
+        }
+        else
+        {
+            //h1nominal[ibin]->SetTitle(nominalname.Data());
+            //h1nominal[ibin]->SetName(nominalname.Data());
+            h1up[ibin]->SetTitle(upname.Data());
+            h1up[ibin]->SetName(upname.Data());
+            h1down[ibin]->SetTitle(downname.Data());
+            h1down[ibin]->SetName(downname.Data());
+            //h1nominal[ibin]->Write();
+            h1up[ibin]->Write();
+            h1down[ibin]->Write();
+        }
+    }
+    f->Print(); 
 }
+
+//void fillTH1F(TH1F* &h1, float var, float weight)
+//{
+//    if(var >= h1->GetXaxis()->GetBinUpEdge(h1->GetXaxis()->GetNbins()))
+//        var=h1->GetXaxis()->GetBinUpEdge(h1->GetXaxis()->GetNbins())-0.00001;
+//    if(var < h1->GetXaxis()->GetBinLowEdge(1))
+//        var=h1->GetXaxis()->GetBinLowEdge(1)+0.00001;
+//    h1->Fill(var, weight);
+//}
 

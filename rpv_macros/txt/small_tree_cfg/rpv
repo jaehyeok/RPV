@@ -4,6 +4,7 @@ int lumiblock
 int event
 
 ####################   Global   ###################
+float w_btag
 float weight
 float w_pu_rpv
 float eff_trig
@@ -20,6 +21,7 @@ std::vector<bool> trig;
 bool stitch
 bool pass
 bool json7p65
+bool fromGS
 
 ##################   MC   ################
 int ntruleps
@@ -97,3 +99,5 @@ std::vector<int> fjets08_nconst
 
 ################  syst   ##################
 std::vector<float> sys_bctag
+std::vector<float> sys_udsgtag
+std::vector<float> sys_pu

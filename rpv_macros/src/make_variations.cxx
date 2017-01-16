@@ -154,7 +154,6 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
 
   std::string plotVar("nbm");
 
-
   std::vector<std::string> cuts = {
                    "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=500&&mj12<800",
                    "nbm>0&&ht>1500&&njets>=6&&njets<=7&&(nmus+nels)==0&&mj12>=500&&mj12<800",
@@ -186,8 +185,8 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
   }; 
 /* 
   std::vector<std::string> cuts = {
-                    "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>=800",
-                    "nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj12>=800"};
+                    "nbm>0&&ht>1500&&njets>=4&&njets<=5&&(nmus+nels)==0&&mj12>500&&mj12<=800"};//,
+                    //"nbm>0&&ht>1200&&njets>=4&&njets<=5&&(nmus+nels)==1&&mj12>=800"};
 */
   // maximum number of b-tagged jets
   int nBBins=4;
@@ -522,12 +521,10 @@ void makeVariations(std::string &syst){
 
   // Define samples
   TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_fit/";
-  TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2016_10_24/mc/tbs_74x/";
+  TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
   TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_fit/";
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
-
-  //vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
 
   vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
   vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar");
@@ -535,27 +532,27 @@ void makeVariations(std::string &syst){
   vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
 
   std::vector<TString> s_rpv_1000;
-  s_rpv_1000.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1000*");
+  s_rpv_1000.push_back(folder_sig+"*mGluino1000*");
   std::vector<TString> s_rpv_1100;
-  s_rpv_1100.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1100*");
+  s_rpv_1100.push_back(folder_sig+"*mGluino1100*");
   std::vector<TString> s_rpv_1200;
-  s_rpv_1200.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1200*");
+  s_rpv_1200.push_back(folder_sig+"*mGluino1200*");
   std::vector<TString> s_rpv_1300;
-  s_rpv_1300.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1300*"); 
+  s_rpv_1300.push_back(folder_sig+"*mGluino1300*"); 
   std::vector<TString> s_rpv_1400;
-  s_rpv_1400.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1400*");
+  s_rpv_1400.push_back(folder_sig+"*mGluino1400*");
   std::vector<TString> s_rpv_1500;
-  s_rpv_1500.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1500*");
+  s_rpv_1500.push_back(folder_sig+"*mGluino1500*");
   std::vector<TString> s_rpv_1600;
-  s_rpv_1600.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1600*");
+  s_rpv_1600.push_back(folder_sig+"*mGluino1600*");
   std::vector<TString> s_rpv_1700;
-  s_rpv_1700.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1700*");
+  s_rpv_1700.push_back(folder_sig+"*mGluino1700*");
   std::vector<TString> s_rpv_1800;
-  s_rpv_1800.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1800*");
+  s_rpv_1800.push_back(folder_sig+"*mGluino1800*");
   std::vector<TString> s_rpv_1900;
-  s_rpv_1900.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino1900*");
+  s_rpv_1900.push_back(folder_sig+"*mGluino1900*");
   std::vector<TString> s_rpv_2000;
-  s_rpv_2000.push_back("/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/*mGluino2000*");
+  s_rpv_2000.push_back(folder_sig+"*mGluino2000*");
 
   // Reading ntuples
   std::string blinding("((njets<10 && (nmus+nels)==0) || (nmus+nels==1 && njets<6))");

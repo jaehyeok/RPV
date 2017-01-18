@@ -224,8 +224,6 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
             histname.erase(histname.find('['), 1);
             histname.erase(histname.find(']'), 1);
         } 
-        // Replace mj12 with mj for signal samples  // FIXME: need to be updated once we have new babies 
-        //if(histname.find("signal")!=std::string::npos) tempCut.ReplaceAll("mj12","mj"); 
         TH1F * hist = new TH1F(histname.c_str(), histname.c_str(), nBBins+1, 0, nBBins+1);
         TString fullCut(Form("%s&&%s)", Samples.at(i).cut.Data(), tempCut.Data()));
 

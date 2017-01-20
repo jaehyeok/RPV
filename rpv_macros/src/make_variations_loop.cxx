@@ -59,12 +59,12 @@ int main(int argc, char *argv[])
   }
 
   // Define samples
-  //TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
-  //TString folder_sig = "/net/cms9/cms9r0/rohan/babies/2016_07_13/T1tbs/split/renorm/";
-  //TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
-  TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/mc/skim_rpv_fit/";
-  TString folder_dat = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/data/skim_rpv_fit/";
-  TString folder_sig = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_10/mc/T1tbs/";
+  TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
+  TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
+  TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
+  //TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/mc/skim_rpv_fit/";
+  //TString folder_dat = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/data/skim_rpv_fit/";
+  //TString folder_sig = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_10/mc/T1tbs/";
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
   small_tree_rpv rpv_m2000((static_cast<std::string>(s_rpv_m2000.at(0))));
 
   // open output root file
-  TFile *f = new TFile(Form("variations_loop/output_%s.root", variations.Data()), "recreate");
+  TFile *f = new TFile(Form("variations/output_%s.root", variations.Data()), "recreate");
 
   // Depending on the process, turn on/off variation
   
@@ -237,7 +237,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         tree.GetEntry(ientry); 
 
         // 
-        // Weights
+        // Central weights
         // 
         float nominalweight = lumi*tree.weight();    
         if(procname=="qcd" || procname=="ttbar" || 
@@ -247,7 +247,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
         else if (procname=="signal") nominalweight = nominalweight * 1; 
        
-        // jet flavor 
+        // qcd jet flavor central weights
         if(procname=="qcd") 
         { 
             int n_bflavor=0;
@@ -331,9 +331,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             } 
         }
         if(variations=="lep_eff") 
-        { 
-            upweight    = upweight*tree.w_lep();
-            downweight  = downweight*(2-tree.w_lep());
+        {   
+            //upweight    = upweight*tree.w_lep();
+            //downweight  = downweight*(2-tree.w_lep());
+            upweight    = upweight*tree.sys_lep()[0]/tree.w_lep();
+            downweight  = downweight*tree.sys_lep()[1]/tree.w_lep();
         }
         if(variations=="pileup") 
         { 
@@ -378,13 +380,43 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
                 upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
                 downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
             }
+            if(variations=="ttbar_muf") 
+            { 
+                upweight    = upweight*tree.sys_muf()[0];
+                downweight  = downweight*tree.sys_muf()[1];
+            }
+            if(variations=="ttbar_mur") 
+            { 
+                upweight    = upweight*tree.sys_mur()[0];
+                downweight  = downweight*tree.sys_mur()[1];
+            }
+            if(variations=="ttbar_murf") 
+            { 
+                upweight    = upweight*tree.sys_murf()[0];
+                downweight  = downweight*tree.sys_murf()[1];
+            }
         }
-        if(procname=="signal") 
+        if(procname.Contains("signal")) 
         { 
             if(variations=="isr") 
             { 
                 upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
                 downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+            }
+            if(variations=="signal_muf") 
+            { 
+                upweight    = upweight*tree.sys_muf()[0];
+                downweight  = downweight*tree.sys_muf()[1];
+            }
+            if(variations=="signal_mur") 
+            { 
+                upweight    = upweight*tree.sys_mur()[0];
+                downweight  = downweight*tree.sys_mur()[1];
+            }
+            if(variations=="signal_murf") 
+            { 
+                upweight    = upweight*tree.sys_murf()[0];
+                downweight  = downweight*tree.sys_murf()[1];
             }
         }
         if(procname=="qcd") 
@@ -421,6 +453,57 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
                     downweight    = downweight*1;
                 }
             }
+            if(variations=="qcd_muf") 
+            { 
+                upweight    = upweight*tree.sys_muf()[0];
+                downweight  = downweight*tree.sys_muf()[1];
+            }
+            if(variations=="qcd_mur") 
+            { 
+                upweight    = upweight*tree.sys_mur()[0];
+                downweight  = downweight*tree.sys_mur()[1];
+            }
+            if(variations=="qcd_murf") 
+            { 
+                upweight    = upweight*tree.sys_murf()[0];
+                downweight  = downweight*tree.sys_murf()[1];
+            }
+        }
+        if(procname=="wjets") 
+        { 
+            if(variations=="wjets_muf") 
+            { 
+                upweight    = upweight*tree.sys_muf()[0];
+                downweight  = downweight*tree.sys_muf()[1];
+            }
+            if(variations=="wjets_mur") 
+            { 
+                upweight    = upweight*tree.sys_mur()[0];
+                downweight  = downweight*tree.sys_mur()[1];
+            }
+            if(variations=="wjets_murf") 
+            { 
+                upweight    = upweight*tree.sys_murf()[0];
+                downweight  = downweight*tree.sys_murf()[1];
+            }
+        }
+        if(procname=="other") 
+        { 
+            if(variations=="other_muf") 
+            { 
+                upweight    = upweight*tree.sys_muf()[0];
+                downweight  = downweight*tree.sys_muf()[1];
+            }
+            if(variations=="other_mur") 
+            { 
+                upweight    = upweight*tree.sys_mur()[0];
+                downweight  = downweight*tree.sys_mur()[1];
+            }
+            if(variations=="other_murf") 
+            { 
+                upweight    = upweight*tree.sys_murf()[0];
+                downweight  = downweight*tree.sys_murf()[1];
+            }
         }
 
         //
@@ -428,23 +511,42 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         //
         for(int ibin=0; ibin<nbins; ibin++)  
         {
-            // apply cuts
-            if(tree.nbm()<1) continue;
-            
-            if(!passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) continue; 
-
-            // nominal  
-            h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);
-            // up  
-            h1up[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), upweight);
-            // down 
-            h1down[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), downweight); 
+            if(variations=="jer") 
+            { 
+                if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
+                    h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);              // nominal  
+                if(tree.sys_nbm()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.mj12())) // need to update mj12 to sys_mj12[0]
+                    h1up[ibin]->Fill(tree.sys_nbm()[0]>nBBins?nBBins:tree.sys_nbm()[0], upweight);          // up
+                if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
+                    h1down[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), downweight);                    // down  
+               
+            } 
+            else if(variations=="jes")  
+            { 
+                if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
+                    h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);              // nominal  
+                if(tree.sys_nbm()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.mj12()))  // need to update mj12 to sys_mj12[1]
+                    h1up[ibin]->Fill(tree.sys_nbm()[1]>nBBins?nBBins:tree.sys_nbm()[1], upweight);          // up 
+                if(tree.sys_nbm()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.mj12()))  // need to update mj12 to sys_mj12[2]
+                    h1down[ibin]->Fill(tree.sys_nbm()[2]>nBBins?nBBins:tree.sys_nbm()[2], downweight);      // down
+            }
+            else 
+            {
+                // apply cuts
+                if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
+                {
+                    h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);  // nominal  
+                    h1up[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), upweight);            // up  
+                    h1down[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), downweight);        // down 
+                }
+            }
         }
 
     } //for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++) 
 
-
-    // Write the histograms to output file 
+    //
+    // Write histograms to an output file 
+    //
     f->cd();
     for(int ibin=0; ibin<nbins; ibin++)
     {
@@ -454,7 +556,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         gDirectory->cd(directory);
 
 /*
-        // rescale happens here //FIXME
+        // rescale some histograms 
+        //  - previously done by src/rescale_variations.cxx
+        //  - no need to run it now
         if(variations=="qcd_flavor")
         { 
              h1up[ibin]->Scale( h1nominal[ibin]->Integral()/h1up[ibin]->Integral()); 
@@ -464,20 +568,16 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         //
         if(variations=="nominal")
         {
-            //if(procname=="data_obs") h1nominal[ibin]->Reset(); // FIXME
             h1nominal[ibin]->SetTitle(procname.Data());
             h1nominal[ibin]->SetName(procname.Data());
             h1nominal[ibin]->Write();
         }
         else
         {
-            //h1nominal[ibin]->SetTitle(nominalname.Data());
-            //h1nominal[ibin]->SetName(nominalname.Data());
             h1up[ibin]->SetTitle(upname.Data());
             h1up[ibin]->SetName(upname.Data());
             h1down[ibin]->SetTitle(downname.Data());
             h1down[ibin]->SetName(downname.Data());
-            //h1nominal[ibin]->Write();
             h1up[ibin]->Write();
             h1down[ibin]->Write();
         }

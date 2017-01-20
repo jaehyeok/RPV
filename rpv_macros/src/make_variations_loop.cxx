@@ -28,6 +28,8 @@ int w_pdf_index = 0;
 
 int main(int argc, char *argv[])
 {
+  gErrorIgnoreLevel=kError+1;
+
   cout << argv[0] << endl;
   cout << argv[1] << endl;
   //

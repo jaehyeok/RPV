@@ -24,6 +24,7 @@ def writetemplate():
 
     outfile.write('Executable = PATH/run_variations.sh\n')
     outfile.write('Universe = vanilla\n')
+    outfile.write('Notification = Error\n')
     outfile.write('Error = PATH/logs/VARTYPE.err\n')
     outfile.write('Output = PATH/logs/VARTYPE.out\n')
     outfile.write('Log = PATH/logs/VARTYPE.log\n')
@@ -42,11 +43,11 @@ def writescript():
     outfile.write('eval `scramv1 runtime -sh`\n')
     outfile.write('cd ' + PATH + '\n')
     # and then run script
-    outfile.write('./run/make_variations.exe $1 $2\n')
+    outfile.write('./run/make_variations_loop.exe $1 $2\n')
     outfile.close()
 
 #default path should be changed
-PATH = '/homes/jaehyeokyoo/RPV/ra4_macros'
+PATH = '/homes/rohan/RPV/ra4_macros'
 VARLIST = ['nominal','btag_bc', 'btag_udsg',
            'gs45', 'gs67', 'gs89', 'gs10Inf',
            'jes', 'jer',

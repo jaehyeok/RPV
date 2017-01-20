@@ -25,7 +25,7 @@
 #include "TLine.h"
 #include "TMath.h"
 
-#include "tdrstyle.C"
+//#include "tdrstyle.C"
 
 using namespace std;
 
@@ -43,7 +43,7 @@ TH1D* changeHistogram(TH1D* h);
 int main()
 {
 
-  setTDRStyle();
+  //setTDRStyle();
   gROOT->ForceStyle(); 
 
   // variation file 
@@ -100,16 +100,16 @@ int main()
       int ibin = binnumber.at(i);
         
       if(ibin>=6 && ibin<=9) continue; 
-      //if(ibin!=21) continue; 
+      if(ibin!=21) continue; 
 
       // Two categrories of systemtatics 
       // - correlated across processes
       // - uncorrelated across processes
       std::vector<std::string> syst_correl={"btag_bc","btag_udsg","gs45","gs67","gs89","gs10Inf","lep_eff","jes","jer"};
       std::vector<std::string> syst_uncorrel={"qcd_flavor","qcd_mur", "qcd_muf", "qcd_murf",
-                                                           "ttbar_mur", "ttbar_muf", "ttbar_murf",
-                                                           "wjets_mur", "wjets_muf", "wjets_murf",
-                                                           "other_mur", "other_muf", "other_murf"};
+                                              "ttbar_mur", "ttbar_muf", "ttbar_murf",
+                                              "wjets_mur", "wjets_muf", "wjets_murf",
+                                              "other_mur", "other_muf", "other_murf"};
 
       // loop over correlated systs 
       for(unsigned int icorrel=0; icorrel<syst_correl.size(); icorrel++) 
@@ -130,7 +130,8 @@ int main()
                   float central;
                   float up, down;
 
-                  if(infile->Get(Form("bin%i/%s", ibin, process.c_str()))==0x0) continue;
+                  if(infile->Get(Form("bin%i/%s", ibin, process.c_str()))==0x0) continue; 
+
                   central = (static_cast<TH1D*>(infile->Get(Form("bin%i/%s", ibin, process.c_str()))))->GetBinContent(inb+1);
                   up = (static_cast<TH1D*>(infile->Get(Form("bin%i/%s_%sUp", ibin, process.c_str(),syst_correl.at(icorrel).c_str()))))->GetBinContent(inb+1);
                   down = (static_cast<TH1D*>(infile->Get(Form("bin%i/%s_%sDown", ibin, process.c_str(),syst_correl.at(icorrel).c_str()))))->GetBinContent(inb+1);
@@ -403,7 +404,12 @@ int main()
     { 
         h1_ratio_err->SetBinContent(inb, 1);
         h1_ratio_err->SetBinError(inb, err[4][ibin][inb-1]); 
-        cout << inb << " " <<  err[4][ibin][inb-1] << endl;  // FIXME
+        cout << inb << " :: " 
+             <<  Form("%.2f",err[0][ibin][inb-1]) <<  "\t"  // FIXME
+             <<  Form("%.2f",err[1][ibin][inb-1]) <<  "\t"  // FIXME
+             <<  Form("%.2f",err[2][ibin][inb-1]) <<  "\t"  // FIXME
+             <<  Form("%.2f",err[3][ibin][inb-1]) <<  "\t"  // FIXME
+             <<  Form("%.2f",err[4][ibin][inb-1]) << endl;  // FIXME
     }
     h1_ratio_err->SetMarkerSize(0);
     h1_ratio_err->SetFillColor(kBlack);
@@ -415,8 +421,10 @@ int main()
     l->SetLineStyle(2);
     l->Draw("same");
 
+    c->Print(Form("plots/pre_%s.jpeg", binname[i].c_str()));
     c->Print(Form("plots/pre_%s.pdf", binname[i].c_str()));
     c->Print(Form("plots/pre_%s.png", binname[i].c_str()));
+    c->Print(Form("plots/pre_%s.root", binname[i].c_str()));
     
     if(1)//debug 
     {

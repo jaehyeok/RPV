@@ -29,8 +29,8 @@ int main()
         "gs45", "gs67", "gs89", "gs10Inf",
         "jes", "jer",
         "lep_eff", 
-        "ttbar_pt", //"pileup"*
-        "isr",
+        //"ttbar_pt", //"pileup"*
+        //"isr",
         "qcd_flavor",
         "qcd_mur", "qcd_muf", "qcd_murf",
         "ttbar_mur", "ttbar_muf", "ttbar_murf",
@@ -79,7 +79,7 @@ void drawUpDown(int bin, vector<TString> variations)
 	gStyle->SetPaintTextFormat(".1f");
 	gStyle->SetMarkerSize(2.5);
 
-    TFile* infile = TFile::Open("variations/nov8/7p7/sum_rescaled_mconly.root");
+    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
 
     for(unsigned int iprocess=0; iprocess<5; iprocess++) 
     {
@@ -252,11 +252,13 @@ TString getBinName(int bin)
     binname = {"nlep0_nj45_lowmj", "nlep0_nj67_lowmj", "nlep1_nj45_lowmj",
   			  "nlep0_nj45_highmj", "nlep0_nj67_highmj", "nlep1_nj45_highmj",
   			  "nlep0_nj10_lowmj", "nlep1_nj67_lowmj", "nlep1_nj8_lowmj", "nlep0_nj10_highmj",
-  			  "nlep1_nj67_highmj", "nlep1_nj8_highmj", "nlep0_nj89_lowmj", "nlep0_nj89_highmj"}; 
+  			  "nlep1_nj67_highmj", "nlep1_nj8_highmj", "nlep0_nj89_lowmj", "nlep0_nj89_highmj",
+  			  "nlep0_nj89_vhighmj", "nlep0_nj10_vhighmj", "nlep1_nj67_vhighmj", "nlep1_nj8_vhighmj"}; 
     binnumber = {0,1,2,
                  3,4,5,
                  10,11,12,13,
-                 14,15,16,17}; 
+                 14,15,16,17,
+                 18,19,20,21}; 
 
     for(unsigned int i=0; i<binname.size(); i++)  
     { 

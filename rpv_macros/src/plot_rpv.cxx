@@ -16,10 +16,12 @@
 #include "utilities_macros_rpv.hpp"
 
 namespace {
-  TString lumi = "35.0";
+  TString lumi = "36.8";
   
-  bool showData = false; // Draw with/wihout data
+  bool showData = true; // Draw with/wihout data
   bool unblindSRs = false; // Draw data in (unblind) SRs
+  TString json = "1";
+  TString trigger = "trig[12]||trig[54]||trig[56]"; // PFHT800 OR PFHT900 OR PFJet450
 
   bool makeNm1 = false; // Make only N=1 plots. Does not draw data
   
@@ -32,15 +34,15 @@ using namespace std;
 int main(){
 
   // ntuple folders
-  TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
-  TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
+  TString folder_dat = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/data/skim_st1200/";
+  TString folder_bkg = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/mc/skim_st1200/";
   TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
 
   // Get file lists
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
     
-  vector<TString> s_rpv_m1300 = getRPVProcess(folder_sig,"rpv_m1300");
   vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
+  vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700");
 
   vector<TString> s_tt1l = getRPVProcess(folder_bkg,"ttbar_1l");
   vector<TString> s_tt2l = getRPVProcess(folder_bkg,"ttbar_2l");
@@ -50,6 +52,7 @@ int main(){
   vector<TString> s_singlet = getRPVProcess(folder_bkg,"singlet");
   vector<TString> s_zjets = getRPVProcess(folder_bkg,"zjets");
   vector<TString> s_other = getRPVProcess(folder_bkg,"other");
+  
 
   // Reading ntuples
   vector<sfeats> Samples; 
@@ -57,32 +60,32 @@ int main(){
   if(showData) {
     if(unblindSRs){
       // Only use events with njets<=7 (for 0-lepton) and njets<=5 (for 1-lepton)
-      Samples.push_back(sfeats(s_data, "Data",kBlack,1,"trig[12] && json12p9 && pass"));
+      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass"));
       Samples.back().isData = true;
     }
     else{
-      Samples.push_back(sfeats(s_data, "Data",kBlack,1,"trig[12] && json12p9 && pass && ((nleps==0&&njets<=7)||(nleps==1&&njets<=5))"));
+      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nleps==0&&njets<=7)||(nleps==1&&njets<=5))"));
       Samples.back().isData = true;
     }
   }
 
   // Add sig/bkg samples
-  Samples.push_back(sfeats(s_rpv_m1300, "#tilde{g}(1.3 TeV)#rightarrow tbs", ra4::c_t1tttt)); 
+  Samples.push_back(sfeats(s_rpv_m1500, "#tilde{g}(1.5 TeV)#rightarrow tbs", ra4::c_t1tttt)); 
   Samples.back().isSig = true;
-  Samples.push_back(sfeats(s_rpv_m1500, "#tilde{g}(1.5 TeV)#rightarrow tbs", ra4::c_t1tttt, 2)); 
+  Samples.push_back(sfeats(s_rpv_m1700, "#tilde{g}(1.7 TeV)#rightarrow tbs", ra4::c_t1tttt, 2)); 
   Samples.back().isSig = true;
 
-  Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1, "stitch&&pass"));
-  Samples.push_back(sfeats(s_wjets, "W+jets, 0 l", ra4::c_wjets, 1, "stitch&&pass&&ntruleps==0"));
-  Samples.push_back(sfeats(s_zjets, "Z+jets, 0 l", kBlack, 1, "stitch&&pass"));
-  Samples.push_back(sfeats(s_tt1l, "t#bar{t}, 1 l", ra4::c_tt_1l, 1, "stitch&&pass&&ntruleps==1"));
-  Samples.push_back(sfeats(s_tt2l, "t#bar{t}, 2 l", ra4::c_tt_2l, 1, "stitch&&pass&&ntruleps==2"));
-  Samples.push_back(sfeats(s_tthad, "t#bar{t}, 0 l", kTeal, 1, "stitch&&pass&&ntruleps==0"));
-  Samples.push_back(sfeats(s_wjets, "W+jets, 1 l", ra4::c_wjets, 1, "stitch&&pass&&ntruleps==1"));
-  Samples.push_back(sfeats(s_singlet, "Single t", ra4::c_singlet, 1, "stitch&&pass"));
-  Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, "stitch&&pass")); 
-
-
+  TString extraweight = "1";
+  Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1, cutandweight("stitch&&pass",extraweight)));
+  Samples.push_back(sfeats(s_wjets, "W+jets, 0 l", ra4::c_wjets, 1, cutandweight("stitch&&pass&&ntruleps==0",extraweight)));
+  Samples.push_back(sfeats(s_zjets, "Z+jets, 0 l", kBlack, 1, cutandweight("stitch&&pass",extraweight)));
+  Samples.push_back(sfeats(s_tt1l, "t#bar{t}, 1 l", ra4::c_tt_1l, 1, cutandweight("stitch&&pass&&ntruleps==1",extraweight)));
+  Samples.push_back(sfeats(s_tt2l, "t#bar{t}, 2 l", ra4::c_tt_2l, 1, cutandweight("stitch&&pass&&ntruleps==2",extraweight)));
+  Samples.push_back(sfeats(s_tthad, "t#bar{t}, 0 l", kTeal, 1, cutandweight("stitch&&pass&&ntruleps==0",extraweight)));
+  Samples.push_back(sfeats(s_wjets, "W+jets, 1 l", ra4::c_wjets, 1, cutandweight("stitch&&pass&&ntruleps==1",extraweight)));
+  Samples.push_back(sfeats(s_singlet, "Single t", ra4::c_singlet, 1, cutandweight("stitch&&pass",extraweight)));
+  Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweight("stitch&&pass",extraweight))); 
+  
   // Loop over samples
   vector<int> rpv_sam;
   for(unsigned sam(0); sam < Samples.size(); sam++) rpv_sam.push_back(sam);
@@ -170,6 +173,6 @@ int main(){
       hists.push_back(hfeats("nbm", 5, 0, 5, rpv_sam, "N_{b}", cutNm1));
     }
     
-    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "nminus1", false, true); 
+    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "nminus1", true, true); 
   }
 }

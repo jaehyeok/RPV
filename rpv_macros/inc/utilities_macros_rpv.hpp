@@ -35,7 +35,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   std::vector<TString> files;
   
   if(process=="data"){
-    files.push_back(folder+"*Run2016_HTMHT_MET_JetHT_SingleElectron_SingleMuon*");
+    files.push_back(folder+"*_Run2016_*");
   }
   else if(process.Contains("rpv")){
     if(process=="rpv_m1000") files.push_back(folder+"*mGluino*1000*");
@@ -52,18 +52,20 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   }
   // For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
   else if(process=="ttbar"){
-    files.push_back(folder+"*_TTJets_DiLept*");
-    files.push_back(folder+"*_TTJets_SingleLept*");
+    files.push_back(folder+"*_TTJets_DiLept_Tune*");
+    files.push_back(folder+"*_TTJets_SingleLeptFromT_Tune*");
+    files.push_back(folder+"*_TTJets_SingleLeptFromTbar_Tune*");
     files.push_back(folder+"*_TTJets_HT*");
     files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*"); //Skimmed so that it has only ntruleps==0 && ht_me_isr<=600
   }
   //Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
   else if(process=="ttbar_2l"){
-    files.push_back(folder+"*_TTJets_DiLept*");
+    files.push_back(folder+"*_TTJets_DiLept_Tune*");
     files.push_back(folder+"*_TTJets_HT*");
   }
   else if(process=="ttbar_1l"){
-    files.push_back(folder+"*_TTJets_SingleLept*");
+    files.push_back(folder+"*_TTJets_SingleLeptFromT_Tune*");
+    files.push_back(folder+"*_TTJets_SingleLeptFromTbar_Tune*");
     files.push_back(folder+"*_TTJets_HT*");
   }
   
@@ -93,7 +95,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.push_back(folder+"*_DYJetsToLL_M-50_HT-800to1200_*");
     files.push_back(folder+"*_DYJetsToLL_M-50_HT-1200to2500_*");
     files.push_back(folder+"*_DYJetsToLL_M-50_HT-2500toInf_*");    
-    files.push_back(folder+"*_ttHJetTobb_*");
+    files.push_back(folder+"*_ttHTobb_*");
     files.push_back(folder+"*_TTTT_*");
     files.push_back(folder+"*_TTWJetsToLNu_*");
     files.push_back(folder+"*_TTWJetsToQQ_*");

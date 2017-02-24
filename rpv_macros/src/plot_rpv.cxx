@@ -16,12 +16,12 @@
 #include "utilities_macros_rpv.hpp"
 
 namespace {
-  TString lumi = "36.8";
+  TString lumi = "35.9";
   
   bool showData = true; // Draw with/wihout data
   bool unblindSRs = false; // Draw data in (unblind) SRs
   TString json = "1";
-  TString trigger = "trig[12]||trig[54]||trig[56]"; // PFHT800 OR PFHT900 OR PFJet450
+  TString trigger = "(trig[12]||trig[54]||trig[56])"; // PFHT800 OR PFHT900 OR PFJet450
 
   bool makeNm1 = false; // Make only N=1 plots. Does not draw data
   
@@ -34,8 +34,8 @@ using namespace std;
 int main(){
 
   // ntuple folders
-  TString folder_dat = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/data/skim_st1200/";
-  TString folder_bkg = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/mc/skim_st1200/";
+  TString folder_dat = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/data/merged_rpvdata_st1000/";
+  TString folder_bkg = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvregion/";
   TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
 
   // Get file lists
@@ -53,43 +53,35 @@ int main(){
   vector<TString> s_zjets = getRPVProcess(folder_bkg,"zjets");
   vector<TString> s_other = getRPVProcess(folder_bkg,"other");
   
-
   // Reading ntuples
   vector<sfeats> Samples; 
   // Plot with data if showData == true
   if(showData) {
     if(unblindSRs){
-      // Only use events with njets<=7 (for 0-lepton) and njets<=5 (for 1-lepton)
       Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass"));
       Samples.back().isData = true;
     }
     else{
+      // Only use events with njets<=7 (for 0-lepton) and njets<=5 (for 1-lepton)
       Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nleps==0&&njets<=7)||(nleps==1&&njets<=5))"));
       Samples.back().isData = true;
     }
   }
 
-  // Add sig/bkg samples
-  Samples.push_back(sfeats(s_rpv_m1500, "#tilde{g}(1.5 TeV)#rightarrow tbs", ra4::c_t1tttt)); 
-  Samples.back().isSig = true;
-  Samples.push_back(sfeats(s_rpv_m1700, "#tilde{g}(1.7 TeV)#rightarrow tbs", ra4::c_t1tttt, 2)); 
-  Samples.back().isSig = true;
+  string extraweight = "1";
+  Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1, cutandweight("stitch_ht&&pass",extraweight)));
+  Samples.push_back(sfeats(s_wjets, "W+jets, 0 l", ra4::c_wjets, 1, cutandweight("stitch_ht&&pass&&ntruleps==0",extraweight)));
+  Samples.push_back(sfeats(s_zjets, "Z+jets, 0 l", kBlack, 1, cutandweight("stitch_ht&&pass",extraweight)));
+  Samples.push_back(sfeats(s_tt1l, "t#bar{t}, 1 l", ra4::c_tt_1l, 1, cutandweight("stitch_ht&&pass&&ntruleps==1",extraweight)));
+  Samples.push_back(sfeats(s_tt2l, "t#bar{t}, 2 l", ra4::c_tt_2l, 1, cutandweight("stitch_ht&&pass&&ntruleps==2",extraweight)));
+  Samples.push_back(sfeats(s_tthad, "t#bar{t}, 0 l", kTeal, 1, cutandweight("stitch_ht&&pass&&ntruleps==0",extraweight)));
+  Samples.push_back(sfeats(s_wjets, "W+jets, 1 l", ra4::c_wjets, 1, cutandweight("stitch_ht&&pass&&ntruleps==1",extraweight)));
+  Samples.push_back(sfeats(s_singlet, "Single t", ra4::c_singlet, 1, cutandweight("stitch_ht&&pass",extraweight)));
+  Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweight("stitch_ht&&pass",extraweight)));
 
-  TString extraweight = "1";
-  Samples.push_back(sfeats(s_qcd, "QCD", kYellow, 1, cutandweight("stitch&&pass",extraweight)));
-  Samples.push_back(sfeats(s_wjets, "W+jets, 0 l", ra4::c_wjets, 1, cutandweight("stitch&&pass&&ntruleps==0",extraweight)));
-  Samples.push_back(sfeats(s_zjets, "Z+jets, 0 l", kBlack, 1, cutandweight("stitch&&pass",extraweight)));
-  Samples.push_back(sfeats(s_tt1l, "t#bar{t}, 1 l", ra4::c_tt_1l, 1, cutandweight("stitch&&pass&&ntruleps==1",extraweight)));
-  Samples.push_back(sfeats(s_tt2l, "t#bar{t}, 2 l", ra4::c_tt_2l, 1, cutandweight("stitch&&pass&&ntruleps==2",extraweight)));
-  Samples.push_back(sfeats(s_tthad, "t#bar{t}, 0 l", kTeal, 1, cutandweight("stitch&&pass&&ntruleps==0",extraweight)));
-  Samples.push_back(sfeats(s_wjets, "W+jets, 1 l", ra4::c_wjets, 1, cutandweight("stitch&&pass&&ntruleps==1",extraweight)));
-  Samples.push_back(sfeats(s_singlet, "Single t", ra4::c_singlet, 1, cutandweight("stitch&&pass",extraweight)));
-  Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweight("stitch&&pass",extraweight))); 
-  
   // Loop over samples
   vector<int> rpv_sam;
   for(unsigned sam(0); sam < Samples.size(); sam++) rpv_sam.push_back(sam);
-
 
   // Define histogram vector
   vector<hfeats> hists;
@@ -100,14 +92,13 @@ int main(){
     TString basecut = "nbm>=1";
     vector<TString> lepcuts = {"nleps==0&&ht>1500", "nleps==1&&ht>1200"};
     vector<TString> mjcuts = {"mj12>500&&mj12<=800", "mj12>800&&mj12<=1000", "mj12>1000"};
-    vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8&&njets<=9", "njets>=10"};
+    vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8&&njets<=9","njets>=10"};
 
     // Loop over cuts to make histograms
     TString cut = "";
     for(auto ilep : lepcuts){
       for(auto imj : mjcuts) {
 	for(auto injet : njetcuts){
-	
 	  // Handle different MJ binning at low njets (CR)
 	  if(ilep == "nleps==0&&ht>1500"){
 	    if(injet == "njets>=4&&njets<=5" || injet=="njets>=6&&njets<=7"){
@@ -120,27 +111,27 @@ int main(){
 	      if(imj == "mj12>800&&mj12<=1000") imj.ReplaceAll("mj12>800&&mj12<=1000","mj12>800");
 	      else if(imj == "mj12>1000") continue;
 	    }
-	  }	
-
-	  // Handle different njet binning in 1 lep selection
+	  }
+	  
+	    // Handle different njet binning in 1 lep selection
 	  if(ilep == "nleps==1&&ht>1200"){
 	    if(injet == "njets>=8&&njets<=9") injet.ReplaceAll("njets>=8&&njets<=9","njets>=8");
 	    else if(injet == "njets>=10") continue;
 	  }
-	
+	  
 	  // Set cuts
 	  cut = ilep + "&&" + imj + "&&" + injet + "&&" + basecut;
-	
+	  
 	  // Define histograms
 	  hists.push_back(hfeats("nbm", 4, 1, 5, rpv_sam, "N_{b}", cut));
 	  if(showData) hists.back().normalize = true;	
 	}
       }
     }
-
+    
     plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", showData, true);  
   }
-
+  
   /*////////////
     N-1 PLOTS
   ///////////*/

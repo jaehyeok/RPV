@@ -56,7 +56,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.push_back(folder+"*_TTJets_SingleLeptFromT_Tune*");
     files.push_back(folder+"*_TTJets_SingleLeptFromTbar_Tune*");
     files.push_back(folder+"*_TTJets_HT*");
-    files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*"); //Skimmed so that it has only ntruleps==0 && ht_me_isr<=600
+    files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*");
   }
   //Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
   else if(process=="ttbar_2l"){
@@ -71,7 +71,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   
   else if(process=="ttbar_had"){
     files.push_back(folder+"*_TTJets_HT*");
-    files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*"); //Skimmed so that it has only ntruleps==0 && ht_me_isr<=600
+    files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*"); //For this sample to be used in the hadronic-only selection it needs a ntruleps==0 skim
   }
 
   else if(process=="qcd"){
@@ -81,7 +81,9 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   }
   // For 0 or 1 lepton wjets apply a ntruleps cut at the sfeat level
   else if(process=="wjets"){
-    files.push_back(folder+"*_WJetsToLNu_HT*");
+    files.push_back(folder+"*_WJetsToLNu_HT-800To1200_*");
+    files.push_back(folder+"*_WJetsToLNu_HT-1200To2500_*");
+    files.push_back(folder+"*_WJetsToLNu_HT-2500ToInf_*");
     files.push_back(folder+"*_WJetsToQQ_HT-600ToInf_*"); 
   }
   else if(process=="singlet"){
@@ -89,9 +91,11 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   }
   else if(process=="zjets"){
     files.push_back(folder+"*_ZJetsToQQ_HT600toInf_*");
+    files.push_back(folder+"*_ZJetsToNuNu_HT-800To1200_*");
+    files.push_back(folder+"*_ZJetsToNuNu_HT-1200To2500_*");
+    files.push_back(folder+"*_ZJetsToNuNu_HT-2500ToInf_*");
   }
   else if(process=="other"){
-    files.push_back(folder+"*_DYJetsToLL_M-50_HT-600to800_*");
     files.push_back(folder+"*_DYJetsToLL_M-50_HT-800to1200_*");
     files.push_back(folder+"*_DYJetsToLL_M-50_HT-1200to2500_*");
     files.push_back(folder+"*_DYJetsToLL_M-50_HT-2500toInf_*");    

@@ -11,6 +11,7 @@ float w_pu_rpv
 float w_isr
 float w_toppt
 float w_lep
+std::vector<float> w_pdf
 float eff_trig
 int npv
 int ntrupv
@@ -112,6 +113,7 @@ std::vector<float> sys_muf
 std::vector<float> sys_murf
 std::vector<float> sys_isr
 std::vector<float> sys_ht
+std::vector<float> sys_mj12
 std::vector<int>   sys_njets
 std::vector<int>   sys_nbm
 std::vector<bool>  sys_pass

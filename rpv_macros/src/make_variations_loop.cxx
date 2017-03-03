@@ -22,7 +22,7 @@ double addError(double error, double added_error);
 double divideErrors(double x, double y, double dx, double dy);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
-float lumi = 35; // fb-1
+float lumi = 35.8; // fb-1
 const int nbins = 22;
 int w_pdf_index = 0;
 
@@ -61,12 +61,12 @@ int main(int argc, char *argv[])
   }
 
   // Define samples
-  TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
-  TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
-  TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
-  //TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/mc/skim_rpv_fit/";
-  //TString folder_dat = "/Users/jaehyeok/Research/cms/UCSB/babies/2016_08_10/data/skim_rpv_fit/";
-  //TString folder_sig = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_10/mc/T1tbs/";
+  TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
+  TString folder_dat = "/net/cms27/cms27r0/babymaker/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
+  TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/"; // Capybara: no w_pdf, no sys_mj12, ...
+//  TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
+//  TString folder_dat = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
+//  TString folder_sig = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_10/mc/T1tbs/";
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 
@@ -517,7 +517,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             { 
                 if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
                     h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);              // nominal  
-                if(tree.sys_nbm()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.mj12())) // need to update mj12 to sys_mj12[0]
+                if(tree.sys_nbm()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0])) 
                     h1up[ibin]->Fill(tree.sys_nbm()[0]>nBBins?nBBins:tree.sys_nbm()[0], upweight);          // up
                 if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
                     h1down[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), downweight);                    // down  
@@ -527,14 +527,13 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             { 
                 if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
                     h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);              // nominal  
-                if(tree.sys_nbm()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.mj12()))  // need to update mj12 to sys_mj12[1]
+                if(tree.sys_nbm()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.sys_mj12()[1]))  
                     h1up[ibin]->Fill(tree.sys_nbm()[1]>nBBins?nBBins:tree.sys_nbm()[1], upweight);          // up 
-                if(tree.sys_nbm()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.mj12()))  // need to update mj12 to sys_mj12[2]
+                if(tree.sys_nbm()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2]))  
                     h1down[ibin]->Fill(tree.sys_nbm()[2]>nBBins?nBBins:tree.sys_nbm()[2], downweight);      // down
             }
             else 
             {
-                // apply cuts
                 if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
                 {
                     h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);  // nominal  

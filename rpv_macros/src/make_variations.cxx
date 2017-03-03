@@ -127,21 +127,21 @@ void jetVariations(TString &nbm, TString &cut, const std::string &variation)
     cut.ReplaceAll("ht", "sys_ht[0]");
     cut.ReplaceAll("njets", "sys_njets[0]");
     cut.ReplaceAll("nbm", "sys_nbm[0]");
-    //cut.ReplaceAll("mj12", "sys_mj[0]"); // capybara doesn't have sys_mj12
+    cut.ReplaceAll("mj12", "sys_mj[0]");
     nbm.ReplaceAll("nbm", "sys_nbm[0]");
   }
   if(variation.find("jesUp")!=std::string::npos) {
     cut.ReplaceAll("ht", "sys_ht[1]");
     cut.ReplaceAll("njets", "sys_njets[1]");
     cut.ReplaceAll("nbm", "sys_nbm[1]");
-    //cut.ReplaceAll("mj12", "sys_mj[1]"); // capybara doesn't have sys_mj12
+    cut.ReplaceAll("mj12", "sys_mj[1]"); 
     nbm.ReplaceAll("nbm", "sys_nbm[1]");
   }
   if(variation.find("jesDown")!=std::string::npos) {
     cut.ReplaceAll("ht", "sys_ht[2]");
     cut.ReplaceAll("njets", "sys_njets[2]");
     cut.ReplaceAll("nbm", "sys_nbm[2]");
-    //cut.ReplaceAll("mj12", "sys_mj[2]"); // capybara doesn't have sys_mj12
+    cut.ReplaceAll("mj12", "sys_mj[2]");
     nbm.ReplaceAll("nbm", "sys_nbm[2]");
   }
 
@@ -518,9 +518,12 @@ void makeVariations(std::string &syst){
   if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]*1.53"; 
 
   // Define samples
-  TString folder_bkg = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_fit/";
-  TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
-  TString folder_dat = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_fit/";
+  TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
+  TString folder_dat = "/net/cms27/cms27r0/babymaker/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
+  TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/"; // Capybara: no w_pdf, no sys_mj12, ...
+//  TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
+//  TString folder_dat = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
+//  TString folder_sig = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_10/mc/T1tbs/";
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 

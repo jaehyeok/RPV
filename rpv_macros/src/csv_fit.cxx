@@ -29,11 +29,17 @@ int main(int argc, char *argv[])
     // options: low_njet, low_njet_low_mj, low_njet_high_mj, high_njet, exclude_high_csv 
     if(fitType!="low_njet" && 
        fitType!="high_njet" &&
+       fitType!="low_njet_vlow_mj" && 
        fitType!="low_njet_low_mj" && 
        fitType!="low_njet_high_mj" && 
-       fitType!="exclude_high_csv") {
+       fitType!="45_njetbin" && 
+       fitType!="67_njetbin" && 
+       fitType!="89_njetbin" && 
+       fitType!="10_njetbin") {
       std::cout << "Invalid fit type: " << fitType 
-		<< "\nValid fit types are: low_njet, high_njet, low_njet_low_mj, low_njet_high_mj, exclude_high_csv"  << std::endl;
+		<< "\nValid fit types are: low_njet, high_njet, "
+		<< "45_njetbin, 67_njetbin, 89_njetbin, 10_njetbin, "
+		<< "low_njet_vlow_mj, low_njet_low_mj, low_njet_high_mj"  << std::endl;
       return 1;
     }
     if(fitType=="exclude_high_csv") {
@@ -153,7 +159,7 @@ int main(int argc, char *argv[])
   ROOT::Fit::Fitter* fitter = fit->GetFitter();
   fitter->Config().ParSettings(1).SetValue(other->Integral()/total_yield);
   fitter->Config().ParSettings(1).Fix();
-  if(!fitCharmWithLight) {
+  if(!fitCharmWithLight){
     fitter->Config().ParSettings(3).SetValue(qcd_l->Integral()/total_yield);
     fitter->Config().ParSettings(3).Fix();
   }
@@ -275,6 +281,7 @@ int main(int argc, char *argv[])
 
     double qcd_b_fracafter, qcd_b_fracafter_err;    
     double qcd_c_fracafter, qcd_c_fracafter_err;    
+
     fit->GetResult(0, qcd_b_fracafter, qcd_b_fracafter_err);
     fit->GetResult(2, qcd_c_fracafter, qcd_c_fracafter_err);
     float other_fracafter = fitter->Config().ParSettings(1).Value();
@@ -323,9 +330,9 @@ int main(int argc, char *argv[])
     	      << "cl: " << qcd_cl_ratio << std::endl
     	      << "other: " << other_ratio << std::endl;
     if(excludeHighCSV)
-      c->Print(Form("plots/csv/csvfit_%s.pdf", "exclude_high_csv"));
+      c->Print(Form("plots/csv/csvfit_%s.png", "exclude_high_csv"));
     else
-      c->Print(Form("plots/csv/csvfit_%s.pdf", fitType.Data()));
+      c->Print(Form("plots/csv/csvfit_%s.png", fitType.Data()));
   
     std::cout << "chi^2/ndof from TFractionFitter: " << fit->GetChisquare() << "/" << ndof << ", prob = " << fit->GetProb() << std::endl;
     float chi2 =0.;

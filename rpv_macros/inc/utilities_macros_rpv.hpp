@@ -56,7 +56,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.push_back(folder+"*_TTJets_SingleLeptFromT_Tune*");
     files.push_back(folder+"*_TTJets_SingleLeptFromTbar_Tune*");
     files.push_back(folder+"*_TTJets_HT*");
-    files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*");
+    files.push_back(folder+"*_TTJets_Tune*");
   }
   //Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
   else if(process=="ttbar_2l"){
@@ -71,7 +71,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   
   else if(process=="ttbar_had"){
     files.push_back(folder+"*_TTJets_HT*");
-    files.push_back(folder+"*_TTJets_TuneCUETP8M1_13TeV-madgraph*"); //For this sample to be used in the hadronic-only selection it needs a ntruleps==0 skim
+    files.push_back(folder+"*_TTJets_Tune*"); //For this sample to be used in the hadronic-only selection it needs a ntruleps==0 skim
   }
 
   else if(process=="qcd"){

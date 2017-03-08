@@ -1,4 +1,4 @@
-// make_csv_template.cxx: Makes templates of CSV template for jets passing
+B0;95;0c// make_csv_template.cxx: Makes templates of CSV template for jets passing
 // the CSV requirement. Used for reweighting flavor composition of QCD MC
 
 #include <iostream>
@@ -57,7 +57,7 @@ int main(){
   // Njets<=7
   makeCSVHist(out, s_data, "data_low_njet", "njets<=7&&mj12>500&&nbm>=2&&pass&&"+extraCut);
   makeCSVHist(out, s_qcd, "QCD_b_low_njet", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)>=1 && njets<=7&&mj12>500&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
-  makeCSVHist(out, s_qcd, "QCD_c_low_njet", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)==0 && Sum$(jets_pt>30&&abs(jets_hflavor)==4)>=1  && njets<=7&&mj12>500&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
+  makeCSVHist(out, s_qcd, "QCD_c_low_njet", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)==0 && Sum$(jets_pt>30&&abs(jets_hflavor)==4)>=1 && njets<=7&&mj12>500&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
   makeCSVHist(out, s_qcd, "QCD_l_low_njet", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)==0 && Sum$(jets_pt>30&&abs(jets_hflavor)==4)==0 && njets<=7&&mj12>500&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
   makeCSVHist(out, s_other, "other_low_njet", "njets<=7&&mj12>500&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
 
@@ -94,10 +94,10 @@ int main(){
   makeCSVHist(out, s_qcd, "QCD_b_10_njetbin", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)>=1 && mj12>500&&njets>=10&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
   makeCSVHist(out, s_qcd, "QCD_c_10_njetbin", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)==0 && Sum$(jets_pt>30&&abs(jets_hflavor)==4)>=1 && mj12>500&&njets>=10&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
   makeCSVHist(out, s_qcd, "QCD_l_10_njetbin", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)==0 && Sum$(jets_pt>30&&abs(jets_hflavor)==4)==0 && mj12>500&&njets>=10&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
-  makeCSVHist(out, s_other, "other_10_njetbin", "mj12>500&&njets>=10&&nbm>=2&&stitch_ht&&pass&&"+extraCut); */
+  makeCSVHist(out, s_other, "other_10_njetbin", "mj12>500&&njets>=10&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
   
   // Njets<=7 && 300<MJ<500
-  /*  makeCSVHist(out, s_data, "data_low_njet_vlow_mj", "njets<=7 && mj12>300 && mj12<=500 && mj12<=800&&nbm>=2&&pass&&"+extraCut);
+  makeCSVHist(out, s_data, "data_low_njet_vlow_mj", "njets<=7 && mj12>300 && mj12<=500 && mj12<=800&&nbm>=2&&pass&&"+extraCut);
   makeCSVHist(out, s_qcd, "QCD_b_low_njet_vlow_mj", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)>=1 && njets<=7 && mj12>300 && mj12<=500 && mj12<=800&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
   makeCSVHist(out, s_qcd, "QCD_c_low_njet_vlow_mj", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)==0 && Sum$(jets_pt>30&&abs(jets_hflavor)==4)>=1 && njets<=7 && mj12>300 && mj12<=500 && mj12<=800&&nbm>=2&&stitch_ht&&pass&&"+extraCut);
   makeCSVHist(out, s_qcd, "QCD_l_low_njet_vlow_mj", "Sum$(jets_pt>30&&abs(jets_hflavor)==5)==0 && Sum$(jets_pt>30&&abs(jets_hflavor)==4)==0 && njets<=7 && mj12>300 && mj12<=500 && mj12<=800&&nbm>=2&&stitch_ht&&pass&&"+extraCut);

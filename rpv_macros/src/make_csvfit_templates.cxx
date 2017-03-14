@@ -118,7 +118,7 @@ int main(){
     card << "jmax 4  number of backgrounds \n";
     card << "kmax *  number of nuisances \n";    
     card << "---------------------------------------------------------- \n";
-    card << "shapes * bin1 csvfit_shapes.root bin1/$PROCESS bin1/$PROCESS_SYSTEMATIC \n";
+    card << "shapes * bin1 csvfit_shapes.root bin1/$PROCESS bin1/$SYSTEMATIC \n";
     card << "---------------------------------------------------------- \n";
     card << "bin         bin1 \n";
     card << "observation "<<ndata<<" \n";
@@ -131,10 +131,10 @@ int main(){
     card << "norm_qcd_b     lnU - 5 - - - \n";
     card << "norm_qcd_c     lnU - - 5 - - \n\n";
     
-    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "qcd_b_mcstat_bin"+to_string(ibin+1) << " shape lnN - 1 - - - \n";
-    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "qcd_c_mcstat_bin"+to_string(ibin+1) << " shape lnN - - 1 - - \n";
-    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "qcd_l_mcstat_bin"+to_string(ibin+1) << " shape lnN - - - 1 - \n";
-    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "other_mcstat_bin"+to_string(ibin+1) << " shape lnN - - - - 1 \n";
+    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "qcd_b_mcstat_bin"+to_string(ibin+1) << "  shape - 1 - - - \n";
+    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "qcd_c_mcstat_bin"+to_string(ibin+1) << "  shape - - 1 - - \n";
+    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "qcd_l_mcstat_bin"+to_string(ibin+1) << "  shape - - - 1 - \n";
+    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "other_mcstat_bin"+to_string(ibin+1) << "  shape - - - - 1 \n";
 
     cout<<"Made datacard: datacard_csvfit.dat"<<endl;
   }  

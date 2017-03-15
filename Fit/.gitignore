@@ -2,6 +2,7 @@ CMSSW*
 *.root
 *.log
 *.pdf
+*.png
 *.eps
 *.tex
 *.aux

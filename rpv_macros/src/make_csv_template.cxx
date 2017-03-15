@@ -1,4 +1,4 @@
-B0;95;0c// make_csv_template.cxx: Makes templates of CSV template for jets passing
+// make_csv_template.cxx: Makes templates of CSV template for jets passing
 // the CSV requirement. Used for reweighting flavor composition of QCD MC
 
 #include <iostream>

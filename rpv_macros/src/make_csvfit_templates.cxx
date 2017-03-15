@@ -14,6 +14,8 @@ namespace {
   const float xMin=0.8484;
   const float xMax=1.0;
 
+  TString fittype = "nominal";
+
   TString lumi = "36.8";
   bool makeDatacard = true;
   bool doWithSFs = true;
@@ -21,12 +23,16 @@ namespace {
 
 using namespace std;
 
+TString getBasecut(TString fittype);
+TString getProcessCut(TString process, TString cut);
 vector<vector<TH1D*> > makeMCStatVariations(TString process, TH1D* hist);
 vector<vector<TH1D*> > makeSFVariations(TString process, TString cut, TChain& chain, double nom_norm);
 TH1D* makeShapeHist(TString process, TString cut, TChain& chain);
 
 int main(){ 
   TH1::SetDefaultSumw2(true);
+
+  cout<<"Making csvfit templates for fittype: "<<fittype<<endl;
 
   TString folder_dat = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/data/merged_rpvdata_rpvregion/";  
   TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
@@ -51,7 +57,7 @@ int main(){
   for(unsigned int ifile=0; ifile<s_qcd.size(); ifile++)       qcd.Add(s_qcd[ifile]);
   for(unsigned int ifile=0; ifile<s_other.size(); ifile++)     other.Add(s_other[ifile]);
   
-  TString basecut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>500&&nbm>=2&&pass";
+  TString basecut = getBasecut(fittype);
 
   //Make shape hists
   TH1D* h_data =   makeShapeHist("data_obs", basecut, data);
@@ -201,18 +207,10 @@ vector<vector<TH1D*> > makeMCStatVariations(TString process, TH1D* hist){
 
 vector<vector<TH1D*> > makeSFVariations(TString process, TString cut, TChain& chain, double nom_norm){
 
+  cut = getProcessCut(process, cut);
+
   // [Heavy/Light SF][Up/Down]
   vector<vector<TH1D*> > h_variations(2, vector<TH1D*>(2));
-
-  if(process=="qcdb")       cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)>=1)";
-  else if(process=="qcdc")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)==0&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==4)>=1)";
-  else if(process=="qcdl")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)==0&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==4)==0)";
-  else if(process=="other") cut = lumi+"*weight*("+cut+"&&stitch_ht)";     
-  else{
-    cout<<"ERROR: Incorrect process name"<<endl;
-    exit(1);
-  }
-
   vector<vector<TString> > sfNames = {{"btag_bcUp", "btag_bcDown"}, {"btag_udsgUp", "btag_udsgDown"}};
   vector<vector<TString> > sfWeights = {{"sys_bctag[1]/w_btag", "sys_bctag[0]/w_btag"}, {"sys_udsgtag[1]/w_btag", "sys_udsgtag[0]/w_btag"}};
 
@@ -231,6 +229,33 @@ vector<vector<TH1D*> > makeSFVariations(TString process, TString cut, TChain& ch
 TH1D* makeShapeHist(TString process, TString cut, TChain& chain){
 
   cout<<"Making "+process+" histogram"<<endl;
+  cut = getProcessCut(process, cut);
+
+  TH1D* h_temp = new TH1D(process, process, nBins, xMin, xMax);
+  chain.Project(process,"jets_csv",cut);
+
+  return h_temp;
+}
+
+TString getBasecut(TString fittype){
+
+  TString cut = "";
+  if(fittype == "nominal")     cut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>500&&nbm>=2&&pass";
+  else if(fittype == "vlowmj") cut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>300&&mj12<=500&&nbm>=2&&pass";
+  else if(fittype == "lowmj")  cut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>500&&mj12<=800&&nbm>=2&&pass";
+  else if(fittype == "highmj") cut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>800&&nbm>=2&&pass";
+  else if(fittype == "45jets") cut = "nleps==0&&ht>1500&&njets>=4&&njets<=5&&mj12>500&&nbm>=2&&pass";
+  else if(fittype == "67jets") cut = "nleps==0&&ht>1500&&njets>=6&&njets<=7&&mj12>500&&nbm>=2&&pass";
+  else if(fittype == "89jets") cut = "nleps==0&&ht>1500&&njets>=8&&njets<=9&&mj12>500&&nbm>=2&&pass";
+  else if(fittype == "10jets") cut = "nleps==0&&ht>1500&&njets>10&&mj12>500&&nbm>=2&&pass";
+  else{
+    cout<<"ERROR: Incorrect fittype"<<endl;
+    exit(1);
+  }
+  return cut;
+}
+
+TString getProcessCut(TString process, TString cut){
 
   if(process=="data_obs")   cut = cut;
   else if(process=="rpv")   cut = lumi+"*weight*("+cut+")";     
@@ -242,9 +267,5 @@ TH1D* makeShapeHist(TString process, TString cut, TChain& chain){
     cout<<"ERROR: Incorrect process name"<<endl;
     exit(1);
   }
-
-  TH1D* h_temp = new TH1D(process, process, nBins, xMin, xMax);
-  chain.Project(process,"jets_csv",cut);
-
-  return h_temp;
+  return cut;
 }

@@ -24,9 +24,9 @@ def main():
 
     f_mlfit = ROOT.TFile(args.mlfit,'READ')
     # Histograms have non-physical binning
-    h_qcdb_raw = f_mlfit.Get('shapes_fit_b/bin1/qcd_b')
-    h_qcdc_raw = f_mlfit.Get('shapes_fit_b/bin1/qcd_c')
-    h_qcdl_raw = f_mlfit.Get('shapes_fit_b/bin1/qcd_l')
+    h_qcdb_raw = f_mlfit.Get('shapes_fit_b/bin1/qcdb')
+    h_qcdc_raw = f_mlfit.Get('shapes_fit_b/bin1/qcdc')
+    h_qcdl_raw = f_mlfit.Get('shapes_fit_b/bin1/qcdl')
     h_other_raw = f_mlfit.Get('shapes_fit_b/bin1/other')
 
     # Need TH1Ds to make plots with physical binning
@@ -97,8 +97,8 @@ def main():
     leg = ROOT.TLegend(0.15,0.55,0.60,0.9)
     leg.SetFillStyle(0); leg.SetBorderSize(0)    
     leg.AddEntry(h_data, 'Data')
-    leg.AddEntry(h_qcdb, 'b-quark events (w_{b} = '+str(round(weights[0][0],3))+' #pm '+str(round(weights[0][1],3))+')', 'f')
-    leg.AddEntry(h_qcdc, 'c-quark events (w_{c} = '+str(round(weights[1][0],3))+' #pm '+str(round(weights[1][1],3))+')', 'f')
+    leg.AddEntry(h_qcdb, 'b-quark events (w_{b} = %3.3f #pm %3.3f)' % (weights[0][0], weights[0][1]), 'f')
+    leg.AddEntry(h_qcdc, 'c-quark events (w_{c} = %3.3f #pm %3.3f)' % (weights[1][0], weights[1][1]), 'f')
     leg.AddEntry(h_qcdl, 'light-quark events (Fixed)', 'f')
     leg.AddEntry(h_other, 'Non-QCD events (Fixed)', 'f')
     leg.Draw()
@@ -145,8 +145,8 @@ def formatHist(hist, markStyle=-1, markSize=-1, markColor=-1, lineColor=-1, line
     if fillStyle!=-1: hist.SetFillStyle(fillStyle)
 
 def getErrHists(postfit, h_qcdb, h_qcdc, h_qcdl, h_other):
-    scale_qcdb = postfit.find('bin1/qcd_b').getError()/postfit.find('bin1/qcd_b').getVal()
-    scale_qcdc = postfit.find('bin1/qcd_c').getError()/postfit.find('bin1/qcd_c').getVal()
+    scale_qcdb = postfit.find('bin1/qcdb').getError()/postfit.find('bin1/qcdb').getVal()
+    scale_qcdc = postfit.find('bin1/qcdc').getError()/postfit.find('bin1/qcdc').getVal()
 
     # Anti-correlate qcdb and qcdc uncertanties
     err = [abs(h_qcdb.GetBinContent(i)*scale_qcdb - h_qcdc.GetBinContent(i)*scale_qcdc) for i in range(1,nBins+1)] 
@@ -162,12 +162,12 @@ def getErrHists(postfit, h_qcdb, h_qcdc, h_qcdl, h_other):
     return h_err, h_err_rat
 
 def getFlavorWeights(prefit, postfit):
-    processes = ['other','qcd_b','qcd_c','qcd_l']
+    processes = ['other','qcdb','qcdc','qcdl']
 
-    prefit_qcdb = [prefit.find('bin1/qcd_b').getVal(), 0]
-    prefit_qcdc = [prefit.find('bin1/qcd_c').getVal(), 0]
-    postfit_qcdb = [postfit.find('bin1/qcd_b').getVal(), postfit.find('bin1/qcd_b').getError()]
-    postfit_qcdc = [postfit.find('bin1/qcd_c').getVal(), postfit.find('bin1/qcd_c').getError()]
+    prefit_qcdb = [prefit.find('bin1/qcdb').getVal(), 0]
+    prefit_qcdc = [prefit.find('bin1/qcdc').getVal(), 0]
+    postfit_qcdb = [postfit.find('bin1/qcdb').getVal(), postfit.find('bin1/qcdb').getError()]
+    postfit_qcdc = [postfit.find('bin1/qcdc').getVal(), postfit.find('bin1/qcdc').getError()]
 
     prefit_norm, postfit_norm = 0, 0
     for iproc in processes:
@@ -219,10 +219,10 @@ def makePullsPlot(fitb, titles):
     formatHist(h_other,lineColor=ROOT.kOrange-6,markColor=ROOT.kOrange-6)
     for i in range(npulls):
         # Set contents off the plot if not correct nuisance
-        if 'qcd_b' not in h_qcdb.GetXaxis().GetBinLabel(i): h_qcdb.SetBinContent(i,50)
-        if 'qcd_c' not in h_qcdc.GetXaxis().GetBinLabel(i): h_qcdc.SetBinContent(i,50)
-        if 'qcd_l' not in h_qcdl.GetXaxis().GetBinLabel(i): h_qcdl.SetBinContent(i,50)
-        if 'other' not in h_other.GetXaxis().GetBinLabel(i): h_other.SetBinContent(i,50)
+        if 'qcdb' not in h_qcdb.GetXaxis().GetBinLabel(i): h_qcdb.SetBinContent(i,100)
+        if 'qcdc' not in h_qcdc.GetXaxis().GetBinLabel(i): h_qcdc.SetBinContent(i,100)
+        if 'qcdl' not in h_qcdl.GetXaxis().GetBinLabel(i): h_qcdl.SetBinContent(i,100)
+        if 'other' not in h_other.GetXaxis().GetBinLabel(i): h_other.SetBinContent(i,100)
 
     #Make box
     box = ROOT.TBox(0, -1, npulls, 1)

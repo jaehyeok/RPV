@@ -16,18 +16,20 @@ namespace {
 
   TString lumi = "36.8";
   bool makeDatacard = true;
+  bool doWithSFs = true;
 }
 
 using namespace std;
 
-vector<vector<TH1D*> > makeMCStatVariations(TString process, TH1D hist);
-TH1D makeShapeHist(TString process, TString cut, TChain& chain);
+vector<vector<TH1D*> > makeMCStatVariations(TString process, TH1D* hist);
+vector<vector<TH1D*> > makeSFVariations(TString process, TString cut, TChain& chain, double nom_norm);
+TH1D* makeShapeHist(TString process, TString cut, TChain& chain);
 
 int main(){ 
   TH1::SetDefaultSumw2(true);
 
   TString folder_dat = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/data/merged_rpvdata_rpvregion/";  
-  TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvregion/";
+  TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
   TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
 
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
@@ -52,44 +54,65 @@ int main(){
   TString basecut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>500&&nbm>=2&&pass";
 
   //Make shape hists
-  TH1D h_data =   makeShapeHist("data_obs", basecut, data);
-  TH1D h_rpv =    makeShapeHist("rpv", basecut, rpv);
-  TH1D h_qcdb =   makeShapeHist("qcd_b", basecut, qcd);
-  TH1D h_qcdc =   makeShapeHist("qcd_c", basecut, qcd);
-  TH1D h_qcdl =   makeShapeHist("qcd_l", basecut, qcd);
-  TH1D h_other =  makeShapeHist("other", basecut, other);
+  TH1D* h_data =   makeShapeHist("data_obs", basecut, data);
+  TH1D* h_rpv =    makeShapeHist("rpv", basecut, rpv);
+  TH1D* h_qcdb =   makeShapeHist("qcdb", basecut, qcd);
+  TH1D* h_qcdc =   makeShapeHist("qcdc", basecut, qcd);
+  TH1D* h_qcdl =   makeShapeHist("qcdl", basecut, qcd);
+  TH1D* h_other =  makeShapeHist("other", basecut, other);
 
   cout<<"Normalizing QCD yields to data"<<endl;
-  double scaling = (h_data.Integral() - h_other.Integral())/(h_qcdb.Integral() + h_qcdc.Integral() + h_qcdl.Integral());
+  double scaling = (h_data->Integral() - h_other->Integral())/(h_qcdb->Integral() + h_qcdc->Integral() + h_qcdl->Integral());
   cout<<"Scaling factor is "<<scaling<<endl;
 
-  h_qcdb.Scale(scaling);
-  h_qcdc.Scale(scaling);
-  h_qcdl.Scale(scaling);
+  h_qcdb->Scale(scaling);
+  h_qcdc->Scale(scaling);
+  h_qcdl->Scale(scaling);
+
+  vector<vector<TH1D*> > h_qcdb_sf, h_qcdc_sf, h_qcdl_sf, h_other_sf;
+  if(doWithSFs){
+    cout<<"Making SF variations"<<endl;
+    h_qcdb_sf =  makeSFVariations("qcdb", basecut, qcd, h_qcdb->Integral());
+    h_qcdc_sf =  makeSFVariations("qcdc", basecut, qcd, h_qcdc->Integral());
+    h_qcdl_sf =  makeSFVariations("qcdl", basecut, qcd, h_qcdl->Integral());
+    h_other_sf = makeSFVariations("other", basecut, other, h_other->Integral());
+  }
 
   cout<<"Making MC stat variations"<<endl;
-  vector<vector<TH1D*> > h_qcdb_mcstat =  makeMCStatVariations("qcd_b", h_qcdb);
-  vector<vector<TH1D*> > h_qcdc_mcstat =  makeMCStatVariations("qcd_c", h_qcdc);
-  vector<vector<TH1D*> > h_qcdl_mcstat =  makeMCStatVariations("qcd_l", h_qcdl);
+  vector<vector<TH1D*> > h_qcdb_mcstat =  makeMCStatVariations("qcdb", h_qcdb);
+  vector<vector<TH1D*> > h_qcdc_mcstat =  makeMCStatVariations("qcdc", h_qcdc);
+  vector<vector<TH1D*> > h_qcdl_mcstat =  makeMCStatVariations("qcdl", h_qcdl);
   vector<vector<TH1D*> > h_other_mcstat = makeMCStatVariations("other", h_other);
 
   //Make file and write histograms to it
   TString filename = "csvfit_shapes.root";
   TFile *out = new TFile(filename, "recreate");
-  TDirectory *bin =  out->mkdir("bin1");
+  TDirectory *bin = out->mkdir("bin1");
   bin->cd();
   
   // Write out nominal shapes
-  h_data.Write();
-  h_rpv.Write();
-  h_qcdb.Write();
-  h_qcdc.Write();
-  h_qcdl.Write();
-  h_other.Write();
+  h_data->Write();
+  h_rpv->Write();
+  h_qcdb->Write();
+  h_qcdc->Write();
+  h_qcdl->Write();
+  h_other->Write();
+
+  // Write out SF shapes
+  if(doWithSFs){
+    for(unsigned int isys=0; isys<2; isys++){
+      for(unsigned int idir=0; idir<2; idir++){
+	h_qcdb_sf[isys][idir]->Write();
+	h_qcdc_sf[isys][idir]->Write();
+	h_qcdl_sf[isys][idir]->Write();
+	h_other_sf[isys][idir]->Write();
+      }
+    }
+  }
 
   // Write out mc stat. shapes
-  for(unsigned int ibin=0; ibin<nBins; ibin++){
-    for(unsigned int isys=0; isys<2; isys++){
+  for(unsigned int isys=0; isys<2; isys++){
+    for(unsigned int ibin=0; ibin<nBins; ibin++){
       h_qcdb_mcstat[isys][ibin]->Write();
       h_qcdc_mcstat[isys][ibin]->Write();
       h_qcdl_mcstat[isys][ibin]->Write();
@@ -102,14 +125,14 @@ int main(){
 
   cout<<"Wrote out shapes file: "<<filename<<endl;
 
-  //Make datacard
+  // Make datacard
   if(makeDatacard){
-    double ndata = h_data.Integral();
-    double nrpv = h_rpv.Integral();    
-    double nqcdb = h_qcdb.Integral();
-    double nqcdc = h_qcdc.Integral();
-    double nqcdl =  h_qcdl.Integral();
-    double nother = h_other.Integral();
+    double ndata = h_data->Integral();
+    double nrpv = h_rpv->Integral();    
+    double nqcdb = h_qcdb->Integral();
+    double nqcdc = h_qcdc->Integral();
+    double nqcdl =  h_qcdl->Integral();
+    double nother = h_other->Integral();
 
     ofstream card;
     card.open("datacard_csvfit.dat");
@@ -117,72 +140,110 @@ int main(){
     card << "imax 1  number of channels \n";
     card << "jmax 4  number of backgrounds \n";
     card << "kmax *  number of nuisances \n";    
-    card << "---------------------------------------------------------- \n";
-    card << "shapes * bin1 csvfit_shapes.root bin1/$PROCESS bin1/$SYSTEMATIC \n";
-    card << "---------------------------------------------------------- \n";
+    card << "------------------------------------------------------------------------- \n";
+    card << "shapes * bin1 csvfit_shapes.root bin1/$PROCESS bin1/$PROCESS_$SYSTEMATIC \n";
+    card << "------------------------------------------------------------------------- \n";
     card << "bin         bin1 \n";
     card << "observation "<<ndata<<" \n";
-    card << "---------------------------------------------------------- \n";
+    card << "--------------------------------------------------------- \n";
     card << "bin         bin1      bin1     bin1     bin1     bin1 \n";
-    card << "process     rpv    qcd_b    qcd_c    qcd_l    other \n";
+    card << "process     rpv       qcdb     qcdc     qcdl     other \n";
     card << "process     0         1        2        3        4 \n";
-    card << "rate        "<<nrpv<<"     "<<nqcdb<<"  "<<nqcdc<<"  "<<nqcdl<<"  "<<nother<<" \n";
-    card << "---------------------------------------------------------- \n";
-    card << "norm_qcd_b     lnU - 5 - - - \n";
-    card << "norm_qcd_c     lnU - - 5 - - \n\n";
+    card << "rate        "<<nrpv<<"   "<<nqcdb<<"  "<<nqcdc<<"  "<<nqcdl<<"  "<<nother<<" \n";
+    card << "--------------------------------------------------------- \n";
+    card << "norm_qcdb     lnU - 5 - - - \n";
+    card << "norm_qcdc     lnU - - 5 - - \n\n";
+
+    if(doWithSFs){
+      card << "btag_bc  " << "  shape - 1 1 1 1 \n";
+      card << "btag_udsg" << "  shape - 1 1 1 1 \n\n";
+    }
     
-    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "qcd_b_mcstat_bin"+to_string(ibin+1) << "  shape - 1 - - - \n";
-    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "qcd_c_mcstat_bin"+to_string(ibin+1) << "  shape - - 1 - - \n";
-    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "qcd_l_mcstat_bin"+to_string(ibin+1) << "  shape - - - 1 - \n";
-    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "other_mcstat_bin"+to_string(ibin+1) << "  shape - - - - 1 \n";
+    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "mcstat_qcdb_bin"+to_string(ibin+1)  << "  shape - 1 - - - \n";
+    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "mcstat_qcdc_bin"+to_string(ibin+1)  << "  shape - - 1 - - \n";
+    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "mcstat_qcdl_bin"+to_string(ibin+1)  << "  shape - - - 1 - \n";
+    for(unsigned int ibin=0; ibin<nBins; ibin++) card << "mcstat_other_bin"+to_string(ibin+1) << "  shape - - - - 1 \n";
 
     cout<<"Made datacard: datacard_csvfit.dat"<<endl;
   }  
 }
 
-vector<vector<TH1D*> > makeMCStatVariations(TString process, TH1D hist){
+vector<vector<TH1D*> > makeMCStatVariations(TString process, TH1D* hist){
 
-  if(process != "qcd_b" && process != "qcd_c" && process != "qcd_l" && process != "other"){
+  if(process != "qcdb" && process != "qcdc" && process != "qcdl" && process != "other"){
     cout<<"ERROR: Incorrect process name"<<endl;
     exit(1);
   }
 
   vector<vector<TH1D*> > h_variations(2, vector<TH1D*>(nBins));
 
+  double norm = hist->Integral();
+
   for(unsigned int ibin=0; ibin<nBins; ibin++){
     for(unsigned int isys=0; isys<2; isys++){
 
-      TString title = process+"_mcstat_bin"+to_string(ibin+1);
+      TString title = process+"_mcstat_"+process+"_bin"+to_string(ibin+1);
       title += isys==0 ? "Up" : "Down";
 
-      h_variations[isys][ibin] = static_cast<TH1D*>(hist.Clone(title));
+      h_variations[isys][ibin] = static_cast<TH1D*>(hist->Clone(title));
       double nomContent = h_variations[isys][ibin]->GetBinContent(ibin+1);
       double error = h_variations[isys][ibin]->GetBinError(ibin+1);
       double varContent = isys==0 ? nomContent+error : nomContent-error;
 
       h_variations[isys][ibin]->SetBinContent(ibin+1, varContent);
+
+      // Renormalize variations
+      h_variations[isys][ibin]->Scale(norm/h_variations[isys][ibin]->Integral());
     }
   }
   return h_variations;
 }
 
-TH1D makeShapeHist(TString process, TString cut, TChain& chain){
+vector<vector<TH1D*> > makeSFVariations(TString process, TString cut, TChain& chain, double nom_norm){
 
-  if(process!="data_obs" && process!="rpv" && process!="qcd_b" && process!="qcd_c" && process!="qcd_l" && process!="other"){
+  // [Heavy/Light SF][Up/Down]
+  vector<vector<TH1D*> > h_variations(2, vector<TH1D*>(2));
+
+  if(process=="qcdb")       cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)>=1)";
+  else if(process=="qcdc")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)==0&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==4)>=1)";
+  else if(process=="qcdl")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)==0&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==4)==0)";
+  else if(process=="other") cut = lumi+"*weight*("+cut+"&&stitch_ht)";     
+  else{
     cout<<"ERROR: Incorrect process name"<<endl;
     exit(1);
   }
 
+  vector<vector<TString> > sfNames = {{"btag_bcUp", "btag_bcDown"}, {"btag_udsgUp", "btag_udsgDown"}};
+  vector<vector<TString> > sfWeights = {{"sys_bctag[1]/w_btag", "sys_bctag[0]/w_btag"}, {"sys_udsgtag[1]/w_btag", "sys_udsgtag[0]/w_btag"}};
+
+  for(int isys=0; isys<2; isys++){
+    for(int idir=0; idir<2; idir++){
+        h_variations[isys][idir] = new TH1D(process+"_"+sfNames[isys][idir], process+"_"+sfNames[isys][idir], nBins, xMin, xMax);
+	chain.Project(process+"_"+sfNames[isys][idir],"jets_csv",cut+"*"+sfWeights[isys][idir]);
+
+	// Renormalize variations
+	h_variations[isys][idir]->Scale(nom_norm/h_variations[isys][idir]->Integral());
+    }
+  }
+  return h_variations;
+}
+
+TH1D* makeShapeHist(TString process, TString cut, TChain& chain){
+
   cout<<"Making "+process+" histogram"<<endl;
 
-  if(process=="data_obs")    cut = cut;
-  else if(process=="rpv")    cut = lumi+"*weight*("+cut+")";     
-  else if(process=="qcd_b")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)>=1)";
-  else if(process=="qcd_c")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)==0&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==4)>=1)";
-  else if(process=="qcd_l")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)==0&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==4)==0)";
-  else if(process=="other")  cut = lumi+"*weight*("+cut+"&&stitch_ht)";     
+  if(process=="data_obs")   cut = cut;
+  else if(process=="rpv")   cut = lumi+"*weight*("+cut+")";     
+  else if(process=="qcdb")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)>=1)";
+  else if(process=="qcdc")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)==0&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==4)>=1)";
+  else if(process=="qcdl")  cut = lumi+"*weight*("+cut+"&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==5)==0&&Sum$(jets_pt>30&&abs(jets_eta)<=2.4&&abs(jets_hflavor)==4)==0)";
+  else if(process=="other") cut = lumi+"*weight*("+cut+"&&stitch_ht)";     
+  else{
+    cout<<"ERROR: Incorrect process name"<<endl;
+    exit(1);
+  }
 
-  TH1D h_temp(process, process, nBins, xMin, xMax);
+  TH1D* h_temp = new TH1D(process, process, nBins, xMin, xMax);
   chain.Project(process,"jets_csv",cut);
 
   return h_temp;

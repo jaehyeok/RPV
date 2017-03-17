@@ -4,18 +4,13 @@ import math
 from sys import argv
 import os.path
 
-#Batch mode hack
+# Batch mode hack
 argv.append( '-b-' )
 import ROOT
 ROOT.gROOT.SetBatch(True)
 argv.remove( '-b-' )
 
 def main():
-    parser = argparse.ArgumentParser(description='Plot the post-fit shapes from the CSV Fit')
-    parser.add_argument('mlfit', help='mlfit file with the post-fit shapes')
-    parser.add_argument('shapes', help='Pre-fit shapes file in order to get data shape')
-    args = parser.parse_args()
-
     ROOT.TH1.SetDefaultSumw2(True);
 
     # Get shape histograms
@@ -193,20 +188,23 @@ def getTitleStrings(filename):
     elif '10jets' in filename: titles = ['csvfit_postfit_10jets.png', 'N_{leps} = 0, H_{T} > 1500, N_{b} #geq 2, N_{jets}#geq 10, M_{J} #geq 500']
     else:                      titles = ['csvfit_postfit.png',        'N_{leps} = 0, H_{T} > 1500, N_{b} #geq 2, 4 #leq N_{jets}#leq 7, M_{J} #geq 500']
 
+    if 'noSFs' in filename: titles[0] = titles[0].replace('.png','_noSFs.png')
+    if args.tag: titles[0] = titles[0].replace('.png','_'+args.tag+'.png')
+
     return titles
 
 def makePullsPlot(fitb, titles):
     params = fitb.floatParsFinal()
     npulls = params.getSize()
 
-    #Make histogram
+    # Make histogram
     h_pulls = ROOT.TH1D('h_pulls',';;Post-fit pulls',npulls,0,npulls)
     formatHist(h_pulls,markStyle=20, markSize=0.6, lineColor=ROOT.kBlack, lineWidth=1)
     for i in range(npulls):
         param = params.at(i)
         h_pulls.SetBinContent(i+1,param.getVal())
         h_pulls.SetBinError(i+1,param.getError())
-        #Fix bin names, so can sort labels alphabetically
+        # Fix bin names, so can sort labels alphabetically
         if 'bin' in param.GetName():
             name = param.GetName().split('bin')
             h_pulls.GetXaxis().SetBinLabel(i+1,name[0]+'bin'+name[1].zfill(2))
@@ -230,11 +228,11 @@ def makePullsPlot(fitb, titles):
         if 'qcdl' not in h_qcdl.GetXaxis().GetBinLabel(i): h_qcdl.SetBinContent(i,100)
         if 'other' not in h_other.GetXaxis().GetBinLabel(i): h_other.SetBinContent(i,100)
 
-    #Make box
+    # Make box
     box = ROOT.TBox(0, -1, npulls, 1)
     formatHist(box, fillStyle=3003, fillColor=ROOT.kBlue)
 
-    #Draw Plot
+    # Draw Plot
     cpulls = ROOT.TCanvas('cpulls','cpulls',800,600)
     cpulls.SetBottomMargin(0.22); 
     cpulls.SetLeftMargin(0.07); cpulls.SetRightMargin(0.02)
@@ -246,7 +244,7 @@ def makePullsPlot(fitb, titles):
     h_qcdc.Draw('EX0P same')
     h_qcdl.Draw('EX0P same')
 
-    #Add legend
+    # Add legend
     ROOT.gStyle.SetLegendTextSize(0.038)
     leg = ROOT.TLegend(0.06,0.90,0.95,1.00)
     leg.SetFillStyle(0); leg.SetBorderSize(0); leg.SetNColumns(4)
@@ -259,7 +257,13 @@ def makePullsPlot(fitb, titles):
     cpulls.SaveAs(titles[0].replace('postfit','pulls'))
 
 if __name__ == '__main__':
-    #####GLOBAL VALUES#####
+    parser = argparse.ArgumentParser(description='Plot the post-fit shapes from the CSV Fit')
+    parser.add_argument('mlfit', help='mlfit file with the post-fit shapes')
+    parser.add_argument('shapes', help='Pre-fit shapes file in order to get data shape')
+    parser.add_argument('--tag','-t', help='Add a tag to the end of the plot titles')
+    args = parser.parse_args()
+
+    # Global values
     nBins = 20
     xMin = 0.8484
     xMax = 1

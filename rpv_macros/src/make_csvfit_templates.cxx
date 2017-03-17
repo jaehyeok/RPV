@@ -17,6 +17,7 @@ namespace {
   TString fittype = "nominal";
 
   TString lumi = "36.8";
+  TString tag = "";
   bool makeDatacard = true;
   bool doWithSFs = true;
 }
@@ -95,9 +96,10 @@ int main(int argc, char* argv[]){
   vector<vector<TH1D*> > h_other_mcstat = makeMCStatVariations("other", h_other);
 
   //Make file and write histograms to it
-  TString filename = "csvfit_shapes.root";
+  TString filename = "csvfit/csvfit_shapes.root";
   if(fittype!="nominal") filename.ReplaceAll(".root","_"+fittype+".root");
   if(!doWithSFs) filename.ReplaceAll(".root","_noSFs.root");
+  if(tag!="") filename.ReplaceAll(".root","_"+tag+".root");
   TFile *out = new TFile(filename, "recreate");
   TDirectory *bin = out->mkdir("bin1");
   bin->cd();
@@ -147,16 +149,17 @@ int main(int argc, char* argv[]){
     double nother = h_other->Integral();
 
     ofstream card;
-    TString cardname = "datacard_csvfit.dat";
+    TString cardname = "csvfit/datacard_csvfit.dat";
     if(fittype!="nominal") cardname.ReplaceAll(".dat","_"+fittype+".dat");
     if(!doWithSFs) cardname.ReplaceAll(".dat","_noSFs.dat");
+    if(tag!="") cardname.ReplaceAll(".dat","_"+tag+".dat");
     card.open(cardname);
     card << "# Datacard for csv flavor fit \n";
     card << "imax 1  number of channels \n";
     card << "jmax 4  number of backgrounds \n";
     card << "kmax *  number of nuisances \n";    
     card << "------------------------------------------------------------------------- \n";
-    card << "shapes * bin1 "<<filename<<" bin1/$PROCESS bin1/$PROCESS_$SYSTEMATIC \n";
+    card << "shapes * bin1 "<<basename(filename)<<" bin1/$PROCESS bin1/$PROCESS_$SYSTEMATIC \n";
     card << "------------------------------------------------------------------------- \n";
     card << "bin         bin1 \n";
     card << "observation "<<ndata<<" \n";

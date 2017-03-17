@@ -206,8 +206,14 @@ def makePullsPlot(fitb, titles):
         param = params.at(i)
         h_pulls.SetBinContent(i+1,param.getVal())
         h_pulls.SetBinError(i+1,param.getError())
-        h_pulls.GetXaxis().SetBinLabel(i+1,param.GetName())
+        #Fix bin names, so can sort labels alphabetically
+        if 'bin' in param.GetName():
+            name = param.GetName().split('bin')
+            h_pulls.GetXaxis().SetBinLabel(i+1,name[0]+'bin'+name[1].zfill(2))
+        else:
+            h_pulls.GetXaxis().SetBinLabel(i+1,param.GetName())
 
+    h_pulls.GetXaxis().LabelsOption('a')
     h_pulls.SetTitleSize(0.045,'Y'); h_pulls.SetTitleOffset(0.62,'Y')
     h_pulls.SetMinimum(-3); h_pulls.SetMaximum(3)
 
@@ -244,10 +250,10 @@ def makePullsPlot(fitb, titles):
     ROOT.gStyle.SetLegendTextSize(0.038)
     leg = ROOT.TLegend(0.06,0.90,0.95,1.00)
     leg.SetFillStyle(0); leg.SetBorderSize(0); leg.SetNColumns(4)
+    leg.AddEntry(h_other, 'Non-QCD events', 'pe')
     leg.AddEntry(h_qcdb, 'b-quark events', 'pe')
     leg.AddEntry(h_qcdc, 'c-quark events', 'pe')
     leg.AddEntry(h_qcdl, 'light-quark events', 'pe')
-    leg.AddEntry(h_other, 'Non-QCD events', 'pe')
     leg.Draw()
 
     cpulls.SaveAs(titles[0].replace('postfit','pulls'))
@@ -257,6 +263,6 @@ if __name__ == '__main__':
     nBins = 20
     xMin = 0.8484
     xMax = 1
-    #######################
-
+    
+    # Run script
     main()

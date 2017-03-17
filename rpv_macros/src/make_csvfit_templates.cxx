@@ -29,7 +29,11 @@ vector<vector<TH1D*> > makeMCStatVariations(TString process, TH1D* hist);
 vector<vector<TH1D*> > makeSFVariations(TString process, TString cut, TChain& chain, double nom_norm);
 TH1D* makeShapeHist(TString process, TString cut, TChain& chain);
 
-int main(){ 
+// Usage: ./run/make_csvfit_templates.exe [fittype] [doWithSFs]
+int main(int argc, char* argv[]){ 
+  if(argc>1) fittype = argv[1];
+  if(argc>2) doWithSFs = stoi(argv[2]);
+
   TH1::SetDefaultSumw2(true);
 
   cout<<"Making csvfit templates for fittype: "<<fittype<<endl;
@@ -92,6 +96,8 @@ int main(){
 
   //Make file and write histograms to it
   TString filename = "csvfit_shapes.root";
+  if(fittype!="nominal") filename.ReplaceAll(".root","_"+fittype+".root");
+  if(!doWithSFs) filename.ReplaceAll(".root","_noSFs.root");
   TFile *out = new TFile(filename, "recreate");
   TDirectory *bin = out->mkdir("bin1");
   bin->cd();
@@ -141,13 +147,16 @@ int main(){
     double nother = h_other->Integral();
 
     ofstream card;
-    card.open("datacard_csvfit.dat");
+    TString cardname = "datacard_csvfit.dat";
+    if(fittype!="nominal") cardname.ReplaceAll(".dat","_"+fittype+".dat");
+    if(!doWithSFs) cardname.ReplaceAll(".dat","_noSFs.dat");
+    card.open(cardname);
     card << "# Datacard for csv flavor fit \n";
     card << "imax 1  number of channels \n";
     card << "jmax 4  number of backgrounds \n";
     card << "kmax *  number of nuisances \n";    
     card << "------------------------------------------------------------------------- \n";
-    card << "shapes * bin1 csvfit_shapes.root bin1/$PROCESS bin1/$PROCESS_$SYSTEMATIC \n";
+    card << "shapes * bin1 "<<filename<<" bin1/$PROCESS bin1/$PROCESS_$SYSTEMATIC \n";
     card << "------------------------------------------------------------------------- \n";
     card << "bin         bin1 \n";
     card << "observation "<<ndata<<" \n";
@@ -170,7 +179,7 @@ int main(){
     for(unsigned int ibin=0; ibin<nBins; ibin++) card << "mcstat_qcdl_bin"+to_string(ibin+1)  << "  shape - - - 1 - \n";
     for(unsigned int ibin=0; ibin<nBins; ibin++) card << "mcstat_other_bin"+to_string(ibin+1) << "  shape - - - - 1 \n";
 
-    cout<<"Made datacard: datacard_csvfit.dat"<<endl;
+    cout<<"Made datacard: "<<cardname<<endl;
   }  
 }
 
@@ -212,7 +221,7 @@ vector<vector<TH1D*> > makeSFVariations(TString process, TString cut, TChain& ch
   // [Heavy/Light SF][Up/Down]
   vector<vector<TH1D*> > h_variations(2, vector<TH1D*>(2));
   vector<vector<TString> > sfNames = {{"btag_bcUp", "btag_bcDown"}, {"btag_udsgUp", "btag_udsgDown"}};
-  vector<vector<TString> > sfWeights = {{"sys_bctag[1]/w_btag", "sys_bctag[0]/w_btag"}, {"sys_udsgtag[1]/w_btag", "sys_udsgtag[0]/w_btag"}};
+  vector<vector<TString> > sfWeights = {{"sys_bctag[0]/w_btag", "sys_bctag[1]/w_btag"}, {"sys_udsgtag[0]/w_btag", "sys_udsgtag[1]/w_btag"}};
 
   for(int isys=0; isys<2; isys++){
     for(int idir=0; idir<2; idir++){

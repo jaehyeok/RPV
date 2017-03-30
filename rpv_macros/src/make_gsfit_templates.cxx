@@ -14,6 +14,8 @@ namespace {
   const float xMin=0;
   const float xMax=4.8;
 
+  TString fittype = "nominal";
+
   TString lumi = "16.2";
   TString tag = "";
 
@@ -22,15 +24,18 @@ namespace {
 
 using namespace std;
 
+TString getBasecut(TString fittype);
 TString getProcessCut(TString process, TString cut);
 TH1D* makeShapeHist(TString process, TString cut, TChain& chain);
 vector<vector<TH1D*> > makeMCStatVariations(TString process, TH1D* hist);
 
-// Usage: ./run/make_gsfit_templates.exe
-int main(){ 
+// Usage: ./run/make_gsfit_templates.exe [fittype]
+int main(int argc, char* argv[]){
+  if(argc>1) fittype = argv[1];
+
   TH1::SetDefaultSumw2(true);
 
-  cout<<"Making gsfit templates"<<endl;
+  cout<<"Making gsfit templates for fittype: "<<fittype<<endl;
 
   TString folder_dat = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/data/skim_st1000/";  
   TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/skim_rpv0lep/";
@@ -55,7 +60,7 @@ int main(){
   for(unsigned int ifile=0; ifile<s_qcd.size(); ifile++)       qcd.Add(s_qcd[ifile]);
   for(unsigned int ifile=0; ifile<s_other.size(); ifile++)     other.Add(s_other[ifile]);
   
-  TString basecut = "nleps==0&&ht>1500&&njets>=4&&mj12>500&&nbm==2&&pass";
+  TString basecut = getBasecut(fittype);
 
   //Make shape hists
   TH1D* h_data = makeShapeHist("data_obs", basecut, data);
@@ -81,6 +86,7 @@ int main(){
 
   //Make file and write histograms to it
   TString filename = "gsfit/gsfit_shapes.root";
+  if(fittype!="nominal") filename.ReplaceAll(".root","_"+fittype+".root");
   if(tag!="") filename.ReplaceAll(".root","_"+tag+".root");
   TFile *out = new TFile(filename, "recreate");
   TDirectory *bin = out->mkdir("bin1");
@@ -120,6 +126,7 @@ int main(){
 
     ofstream card;
     TString cardname = "gsfit/datacard_gsfit.dat";
+    if(fittype!="nominal") cardname.ReplaceAll(".dat","_"+fittype+".dat");
     if(tag!="") cardname.ReplaceAll(".dat","_"+tag+".dat");
     card.open(cardname);
     card << "# Datacard for csv flavor fit \n";
@@ -137,8 +144,7 @@ int main(){
     card << "process     0         1          2         3          4\n";
     card << "rate        "<<nrpv<<"   "<<nqcd_GSbb<<"    "<<nqcd_GSb<<"   "<<nqcd_noGS<<"    "<<nother<<" \n";
     card << "-------------------------------------------------------------- \n";
-    card << "norm_qcd_GSbb   lnU - 5 - - - \n";
-    card << "norm_qcd_GSb    lnU - - 5 - - \n";
+    card << "norm_qcd_GS     lnU - 5 5 - - \n";
     card << "norm_qcd_noGS   lnU - - - 5 - \n\n";
 
     for(unsigned int ibin=0; ibin<nBins; ibin++) card << "mcstat_qcd_GSbb_bin"+to_string(ibin+1) << "  shape - 1 - - - \n";
@@ -190,6 +196,24 @@ vector<vector<TH1D*> > makeMCStatVariations(TString process, TH1D* hist){
     }
   }
   return h_variations;
+}
+
+TString getBasecut(TString fittype){
+
+  TString cut = "";
+  if(fittype == "nominal")     cut = "nleps==0&&ht>1500&&njets>=4&&mj12>500&&nbm==2&&pass";
+  else if(fittype == "vlowmj") cut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>300&&mj12<=500&&nbm==2&&pass";
+  else if(fittype == "lowmj")  cut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>500&&mj12<=800&&nbm==2&&pass";
+  else if(fittype == "highmj") cut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>800&&nbm==2&&pass";
+  else if(fittype == "45jets") cut = "nleps==0&&ht>1500&&njets>=4&&njets<=5&&mj12>500&&nbm==2&&pass";
+  else if(fittype == "67jets") cut = "nleps==0&&ht>1500&&njets>=6&&njets<=7&&mj12>500&&nbm==2&&pass";
+  else if(fittype == "89jets") cut = "nleps==0&&ht>1500&&njets>=8&&njets<=9&&mj12>500&&nbm==2&&pass";
+  else if(fittype == "10jets") cut = "nleps==0&&ht>1500&&njets>10&&mj12>500&&nbm==2&&pass";
+  else{
+    cout<<"ERROR: Incorrect fittype"<<endl;
+    exit(1);
+  }
+  return cut;
 }
 
 TString getProcessCut(TString process, TString cut){

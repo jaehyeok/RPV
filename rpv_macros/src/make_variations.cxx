@@ -391,23 +391,30 @@ void makeVariations(std::string &syst){
 
   // QCD flavor systematics 
   TFile *csv_weight_file = TFile::Open("data/csvfit_low_njet.root");
-  TH1F *csv_weight = static_cast<TH1F*>(csv_weight_file->Get("csv_weight"));
+  //  TH1F *csv_weight = static_cast<TH1F*>(csv_weight_file->Get("csv_weight"));
   
   TFile *csv_weight_file_highnjet = TFile::Open("data/csvfit_high_njet.root");
-  TH1F *csv_weight_highnjet = static_cast<TH1F*>(csv_weight_file_highnjet->Get("csv_weight"));
+  //  TH1F *csv_weight_highnjet = static_cast<TH1F*>(csv_weight_file_highnjet->Get("csv_weight"));
 
-  float bflavorValCentral = csv_weight->GetBinContent(1);
+  /*  float bflavorValCentral = csv_weight->GetBinContent(1);
   float bflavorValError   = csv_weight->GetBinError(1);
   float cflavorValCentral = csv_weight->GetBinContent(2);
   float cflavorValError   = csv_weight->GetBinError(2);
   float lflavorValCentral = csv_weight->GetBinContent(3);
-  float lflavorValError   = csv_weight->GetBinError(3); 
+  float lflavorValError   = csv_weight->GetBinError(3); */
+
+  float bflavorValCentral = qcdbweight;
+  float bflavorValError   = qcdberror;
+  float cflavorValCentral = qcdcweight;
+  float cflavorValError   = qcdcerror;
+  float lflavorValCentral = qcdlweight;
+  float lflavorValError   = qcdlerror;
 
   std::cout << "CSV fit low Njets results: " << std::endl; 
   std::cout << "Reweight b jets by " << bflavorValCentral << " +/- " << bflavorValError << std::endl;
   std::cout << "Reweight c jets by " << cflavorValCentral << " +/- " << cflavorValError << std::endl;
   std::cout << "Reweight l jets by " << lflavorValCentral << " +/- " << lflavorValError << std::endl;
-  std::cout << "CSV fit high Njets results: " << std::endl; 
+  /*  std::cout << "CSV fit high Njets results: " << std::endl; 
   std::cout << "Reweight b jets by " << csv_weight_highnjet->GetBinContent(1) 
                                      << " +/- " << csv_weight_highnjet->GetBinError(1) << std::endl;
   std::cout << "Reweight c jets by " << csv_weight_highnjet->GetBinContent(2) 
@@ -422,32 +429,24 @@ void makeVariations(std::string &syst){
   // Negative sign implements anticorrelation between b and c reweightings
   cflavorValError = -1*(sqrt(pow(cflavorValError,2) + pow(cflavorValDiff_low_high,2)));
   float lflavorValDiff_low_high = lflavorValCentral - csv_weight_highnjet->GetBinContent(3);
-  lflavorValError = sqrt(pow(lflavorValError,2) + pow(lflavorValDiff_low_high,2));
+  lflavorValError = sqrt(pow(lflavorValError,2) + pow(lflavorValDiff_low_high,2));*/
 
   csv_weight_file->Close();
   csv_weight_file_highnjet->Close();
   f->cd();
 
-  //  std::cout << "CSV fit combined results: " << std::endl; 
-  //  std::cout << "Reweight b jets by " << bflavorValCentral << " +/- " << bflavorValError << std::endl;
-  //  std::cout << "Reweight c jets by " << cflavorValCentral << " +/- " << cflavorValError << std::endl;
-  //  std::cout << "Reweight l jets by " << lflavorValCentral << " +/- " << lflavorValError << std::endl;
+  std::cout << "CSV fit combined results: " << std::endl; 
+  std::cout << "Reweight b jets by " << bflavorValCentral << " +/- " << bflavorValError << std::endl;
+  std::cout << "Reweight c jets by " << cflavorValCentral << " +/- " << cflavorValError << std::endl;
+  std::cout << "Reweight l jets by " << lflavorValCentral << " +/- " << lflavorValError << std::endl;
 
   // To provide QCD flavor reweighting 
-
-  //
-  // Currently not applying flavor weights due to using only 1 lepton bins
-  //
-  std::cout << "CSV fit combined results: " << std::endl; 
-  std::cout << "Reweight b jets by " << qcdbweight << " +/- " << qcdberror << std::endl;
-  std::cout << "Reweight c jets by " << qcdcweight << " +/- " << qcdcerror << std::endl;
-  std::cout << "Reweight l jets by " << qcdlweight << " +/- " << qcdlerror << std::endl;
   double bflavorValUp, bflavorValDown;
-  bflavorValUp   = qcdbweight+qcdberror;
-  bflavorValDown = qcdbweight-qcdberror;
+  bflavorValUp=bflavorValCentral+bflavorValError;
+  bflavorValDown=bflavorValCentral-bflavorValError;
   double cflavorValUp, cflavorValDown;
-  cflavorValUp   = qcdcweight+qcdcerror;
-  cflavorValDown = qcdcweight-qcdcerror;
+  cflavorValUp=cflavorValCentral+cflavorValError;
+  cflavorValDown=cflavorValCentral-cflavorValError;
   double lflavorValUp, lflavorValDown;
   lflavorValUp=lflavorValCentral=lflavorValDown=1.0;
   
@@ -551,7 +550,7 @@ void makeVariations(std::string &syst){
   if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]*"+wjetsSF; 
 
   // Define samples
-  TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
+  TString folder_bkg = "/net/cms9/cms9r0/rohan/babies/temp/merged_rpvmc_rpvfit/";
   TString folder_dat = "/net/cms27/cms27r0/babymaker/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
   TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/"; // Capybara: no w_pdf, no sys_mj12, ...
 

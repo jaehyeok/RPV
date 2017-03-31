@@ -2,7 +2,7 @@
 
 namespace rpv
 {
-  TString luminosity="35";
+  TString luminosity="35.9";
 }
 
 TString filestring(TString dataset, bool isSkimmed=true)
@@ -67,38 +67,27 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.push_back(folder+"*_TTJets_SingleLeptFromT_Tune*");
     files.push_back(folder+"*_TTJets_SingleLeptFromTbar_Tune*");
     files.push_back(folder+"*_TTJets_HT*");
-  }
-  
+  }  
   else if(process=="ttbar_had"){
     files.push_back(folder+"*_TTJets_HT*");
     files.push_back(folder+"*_TTJets_Tune*"); //For this sample to be used in the hadronic-only selection it needs a ntruleps==0 skim
   }
-
   else if(process=="qcd"){
-    files.push_back(folder+"*_QCD_HT1000to1500_Tune*");
-    files.push_back(folder+"*_QCD_HT1500to2000_Tune*");
-    files.push_back(folder+"*_QCD_HT2000toInf_Tune*");
+    files.push_back(folder+"*_QCD_HT*");
   }
   // For 0 or 1 lepton wjets apply a ntruleps cut at the sfeat level
   else if(process=="wjets"){
-    files.push_back(folder+"*_WJetsToLNu_HT-800To1200_*");
-    files.push_back(folder+"*_WJetsToLNu_HT-1200To2500_*");
-    files.push_back(folder+"*_WJetsToLNu_HT-2500ToInf_*");
-    files.push_back(folder+"*_WJetsToQQ_HT-600ToInf_*"); 
+    files.push_back(folder+"*_WJetsToLNu_HT-*");
   }
   else if(process=="singlet"){
     files.push_back(folder+"*_ST_*");
   }
   else if(process=="zjets"){
     files.push_back(folder+"*_ZJetsToQQ_HT600toInf_*");
-    files.push_back(folder+"*_ZJetsToNuNu_HT-800To1200_*");
-    files.push_back(folder+"*_ZJetsToNuNu_HT-1200To2500_*");
-    files.push_back(folder+"*_ZJetsToNuNu_HT-2500ToInf_*");
+    files.push_back(folder+"*_ZJetsToNuNu_HT-*");
   }
   else if(process=="other"){
-    files.push_back(folder+"*_DYJetsToLL_M-50_HT-800to1200_*");
-    files.push_back(folder+"*_DYJetsToLL_M-50_HT-1200to2500_*");
-    files.push_back(folder+"*_DYJetsToLL_M-50_HT-2500toInf_*");    
+    files.push_back(folder+"*_DYJetsToLL_M-50_HT-*");
     files.push_back(folder+"*_ttHTobb_*");
     files.push_back(folder+"*_TTTT_*");
     files.push_back(folder+"*_TTWJetsToLNu_*");

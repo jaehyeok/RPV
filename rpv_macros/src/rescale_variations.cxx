@@ -15,8 +15,8 @@ int main()
     //cardType="control"; 
 
     std::string rootfile("variations/sum_rescaled.root");
-    if(cardType=="mconly") rootfile = "variations/11jan2016/35/sum_rescaled_mconly.root";
-    else if(cardType=="control") rootfile = "variations/11jan2016/12p9/sum_rescaled_control.root";
+    if(cardType=="mconly") rootfile = "variations/sum_rescaled_mconly.root";
+    else if(cardType=="control") rootfile = "variations/sum_rescaled_control.root";
     TFile *f = TFile::Open(rootfile.c_str(), "update");
 
     // samples for which MC statistics should be considered

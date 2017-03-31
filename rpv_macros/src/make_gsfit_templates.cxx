@@ -207,8 +207,7 @@ TString getBasecut(TString fittype){
   else if(fittype == "highmj") cut = "nleps==0&&ht>1500&&njets>=4&&njets<=7&&mj12>800&&nbm==2&&pass";
   else if(fittype == "45jets") cut = "nleps==0&&ht>1500&&njets>=4&&njets<=5&&mj12>500&&nbm==2&&pass";
   else if(fittype == "67jets") cut = "nleps==0&&ht>1500&&njets>=6&&njets<=7&&mj12>500&&nbm==2&&pass";
-  else if(fittype == "89jets") cut = "nleps==0&&ht>1500&&njets>=8&&njets<=9&&mj12>500&&nbm==2&&pass";
-  else if(fittype == "10jets") cut = "nleps==0&&ht>1500&&njets>10&&mj12>500&&nbm==2&&pass";
+  else if(fittype == "8jets")  cut = "nleps==0&&ht>1500&&njets>=8&&mj12>500&&nbm==2&&pass";
   else{
     cout<<"ERROR: Incorrect fittype"<<endl;
     exit(1);

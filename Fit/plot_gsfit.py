@@ -111,8 +111,8 @@ def main():
     h_ratio = h_data.Clone('h_ratio')
     h_ratio.Divide(h_qcd_GSbb)
 
-    h_err_rat.SetMinimum(0.90)
-    h_err_rat.SetMaximum(1.10)
+    h_err_rat.SetMinimum(0.50)
+    h_err_rat.SetMaximum(1.50)
     h_err_rat.SetTitle('')
     h_err_rat.SetTitleSize(0.15,'XY')
     h_err_rat.GetXaxis().SetTitle('#DeltaR_{b#bar{b}}')   
@@ -203,8 +203,7 @@ def getTitleStrings(filename):
     elif 'highmj' in filename: titles = ['gsfit_postfit_highmj.pdf', 'N_{leps} = 0, H_{T} > 1500, N_{b} = 2, 4 #leq N_{jets}#leq 7, M_{J} #geq 800']
     elif '45jets' in filename: titles = ['gsfit_postfit_45jets.pdf', 'N_{leps} = 0, H_{T} > 1500, N_{b} = 2, 4 #leq N_{jets}#leq 5, M_{J} #geq 500']
     elif '67jets' in filename: titles = ['gsfit_postfit_67jets.pdf', 'N_{leps} = 0, H_{T} > 1500, N_{b} = 2, 6 #leq N_{jets}#leq 7, M_{J} #geq 500']
-    elif '89jets' in filename: titles = ['gsfit_postfit_89jets.pdf', 'N_{leps} = 0, H_{T} > 1500, N_{b} = 2, 8 #leq N_{jets}#leq 9, M_{J} #geq 500']
-    elif '10jets' in filename: titles = ['gsfit_postfit_10jets.pdf', 'N_{leps} = 0, H_{T} > 1500, N_{b} = 2, N_{jets}#geq 10, M_{J} #geq 500']
+    elif '8jets' in filename: titles = ['gsfit_postfit_89jets.pdf',  'N_{leps} = 0, H_{T} > 1500, N_{b} = 2, N_{jets}#geq 8, M_{J} #geq 500']
     else:                      titles = ['gsfit_postfit.pdf',        'N_{leps} = 0, H_{T} > 1500, N_{b} = 2, N_{jets}#geq 4, M_{J} #geq 500']
 
     if args.option: titles[0] = titles[0].replace('.pdf','_opt'+args.option+'.pdf')

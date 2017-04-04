@@ -550,7 +550,7 @@ void makeVariations(std::string &syst){
   if(syst=="wjets_murfDown") wjetsWeight="sys_murf[1]*"+wjetsSF; 
 
   // Define samples
-  TString folder_bkg = "/net/cms9/cms9r0/rohan/babies/temp/merged_rpvmc_rpvfit/";
+  TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
   TString folder_dat = "/net/cms27/cms27r0/babymaker/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
   TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/"; // Capybara: no w_pdf, no sys_mj12, ...
 

@@ -35,16 +35,15 @@ int main(int argc, char *argv[])
   // signal is added later
   std::vector<std::string> processes = { "qcd", "ttbar", "wjets", "other"};
   std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg",
-					                     "gs45", "gs67", "gs89", "gs10Inf",
-					                     "jes", "jer",
-					                     /*"pileup",*/"lep_eff", "ttbar_pt",
-					                     "qcd_flavor",
-					                     "qcd_muf", "qcd_mur", "qcd_murf", 
-					                     //"isr",
-					                     "ttbar_muf", "ttbar_mur", "ttbar_murf",
-					                     "wjets_muf", "wjets_mur", "wjets_murf",
-					                     "other_muf", "other_mur", "other_murf",
-					                     /*"fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"*/}; // temporarily removed
+					 "gs",
+					 "jes", "jer",
+					 /*"pileup",*/"lep_eff", "ttbar_pt",
+					 "qcd_flavor",
+					 "qcd_muf", "qcd_mur", "qcd_murf", 
+					 //"isr",
+					 "ttbar_muf", "ttbar_mur", "ttbar_murf",
+					 "wjets_muf", "wjets_mur", "wjets_murf",
+					 "other_muf", "other_mur", "other_murf"};
 
   std::string gluinoMass;
   std::string signalBinName;
@@ -69,12 +68,6 @@ int main(int argc, char *argv[])
     }
     if(argc>3)
       inputname = argv[3];
-
-//    else {
-//      if(cardType=="control") includeSignalRegion=false;
-//      if(cardType=="default") includeSignalRegion=true;
-//      if(cardType=="mconly")  includeSignalRegion=true;
-//    }
   }
 
   nprocesses=processes.size();
@@ -89,16 +82,19 @@ int main(int argc, char *argv[])
 
   std::vector<std::vector<std::string> > bins;
 
-  std::vector<std::string> bins_cr_lowmj        = {"bin0", "bin1", "bin2"};
-  std::vector<std::string> bins_cr_highmj       = {"bin3", "bin4", "bin5"};
-  std::vector<std::string> bins_sr_lownj_lowmj  = {"bin16", "bin11"};
-  std::vector<std::string> bins_sr_lownj_highmj = {"bin17", "bin14"};
-  std::vector<std::string> bins_sr_lownj_vhighmj = {"bin18", "bin20"};
-  std::vector<std::string> bins_sr_highnj_lowmj  = {"bin10", "bin12"};
-  std::vector<std::string> bins_sr_highnj_highmj = {"bin13", "bin15"};
+  //  std::vector<std::string> bins_cr_lowmj          = {"bin0", "bin1", "bin2"};
+  //  std::vector<std::string> bins_cr_highmj         = {"bin3", "bin4", "bin5"};
+  std::vector<std::string> bins_cr_lowmj          = {"bin1", "bin2"};
+  std::vector<std::string> bins_cr_highmj         = {"bin4", "bin5"};
+  std::vector<std::string> bins_sr_lownj_lowmj    = {"bin16", "bin11"};
+  std::vector<std::string> bins_sr_lownj_highmj   = {"bin17", "bin14"};
+  std::vector<std::string> bins_sr_lownj_vhighmj  = {"bin18", "bin20"};
+  std::vector<std::string> bins_sr_highnj_lowmj   = {"bin10", "bin12"};
+  std::vector<std::string> bins_sr_highnj_highmj  = {"bin13", "bin15"};
   std::vector<std::string> bins_sr_highnj_vhighmj = {"bin19", "bin21"};
     
-  std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
+  //  std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
+  std::vector<std::string> bins_all = {"bin1", "bin2", "bin4", "bin5"};
 
   if(includeLowMJ) {
     bins_all.push_back("bin6");
@@ -150,8 +146,8 @@ int main(int argc, char *argv[])
   // which variation file
   std::string dataCardPath = gSystem->pwd();
   if(argc>3) dataCardPath += "/variations/" + inputname;
-  else if(cardType=="mconly") dataCardPath += "/variations/11jan2016/35/sum_rescaled_mconly.root";
-  else if(cardType=="control") dataCardPath += "/variations/11jan2016/12p9/sum_rescaled_control.root";
+  else if(cardType=="mconly") dataCardPath += "/variations/sum_rescaled_mconly.root";
+  else if(cardType=="control") dataCardPath += "/variations/sum_rescaled_control.root";
   else dataCardPath += "/variations/sum_rescaled.root";
   TFile *variations = TFile::Open(dataCardPath.c_str());
   std::ofstream file;
@@ -323,10 +319,10 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
     tmpLine = line;
 
     if(jbin=="bin2"){
-      tmpLine.Replace(2*(bindex["bin0"]*nprocesses+2),1,"5");
+      //      tmpLine.Replace(2*(bindex["bin0"]*nprocesses+2),1,"5");
       tmpLine.Replace(2*(bindex["bin1"]*nprocesses+2),1,"5");
       tmpLine.Replace(2*(bindex[jbin]*nprocesses+2),1,"5");
-      tmpLine.Replace(2*(bindex["bin3"]*nprocesses+2),1,"5");
+      //      tmpLine.Replace(2*(bindex["bin3"]*nprocesses+2),1,"5");
       tmpLine.Replace(2*(bindex["bin4"]*nprocesses+2),1,"5");
       tmpLine.Replace(2*(bindex["bin5"]*nprocesses+2),1,"5");
       tmpLine.Prepend("normtt_lownjets           lnU  ");
@@ -422,14 +418,15 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   for(auto jbin:bins){ // ttbar 
     tmpLine = line;
 
-    if(jbin=="bin0"){
+    if(jbin=="bin1"){
       tmpLine.Replace(2*(bindex["bin5"]*nprocesses+2),1,"2.00");
       tmpLine.Replace(2*(bindex["bin4"]*nprocesses+2),1,"2.00");
-      tmpLine.Replace(2*(bindex["bin3"]*nprocesses+2),1,"2.00");
+      //      tmpLine.Replace(2*(bindex["bin3"]*nprocesses+2),1,"2.00");
       tmpLine.Replace(2*(bindex["bin2"]*nprocesses+2),1,"1.01");
       tmpLine.Replace(2*(bindex["bin1"]*nprocesses+2),1,"1.01");
-      tmpLine.Replace(2*(bindex["bin0"]*nprocesses+2),1,"1.01");
-      tmpLine.Prepend("normtt_bin0_1_2_bin3_4_5  lnN  ");
+      //      tmpLine.Replace(2*(bindex["bin0"]*nprocesses+2),1,"1.01");
+      //      tmpLine.Prepend("normtt_bin0_1_2_bin3_4_5  lnN  ");
+      tmpLine.Prepend("normtt_bin1_2_bin4_5  lnN  ");
       file << tmpLine.Data() << endl;
     }
     else if(jbin=="bin11"){
@@ -531,10 +528,10 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
 
 void outputLognormalSystematics(std::ofstream &file)
 {
-  // luminosity uncertainty is 2.7%
+  // luminosity uncertainty is 2.6%
   file << "lumi  lnN  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
-    file << "1.062 - - - 1.062 ";
+    file << "1.026 - - - 1.026 ";
   }
   file << std::endl;
 

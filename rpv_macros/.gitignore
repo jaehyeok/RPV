@@ -3,8 +3,6 @@ plots/*
 run/*.exe
 archive
 txt/data_card*
-varscripts
-variations
 datacard*
 
 # Compiled Object files
@@ -38,6 +36,9 @@ bin/*
 *.eps
 *.tex
 *.aux
+*.err
+*.out
+*.cmd
 gmon.out
 out
 archive

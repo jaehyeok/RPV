@@ -490,35 +490,36 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
         for(auto jbin:bins){
             tmpLine = line;
 
-            if(jbin=="bin0"){
-                tmpLine.Replace(2*(bindex["bin20"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(2*(bindex["bin18"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(2*(bindex["bin17"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(2*(bindex["bin16"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(2*(bindex["bin14"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(2*(bindex["bin11"]*nprocesses+3),1,"1.5");
+	    //            if(jbin=="bin0"){
+            if(jbin=="bin1"){
+                tmpLine.Replace(2*(bindex["bin20"]*nprocesses+3),1,"1.17");
+                tmpLine.Replace(2*(bindex["bin18"]*nprocesses+3),1,"1.17");
+                tmpLine.Replace(2*(bindex["bin17"]*nprocesses+3),1,"1.17");
+                tmpLine.Replace(2*(bindex["bin16"]*nprocesses+3),1,"1.17");
+                tmpLine.Replace(2*(bindex["bin14"]*nprocesses+3),1,"1.17");
+                tmpLine.Replace(2*(bindex["bin11"]*nprocesses+3),1,"1.17");
                 tmpLine.Replace(2*(bindex["bin5"]*nprocesses+3),1,"1.01");
                 tmpLine.Replace(2*(bindex["bin4"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(2*(bindex["bin3"]*nprocesses+3),1,"1.01");
+		//                tmpLine.Replace(2*(bindex["bin3"]*nprocesses+3),1,"1.01");
                 tmpLine.Replace(2*(bindex["bin2"]*nprocesses+3),1,"1.01");
                 tmpLine.Replace(2*(bindex["bin1"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(2*(bindex["bin0"]*nprocesses+3),1,"1.01");
+		//                tmpLine.Replace(2*(bindex["bin0"]*nprocesses+3),1,"1.01");
                 tmpLine.Prepend("normwjets_mednjets        lnN  ");
                 file << tmpLine.Data() << endl;
             }
             if(jbin=="bin11"){
-                tmpLine.Replace(2*(bindex["bin21"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(2*(bindex["bin21"]*nprocesses+3),1,"1.62");
                 tmpLine.Replace(2*(bindex["bin20"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(2*(bindex["bin19"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(2*(bindex["bin19"]*nprocesses+3),1,"1.62");
                 tmpLine.Replace(2*(bindex["bin18"]*nprocesses+3),1,"1.01");
                 tmpLine.Replace(2*(bindex["bin17"]*nprocesses+3),1,"1.01");
                 tmpLine.Replace(2*(bindex["bin16"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(2*(bindex["bin15"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(2*(bindex["bin15"]*nprocesses+3),1,"1.62");
                 tmpLine.Replace(2*(bindex["bin14"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(2*(bindex["bin13"]*nprocesses+3),1,"1.35");
-                tmpLine.Replace(2*(bindex["bin12"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(2*(bindex["bin13"]*nprocesses+3),1,"1.62");
+                tmpLine.Replace(2*(bindex["bin12"]*nprocesses+3),1,"1.62");
                 tmpLine.Replace(2*(bindex["bin11"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(2*(bindex["bin10"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(2*(bindex["bin10"]*nprocesses+3),1,"1.62");
                 tmpLine.Prepend("normwjets_highnjets       lnN  ");
                 file << tmpLine.Data() << endl;
             }

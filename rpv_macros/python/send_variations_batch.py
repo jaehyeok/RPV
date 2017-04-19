@@ -13,6 +13,9 @@ VARLIST = ['nominal','btag_bc', 'btag_udsg',
            'other_mur', 'other_muf', 'other_murf',
            'signal_mur', 'signal_muf', 'signal_murf']
 
+# add PDF variations
+for i in range(0, 100):
+    VARLIST.append('w_pdf ' + str(i))
 
 for var in VARLIST:
     os.system('JobSubmit.csh ./varscripts/wrapper.sh ./run/make_variations.exe ' + var)

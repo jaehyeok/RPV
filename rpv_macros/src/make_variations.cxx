@@ -552,7 +552,7 @@ void makeVariations(std::string &syst){
   // Define samples
   TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
   TString folder_dat = "/net/cms27/cms27r0/babymaker/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
-  TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/"; // Capybara: no w_pdf, no sys_mj12, ...
+  TString folder_sig = "/net/cms27/cms27r0/babymaker/babies/2017_03_21/mc/T1tbs/";
 
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
 
@@ -562,27 +562,27 @@ void makeVariations(std::string &syst){
   vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
 
   std::vector<TString> s_rpv_1000;
-  s_rpv_1000.push_back(folder_sig+"*mGluino1000*");
+  s_rpv_1000.push_back(folder_sig+"*_mGluino-1000_*");
   std::vector<TString> s_rpv_1100;
-  s_rpv_1100.push_back(folder_sig+"*mGluino1100*");
+  s_rpv_1100.push_back(folder_sig+"*_mGluino-1000_*");
   std::vector<TString> s_rpv_1200;
-  s_rpv_1200.push_back(folder_sig+"*mGluino1200*");
+  s_rpv_1200.push_back(folder_sig+"*_mGluino-1200_*");
   std::vector<TString> s_rpv_1300;
-  s_rpv_1300.push_back(folder_sig+"*mGluino1300*"); 
+  s_rpv_1300.push_back(folder_sig+"*_mGluino-1300_*"); 
   std::vector<TString> s_rpv_1400;
-  s_rpv_1400.push_back(folder_sig+"*mGluino1400*");
+  s_rpv_1400.push_back(folder_sig+"*_mGluino-1400_*");
   std::vector<TString> s_rpv_1500;
-  s_rpv_1500.push_back(folder_sig+"*mGluino1500*");
+  s_rpv_1500.push_back(folder_sig+"*_mGluino-1500_*");
   std::vector<TString> s_rpv_1600;
-  s_rpv_1600.push_back(folder_sig+"*mGluino1600*");
+  s_rpv_1600.push_back(folder_sig+"*_mGluino-1600_*");
   std::vector<TString> s_rpv_1700;
-  s_rpv_1700.push_back(folder_sig+"*mGluino1700*");
+  s_rpv_1700.push_back(folder_sig+"*_mGluino-1700_*");
   std::vector<TString> s_rpv_1800;
-  s_rpv_1800.push_back(folder_sig+"*mGluino1800*");
+  s_rpv_1800.push_back(folder_sig+"*_mGluino-1800_*");
   std::vector<TString> s_rpv_1900;
-  s_rpv_1900.push_back(folder_sig+"*mGluino1900*");
+  s_rpv_1900.push_back(folder_sig+"*_mGluino-1900_*");
   std::vector<TString> s_rpv_2000;
-  s_rpv_2000.push_back(folder_sig+"*mGluino2000*");
+  s_rpv_2000.push_back(folder_sig+"*_mGluino-2000_*");
 
   // Reading ntuples
   std::string blinding("((njets<10 && nleps==0) || (nleps==1 && njets<6))");

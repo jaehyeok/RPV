@@ -78,6 +78,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   // For 0 or 1 lepton wjets apply a ntruleps cut at the sfeat level
   else if(process=="wjets"){
     files.push_back(folder+"*_WJetsToLNu_HT-*");
+    files.push_back(folder+"*_WJetsToQQ_HT-600ToInf_*");
   }
   else if(process=="singlet"){
     files.push_back(folder+"*_ST_*");

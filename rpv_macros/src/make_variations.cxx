@@ -564,7 +564,7 @@ void makeVariations(std::string &syst){
   std::vector<TString> s_rpv_1000;
   s_rpv_1000.push_back(folder_sig+"*_mGluino-1000_*");
   std::vector<TString> s_rpv_1100;
-  s_rpv_1100.push_back(folder_sig+"*_mGluino-1000_*");
+  s_rpv_1100.push_back(folder_sig+"*_mGluino-1100_*");
   std::vector<TString> s_rpv_1200;
   s_rpv_1200.push_back(folder_sig+"*_mGluino-1200_*");
   std::vector<TString> s_rpv_1300;

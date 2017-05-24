@@ -14,7 +14,7 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
 void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins);
 void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bins);
 void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts);
-void outputLognormalSystematics(std::ofstream &file);
+void outputLognormalSystematics(std::ofstream &file, const std::vector<std::string> &bins);
 void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> &bins, const std::string & signalBinName);
 // determine if a histogram has an entry for a given nB
 bool hasEntry(const std::string &sample, const std::string &bin, const int nB);
@@ -28,9 +28,8 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  bool includePDFUncert = false;
+  bool includePDFUncert = true;
   bool includeLowMJ = false;
-//  bool includeSignalRegion = true;
 
   // signal is added later
   std::vector<std::string> processes = { "qcd", "ttbar", "wjets", "other"};
@@ -250,7 +249,7 @@ int main(int argc, char *argv[])
   outputShapeSystematics(file, shapeSysts);
   
   // output lognormal lumi uncertainties for signal, wjets and other
-  outputLognormalSystematics(file);
+  outputLognormalSystematics(file, bins.at(ipair));
 
   // output MC statistics nuisance parameters
   // FIXME: the treatment of emtpy bins should be updated
@@ -527,15 +526,25 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
     }
 }
 
-void outputLognormalSystematics(std::ofstream &file)
+void outputLognormalSystematics(std::ofstream &file, const std::vector<std::string> &bins)
 {
   // luminosity uncertainty is 2.6%
-  file << "lumi  lnN  ";
+  file << "lumi          lnN  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     file << "1.026 - - - 1.026 ";
   }
   file << std::endl;
-
+  // 20% uncertainty on the QCCD fakerate
+  file << "qcd_fakerate  lnN  ";
+  for(auto jbin:bins){
+    if(jbin=="bin2" || jbin=="bin5" || jbin=="bin11" || jbin=="bin12" || jbin=="bin14" || jbin=="bin15" || jbin=="bin20" || jbin=="bin21"){
+      file << "- 1.20 - - - ";
+    }
+    else{
+      file << "- - - - - ";
+    }
+  }
+  file << std::endl;
 }
 
 void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts)
@@ -559,8 +568,8 @@ void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> 
   //  unsigned int nbins=bins.size();
   const unsigned int maxB=4;
 
-  // only signal, qcd, and ttbar have non-negligible MC statistics uncertainties
-  std::vector<std::string> samples = {signalBinName, "qcd", "ttbar"};
+  // Include MC statistics for all samples
+  std::vector<std::string> samples = {signalBinName, "qcd", "ttbar", "wjets", "other"};
   for(auto isample : samples) {
       for(unsigned int ibin = 0; ibin<bins.size(); ibin++) {
           for(unsigned int ibbin=1; ibbin<maxB+1; ibbin++) {

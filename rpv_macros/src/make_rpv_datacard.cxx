@@ -269,6 +269,8 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
   for(uint ibin=0; ibin<nbins; ibin++)
     bindex[bins[ibin]]=ibin;
 
+  vector<TString> nuisGroup = {};
+
   //create template line
   TString line;
   for(uint idash=0; idash<(nprocesses*nbins); idash++)
@@ -283,6 +285,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(2*(bindex["bin3"]*nprocesses+1),1,"5");
       tmpLine.Prepend("normqcd_vlownjets         lnU  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_vlownjets");
     }
     else if(jbin=="bin1"){
       tmpLine.Replace(2*(bindex[jbin]*nprocesses+1),1,"5");
@@ -291,6 +294,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(2*(bindex["bin5"]*nprocesses+1),1,"5");
       tmpLine.Prepend("normqcd_lownjets          lnU  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_lownjets");
     }
     else if(jbin=="bin18"){
       tmpLine.Replace(2*(bindex["bin11"]*nprocesses+1),1,"5");
@@ -301,6 +305,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(2*(bindex["bin20"]*nprocesses+1),1,"5");
       tmpLine.Prepend("normqcd_mednjets          lnU  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_mednjets");
     }    
     else if(jbin=="bin19"){
       tmpLine.Replace(2*(bindex["bin10"]*nprocesses+1),1,"5");
@@ -311,6 +316,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(2*(bindex["bin21"]*nprocesses+1),1,"5");
       tmpLine.Prepend("normqcd_highnjets         lnU  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_highnjets");
     }    
   }
 
@@ -326,6 +332,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(2*(bindex["bin5"]*nprocesses+2),1,"5");
       tmpLine.Prepend("normtt_lownjets           lnU  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normtt_lownjets");
     }
     else if(jbin=="bin11"){
       tmpLine.Replace(2*(bindex[jbin]*nprocesses+2),1,"5");
@@ -336,6 +343,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(2*(bindex["bin20"]*nprocesses+2),1,"5");
       tmpLine.Prepend("normtt_mednjets           lnU  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normtt_mednjets");
     }    
     else if(jbin=="bin12"){
       tmpLine.Replace(2*(bindex["bin10"]*nprocesses+2),1,"5");
@@ -346,8 +354,16 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(2*(bindex["bin21"]*nprocesses+2),1,"5");
       tmpLine.Prepend("normtt_highnjets          lnU  "); 
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normtt_highnjets");
     }    
   }
+
+  file<<endl;
+  file<<"norms group = ";
+  for(unsigned int igrp=0; igrp<nuisGroup.size(); igrp++){
+    file<<nuisGroup[igrp]<<" ";
+  }
+  file<<"\n"<<endl;
 }
 
 // Assumes that processes is of the format {signal, "qcd", "ttbar", ... } 
@@ -357,6 +373,8 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   map<string, int> bindex;
   for(uint ibin=0; ibin<nbins; ibin++)
     bindex[bins[ibin]]=ibin;
+
+  vector<TString> nuisGroup = {};
 
   //create template line
   TString line;
@@ -372,6 +390,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin0"]*nprocesses+1),1,"1.01");
       tmpLine.Prepend("normqcd_bin0_bin3         lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_bin0_bin3");
     }
     else if(jbin=="bin1"){
       tmpLine.Replace(2*(bindex["bin5"]*nprocesses+1),1,"2.00");
@@ -380,6 +399,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin1"]*nprocesses+1),1,"1.01");
       tmpLine.Prepend("normqcd_bin1_2_bin4_5     lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_bin1_2_bin4_5");
     }
     else if(jbin=="bin11"){
       tmpLine.Replace(2*(bindex["bin17"]*nprocesses+1),1,"2.00");
@@ -388,6 +408,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin11"]*nprocesses+1),1,"1.01");
       tmpLine.Prepend("normqcd_bin16_11_bin17_14 lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_bin16_11_bin17_14");
     }    
     else if(jbin=="bin14"){
       tmpLine.Replace(2*(bindex["bin20"]*nprocesses+1),1,"2.00");
@@ -396,6 +417,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin14"]*nprocesses+1),1,"1.01");
       tmpLine.Prepend("normqcd_bin17_14_bin18_20 lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_bin17_14_bin18_20");
     }    
     else if(jbin=="bin15"){
       tmpLine.Replace(2*(bindex["bin15"]*nprocesses+1),1,"2.00");
@@ -404,6 +426,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin10"]*nprocesses+1),1,"1.01");
       tmpLine.Prepend("normqcd_bin10_12_bin13_15 lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_bin10_12_bin13_15");
     }    
     else if(jbin=="bin19"){
       tmpLine.Replace(2*(bindex["bin21"]*nprocesses+1),1,"2.00");
@@ -412,6 +435,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin13"]*nprocesses+1),1,"1.01");
       tmpLine.Prepend("normqcd_bin13_15_bin19_21 lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normqcd_bin13_15_bin19_21");
     }    
   }
   for(auto jbin:bins){ // ttbar 
@@ -427,6 +451,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       //      tmpLine.Prepend("normtt_bin0_1_2_bin3_4_5  lnN  ");
       tmpLine.Prepend("normtt_bin1_2_bin4_5  lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normtt_bin1_2_bin4_5");
     }
     else if(jbin=="bin11"){
       tmpLine.Replace(2*(bindex["bin17"]*nprocesses+2),1,"2.00");
@@ -435,6 +460,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin11"]*nprocesses+2),1,"1.01");
       tmpLine.Prepend("normtt_bin16_11_bin17_14  lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normtt_bin16_11_bin17_14");
     }    
     else if(jbin=="bin14"){
       tmpLine.Replace(2*(bindex["bin20"]*nprocesses+2),1,"2.00");
@@ -443,6 +469,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin14"]*nprocesses+2),1,"1.01");
       tmpLine.Prepend("normtt_bin17_14_bin18_20  lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normtt_bin17_14_bin18_20");
     }    
     else if(jbin=="bin15"){
       tmpLine.Replace(2*(bindex["bin15"]*nprocesses+2),1,"2.00");
@@ -451,6 +478,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin10"]*nprocesses+2),1,"1.01");
       tmpLine.Prepend("normtt_bin10_12_bin13_15  lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normtt_bin10_12_bin13_15");
     }    
     else if(jbin=="bin19"){
       tmpLine.Replace(2*(bindex["bin21"]*nprocesses+2),1,"2.00");
@@ -459,8 +487,16 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(2*(bindex["bin13"]*nprocesses+2),1,"1.01");
       tmpLine.Prepend("normtt_bin13_15_bin19_21  lnN  ");
       file << tmpLine.Data() << endl;
+      nuisGroup.push_back("normtt_bin13_15_bin19_21");
     }    
   }
+
+  file<<endl;
+  file<<"norms group += ";
+  for(unsigned int igrp=0; igrp<nuisGroup.size(); igrp++){
+    file<<nuisGroup[igrp]<<" ";
+  }
+  file<<"\n"<<endl;
 }
 
 // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
@@ -471,12 +507,15 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
     for(uint ibin=0; ibin<nbins; ibin++)
         bindex[bins[ibin]]=ibin;
 
+    vector<TString> nuisGroup = {};
+
     // overall normalization   
     TString line_norm;
     for(uint idash=0; idash<nbins; idash++)
         line_norm+="- - - 2 - ";
     line_norm.Prepend("normwjets                 lnU  ");
     file << line_norm.Data() << endl;
+    nuisGroup.push_back("normwjets");
 
     if(cardType!="control")  // do not need Njets connection for CR fit
     { 
@@ -505,6 +544,7 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
 		//                tmpLine.Replace(2*(bindex["bin0"]*nprocesses+3),1,"1.01");
                 tmpLine.Prepend("normwjets_mednjets        lnN  ");
                 file << tmpLine.Data() << endl;
+		nuisGroup.push_back("normwjets_mednjets");
             }
             if(jbin=="bin11"){
                 tmpLine.Replace(2*(bindex["bin21"]*nprocesses+3),1,"1.62");
@@ -521,9 +561,16 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
                 tmpLine.Replace(2*(bindex["bin10"]*nprocesses+3),1,"1.62");
                 tmpLine.Prepend("normwjets_highnjets       lnN  ");
                 file << tmpLine.Data() << endl;
+		nuisGroup.push_back("normwjets_highnjets");
             }
         } 
     }
+  file<<endl;
+  file<<"norms group += ";
+  for(unsigned int igrp=0; igrp<nuisGroup.size(); igrp++){
+    file<<nuisGroup[igrp]<<" ";
+  }
+  file<<"\n"<<endl;
 }
 
 void outputLognormalSystematics(std::ofstream &file, const std::vector<std::string> &bins)

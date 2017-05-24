@@ -12,7 +12,7 @@ int main()
     //    For signal injection studies(mconly), only want to use MC as nuisance parameters
     //    are different for data in sideband regions and MC
     std::string cardType="mconly"; 
-    //cardType="control"; 
+    //  std::string cardType="control"; 
 
     std::string rootfile("variations/sum_rescaled.root");
     if(cardType=="mconly") rootfile = "variations/sum_rescaled_mconly.root";
@@ -21,64 +21,63 @@ int main()
 
     // samples for which MC statistics should be considered
     std::vector<std::string> mcStatisticsList = {
-        "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", 
-        "signal_M1500", 
-        "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000", 
-        "qcd", "ttbar"};
+      "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500", 
+      "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000", 
+      "qcd", "ttbar", "wjets", "other"};
     // systematics for which the template should be rescaled for qcd and ttbar
     std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets"};
     std::vector<std::string> rescaleList = {
-           "btag_bc", "btag_udsg",
-           "gs45", "gs67", "gs89", "gs10Inf",
-           "jes", "jer",
-           "lep_eff", "ttbar_pt",//"pileup",
-           "isr",
-           "qcd_flavor",
-           "qcd_mur", "qcd_muf", "qcd_murf",
-           "ttbar_mur", "ttbar_muf", "ttbar_murf",
-           "wjets_mur", "wjets_muf", "wjets_murf"};
+      "btag_bc", "btag_udsg",
+      "gs",
+      "jes", "jer",
+      "lep_eff", "ttbar_pt",//"pileup",
+      "isr",
+      "qcd_flavor",
+      "qcd_mur", "qcd_muf", "qcd_murf",
+      "ttbar_mur", "ttbar_muf", "ttbar_murf",
+      "wjets_mur", "wjets_muf", "wjets_murf"};
     
     // signal list
     std::vector<std::string> signalList = 
     {
-        "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", 
-        "signal_M1500", 
-        "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000"};
-    std::vector<std::string> signalRescaleList = {};
+      "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", 
+      "signal_M1500", 
+      "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000"};
+    std::vector<std::string> signalRescaleList = {
+      "btag_bc", "btag_udsg",
+      "gs",
+      "jes", "jer",
+      "lep_eff", "ttbar_pt",//"pileup",
+      "isr"};
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
 
     // Bins
     std::vector<std::string> binNames = { 
-        "bin0", "bin1", "bin2",                     // bins for control region fit
-        "bin3", "bin4", "bin5",                     // bins for control region fit
-        //"bin6", "bin7", "bin8", "bin9",             // lower mj bins
-        "bin10", "bin11", "bin12",                  // signal bins
-        "bin13", "bin14", "bin15","bin16","bin17",  // signal bins
-        "bin18", "bin19", "bin20","bin21"};         // signal bins
-    std::vector<std::string> blindedBins={};        // bins where data_obs = sum of bkg mc
+      "bin0", "bin1", "bin2",                     // bins for control region fit
+      "bin3", "bin4", "bin5",                     // bins for control region fit
+      //"bin6", "bin7", "bin8", "bin9",           // lower mj bins
+      "bin10", "bin11", "bin12",                  // signal bins
+      "bin13", "bin14", "bin15","bin16","bin17",  // signal bins
+      "bin18", "bin19", "bin20","bin21"};         // signal bins
+    std::vector<std::string> blindedBins={};      // bins where data_obs = sum of bkg mc
     if(cardType=="control") blindedBins = {
-        "bin10", "bin11", "bin12",
-        "bin13", "bin14", "bin15","bin16","bin17", 
-        "bin18", "bin19", "bin20","bin21"};         // signal bins
+        "bin10", "bin12",
+        "bin13", "bin14", "bin15", "bin17", 
+        "bin18", "bin19", "bin20", "bin21"};         // signal bins
     else if (cardType=="mconly") blindedBins=binNames; 
-
+    
     unsigned int nbins=binNames.size();
 
-    // only QCD and ttbar shapes should be rescaled
+    // only QCD, ttbar, wjets shapes should be rescaled
     // as only these processes have a floating normalization
     // in the fit
     for(unsigned int i=0; i<100; i++) {
-        std::string qcd_pdf("qcd_w_pdf");
-        qcd_pdf+=std::to_string(i);
-        //rescaleList.push_back(qcd_pdf);
-        std::string ttbar_pdf("ttbar_w_pdf");
-        ttbar_pdf+=std::to_string(i);    
-        //rescaleList.push_back(ttbar_pdf);
-        //for(auto isignal : signalList) {
-        //    std::string signal_pdf("w_pdf");
-        //    signal_pdf+=std::to_string(i);
-        //    signalRescaleList.push_back(signal_pdf);
-        //}
+      rescaleList.push_back("w_pdf"+std::to_string(i));
+
+      for(auto isignal : signalList) {
+	std::string signal_pdf("w_pdf");
+	signal_pdf+=std::to_string(i);
+      }
     }
 
     for(unsigned int ibin=0; ibin<nbins; ibin++) { 
@@ -98,12 +97,13 @@ int main()
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
                     TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
-                    if(rescaleList.at(isyst).find("pdf")!=std::string::npos && 
+		    /* if(rescaleList.at(isyst).find("pdf")!=std::string::npos && 
                             (rescaleList.at(isyst).find("qcd")!=std::string::npos || 
-                             rescaleList.at(isyst).find("ttbar")!=std::string::npos) ) 
+                             rescaleList.at(isyst).find("ttbar")!=std::string::npos ||
+			     rescaleList.at(isyst).find("wjets")!=std::string::npos) ) 
                     {
-                        histnameRescale = Form("%s/%s%s", binNames.at(ibin).c_str(), rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str());
-                    }
+		      histnameRescale = Form("%s/%s%s", binNames.at(ibin).c_str(), rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str());
+		      }*/
                     std::cout << "Getting histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
@@ -155,8 +155,10 @@ int main()
                 TString downname(Form("%s_mcstat_%s_%s_nb%dDown", nominal->GetName(), isample.c_str(), binname.Data(), ib-1));
                 up->SetName(upname);
                 down->SetName(downname);
-                //up->Write("",TObject::kOverwrite);
-                //down->Write("",TObject::kOverwrite);
+
+		up->Scale(nominal->Integral()/up->Integral());
+		down->Scale(nominal->Integral()/down->Integral());
+
                 up->Write();
                 down->Write();
             }

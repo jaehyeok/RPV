@@ -75,7 +75,7 @@ int main()
     // Add pdfs to the background (qcd, ttbar, wjets) and signal rescale list
     for(unsigned int i=0; i<100; i++) {
       rescaleList.push_back("w_pdf"+std::to_string(i));
-      signalRescaleList.push_back("w_pdf"+std::to_string(i));
+      //      signalRescaleList.push_back("w_pdf"+std::to_string(i));
     }
     
     for(unsigned int ibin=0; ibin<nbins; ibin++) { 

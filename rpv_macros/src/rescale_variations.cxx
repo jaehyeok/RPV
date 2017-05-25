@@ -11,8 +11,8 @@ int main()
     // Choose the type of cards to produce: mconly, control, and default
     //    For signal injection studies(mconly), only want to use MC as nuisance parameters
     //    are different for data in sideband regions and MC
-    //   std::string cardType="mconly"; 
-    std::string cardType="control";
+  std::string cardType="mconly"; 
+  //    std::string cardType="control";
 
     std::string rootfile("variations/sum_rescaled.root");
     if(cardType=="mconly") rootfile = "variations/sum_rescaled_mconly.root";
@@ -48,11 +48,8 @@ int main()
       "signal_M1500", 
       "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000"};
     std::vector<std::string> signalRescaleList = {
-      "btag_bc", "btag_udsg",
-      "gs",
-      "jes", "jer",
-      "lep_eff", "ttbar_pt",//"pileup",
-      "isr"};
+      "gs"
+    };
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
     
     // Bins

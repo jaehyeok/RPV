@@ -600,7 +600,8 @@ void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> 
     file << shapeSysts.at(isyst) << "     shape     ";
     if(shapeSysts.at(isyst).find("pdf")!=std::string::npos) {
       // there are 100 NNPDF variations and so each needs to be scaled down by a factor 1/sqrt(100)
-      for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
+      // no pdf uncertainty applied to signal
+      for(unsigned int index=0; index<nbins; index++) file << "0.0 0.1 0.1 0.1 0.1 ";
     }
     else {
       for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";

@@ -136,6 +136,7 @@ void protectFromZero(TH1F *hist)
     float binerror = hist->GetBinError(i);
     if(bincontent-binerror<0 || isnan(bincontent)) {
       if(isnan(bincontent)) std::cout << "Found nan" << std::endl;
+      else std::cout<<"Protecting from zero"<<std::endl;
       hist->SetBinContent(i, 0.0);
       hist->SetBinError(i, 0.0);
     }
@@ -251,8 +252,19 @@ void outputHistograms(std::vector<sfeats>& Samples, std::string variation)
         std::cout << fullCut << std::endl;
         ch->Project(histname.c_str(), tempPlotVar.Data(), fullCut.Data());
         setOverflow(hist);
-	if(fullCut.Contains("nleps==0")) integrateNbBins(hist);
-        protectFromZero(hist);
+
+	//Sometimes the pdf weights can create a negative number of events in an nb bin, which is unphysical.
+	// -> In this case, we protectFromZero first, then integrateNbBins
+	//For single-top, sometimes the NLO corrections create a negative number of events in an nb bin, but this is physical and just due to limited mc stats.
+	// -> In this case, we integrateNbBins first, then protectFromZero
+	if(Samples.at(i).label.Contains("Other")){
+	  if(fullCut.Contains("nleps==0")) integrateNbBins(hist);
+	  protectFromZero(hist);
+	}
+	else{
+	  protectFromZero(hist);
+	  if(fullCut.Contains("nleps==0")) integrateNbBins(hist);
+	}
         hist->Write();
         hist->Delete(); 
         delete ch;
@@ -603,6 +615,7 @@ void makeVariations(std::string &syst){
   Samples.push_back(sfeats(s_qcd,   "QCD", kYellow, 1,        cutandweightForVariationsQCD("stitch_ht&&pass",qcdWeight, qcdFlavorWeight))); 
   Samples.push_back(sfeats(s_tt,    "t#bar{t}", kTeal, 1,     cutandweightForVariations("stitch_ht&&pass", ttbarWeight)));
   Samples.push_back(sfeats(s_wjets, "W+jets", kTeal, 1,       cutandweightForVariations("stitch_ht&&pass", wjetsWeight)));
+  // Note: If you change the name of the s_other sfeat from "Other", you have to change it elsewhere in the code
   Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweightForVariations("stitch_ht&&pass", otherWeight))); 
   
   Samples.push_back(sfeats(s_data, "Data",kBlack,1,cutandweightForVariationsdata("(trig[12]||trig[54]||trig[56]) && pass", "1")));

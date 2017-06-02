@@ -600,17 +600,17 @@ void makeVariations(std::string &syst){
   std::string blinding("((njets<10 && nleps==0) || (nleps==1 && njets<6))");
   std::vector<sfeats> Samples; 
 
-  Samples.push_back(sfeats(s_rpv_1000, "#tilde{g}(1000)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1100, "#tilde{g}(1100)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1200, "#tilde{g}(1200)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1300, "#tilde{g}(1300)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1400, "#tilde{g}(1400)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1500, "#tilde{g}(1500)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1600, "#tilde{g}(1600)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1700, "#tilde{g}(1700)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1800, "#tilde{g}(1800)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_1900, "#tilde{g}(1900)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
-  Samples.push_back(sfeats(s_rpv_2000, "#tilde{g}(2000)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("1",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1000, "#tilde{g}(1000)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1100, "#tilde{g}(1100)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1200, "#tilde{g}(1200)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1300, "#tilde{g}(1300)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1400, "#tilde{g}(1400)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1500, "#tilde{g}(1500)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1600, "#tilde{g}(1600)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1700, "#tilde{g}(1700)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1800, "#tilde{g}(1800)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_1900, "#tilde{g}(1900)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
+  Samples.push_back(sfeats(s_rpv_2000, "#tilde{g}(2000)", ra4::c_t1tttt, 1,cutandweightForVariationsSignal("pass",signalWeight)));
 
   Samples.push_back(sfeats(s_qcd,   "QCD", kYellow, 1,        cutandweightForVariationsQCD("stitch_ht&&pass",qcdWeight, qcdFlavorWeight))); 
   Samples.push_back(sfeats(s_tt,    "t#bar{t}", kTeal, 1,     cutandweightForVariations("stitch_ht&&pass", ttbarWeight)));

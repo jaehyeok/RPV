@@ -40,7 +40,7 @@ int main()
     cout << " .. I am making yield table " << endl; 
     cout << " ........................... "<< endl; 
 
-    TString bin[22] = {
+    TString bin[34] = {
         // control regions
         "0-lepton,HT>1500,4#leq N_{jets}#leq5,500<MJ<800",
         "0-lepton,HT>1500,6#leq N_{jets}#leq7,500<MJ<800",
@@ -68,10 +68,23 @@ int main()
         "0-lepton,HT>1500,8#leq N_{jets}#leq9,MJ>100",      // 18
         "0-lepton,HT>1500,N_{jets}#geq10,MJ>100",           
         "1-lepton,HT>1200,6#leq N_{jets}#leq7,MJ>100",
-        "1-lepton,HT>1200,N_{jets}#geq8,MJ>1000"
+        "1-lepton,HT>1200,N_{jets}#geq8,MJ>1000",
+	// Njets-Nb basis
+	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=1",
+	"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1",
+	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=1",
+	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=2",
+	"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
+	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=2",
+	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=3",
+	"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
+	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=3",
+	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
+	"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",
+	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4"
     };
 
-    TString binLatex[22] = {
+    TString binLatex[34] = {
         // control regions
         "N_{leps}=0,H_{T}>1500~\\textrm{GeV},4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\textrm{GeV}",
         "N_{leps}=0,H_{T}>1500~\\textrm{GeV},6\\leq N_{jets}\\leq7, 500<M_{J}<800~\\textrm{GeV}",
@@ -99,19 +112,32 @@ int main()
         "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,M_{J}>1000~\\textrm{GeV}",
         "N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,M_{J}>1000~\\textrm{GeV}",           // 13
         "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,M_{J}>1000~\\textrm{GeV}",
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,M_{J}>1000~\\textrm{GeV}"
+        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,M_{J}>1000~\\textrm{GeV}",
+	// Njets-Nb basis
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=1",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=1",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,N_{b}=1",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=2",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=2",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=2",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=3",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=3",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=3",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}\\geq4",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}\\geq4",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}\\geq4"    
     };
 
-    TFile* infile  = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root", "READ");
+    TFile* infile  = TFile::Open("variations/output_nominal.root", "READ");
   
-    float data[22][5], qcd[22][5], ttbar[22][5], wjets[22][5], other[22][5],
-          sig1500[22][5], sig1600[22][5], sig1700[22][5], sig1800[22][5], sig1900[22][5];
-//    float data_err[22][5], qcd_err[22][5], ttbar_err[22][5], wjets_err[22][5], other_err[22][5],
-//          sig1500_err[22][5], sig1600_err[22][5], sig1700_err[22][5], sig1800_err[22][5], sig1900_err[22][5];
-    for(int ibin=0; ibin<22; ibin++)  
+    float data[34][3], qcd[34][3], ttbar[34][3], wjets[34][3], other[34][3],
+          sig1500[34][3], sig1600[34][3], sig1700[34][3], sig1800[34][3], sig1900[34][3], 
+          data_err[34][3], qcd_err[34][3], ttbar_err[34][3], wjets_err[34][3], other_err[34][3],
+          sig1500_err[34][3], sig1600_err[34][3], sig1700_err[34][3], sig1800_err[34][3], sig1900_err[34][3];
+    for(int ibin=0; ibin<34; ibin++)  
     { 
-        if(ibin>=6 && ibin<=9) continue;
-        for(int inb=0; inb<5; inb++) 
+        //if(ibin>=6 && ibin<=9) continue;
+        for(int inb=0; inb<3; inb++) 
         {
             data[ibin][inb] = 0;
             qcd[ibin][inb] = 0;
@@ -122,8 +148,7 @@ int main()
             sig1600[ibin][inb] = 0;
             sig1700[ibin][inb] = 0;
             sig1800[ibin][inb] = 0;
-            sig1900[ibin][inb] = 0;
- /*           
+            sig1900[ibin][inb] = 0;   
             data_err[ibin][inb] = 0;
             qcd_err[ibin][inb] = 0;
             ttbar_err[ibin][inb] = 0;
@@ -134,65 +159,66 @@ int main()
             sig1700_err[ibin][inb] = 0;
             sig1800_err[ibin][inb] = 0;
             sig1900_err[ibin][inb] = 0;
-*/
+
         }
     }
     //
-    for(int ibin=0; ibin<22; ibin++) 
+    for(int ibin=22; ibin<34; ibin++) 
     {
-        if(ibin>=6 && ibin<=9) continue;
+        //if(ibin>=6 && ibin<=9) continue;
         //TDirectory* dir = infile->GetDirectory(Form("bin%i", ibin));
 
-        for(int inb=0; inb<5; inb++) 
+        for(int inb=0; inb<3; inb++) 
         {
-            data[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin)))->GetBinContent(inb+1);
-            qcd[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinContent(inb+1);
-            ttbar[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(inb+1);
-            wjets[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinContent(inb+1);
-            other[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinContent(inb+1);
-            sig1500[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1500", ibin)))->GetBinContent(inb+1);
-            data[ibin][inb-1]=qcd[ibin][inb-1]+ttbar[ibin][inb-1]+wjets[ibin][inb-1]+other[ibin][inb-1];
-            sig1600[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1600", ibin)))->GetBinContent(inb+1);
-            sig1700[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinContent(inb+1);
-            sig1800[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinContent(inb+1);
-            sig1900[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinContent(inb+1);
-/*            
-            data_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin)))->GetBinError(inb+1);
-            qcd_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinError(inb+1);
-            ttbar_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinError(inb+1);
-            wjets_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinError(inb+1);
-            other_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinError(inb+1);
-            sig1500_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1500", ibin)))->GetBinError(inb+1);
-            data_err[ibin][inb-1]= TMath::Sqrt(data[ibin][inb-1]);
-            sig1600_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1600", ibin)))->GetBinError(inb+1);
-            sig1700_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinError(inb+1);
-            sig1800_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinError(inb+1);
-            sig1900_err[ibin][inb-1]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinError(inb+1);
-*/
+            data[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin)))->GetBinContent(inb+1);
+	    qcd[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinContent(inb+1);
+	    ttbar[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(inb+1);
+            wjets[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinContent(inb+1);
+            wjets[ibin][inb]=1.53*wjets[ibin][inb]; //FIXME
+	    other[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinContent(inb+1);
+            //data[ibin][inb]=qcd[ibin][inb]+ttbar[ibin][inb]+wjets[ibin][inb]+other[ibin][inb];
+            sig1500[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1500", ibin)))->GetBinContent(inb+1);
+            sig1600[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1600", ibin)))->GetBinContent(inb+1);
+            sig1700[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinContent(inb+1);
+            sig1800[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinContent(inb+1);
+            sig1900[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinContent(inb+1);
+            
+            data_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin)))->GetBinError(inb+1);
+            qcd_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinError(inb+1);
+            ttbar_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinError(inb+1);
+            wjets_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinError(inb+1);
+            other_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinError(inb+1);
+            sig1500_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1500", ibin)))->GetBinError(inb+1);
+            data_err[ibin][inb]= TMath::Sqrt(data[ibin][inb]);
+            sig1600_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1600", ibin)))->GetBinError(inb+1);
+            sig1700_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinError(inb+1);
+            sig1800_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinError(inb+1);
+            sig1900_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinError(inb+1);
+
         }  
     }
         
     float sig1500sum(0), sig1600sum(0), sig1700sum(0), sig1800sum(0), sig1900sum(0);
-    for(int ibin=0; ibin<22; ibin++) 
+    for(int ibin=22; ibin<34; ibin++) 
     {
-      if(ibin>5 && ibin<10) continue; // skip low MJ bins 
-      for(int inb=0; inb<5; inb++)  
+      //if(ibin>5 && ibin<10) continue; // skip low MJ bins 
+      for(int inb=0; inb<3; inb++)  
       {
-          sig1500sum = sig1500sum + sig1500[ibin][inb-1]; 
-          sig1600sum = sig1600sum + sig1600[ibin][inb-1]; 
-          sig1700sum = sig1700sum + sig1700[ibin][inb-1]; 
-          sig1800sum = sig1800sum + sig1800[ibin][inb-1]; 
-          sig1900sum = sig1900sum + sig1900[ibin][inb-1]; 
+          sig1500sum = sig1500sum + sig1500[ibin][inb]; 
+          sig1600sum = sig1600sum + sig1600[ibin][inb]; 
+          sig1700sum = sig1700sum + sig1700[ibin][inb]; 
+          sig1800sum = sig1800sum + sig1800[ibin][inb]; 
+          sig1900sum = sig1900sum + sig1900[ibin][inb]; 
       }
     }
 
     // -----------------------------------------------------
     // table for AN
     // -----------------------------------------------------
-    for(int ibin=0; ibin<22; ibin++) 
+    for(int ibin=22; ibin<34; ibin++) 
     {
 
-       if(ibin>5 && ibin<10) continue; // skip low MJ bins
+       //if(ibin>5 && ibin<10) continue; // skip low MJ bins
 
        if(formatLatex) 
        {
@@ -210,7 +236,7 @@ int main()
         cout << "|" << 
             left << setw(142) << Form("Bin %i: %s",ibin, (bin[ibin].ReplaceAll("#leq","<=").ReplaceAll("#geq",">=")).Data())   << " |"  << endl;
         cout << "|" << 
-            setw(4) << Form("Nb")   << " |"  <<
+            setw(4) << Form("Mj")   << " |"  <<
             //setw(10) << Form("%.2f",data) << " |" << 
             setw(16) << "qcd"  << " |" <<
             setw(16) << "ttbar" << " |" <<
@@ -223,15 +249,15 @@ int main()
 
 
 /*
-        for(int inb=0; inb<5; inb++) 
+        for(int inb=0; inb<3; inb++) 
         { 
             printOneLine(inb,
-                    data[ibin][inb-1], qcd[ibin][inb-1], ttbar[ibin][inb-1], wjets[ibin][inb-1], other[ibin][inb-1],
-                    sig1500[ibin][inb-1], sig1600[ibin][inb-1], sig1700[ibin][inb-1], sig1800[ibin][inb-1], sig1900[ibin][inb-1],
-                    //sig1500[ibin][inb-1]/sig1500sum, sig1600[ibin][inb-1]/sig1600sum, sig1700[ibin][inb-1]/sig1700sum, 
-                    //    sig1800[ibin][inb-1]/sig1800sum, sig1900[ibin][inb-1]/sig1900sum,
-                    data_err[ibin][inb-1], qcd_err[ibin][inb-1], ttbar_err[ibin][inb-1], wjets_err[ibin][inb-1], other_err[ibin][inb-1],
-                    sig1500_err[ibin][inb-1], sig1600_err[ibin][inb-1], sig1700_err[ibin][inb-1], sig1800_err[ibin][inb-1], sig1900_err[ibin][inb-1],
+                    data[ibin][inb], qcd[ibin][inb], ttbar[ibin][inb], wjets[ibin][inb], other[ibin][inb],
+                    sig1500[ibin][inb], sig1600[ibin][inb], sig1700[ibin][inb], sig1800[ibin][inb], sig1900[ibin][inb],
+                    //sig1500[ibin][inb]/sig1500sum, sig1600[ibin][inb]/sig1600sum, sig1700[ibin][inb]/sig1700sum, 
+                    //    sig1800[ibin][inb]/sig1800sum, sig1900[ibin][inb]/sig1900sum,
+                    data_err[ibin][inb], qcd_err[ibin][inb], ttbar_err[ibin][inb], wjets_err[ibin][inb], other_err[ibin][inb],
+                    sig1500_err[ibin][inb], sig1600_err[ibin][inb], sig1700_err[ibin][inb], sig1800_err[ibin][inb], sig1900_err[ibin][inb],
                     formatLatex);
         } 
 */
@@ -253,22 +279,22 @@ int main()
     // -----------------------------------------------------
 
     // Get pre-fit errors
-    float err[4][22][4];
+    float err[4][34][3];
 
-    for(int ibin=0; ibin<22; ibin++)
+    for(int ibin=22; ibin<34; ibin++)
     {
-        for(int inb=0; inb<4; inb++)
+        for(int inb=0; inb<3; inb++)
         {
-            err[0][ibin][inb] = 0;
-            err[1][ibin][inb] = 0;
-            err[2][ibin][inb] = 0;
-            err[3][ibin][inb] = 0;
+            err[0][ibin][inb] = qcd_err[ibin][inb];
+            err[1][ibin][inb] = ttbar_err[ibin][inb];
+            err[2][ibin][inb] = wjets_err[ibin][inb];
+            err[3][ibin][inb] = other_err[ibin][inb];
         }
     }
-/*
+
     // Get relative error using up variations
     // using both up and down is be better way, but should be very close
-    for(int ibin=0; ibin<22; ibin++) 
+    for(int ibin=22; ibin<34; ibin++) 
     {
         
         if(ibin>=6 && ibin<=9) continue;
@@ -282,48 +308,47 @@ int main()
             if(iproc==3)  process = "other";
 
             // loop over nb bins
-            for(int inb=0; inb<5; inb++)
+            for(int inb=0; inb<3; inb++)
             {
                 float central;
                 float up;
 
                 if(infile->Get(Form("bin%i/%s", ibin, process.c_str()))==0x0) continue;
                 central = static_cast<TH1F*>(infile->Get(Form("bin%i/%s", ibin, process.c_str())))->GetBinContent(inb+1);
-
-                if(central !=0)
+/*                if(central !=0)
                 {
                     // btag bc
                     up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_btag_bcUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                    err[iproc][ibin][inb-1] = TMath::Abs(up-central)/central;
+                    err[iproc][ibin][inb] = TMath::Abs(up-central)/central;
 
                     // btag udsg
                     up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_btag_udsgUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                    err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
+                    err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],TMath::Abs(up-central)/central);
 
                     // pileup
 //                    up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_pileupUp", ibin, process.c_str())))->GetBinContent(inb+1);
-//                    err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
+//                    err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],TMath::Abs(up-central)/central);
 
                     // qcd flavor
                     if(iproc==0)
                     {
                         up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_qcd_flavorUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                        err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
+                        err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],TMath::Abs(up-central)/central);
                     }
 
                     // scale variations
                     up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%s_murUp", ibin, process.c_str(), process.c_str())))->GetBinContent(inb+1);
-                    err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
+                    err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],TMath::Abs(up-central)/central);
                     up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%s_mufUp", ibin, process.c_str(), process.c_str())))->GetBinContent(inb+1);
-                    err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
+                    err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],TMath::Abs(up-central)/central);
                     up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%s_murfUp", ibin, process.c_str(), process.c_str())))->GetBinContent(inb+1);
-                    err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
+                    err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],TMath::Abs(up-central)/central);
 
                     // jer jes
                     up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_jerUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                    err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
+                    err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],TMath::Abs(up-central)/central);
                     up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_jesUp", ibin, process.c_str())))->GetBinContent(inb+1);
-                    err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
+                    err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],TMath::Abs(up-central)/central);
                     
                     // pdf
 //                    float pdferr=0;
@@ -332,26 +357,28 @@ int main()
 //                        up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_w_pdf%iUp", ibin, process.c_str(), ipdf)))->GetBinContent(inb+1);
 //                        pdferr  = addInQuad(pdferr,TMath::Abs(up-central)/central);
 //                    }
- //                   err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],pdferr/10);
+ //                   err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],pdferr/10);
  //                   cout << "pdf: " <<  ibin << " " << inb << " " << pdferr << endl;
 
                     // Stats
                     if(infile->Get(Form("bin%i/%s_mcstat_%s_bin%i_nb%iUp", ibin, process.c_str(), process.c_str(),ibin,inb))!=0x0)
                     {
                         up = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_mcstat_%s_bin%i_nb%iUp", ibin, process.c_str(), process.c_str(),ibin,inb)))->GetBinContent(inb+1);
-                        err[iproc][ibin][inb-1] = addInQuad(err[iproc][ibin][inb-1],TMath::Abs(up-central)/central);
+                        err[iproc][ibin][inb] = addInQuad(err[iproc][ibin][inb],TMath::Abs(up-central)/central);
                     }
                 }
-                // cout << "both: " <<  ibin << " " << inb << " " << err[iproc][ibin][inb-1]<< endl;
+                // cout << "both: " <<  ibin << " " << inb << " " << err[iproc][ibin][inb]<< endl;
+		*/
             }
         }
+
     }
-*/   
+   
 
     //
     // CR 
     //
-    int tablebin_cr[6]={0,1,2,3,4,5};
+    /*int tablebin_cr[6]={0,1,2,3,4,5};
     cout << "\\begin{table}" << endl;
     cout << "\\centering" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
@@ -359,32 +386,32 @@ int main()
     cout << "$N_{b}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1500\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
-    for(int ibin=0; ibin<6; ibin++)
+    for(int ibin=22; ibin<6; ibin++)
     { 
         int tablebin=tablebin_cr[ibin];
         
         float databin(0), mcbin(0); 
-        for(int inb=1; inb<5; inb++) 
+        for(int inb=0; inb<3; inb++) 
         { 
-            databin = databin + data[tablebin][inb-1]; 
-            mcbin = mcbin + qcd[tablebin][inb-1] + ttbar[tablebin][inb-1] + wjets[tablebin][inb-1] + other[tablebin][inb-1]; 
+            databin = databin + data[tablebin][inb]; 
+            mcbin = mcbin + qcd[tablebin][inb] + ttbar[tablebin][inb] + wjets[tablebin][inb] + other[tablebin][inb]; 
         }
 
         cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$} \\\\" << endl;
         cout << "\\hline" << endl;
-        for(int inb=1; inb<5; inb++)
+        for(int inb=0; inb<3; inb++)
             printYieldBin(inb,
-                    data[tablebin][inb-1],
-                    qcd[tablebin][inb-1],
-                    ttbar[tablebin][inb-1],
-                    wjets[tablebin][inb-1],
-                    other[tablebin][inb-1],
-                    sig1500[tablebin][inb-1],
-                    err[0][tablebin][inb-1]*qcd[tablebin][inb-1],
-                    err[1][tablebin][inb-1]*ttbar[tablebin][inb-1],
-                    err[2][tablebin][inb-1]*wjets[tablebin][inb-1],
-                    err[3][tablebin][inb-1]*other[tablebin][inb-1],
-                    databin/mcbin, false /*renormalize to data*/, false);
+                    data[tablebin][inb],
+                    qcd[tablebin][inb],
+                    ttbar[tablebin][inb],
+                    wjets[tablebin][inb],
+                    other[tablebin][inb],
+                    sig1500[tablebin][inb],
+                    err[0][tablebin][inb]*qcd[tablebin][inb],
+                    err[1][tablebin][inb]*ttbar[tablebin][inb],
+                    err[2][tablebin][inb]*wjets[tablebin][inb],
+                    err[3][tablebin][inb]*other[tablebin][inb],
+                    databin/mcbin, false*/ /*renormalize to data*//*,false);
         cout << "\\hline" << endl;
     }
     cout<< "\\hline" << endl;
@@ -401,35 +428,35 @@ int main()
     cout << "\\centering" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
-    cout << "$N_{b}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1500\\textrm{GeV}$\\\\"  << endl;
+    cout << "$N_{b}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1600\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
-    for(int ibin=0; ibin<6; ibin++)
+    for(int ibin=22; ibin<6; ibin++)
     { 
         int tablebin=tablebin_0lep[ibin];
         
         float databin(0), mcbin(0); 
-        for(int inb=1; inb<5; inb++) 
+        for(int inb=0; inb<3; inb++) 
         { 
-            databin = databin + data[tablebin][inb-1]; 
-            mcbin = mcbin + qcd[tablebin][inb-1] + ttbar[tablebin][inb-1] + wjets[tablebin][inb-1] + other[tablebin][inb-1]; 
+            databin = databin + data[tablebin][inb]; 
+            mcbin = mcbin + qcd[tablebin][inb] + ttbar[tablebin][inb] + wjets[tablebin][inb] + other[tablebin][inb]; 
         }
 
         cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$} \\\\" << endl;
         cout << "\\hline" << endl;
-        for(int inb=1; inb<5; inb++)
+        for(int inb=0; inb<3; inb++)
             printYieldBin(inb,
-                    data[tablebin][inb-1],
-                    qcd[tablebin][inb-1],
-                    ttbar[tablebin][inb-1],
-                    wjets[tablebin][inb-1],
-                    other[tablebin][inb-1],
-                    sig1500[tablebin][inb-1],
-                    err[0][tablebin][inb-1]*qcd[tablebin][inb-1],
-                    err[1][tablebin][inb-1]*ttbar[tablebin][inb-1],
-                    err[2][tablebin][inb-1]*wjets[tablebin][inb-1],
-                    err[3][tablebin][inb-1]*other[tablebin][inb-1],
-                    databin/mcbin, false /*renormalize to data*/, false);
+                    data[tablebin][inb],
+                    qcd[tablebin][inb],
+                    ttbar[tablebin][inb],
+                    wjets[tablebin][inb],
+                    other[tablebin][inb],
+                    sig1600[tablebin][inb],
+                    err[0][tablebin][inb]*qcd[tablebin][inb],
+                    err[1][tablebin][inb]*ttbar[tablebin][inb],
+                    err[2][tablebin][inb]*wjets[tablebin][inb],
+                    err[3][tablebin][inb]*other[tablebin][inb],
+                    databin/mcbin, false*/ /*renormalize to data*//*, false);
         cout << "\\hline" << endl;
     }
     cout<< "\\hline" << endl;
@@ -438,45 +465,45 @@ int main()
 
     cout << endl;
     cout << endl;
-
+*/
 
     //
     // 1-lepton
     //
-    int tablebin_1lep[6]={11,14,20,12,15,21};
+    int tablebin_1lep[12]={22,23,24,25,26,27,28,29,30,31,32,33};
     cout << "\\begin{table}" << endl;
     cout << "\\centering" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
-    cout << "$N_{b}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1500\\textrm{GeV}$\\\\"  << endl;
+    cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1600\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
-    for(int ibin=0; ibin<6; ibin++)
+    for(int ibin=22; ibin<34; ibin++)
     { 
-        int tablebin=tablebin_1lep[ibin];
+        int tablebin=tablebin_1lep[ibin-22];
         
         float databin(0), mcbin(0); 
-        for(int inb=1; inb<5; inb++) 
+        for(int inb=0; inb<3; inb++) 
         { 
-            databin = databin + data[tablebin][inb-1]; 
-            mcbin = mcbin + qcd[tablebin][inb-1] + ttbar[tablebin][inb-1] + wjets[tablebin][inb-1] + other[tablebin][inb-1]; 
+            databin = databin + data[tablebin][inb]; 
+            mcbin = mcbin + qcd[tablebin][inb] + ttbar[tablebin][inb] + wjets[tablebin][inb] + other[tablebin][inb]; 
         }
 
         cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$} \\\\" << endl;
         cout << "\\hline" << endl;
-        for(int inb=1; inb<5; inb++)
+        for(int inb=0; inb<3; inb++)
             printYieldBin(inb,
-                    data[tablebin][inb-1],
-                    qcd[tablebin][inb-1],
-                    ttbar[tablebin][inb-1],
-                    wjets[tablebin][inb-1],
-                    other[tablebin][inb-1],
-                    sig1500[tablebin][inb-1],
-                    err[0][tablebin][inb-1]*qcd[tablebin][inb-1],
-                    err[1][tablebin][inb-1]*ttbar[tablebin][inb-1],
-                    err[2][tablebin][inb-1]*wjets[tablebin][inb-1],
-                    err[3][tablebin][inb-1]*other[tablebin][inb-1],
-                    databin/mcbin, false /*renormalize to data*/, false);
+                    data[tablebin][inb],
+                    qcd[tablebin][inb],
+                    ttbar[tablebin][inb],
+                    wjets[tablebin][inb],
+                    other[tablebin][inb],
+                    sig1600[tablebin][inb],
+                    err[0][tablebin][inb],//*qcd[tablebin][inb],
+                    err[1][tablebin][inb],//*ttbar[tablebin][inb],
+                    err[2][tablebin][inb],//*wjets[tablebin][inb],
+                    err[3][tablebin][inb],//*other[tablebin][inb],
+                    databin/mcbin, false /*renormalize to data*/, true);
         cout << "\\hline" << endl;
     }
     cout<< "\\hline" << endl;
@@ -578,11 +605,9 @@ void printYieldBin(int nb, float data,
     if(other==0) other_err=0;
 
     string nbbin;
-    if(nb==0) nbbin="$0$";
-    if(nb==1) nbbin="$1$";
-    if(nb==2) nbbin="$2$";
-    if(nb==3) nbbin="$3$";
-    if(nb==4) nbbin="$\\geq 4$";
+    if(nb==0) nbbin="$500 ~ 800$";
+    if(nb==1) nbbin="$800 ~ 1100$";
+    if(nb==2) nbbin="$1100 ~$";
    
     if(doNorm)  
     { 

@@ -23,7 +23,7 @@ double divideErrors(double x, double y, double dx, double dy);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
 float lumi = 35.8; // fb-1
-const int nbins = 22;
+const int nbins = 34;
 int w_pdf_index = 0;
 
 int main(int argc, char *argv[])
@@ -59,11 +59,13 @@ int main(int argc, char *argv[])
     cout << " with w_pdf index " << w_pdf_index; 
     cout << endl; 
   }
-
-  // Define samples
-  TString folder_bkg = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
-  TString folder_dat = "/net/cms27/cms27r0/babymaker/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
-  TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/"; // Capybara: no w_pdf, no sys_mj12, ...
+ // Define samples
+ //  TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
+ //  TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
+   TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/ucsb_babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
+   TString folder_dat = "/xrootd_user/jaehyeok/xrootd/ucsb_babies/2017_02_14/data/merged_rpvdata_rpvfit/";
+   TString folder_sig = "/xrootd_user/jaehyeok/xrootd/ucsb_babies/2017_03_21/mc/T1tbs/";
+// TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/processed/";
 //  TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
 //  TString folder_dat = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
 //  TString folder_sig = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_10/mc/T1tbs/";
@@ -218,25 +220,35 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
     } 
 
     // nominal, up and down histrograms  
-    int nBBins=4;
+    int MjBin=2;
     TH1F * h1nominal[nbins];
     TH1F * h1up[nbins];     
     TH1F * h1down[nbins];   
     
     for(int ibin=0; ibin<nbins; ibin++)
     {
-        //h1nominal[ibin]    = new TH1F(nominalname.Data(),  nominalname.Data(), nBBins+1, 0, nBBins+1);
-        //h1up[ibin]         = new TH1F(upname.Data(),       upname.Data(),      nBBins+1, 0, nBBins+1);
-        //h1down[ibin]       = new TH1F(downname.Data(),     downname.Data(),    nBBins+1, 0, nBBins+1);
-        h1nominal[ibin]    = new TH1F(Form("%s_bin%i",nominalname.Data(),ibin),    Form("%s_bin%i",nominalname.Data(),ibin), nBBins+1, 0, nBBins+1);
-        h1up[ibin]         = new TH1F(Form("%s_bin%i",upname.Data(),ibin),         Form("%s_bin%i",upname.Data(),ibin), nBBins+1, 0, nBBins+1);
-        h1down[ibin]       = new TH1F(Form("%s_bin%i",downname.Data(),ibin),       Form("%s_bin%i",downname.Data(),ibin), nBBins+1, 0, nBBins+1);
+        //h1nominal[ibin]    = new TH1F(nominalname.Data(),  nominalname.Data(), MjBin+1, 0, MjBin+1);
+        //h1up[ibin]         = new TH1F(upname.Data(),       upname.Data(),      MjBin+1, 0, MjBin+1);
+        //h1down[ibin]       = new TH1F(downname.Data(),     downname.Data(),    MjBin+1, 0, MjBin+1);
+        h1nominal[ibin]    = new TH1F(Form("%s_bin%i",nominalname.Data(),ibin),    Form("%s_bin%i",nominalname.Data(),ibin), MjBin+1, 500, 1400);
+        h1up[ibin]         = new TH1F(Form("%s_bin%i",upname.Data(),ibin),         Form("%s_bin%i",upname.Data(),ibin), MjBin+1, 500, 1400);
+        h1down[ibin]       = new TH1F(Form("%s_bin%i",downname.Data(),ibin),       Form("%s_bin%i",downname.Data(),ibin), MjBin+1, 500, 1400);
     }
 
     // loop over tree 
     for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++)
     {
         tree.GetEntry(ientry); 
+	int nbm_csv;
+	for(unsigned int k=0; k<tree.jets_pt().size(); k++)
+	{
+          if(tree.jets_islep().at(k)) continue;
+          if(tree.jets_pt().at(k)<30) continue;
+          if(abs(tree.jets_eta().at(k))>2.4) continue;
+          if(tree.jets_csv().at(k)<0.8484) continue;
+	  if(tree.jets_id().at(k)==false) continue;
+          nbm_csv++;
+	}
 
         // 
         // Central weights
@@ -244,9 +256,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         float nominalweight = lumi*tree.weight();    
         if(procname=="qcd" || procname=="ttbar" || 
            procname=="wjets" || procname=="other" ) 
-            nominalweight = nominalweight * tree.stitch() * tree.pass();
-        //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||trig()[56]); // rereco
-        else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
+            nominalweight = nominalweight * tree.pass();
+        //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
+
+        else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig_jet450()||tree.trig_ht900()); // rereco
+        //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
         else if (procname=="signal") nominalweight = nominalweight * 1; 
        
         // qcd jet flavor central weights
@@ -279,7 +293,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         }
 
         // scale W+jet normialzation
-        if(procname=="wjets") nominalweight = nominalweight*1.53; 
+        if(procname=="wjets") nominalweight = nominalweight; 
 
         //
         // Now assign up and down weights
@@ -515,30 +529,30 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         {
             if(variations=="jer") 
             { 
-                if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
-                    h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);              // nominal  
-                if(tree.sys_nbm()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0])) 
-                    h1up[ibin]->Fill(tree.sys_nbm()[0]>nBBins?nBBins:tree.sys_nbm()[0], upweight);          // up
-                if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
-                    h1down[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), downweight);                    // down  
+                if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                    h1nominal[ibin]->Fill(tree.mj12()>MjBin?MjBin:tree.mj12(), nominalweight);              // nominal  
+                if(tree.sys_mj12()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0], tree.sys_nbm()[0])) 
+                    h1up[ibin]->Fill(tree.sys_mj12()[0]>MjBin?MjBin:tree.sys_mj12()[0], upweight);          // up
+                if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                    h1down[ibin]->Fill(tree.mj12()>MjBin?MjBin:tree.mj12(), downweight);                    // down  
                
             } 
             else if(variations=="jes")  
             { 
-                if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
-                    h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);              // nominal  
-                if(tree.sys_nbm()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.sys_mj12()[1]))  
-                    h1up[ibin]->Fill(tree.sys_nbm()[1]>nBBins?nBBins:tree.sys_nbm()[1], upweight);          // up 
-                if(tree.sys_nbm()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2]))  
-                    h1down[ibin]->Fill(tree.sys_nbm()[2]>nBBins?nBBins:tree.sys_nbm()[2], downweight);      // down
+                if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                    h1nominal[ibin]->Fill(tree.mj12()>MjBin?MjBin:tree.mj12(), nominalweight);              // nominal  
+                if(tree.sys_mj12()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.sys_mj12()[1], tree.sys_nbm()[1]))  
+                    h1up[ibin]->Fill(tree.sys_mj12()[1]>MjBin?MjBin:tree.sys_mj12()[1], upweight);          // up 
+                if(tree.sys_mj12()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2], tree.sys_nbm()[2]))  
+                    h1down[ibin]->Fill(tree.sys_mj12()[2]>MjBin?MjBin:tree.sys_mj12()[2], downweight);      // down
             }
             else 
             {
-                if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12())) 
+                if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), nbm_csv)) 
                 {
-                    h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);  // nominal  
-                    h1up[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), upweight);            // up  
-                    h1down[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), downweight);        // down 
+                    h1nominal[ibin]->Fill(tree.mj12()>1399.999?1399.999:tree.mj12(), nominalweight);  // nominal  
+                    h1up[ibin]->Fill(tree.mj12()>1399.999?1399.999:tree.mj12(), upweight);            // up  
+                    h1down[ibin]->Fill(tree.mj12()>1399.999?1399.999:tree.mj12(), downweight);        // down 
                 }
             }
         }

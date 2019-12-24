@@ -6,6 +6,7 @@ int event
 ####################   Global   ###################
 float weight
 float w_btag
+float w_btag_dcsv
 float w_pu
 float w_pu_rpv
 float w_isr
@@ -28,6 +29,8 @@ bool pass
 bool json7p65
 bool json12p9
 bool fromGS
+bool trig_ht900
+bool trig_jet450
 
 ##################   MC   ################
 int ntruleps
@@ -73,6 +76,7 @@ std::vector<float> jets_phi
 std::vector<float> jets_m
 std::vector<float> jets_csv
 std::vector<bool> jets_islep
+std::vector<bool> jets_id
 std::vector<int>   jets_fjet_index
 std::vector<int>   jets_fjet08_index
 std::vector<int>   jets_hflavor

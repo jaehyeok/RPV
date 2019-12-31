@@ -4,6 +4,7 @@ run/*.exe
 archive
 txt/data_card*
 datacard*
+codes_backup/*
 
 # Compiled Object files
 *.slo

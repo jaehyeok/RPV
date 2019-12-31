@@ -168,7 +168,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
     const float njetsHighCut = 10; 
     const float njetsInfCut  = 999; 
 
-    //const float nbVLowCut = 0;
+    const float nbVLowCut = 0;
     const float nbLowCut = 1;
     const float nbMedCut = 2;
     const float nbHighCut = 3;
@@ -482,6 +482,33 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         njetsHigh   = njetsInfCut;
         nbLow       = nbVHighCut;
         nbHigh      = nbInfCut;
+    }
+    else if(bin==34)
+    {
+	nleps       = 1;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut;
+        njetsHigh   = njetsVLowCut+1;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
+    }
+    else if(bin==35)
+    {
+	nleps       = 1;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut;
+        njetsHigh   = njetsLowCut+1;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
+    }
+    else if(bin==36)
+    {
+	nleps       = 1;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
     }
     else  // in case of wrong bin number
     { 

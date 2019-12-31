@@ -66,7 +66,7 @@ int main(){
     }
     else{
       // Only use events with njets<=7 (for 0-lepton) and njets<=5 (for 1-lepton)
-      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nleps==0&&njets<=7)||(nleps==1&&njets<=5))"));
+      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nbm==0)||(nbm==1)||(nbm>=2 && njets>=4 && njets<=5))"));
       Samples.back().isData = true;
     }
   }
@@ -96,27 +96,28 @@ int main(){
   // Make analysis regions plots
   if(!makeNm1){
     // Set cuts
-    TString basecut = "nbm>=1";
-    vector<TString> lepcuts = {"nleps==0&&ht>1500", "nleps==1&&ht>1200"};
-    vector<TString> mjcuts = {"mj12>500&&mj12<=800", "mj12>800&&mj12<=1000", "mj12>1000"};
-    vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8&&njets<=9","njets>=10"};
+    TString basecut = "mj12>=500";
+    //vector<TString> lepcuts = {"nleps==0&&ht>1500", "nleps==1&&ht>1200"};
+    TString lepcuts = "nleps==1&&ht>1200";
+    vector<TString> nbcuts = {"nbm==0","nbm==1","nbm==2","nbm==3","nbm>=4"};
+    vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8"};
 
     // Loop over cuts to make histograms
     TString cut = "";
-    for(auto ilep : lepcuts){
-      for(auto imj : mjcuts) {
+      for(auto inb : nbcuts) {
 	for(auto injet : njetcuts){
+	  /*
 	  // Handle different MJ binning at low njets (CR)
 	  if(ilep == "nleps==0&&ht>1500"){
 	    if(injet == "njets>=4&&njets<=5" || injet=="njets>=6&&njets<=7"){
-	      if(imj == "mj12>800&&mj12<=1000") imj.ReplaceAll("mj12>800&&mj12<=1000","mj12>800");
-	      else if(imj == "mj12>1000") continue;
+	      if(inb == "mj12>800&&mj12<=1000") inb.ReplaceAll("mj12>800&&mj12<=1000","mj12>800");
+	      else if(inb == "mj12>1000") continue;
 	    }
 	  }
 	  else if(ilep == "nleps==1&&ht>1200"){
 	    if(injet == "njets>=4&&njets<=5"){
-	      if(imj == "mj12>800&&mj12<=1000") imj.ReplaceAll("mj12>800&&mj12<=1000","mj12>800");
-	      else if(imj == "mj12>1000") continue;
+	      if(inb == "mj12>800&&mj12<=1000") inb.ReplaceAll("mj12>800&&mj12<=1000","mj12>800");
+	      else if(inb == "mj12>1000") continue;
 	    }
 	  }
 	  
@@ -125,16 +126,15 @@ int main(){
 	    if(injet == "njets>=8&&njets<=9") injet.ReplaceAll("njets>=8&&njets<=9","njets>=8");
 	    else if(injet == "njets>=10") continue;
 	  }
-	  
+	  */
 	  // Set cuts
-	  cut = ilep + "&&" + imj + "&&" + injet + "&&" + basecut;
+	  cut = lepcuts + "&&" + inb + "&&" + injet + "&&" + basecut;
 	  
 	  // Define histograms
-	  hists.push_back(hfeats("nbm", 4, 1, 5, rpv_sam, "N_{b}", cut));
+	  hists.push_back(hfeats("mj12", 3, 500, 1200, rpv_sam, "M_{J}", cut));
 	  if(showData) hists.back().normalize = true;	
 	}
       }
-    }
     
     plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", showData, true);  
   }
@@ -145,31 +145,26 @@ int main(){
 
   else{
     // Set baseline cuts
-    vector<TString> lepcutsNm1 = {"nleps==0", "nleps==1"};
-    vector<TString> htcutsNm1 = {"ht>1500", "ht>1200"};
+    TString lepcutsNm1 = "nleps==1";
+    TString htcutsNm1 =  "ht>1200";
     TString mjcutNm1 = "mj12>500";
     TString njetcutNm1 = "njets>=4";
     TString nbcutNm1 = "nbm>=1";
 
     TString cutNm1 = "";
-    int iht=0;
-    for(auto ilep : lepcutsNm1){
-
       // Choose what ht cut to use based on nleps
-      if(ilep == "nleps==1") iht=1;
-      
-      cutNm1 = ilep + "&&" + mjcutNm1 + "&&" + njetcutNm1 + "&&" + nbcutNm1;
+      cutNm1 = lepcutsNm1 + "&&" + mjcutNm1 + "&&" + njetcutNm1 + "&&" + nbcutNm1;
       hists.push_back(hfeats("ht", 40, 0, 4000, rpv_sam, "H_{T}", cutNm1));
 
-      cutNm1 = ilep + "&&" + htcutsNm1[iht] + "&&" + njetcutNm1 + "&&" + nbcutNm1;
-      hists.push_back(hfeats("mj12", 25, 0, 2500, rpv_sam, "M_{J}", cutNm1));
+      cutNm1 = lepcutsNm1 + "&&" + htcutsNm1 + "&&" + njetcutNm1 + "&&" + nbcutNm1;
+      hists.push_back(hfeats("mj12", 3, 500, 1200, rpv_sam, "M_{J}", cutNm1));
 
-      cutNm1 = ilep + "&&" + htcutsNm1[iht] + "&&" + mjcutNm1 + "&&" + nbcutNm1;
+      cutNm1 = lepcutsNm1 + "&&" + htcutsNm1 + "&&" + mjcutNm1 + "&&" + nbcutNm1;
       hists.push_back(hfeats("njets", 12, 0, 12, rpv_sam, "N_{jets}", cutNm1));
 
-      cutNm1 = ilep + "&&" + htcutsNm1[iht] + "&&" + mjcutNm1 + "&&" + njetcutNm1;
+      cutNm1 = lepcutsNm1 + "&&" + htcutsNm1 + "&&" + mjcutNm1 + "&&" + njetcutNm1;
       hists.push_back(hfeats("nbm", 5, 0, 5, rpv_sam, "N_{b}", cutNm1));
-    }
+    
     
     plot_distributions(Samples, hists, lumi, plot_type, plot_style, "nminus1", true, true); 
   }

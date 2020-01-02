@@ -63,7 +63,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
   if(namestyle.Contains("CMSPaper")) style.nDivisions = 706;
   if (doRatio){
     style.LabelSize    *= 1.1;
-    style.LegendSize   *= 1.0;
+   //style.LegendSize   *= 1.0;
+    style.LegendSize   *= 0.5;
     style.TitleSize    *= 1.1;
     style.yTitleOffset /= 1.3;
     style.xTitleOffset /= 1.08;
@@ -540,7 +541,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           leghisto += RoundNumber(histo[1][var][sam]->GetMean(),digits) + "]";
         } else{
           leg[ileg].SetX1NDC(0.24); leg[ileg].SetX2NDC(0.7);
-          leg[ileg].SetTextSize(0.75*style.LegendSize);
+          //leg[ileg].SetTextSize(0.75*style.LegendSize);
+          leg[ileg].SetTextSize(0.5*style.LegendSize);
 	  if(vars[var].varname.Contains("tks")) leghisto +=  "[N_{tks} = " + RoundNumber(nentries[sam],1) + ", from N_{events} = "
             +RoundNumber(vars[var].nevents.at(sam),1)+"]";
         }

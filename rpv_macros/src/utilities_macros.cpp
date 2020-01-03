@@ -63,8 +63,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
   if(namestyle.Contains("CMSPaper")) style.nDivisions = 706;
   if (doRatio){
     style.LabelSize    *= 1.1;
-   //style.LegendSize   *= 1.0;
-    style.LegendSize   *= 0.5;
+    style.LegendSize   *= 1.0;
     style.TitleSize    *= 1.1;
     style.yTitleOffset /= 1.3;
     style.xTitleOffset /= 1.08;
@@ -107,11 +106,11 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
   TString plot_tag("_lumi"+lumi_nodot+filetype);
   float minLog = 0.04, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend
 
-  double legLeft(style.PadLeftMargin+0.03), legRight(1-style.PadRightMargin-0.02);
-  double legY(1-style.PadTopMargin-0.027), legSingle = 0.052;
-  if (doRatio) {legY=1-style.PadTopMargin-0.041; legSingle = 0.06;}
-  double legW = 0.13, legH = legSingle*(vars[0].samples.size()+1)/2;
-  double legX1[] = {legLeft, legLeft+(legRight-legLeft)/2.*1.15};
+  double legLeft(style.PadLeftMargin+0.03), legRight(1-style.PadRightMargin-0.03);
+  double legY(1-style.PadTopMargin-0.020)/*-0.027*/, legSingle = 0.03;//= 0.052
+  if (doRatio) {legY=1-style.PadTopMargin-0.020; legSingle = 0.03;}
+  double legW = 0.10, legH = legSingle*(vars[0].samples.size()+1)/2;
+  double legX1[] = {legLeft, (legLeft+legRight)/2};
   TLegend leg[2]; int nLegs(2);
   for(int ileg(0); ileg<nLegs; ileg++){
     leg[ileg].SetX1NDC(legX1[ileg]); leg[ileg].SetX2NDC(legX1[ileg]+legW); 
@@ -131,8 +130,11 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     const unsigned Nsam(vars[var].samples.size());
     legH = (Nsam<=3?legSingle*Nsam:legSingle*(Nsam+1)/2);
     // Calculating fraction of internal pad taken by the legend, and adding a 4% buffer
-    fracLeg = (legH+1-style.PadTopMargin-legY)/(1-style.PadTopMargin-style.PadBottomMargin) + 0.04;
-    for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].SetY1NDC(legY-legH); 
+    fracLeg = (legH+1-style.PadTopMargin-legY)/(1-style.PadTopMargin-style.PadBottomMargin) + 0.01;
+    for(int ileg(0); ileg<nLegs; ileg++){
+	leg[ileg].SetY1NDC(legY-legH);
+	leg[ileg].SetY2NDC(legY); 
+	}
     leg[1].SetX1NDC(legX1[1]+vars[var].moveRLegend); leg[1].SetX2NDC(legX1[1]+legW+vars[var].moveRLegend); 
 
     cout<<endl;

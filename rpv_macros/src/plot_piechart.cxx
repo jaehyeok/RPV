@@ -25,9 +25,9 @@ void set_piechart(TPie *p_opt){
 	p_opt->GetSlice(1)->SetTitle("t#bar{t}");
 	p_opt->GetSlice(2)->SetTitle("W+jets");
 	p_opt->GetSlice(3)->SetTitle("Other");
-	//p_opt->GetSlice(4)->SetTitle("m_{g} = 1600GeV");
-	p_opt->SetRadius(.25);
-	p_opt->SetLabelsOffset(.01);
+	p_opt->SetTextSize(0.028);
+	p_opt->SetRadius(.30);
+	p_opt->SetLabelsOffset(.015);
 	p_opt->SetLabelFormat("#splitline{%val (%perc)}{%txt}");
 	//p_opt->GetSlice(0)->SetTextSize(0.07);
 }
@@ -65,6 +65,7 @@ int main()
 
 	TCanvas *cpie[12][3];
 	TPie *pie4[12][3];
+	TString GeV[3]={"=500GeV","=500~1000GeV",">1000GeV"};
 	//Float_t vals[] = {201.4,447.3,526.5,174.1,0.5};
 	for(int ibin=22; ibin<34; ibin++){
 		for (int inb=0; inb<3; inb++){
@@ -72,11 +73,11 @@ int main()
 			Int_t colors[] = {kYellow-7,kAzure+7,kGreen+2,kGray+1};
 			Int_t nvals = sizeof(vals)/sizeof(vals[0]);
 			cpie[ibin][inb] = new TCanvas(Form("cpie_%i_%i",ibin,inb),Form("TPie test_%i_%i",ibin,inb),700,700);
-			pie4[ibin][inb] = new TPie(Form("pie4_%i_%i", ibin,inb),Form("MC_piechart_%i_bin_%i_Mj",ibin,inb),nvals,vals,colors);
+			pie4[ibin][inb] = new TPie(Form("pie4_%i_%i", ibin,inb),Form("MC_piechart_bin=%i_MJ"+GeV[inb],ibin),nvals,vals,colors);
 			set_piechart(pie4[ibin][inb]);
 			if(!(ibin==31 && inb==2)){
-			pie4[ibin][inb]->Draw("nol <");
-			cpie[ibin][inb]->SaveAs(outputdir+Form("test_piechart_%i_%i.png",ibin,inb));
+				pie4[ibin][inb]->Draw("nol <");
+				cpie[ibin][inb]->SaveAs(outputdir+Form("MC_piechart_bin%i_MJ"+GeV[inb]+".png",ibin));
 			}
 		}
 	}

@@ -14,7 +14,7 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
 void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins);
 void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bins);
 void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts);
-void outputLognormalSystematics(std::ofstream &file, const std::vector<std::string> &bins);
+void outputLognormalSystematics(std::ofstream &file);
 void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> &bins, const std::string & signalBinName);
 // determine if a histogram has an entry for a given nB
 bool hasEntry(const std::string &sample, const std::string &bin, const int nB);
@@ -28,21 +28,25 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  bool includePDFUncert = true;
+  bool includePDFUncert = false;
   bool includeLowMJ = false;
+//  bool includeSignalRegion = true;
 
   // signal is added later
   std::vector<std::string> processes = { "qcd", "ttbar", "wjets", "other"};
   std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg",
-					 "gs",
-					 "jes", "jer",
-					 "lep_eff", 
-					 /*"ttbar_pt", "qcd_flavor","pileup",*/
-					 "isr", // For signal only
-					 "qcd_muf", "qcd_mur", "qcd_murf", 
-					 "ttbar_muf", "ttbar_mur", "ttbar_murf",
-					 "wjets_muf", "wjets_mur", "wjets_murf",
-					 "other_muf", "other_mur", "other_murf"};
+					                     "gs45", "gs67", "gs89", "gs10Inf",
+					                     //"jes", "jer",
+					                     /*"pileup",*/"lep_eff", "ttbar_pt",
+					                     "qcd_flavor",
+					                     "qcd_muf", "qcd_mur", "qcd_murf", 
+					                     //"isr",
+					                     "ttbar_muf", "ttbar_mur", "ttbar_murf",
+					                     "wjets_muf", "wjets_mur", "wjets_murf",
+					                     "other_muf", "other_mur", "other_murf",
+					                     /*"fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"*/}; // temporarily removed
+
+  shapeSysts={}; 
 
   std::string gluinoMass;
   std::string signalBinName;
@@ -67,6 +71,12 @@ int main(int argc, char *argv[])
     }
     if(argc>3)
       inputname = argv[3];
+
+//    else {
+//      if(cardType=="control") includeSignalRegion=false;
+//      if(cardType=="default") includeSignalRegion=true;
+//      if(cardType=="mconly")  includeSignalRegion=true;
+//    }
   }
 
   nprocesses=processes.size();
@@ -81,18 +91,17 @@ int main(int argc, char *argv[])
 
   std::vector<std::vector<std::string> > bins;
 
-  //  std::vector<std::string> bins_cr_lowmj          = {"bin0", "bin1", "bin2"};
-  //  std::vector<std::string> bins_cr_highmj         = {"bin3", "bin4", "bin5"};
-  std::vector<std::string> bins_cr_lowmj          = {"bin1", "bin2"};
-  std::vector<std::string> bins_cr_highmj         = {"bin4", "bin5"};
-  std::vector<std::string> bins_sr_lownj_lowmj    = {"bin16", "bin11"};
-  std::vector<std::string> bins_sr_lownj_highmj   = {"bin17", "bin14"};
-  std::vector<std::string> bins_sr_lownj_vhighmj  = {"bin18", "bin20"};
-  std::vector<std::string> bins_sr_highnj_lowmj   = {"bin10", "bin12"};
-  std::vector<std::string> bins_sr_highnj_highmj  = {"bin13", "bin15"};
+  std::vector<std::string> bins_cr_lowmj        = {"bin0", "bin1", "bin2"};
+  std::vector<std::string> bins_cr_highmj       = {"bin3", "bin4", "bin5"};
+  std::vector<std::string> bins_sr_lownj_lowmj  = {"bin16", "bin11"};
+  std::vector<std::string> bins_sr_lownj_highmj = {"bin17", "bin14"};
+  std::vector<std::string> bins_sr_lownj_vhighmj = {"bin18", "bin20"};
+  std::vector<std::string> bins_sr_highnj_lowmj  = {"bin10", "bin12"};
+  std::vector<std::string> bins_sr_highnj_highmj = {"bin13", "bin15"};
   std::vector<std::string> bins_sr_highnj_vhighmj = {"bin19", "bin21"};
     
-  std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
+  //std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
+  std::vector<std::string> bins_all = {"bin2", "bin5"};
 
   if(includeLowMJ) {
     bins_all.push_back("bin6");
@@ -101,16 +110,16 @@ int main(int argc, char *argv[])
     bins_all.push_back("bin9");
   }
   if(cardType=="default" || cardType=="mconly") {
-    bins_all.push_back("bin10");
+//    bins_all.push_back("bin10");
     bins_all.push_back("bin11");
     bins_all.push_back("bin12");
-    bins_all.push_back("bin13");
+//    bins_all.push_back("bin13");
     bins_all.push_back("bin14");
     bins_all.push_back("bin15");
-    bins_all.push_back("bin16");
-    bins_all.push_back("bin17");
-    bins_all.push_back("bin18");
-    bins_all.push_back("bin19");
+//    bins_all.push_back("bin16");
+//    bins_all.push_back("bin17");
+//    bins_all.push_back("bin18");
+//    bins_all.push_back("bin19");
     bins_all.push_back("bin20");
     bins_all.push_back("bin21");
   }
@@ -118,12 +127,12 @@ int main(int argc, char *argv[])
   bins.push_back(bins_cr_lowmj);
   bins.push_back(bins_cr_highmj);
   if(cardType=="default" || cardType=="mconly") {
-    bins.push_back(bins_sr_lownj_lowmj);
-    bins.push_back(bins_sr_lownj_highmj);
-    bins.push_back(bins_sr_lownj_vhighmj); 
-    bins.push_back(bins_sr_highnj_lowmj);
-    bins.push_back(bins_sr_highnj_highmj); 
-    bins.push_back(bins_sr_highnj_vhighmj); 
+      bins.push_back(bins_sr_lownj_lowmj);
+      bins.push_back(bins_sr_lownj_highmj);
+      bins.push_back(bins_sr_lownj_vhighmj); 
+      bins.push_back(bins_sr_highnj_lowmj);
+      bins.push_back(bins_sr_highnj_highmj); 
+      bins.push_back(bins_sr_highnj_vhighmj); 
   }
   bins.push_back(bins_all);
  
@@ -144,9 +153,10 @@ int main(int argc, char *argv[])
   // which variation file
   std::string dataCardPath = gSystem->pwd();
   if(argc>3) dataCardPath += "/variations/" + inputname;
-  else if(cardType=="mconly") dataCardPath += "/variations/sum_rescaled_mconly.root";
-  else if(cardType=="control") dataCardPath += "/variations/sum_rescaled_control.root";
-  else dataCardPath += "/variations/sum_rescaled.root";
+  else if(cardType=="mconly") dataCardPath += "/variations/11jan2016/35/sum_rescaled_mconly.root";
+  else if(cardType=="control") dataCardPath += "/variations/11jan2016/12p9/sum_rescaled_control.root";
+  else dataCardPath += "/variations/sum_rescaled.root"; 
+  dataCardPath = "/homes/jaehyeokyoo/RPV/rpv_macros/variations_loop/15mar2017_35p9ifb/sum_rescaled_mconly_loop.root";
   TFile *variations = TFile::Open(dataCardPath.c_str());
   std::ofstream file;
   // card name
@@ -157,7 +167,8 @@ int main(int argc, char *argv[])
 
   if(ipair==0) filename+="_cr_lowmj";
   if(ipair==1) filename+="_cr_highmj"; 
-  if(cardType!="control"){
+  if(cardType!="control") 
+  {
       if(ipair==2) filename+="_sr_lownj_lowmj";
       if(ipair==3) filename+="_sr_lownj_highmj";
       if(ipair==4) filename+="_sr_lownj_vhighmj";
@@ -244,16 +255,16 @@ int main(int argc, char *argv[])
   outputWjets(file, bins.at(ipair), cardType);
 
   // output shape systematics
-  outputShapeSystematics(file, shapeSysts);
+//  outputShapeSystematics(file, shapeSysts);
   
   // output lognormal lumi uncertainties for signal, wjets and other
-  outputLognormalSystematics(file, bins.at(ipair));
+//  outputLognormalSystematics(file);
 
   // output MC statistics nuisance parameters
   // FIXME: the treatment of emtpy bins should be updated
   //        right now this is done by hand basically using "hasEntry" function at the end of this code
   //        this should be done by checking the bins in the nominal shape 
-  outputMCStatisticsSyst(file, bins.at(ipair), signalBinName);
+//  outputMCStatisticsSyst(file, bins.at(ipair), signalBinName);
 
   file.close();
   }
@@ -267,54 +278,48 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
   for(uint ibin=0; ibin<nbins; ibin++)
     bindex[bins[ibin]]=ibin;
 
-  vector<TString> nuisGroup = {};
-
   //create template line
   TString line;
   for(uint idash=0; idash<(nprocesses*nbins); idash++)
-    line+="- ";
+    line+="-    ";
   
   TString tmpLine;
   for(auto jbin:bins){ // QCD
     tmpLine = line;
 
     if(jbin=="bin0"){
-      if(bindex.count("bin0")>0)  tmpLine.Replace(2*(bindex["bin0"]*nprocesses+1),1,"5");
-      if(bindex.count("bin3")>0)  tmpLine.Replace(2*(bindex["bin3"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex[jbin]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin3"]*nprocesses+1),1,"5");
       tmpLine.Prepend("normqcd_vlownjets         lnU  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_vlownjets");
     }
     else if(jbin=="bin1"){
-      if(bindex.count("bin1")>0)  tmpLine.Replace(2*(bindex["bin1"]*nprocesses+1),1,"5");
-      if(bindex.count("bin2")>0)  tmpLine.Replace(2*(bindex["bin2"]*nprocesses+1),1,"5");
-      if(bindex.count("bin4")>0)  tmpLine.Replace(2*(bindex["bin4"]*nprocesses+1),1,"5");
-      if(bindex.count("bin5")>0)  tmpLine.Replace(2*(bindex["bin5"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex[jbin]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin2"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin4"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin5"]*nprocesses+1),1,"5");
       tmpLine.Prepend("normqcd_lownjets          lnU  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_lownjets");
     }
-    else if(jbin=="bin11"){
-      if(bindex.count("bin11")>0)  tmpLine.Replace(2*(bindex["bin11"]*nprocesses+1),1,"5");
-      if(bindex.count("bin14")>0)  tmpLine.Replace(2*(bindex["bin14"]*nprocesses+1),1,"5");
-      if(bindex.count("bin16")>0)  tmpLine.Replace(2*(bindex["bin16"]*nprocesses+1),1,"5");
-      if(bindex.count("bin17")>0)  tmpLine.Replace(2*(bindex["bin17"]*nprocesses+1),1,"5");
-      if(bindex.count("bin18")>0)  tmpLine.Replace(2*(bindex["bin18"]*nprocesses+1),1,"5");
-      if(bindex.count("bin20")>0)  tmpLine.Replace(2*(bindex["bin20"]*nprocesses+1),1,"5");
+    else if(jbin=="bin18"){
+      tmpLine.Replace(5*(bindex["bin11"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin14"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin16"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin17"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex[jbin]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin20"]*nprocesses+1),1,"5");
       tmpLine.Prepend("normqcd_mednjets          lnU  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_mednjets");
     }    
-    else if(jbin=="bin12"){
-      if(bindex.count("bin10")>0)  tmpLine.Replace(2*(bindex["bin10"]*nprocesses+1),1,"5");
-      if(bindex.count("bin12")>0)  tmpLine.Replace(2*(bindex["bin12"]*nprocesses+1),1,"5");
-      if(bindex.count("bin13")>0)  tmpLine.Replace(2*(bindex["bin13"]*nprocesses+1),1,"5");
-      if(bindex.count("bin15")>0)  tmpLine.Replace(2*(bindex["bin15"]*nprocesses+1),1,"5");
-      if(bindex.count("bin19")>0)  tmpLine.Replace(2*(bindex["bin19"]*nprocesses+1),1,"5");
-      if(bindex.count("bin21")>0)  tmpLine.Replace(2*(bindex["bin21"]*nprocesses+1),1,"5");
+    else if(jbin=="bin19"){
+      tmpLine.Replace(5*(bindex["bin10"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin12"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin13"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin15"]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex[jbin]*nprocesses+1),1,"5");
+      tmpLine.Replace(5*(bindex["bin21"]*nprocesses+1),1,"5");
       tmpLine.Prepend("normqcd_highnjets         lnU  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_highnjets");
     }    
   }
 
@@ -322,46 +327,36 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
     tmpLine = line;
 
     if(jbin=="bin2"){
-      if(bindex.count("bin0")>0)  tmpLine.Replace(2*(bindex["bin0"]*nprocesses+2),1,"5");
-      if(bindex.count("bin1")>0)  tmpLine.Replace(2*(bindex["bin1"]*nprocesses+2),1,"5");
-      if(bindex.count("bin2")>0)  tmpLine.Replace(2*(bindex["bin2"]*nprocesses+2),1,"5");
-      if(bindex.count("bin3")>0)  tmpLine.Replace(2*(bindex["bin3"]*nprocesses+2),1,"5");
-      if(bindex.count("bin4")>0)  tmpLine.Replace(2*(bindex["bin4"]*nprocesses+2),1,"5");
-      if(bindex.count("bin5")>0)  tmpLine.Replace(2*(bindex["bin5"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin0"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin1"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex[jbin]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin3"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin4"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin5"]*nprocesses+2),1,"5");
       tmpLine.Prepend("normtt_lownjets           lnU  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normtt_lownjets");
     }
     else if(jbin=="bin11"){
-      if(bindex.count("bin11")>0)  tmpLine.Replace(2*(bindex["bin11"]*nprocesses+2),1,"5");
-      if(bindex.count("bin14")>0)  tmpLine.Replace(2*(bindex["bin14"]*nprocesses+2),1,"5");
-      if(bindex.count("bin16")>0)  tmpLine.Replace(2*(bindex["bin16"]*nprocesses+2),1,"5");
-      if(bindex.count("bin17")>0)  tmpLine.Replace(2*(bindex["bin17"]*nprocesses+2),1,"5");
-      if(bindex.count("bin18")>0)  tmpLine.Replace(2*(bindex["bin18"]*nprocesses+2),1,"5");
-      if(bindex.count("bin20")>0)  tmpLine.Replace(2*(bindex["bin20"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex[jbin]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin14"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin16"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin17"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin18"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin20"]*nprocesses+2),1,"5");
       tmpLine.Prepend("normtt_mednjets           lnU  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normtt_mednjets");
     }    
     else if(jbin=="bin12"){
-      if(bindex.count("bin10")>0)  tmpLine.Replace(2*(bindex["bin10"]*nprocesses+2),1,"5");
-      if(bindex.count("bin12")>0)  tmpLine.Replace(2*(bindex["bin12"]*nprocesses+2),1,"5");
-      if(bindex.count("bin13")>0)  tmpLine.Replace(2*(bindex["bin13"]*nprocesses+2),1,"5");
-      if(bindex.count("bin15")>0)  tmpLine.Replace(2*(bindex["bin15"]*nprocesses+2),1,"5");
-      if(bindex.count("bin19")>0)  tmpLine.Replace(2*(bindex["bin19"]*nprocesses+2),1,"5");
-      if(bindex.count("bin21")>0)  tmpLine.Replace(2*(bindex["bin21"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin10"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex[jbin]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin13"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin15"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin19"]*nprocesses+2),1,"5");
+      tmpLine.Replace(5*(bindex["bin21"]*nprocesses+2),1,"5");
       tmpLine.Prepend("normtt_highnjets          lnU  "); 
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normtt_highnjets");
     }    
   }
-
-  file<<endl;
-  file<<"norms group = ";
-  for(unsigned int igrp=0; igrp<nuisGroup.size(); igrp++){
-    file<<nuisGroup[igrp]<<" ";
-  }
-  file<<"\n"<<endl;
 }
 
 // Assumes that processes is of the format {signal, "qcd", "ttbar", ... } 
@@ -372,130 +367,108 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   for(uint ibin=0; ibin<nbins; ibin++)
     bindex[bins[ibin]]=ibin;
 
-  vector<TString> nuisGroup = {};
-
   //create template line
   TString line;
   for(uint idash=0; idash<(nprocesses*nbins); idash++)
-    line+="- ";
+    line+="-    ";
   
   TString tmpLine;
   for(auto jbin:bins){ // QCD 
     tmpLine = line;
 
-    // Bins need to be placed in reverse order to not mess up the indexing when replacing
     if(jbin=="bin0"){
-      if(bindex.count("bin3")>0)  tmpLine.Replace(2*(bindex["bin3"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin0")>0)  tmpLine.Replace(2*(bindex["bin0"]*nprocesses+1),1,"1.01");
+      tmpLine.Replace(5*(bindex["bin3"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin0"]*nprocesses+1),4,"1.01");
       tmpLine.Prepend("normqcd_bin0_bin3         lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_bin0_bin3");
     }
     else if(jbin=="bin1"){
-      if(bindex.count("bin5")>0)  tmpLine.Replace(2*(bindex["bin5"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin4")>0)  tmpLine.Replace(2*(bindex["bin4"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin2")>0)  tmpLine.Replace(2*(bindex["bin2"]*nprocesses+1),1,"1.01");
-      if(bindex.count("bin1")>0)  tmpLine.Replace(2*(bindex["bin1"]*nprocesses+1),1,"1.01");
+      tmpLine.Replace(5*(bindex["bin5"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin4"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin2"]*nprocesses+1),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin1"]*nprocesses+1),4,"1.01");
       tmpLine.Prepend("normqcd_bin1_2_bin4_5     lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_bin1_2_bin4_5");
     }
     else if(jbin=="bin11"){
-      if(bindex.count("bin17")>0)  tmpLine.Replace(2*(bindex["bin17"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin16")>0)  tmpLine.Replace(2*(bindex["bin16"]*nprocesses+1),1,"1.01");
-      if(bindex.count("bin14")>0)  tmpLine.Replace(2*(bindex["bin14"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin11")>0)  tmpLine.Replace(2*(bindex["bin11"]*nprocesses+1),1,"1.01");
+      tmpLine.Replace(5*(bindex["bin17"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin16"]*nprocesses+1),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin14"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin11"]*nprocesses+1),4,"1.01");
       tmpLine.Prepend("normqcd_bin16_11_bin17_14 lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_bin16_11_bin17_14");
     }    
     else if(jbin=="bin14"){
-      if(bindex.count("bin20")>0)  tmpLine.Replace(2*(bindex["bin20"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin18")>0)  tmpLine.Replace(2*(bindex["bin18"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin17")>0)  tmpLine.Replace(2*(bindex["bin17"]*nprocesses+1),1,"1.01");
-      if(bindex.count("bin14")>0)  tmpLine.Replace(2*(bindex["bin14"]*nprocesses+1),1,"1.01");
+      tmpLine.Replace(5*(bindex["bin20"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin18"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin17"]*nprocesses+1),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin14"]*nprocesses+1),4,"1.01");
       tmpLine.Prepend("normqcd_bin17_14_bin18_20 lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_bin17_14_bin18_20");
     }    
-    else if(jbin=="bin10"){
-      if(bindex.count("bin15")>0)  tmpLine.Replace(2*(bindex["bin15"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin13")>0)  tmpLine.Replace(2*(bindex["bin13"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin12")>0)  tmpLine.Replace(2*(bindex["bin12"]*nprocesses+1),1,"1.01");
-      if(bindex.count("bin10")>0)  tmpLine.Replace(2*(bindex["bin10"]*nprocesses+1),1,"1.01");
+    else if(jbin=="bin15"){
+      tmpLine.Replace(5*(bindex["bin15"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin13"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin12"]*nprocesses+1),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin10"]*nprocesses+1),4,"1.01");
       tmpLine.Prepend("normqcd_bin10_12_bin13_15 lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_bin10_12_bin13_15");
     }    
-    else if(jbin=="bin13"){
-      if(bindex.count("bin21")>0)  tmpLine.Replace(2*(bindex["bin21"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin19")>0)  tmpLine.Replace(2*(bindex["bin19"]*nprocesses+1),1,"2.00");
-      if(bindex.count("bin15")>0)  tmpLine.Replace(2*(bindex["bin15"]*nprocesses+1),1,"1.01");
-      if(bindex.count("bin13")>0)  tmpLine.Replace(2*(bindex["bin13"]*nprocesses+1),1,"1.01");
+    else if(jbin=="bin19"){
+      tmpLine.Replace(5*(bindex["bin21"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin19"]*nprocesses+1),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin15"]*nprocesses+1),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin13"]*nprocesses+1),4,"1.01");
       tmpLine.Prepend("normqcd_bin13_15_bin19_21 lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normqcd_bin13_15_bin19_21");
     }    
   }
   for(auto jbin:bins){ // ttbar 
     tmpLine = line;
 
-    if(jbin=="bin1"){
-      if(bindex.count("bin5")>0)  tmpLine.Replace(2*(bindex["bin5"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin4")>0)  tmpLine.Replace(2*(bindex["bin4"]*nprocesses+2),1,"2.00");
-      //      if(bindex.count("bin3")>0)  tmpLine.Replace(2*(bindex["bin3"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin2")>0)  tmpLine.Replace(2*(bindex["bin2"]*nprocesses+2),1,"1.01");
-      if(bindex.count("bin1")>0)  tmpLine.Replace(2*(bindex["bin1"]*nprocesses+2),1,"1.01");
-      //      if(bindex.count("bin0")>0)  tmpLine.Replace(2*(bindex["bin0"]*nprocesses+2),1,"1.01");
-      //tmpLine.Prepend("normtt_bin0_1_2_bin3_4_5  lnN  ");
-      tmpLine.Prepend("normtt_bin1_2_bin4_5  lnN  ");
+    if(jbin=="bin0"){
+      tmpLine.Replace(5*(bindex["bin5"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin4"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin3"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin2"]*nprocesses+2),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin1"]*nprocesses+2),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin0"]*nprocesses+2),4,"1.01");
+      tmpLine.Prepend("normtt_bin0_1_2_bin3_4_5  lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normtt_bin1_2_bin4_5");
     }
     else if(jbin=="bin11"){
-      if(bindex.count("bin17")>0)  tmpLine.Replace(2*(bindex["bin17"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin16")>0)  tmpLine.Replace(2*(bindex["bin16"]*nprocesses+2),1,"1.01");
-      if(bindex.count("bin14")>0)  tmpLine.Replace(2*(bindex["bin14"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin11")>0)  tmpLine.Replace(2*(bindex["bin11"]*nprocesses+2),1,"1.01");
+      tmpLine.Replace(5*(bindex["bin17"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin16"]*nprocesses+2),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin14"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin11"]*nprocesses+2),4,"1.01");
       tmpLine.Prepend("normtt_bin16_11_bin17_14  lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normtt_bin16_11_bin17_14");
     }    
     else if(jbin=="bin14"){
-      if(bindex.count("bin20")>0)  tmpLine.Replace(2*(bindex["bin20"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin18")>0)  tmpLine.Replace(2*(bindex["bin18"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin17")>0)  tmpLine.Replace(2*(bindex["bin17"]*nprocesses+2),1,"1.01");
-      if(bindex.count("bin14")>0)  tmpLine.Replace(2*(bindex["bin14"]*nprocesses+2),1,"1.01");
+      tmpLine.Replace(5*(bindex["bin20"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin18"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin17"]*nprocesses+2),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin14"]*nprocesses+2),4,"1.01");
       tmpLine.Prepend("normtt_bin17_14_bin18_20  lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normtt_bin17_14_bin18_20");
     }    
-    else if(jbin=="bin10"){
-      if(bindex.count("bin15")>0)  tmpLine.Replace(2*(bindex["bin15"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin13")>0)  tmpLine.Replace(2*(bindex["bin13"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin12")>0)  tmpLine.Replace(2*(bindex["bin12"]*nprocesses+2),1,"1.01"); 
-      if(bindex.count("bin10")>0)  tmpLine.Replace(2*(bindex["bin10"]*nprocesses+2),1,"1.01");
+    else if(jbin=="bin15"){
+      tmpLine.Replace(5*(bindex["bin15"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin13"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin12"]*nprocesses+2),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin10"]*nprocesses+2),4,"1.01");
       tmpLine.Prepend("normtt_bin10_12_bin13_15  lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normtt_bin10_12_bin13_15");
     }    
-    else if(jbin=="bin13"){
-      if(bindex.count("bin21")>0)  tmpLine.Replace(2*(bindex["bin21"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin19")>0)  tmpLine.Replace(2*(bindex["bin19"]*nprocesses+2),1,"2.00");
-      if(bindex.count("bin15")>0)  tmpLine.Replace(2*(bindex["bin15"]*nprocesses+2),1,"1.01");
-      if(bindex.count("bin13")>0)  tmpLine.Replace(2*(bindex["bin13"]*nprocesses+2),1,"1.01");
+    else if(jbin=="bin19"){
+      tmpLine.Replace(5*(bindex["bin21"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin19"]*nprocesses+2),4,"2.00");
+      tmpLine.Replace(5*(bindex["bin15"]*nprocesses+2),4,"1.01");
+      tmpLine.Replace(5*(bindex["bin13"]*nprocesses+2),4,"1.01");
       tmpLine.Prepend("normtt_bin13_15_bin19_21  lnN  ");
       file << tmpLine.Data() << endl;
-      nuisGroup.push_back("normtt_bin13_15_bin19_21");
     }    
   }
-
-  file<<endl;
-  file<<"norms group += ";
-  for(unsigned int igrp=0; igrp<nuisGroup.size(); igrp++){
-    file<<nuisGroup[igrp]<<" ";
-  }
-  file<<"\n"<<endl;
 }
 
 // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
@@ -506,91 +479,69 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
     for(uint ibin=0; ibin<nbins; ibin++)
         bindex[bins[ibin]]=ibin;
 
-    vector<TString> nuisGroup = {};
-
     // overall normalization   
     TString line_norm;
     for(uint idash=0; idash<nbins; idash++)
         line_norm+="- - - 2 - ";
     line_norm.Prepend("normwjets                 lnU  ");
     file << line_norm.Data() << endl;
-    nuisGroup.push_back("normwjets");
 
     if(cardType!="control")  // do not need Njets connection for CR fit
     { 
         //create template line
         TString line;
         for(uint idash=0; idash<(nprocesses*nbins); idash++)
-            line+="- ";
+            line+="-    ";
 
         TString tmpLine;
         for(auto jbin:bins){
             tmpLine = line;
 
-	    //            if(jbin=="bin0"){
-            if(jbin=="bin1"){
-	      if(bindex.count("bin20")>0)  tmpLine.Replace(2*(bindex["bin20"]*nprocesses+3),1,"1.17");
-	      if(bindex.count("bin18")>0)  tmpLine.Replace(2*(bindex["bin18"]*nprocesses+3),1,"1.17");
-	      if(bindex.count("bin17")>0)  tmpLine.Replace(2*(bindex["bin17"]*nprocesses+3),1,"1.17");
-	      if(bindex.count("bin16")>0)  tmpLine.Replace(2*(bindex["bin16"]*nprocesses+3),1,"1.17");
-	      if(bindex.count("bin14")>0)  tmpLine.Replace(2*(bindex["bin14"]*nprocesses+3),1,"1.17");
-	      if(bindex.count("bin11")>0)  tmpLine.Replace(2*(bindex["bin11"]*nprocesses+3),1,"1.17");
-	      if(bindex.count("bin5")>0)  tmpLine.Replace(2*(bindex["bin5"]*nprocesses+3),1,"1.01");
-	      if(bindex.count("bin4")>0)  tmpLine.Replace(2*(bindex["bin4"]*nprocesses+3),1,"1.01");
-	      //		if(bindex.count("bin3")>0)  tmpLine.Replace(2*(bindex["bin3"]*nprocesses+3),1,"1.01");
-	      if(bindex.count("bin2")>0)  tmpLine.Replace(2*(bindex["bin2"]*nprocesses+3),1,"1.01");
-	      if(bindex.count("bin1")>0)  tmpLine.Replace(2*(bindex["bin1"]*nprocesses+3),1,"1.01");
-	      //		if(bindex.count("bin0")>0)  tmpLine.Replace(2*(bindex["bin0"]*nprocesses+3),1,"1.01");
-	      tmpLine.Prepend("normwjets_mednjets        lnN  ");
-	      file << tmpLine.Data() << endl;
-	      nuisGroup.push_back("normwjets_mednjets");
+            if(jbin=="bin0"){
+                tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),1,"1.5");
+                tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),1,"1.5");
+                tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),1,"1.5");
+                tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),1,"1.5");
+                tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),1,"1.5");
+                tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),1,"1.5");
+                tmpLine.Replace(5*(bindex["bin5"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin4"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin3"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin2"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin1"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin0"]*nprocesses+3),1,"1.01");
+                tmpLine.Prepend("normwjets_mednjets        lnN  ");
+                file << tmpLine.Data() << endl;
             }
             if(jbin=="bin11"){
-	      if(bindex.count("bin21")>0)  tmpLine.Replace(2*(bindex["bin21"]*nprocesses+3),1,"1.62");
-	      if(bindex.count("bin20")>0)  tmpLine.Replace(2*(bindex["bin20"]*nprocesses+3),1,"1.01");
-	      if(bindex.count("bin19")>0)  tmpLine.Replace(2*(bindex["bin19"]*nprocesses+3),1,"1.62");
-	      if(bindex.count("bin18")>0)  tmpLine.Replace(2*(bindex["bin18"]*nprocesses+3),1,"1.01");
-	      if(bindex.count("bin17")>0)  tmpLine.Replace(2*(bindex["bin17"]*nprocesses+3),1,"1.01");
-	      if(bindex.count("bin16")>0)  tmpLine.Replace(2*(bindex["bin16"]*nprocesses+3),1,"1.01");
-	      if(bindex.count("bin15")>0)  tmpLine.Replace(2*(bindex["bin15"]*nprocesses+3),1,"1.62");
-	      if(bindex.count("bin14")>0)  tmpLine.Replace(2*(bindex["bin14"]*nprocesses+3),1,"1.01");
-	      if(bindex.count("bin13")>0)  tmpLine.Replace(2*(bindex["bin13"]*nprocesses+3),1,"1.62");
-	      if(bindex.count("bin12")>0)  tmpLine.Replace(2*(bindex["bin12"]*nprocesses+3),1,"1.62");
-	      if(bindex.count("bin11")>0)  tmpLine.Replace(2*(bindex["bin11"]*nprocesses+3),1,"1.01");
-	      if(bindex.count("bin10")>0)  tmpLine.Replace(2*(bindex["bin10"]*nprocesses+3),1,"1.62");
-	      tmpLine.Prepend("normwjets_highnjets       lnN  ");
-	      file << tmpLine.Data() << endl;
-	      nuisGroup.push_back("normwjets_highnjets");
+                tmpLine.Replace(5*(bindex["bin21"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin19"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin15"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin13"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(5*(bindex["bin12"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin10"]*nprocesses+3),1,"1.35");
+                tmpLine.Prepend("normwjets_highnjets       lnN  ");
+                file << tmpLine.Data() << endl;
             }
         } 
     }
-  file<<endl;
-  file<<"norms group += ";
-  for(unsigned int igrp=0; igrp<nuisGroup.size(); igrp++){
-    file<<nuisGroup[igrp]<<" ";
-  }
-  file<<"\n"<<endl;
 }
 
-void outputLognormalSystematics(std::ofstream &file, const std::vector<std::string> &bins)
+void outputLognormalSystematics(std::ofstream &file)
 {
-  // luminosity uncertainty is 2.6%
-  file << "lumi          lnN  ";
+  // luminosity uncertainty is 2.6% for 2016 data
+  file << "lumi  lnN  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     file << "1.026 - - - 1.026 ";
   }
   file << std::endl;
-  // 20% uncertainty on the QCCD fakerate
-  file << "qcd_fakerate  lnN  ";
-  for(auto jbin:bins){
-    if(jbin=="bin2" || jbin=="bin5" || jbin=="bin11" || jbin=="bin12" || jbin=="bin14" || jbin=="bin15" || jbin=="bin20" || jbin=="bin21"){
-      file << "- 1.20 - - - ";
-    }
-    else{
-      file << "- - - - - ";
-    }
-  }
-  file << std::endl;
+
 }
 
 void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts)
@@ -599,11 +550,7 @@ void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> 
     file << shapeSysts.at(isyst) << "     shape     ";
     if(shapeSysts.at(isyst).find("pdf")!=std::string::npos) {
       // there are 100 NNPDF variations and so each needs to be scaled down by a factor 1/sqrt(100)
-      // no pdf uncertainty applied to signal
       for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
-    }
-    else if(shapeSysts.at(isyst).find("isr")!=std::string::npos) {
-      for(unsigned int index=0; index<nbins; index++) file << "1 - - - - ";
     }
     else {
       for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";
@@ -618,8 +565,8 @@ void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> 
   //  unsigned int nbins=bins.size();
   const unsigned int maxB=4;
 
-  // Include MC statistics for all samples
-  std::vector<std::string> samples = {signalBinName, "qcd", "ttbar", "wjets", "other"};
+  // only signal, qcd, and ttbar have non-negligible MC statistics uncertainties
+  std::vector<std::string> samples = {signalBinName, "qcd", "ttbar"};
   for(auto isample : samples) {
       for(unsigned int ibin = 0; ibin<bins.size(); ibin++) {
           for(unsigned int ibbin=1; ibbin<maxB+1; ibbin++) {

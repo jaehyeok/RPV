@@ -533,17 +533,20 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
     //
     // Apply cuts
     //
+    bool nbormj;
+    if(mjLow==999999&&mjHigh==999999){
+       nbormj = nb_>=nbLow && nb_<nbHigh;
+    }
+    if(nbLow==99&&nbHigh==99){
+       nbormj = mj_>mjLow && mj_<=mjHigh;
+    }
     mj_ = mj_/1;
     if(nleps_==nleps 
        && ht_>ht
        && njets_>=njetsLow
        && njets_<=njetsHigh
-       && nb_>=nbLow
-       && nb_<nbHigh
- //      && mj_>mjLow
- //      && mj_<=mjHigh
+       && nbormj
        ) pass = true;
-
     return pass;
 }
 

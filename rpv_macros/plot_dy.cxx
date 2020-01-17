@@ -16,9 +16,9 @@
 #include "utilities_macros_rpv.hpp"
 
 namespace {
-  TString lumi = "35.9";//"19.7"; //"16.2";//"35.9";
-  TString plot_type=".pdf";
-  TString plot_style="CMSPaper";//"CMSPaper_Preliminary";
+  TString lumi = /*"12.9";*/"36.4";
+  TString plot_type=".root";
+  TString plot_style="CMSPaper_Preliminary";
 }
 
 using namespace std;
@@ -29,16 +29,13 @@ using std::endl;
 int main(){
     
     // don't want to include RA4 trigger efficiency
-    //std::string extraWeight("w_btag_bf/w_btag");
     std::string extraWeight("1");
 
     // Reading ntuples
     vector<sfeats> Samples; 
     
-    //TString folder_bkg_dy = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/skim_st1000/";
-    //TString folder_data_dy = "/net/cms27/cms27r0/babymaker/babies/2017_02_14/data/skim_st1000/";
-    TString folder_bkg_dy = "/net/cms2/cms2r0/babymaker/babies/2017_01_27/mc/skim_st1000/";
-    TString folder_data_dy = "/net/cms27/cms27r0/babymaker/babies/2017_02_14_ra4_rpv_keep/data/unskimmed/";
+    TString folder_bkg_dy   = "/xrootd_user/jaehyeok/xrootd/ucsb_babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
+    TString folder_data_dy  = "/xrootd_user/jaehyeok/xrootd/ucsb_babies/2017_02_14/data/merged_rpvdata_st1000/";
     
     vector<TString> s_data_dy    = getRPVProcess(folder_data_dy, "data");
     vector<TString> s_zjets_dy;    
@@ -60,16 +57,15 @@ int main(){
     s_other_dy.push_back(folder_bkg_dy+"*_TTZToLLNuNu_*");
 
 
-    //Samples.push_back(sfeats(s_data_dy, "Data",kBlack,1,"(trig[19] || trig[20] || trig[40] || trig[21] || trig[24] || trig[41]) && json12p9 && pass"));
-    //Samples.push_back(sfeats(s_data_dy, "Data",kBlack,1,"(trig[19] || trig[20] || trig[40] || trig[21] || trig[24] || trig[41]) && pass && run<278820"));//(run>=278820&&run<=284044)"));
-    Samples.push_back(sfeats(s_data_dy, " Data",kBlack,1,"(trig[19] || trig[20] || trig[40] || trig[21] || trig[24] || trig[41]) && pass"));
+    Samples.push_back(sfeats(s_data_dy, "Data",kBlack,1,"(trig[19] || trig[20] || trig[40] || trig[21] || trig[24] || trig[41]) && json12p9 && pass"));
+    //Samples.push_back(sfeats(s_data_dy, "Data",kBlack,1,"(trig[19] || trig[20] || trig[40] || trig[21] || trig[24] || trig[41]) && pass"));
     Samples.back().isData = true;
     Samples.back().doStack = false;
-    Samples.push_back(sfeats(s_zjets_dy,   " Z+jets",    rpv::c_qcd,   1, cutandweight("stitch_ht&&pass",extraWeight)));
-    Samples.push_back(sfeats(s_ttlep_dy,   " t#bar{t}",  rpv::c_tt,    1, cutandweight("stitch_ht&&pass&&ntruleps>=1", extraWeight)));
-    Samples.push_back(sfeats(s_wjets_dy,   " W+jets",    rpv::c_wjets, 1, cutandweight("stitch_ht&&pass&&ntruleps>=1",extraWeight)));
-    Samples.push_back(sfeats(s_vv_dy,      " WW/WZ/ZZ",  ra4::c_ttv,   1, cutandweight("stitch_ht&&pass",extraWeight)));
-    Samples.push_back(sfeats(s_other_dy,   " Other",     rpv::c_other, 1, cutandweight("stitch_ht&&pass",extraWeight))); 
+    Samples.push_back(sfeats(s_zjets_dy,   "Z+jets",    rpv::c_qcd,   1, cutandweight("1",extraWeight)));
+    Samples.push_back(sfeats(s_ttlep_dy,   "t#bar{t}",  rpv::c_tt,    1, cutandweight("1", extraWeight)));
+    Samples.push_back(sfeats(s_wjets_dy,   "W+jets",    rpv::c_wjets, 1, cutandweight("1",extraWeight)));
+    Samples.push_back(sfeats(s_vv_dy,      "WW/WZ/ZZ",  ra4::c_ttv,   1, cutandweight("1",extraWeight)));
+    Samples.push_back(sfeats(s_other_dy,   "Other",     rpv::c_other, 1, cutandweight("1",extraWeight))); 
 
     vector<int> dy_sam;
     unsigned nsam_dy(Samples.size());
@@ -85,7 +81,7 @@ int main(){
     // 
 
     vector<hfeats> vars;
-    
+   
     string mll="(mumu_m*(mumu_m>0&&mumu_pt1>30)+elel_m*(elel_m>0&&elel_pt1>30))";
     string mllcut="(mumu_m*(mumu_m>0&&mumu_pt1>30)+elel_m*(elel_m>0&&elel_pt1>30))>80&&(mumu_m*(mumu_m>0&&mumu_pt1>30)+elel_m*(elel_m>0&&elel_pt1>30))<100";
 /*    
@@ -112,15 +108,15 @@ int main(){
     vars.push_back(hfeats("njets", 15, -0.5, 14.5, dy_sam, "N_{jets}", mllcut+"&&mj12>800&&ht>1200&&njets>=4"));
     vars.back().normalize = true; vars.back().whichPlots = "12";
 */
-    vars.push_back(hfeats("njets", 3, 4, 10, dy_sam, "", mllcut+"&&mj12>500&&ht>1200&&njets>=4&&nbm>=1"));
-    vars.back().normalize = true; vars.back().whichPlots = "12";
-/*
-    vars.push_back(hfeats("njets", 3, 3.5, 9.5, dy_sam, "N_{jets}", mllcut+"&&mj12>500&&ht>1200&&njets>=4&&nbm==0"));
-    vars.back().normalize = true; vars.back().whichPlots = "12";
     vars.push_back(hfeats("nbm", 5, -0.5, 4.5, dy_sam, "N_{b}", mllcut+"&&mj12>500&&ht>1200&&njets>=4"));
     vars.back().normalize = true; vars.back().whichPlots = "12";
     vars.push_back(hfeats("njets", 3, 3.5, 9.5, dy_sam, "N_{jets}", mllcut+"&&mj12>500&&ht>1200&&njets>=4"));
     vars.back().normalize = true; vars.back().whichPlots = "12";
+    vars.push_back(hfeats("njets", 3, 3.5, 9.5, dy_sam, "N_{jets}", mllcut+"&&mj12>500&&ht>1200&&njets>=4&&nbm>=1"));
+    vars.back().normalize = true; vars.back().whichPlots = "12";
+    vars.push_back(hfeats("njets", 3, 3.5, 9.5, dy_sam, "N_{jets}", mllcut+"&&mj12>500&&ht>1200&&njets>=4&&nbm==0"));
+    vars.back().normalize = true; vars.back().whichPlots = "12";
+/*
     vars.push_back(hfeats("njets", 3, 3.5, 9.5, dy_sam, "N_{jets}", mllcut+"&&mj12>600&&ht>1200&&njets>=4"));
     vars.back().normalize = true; vars.back().whichPlots = "12";
     vars.push_back(hfeats("njets", 3, 3.5, 9.5, dy_sam, "N_{jets}", mllcut+"&&mj12>700&&ht>1200&&njets>=4"));
@@ -128,6 +124,6 @@ int main(){
     vars.push_back(hfeats("njets", 3, 3.5, 9.5, dy_sam, "N_{jets}", mllcut+"&&mj12>800&&ht>1200&&njets>=4"));
     vars.back().normalize = true; vars.back().whichPlots = "12";
 */
-    plot_distributions(Samples, vars, lumi, plot_type, plot_style, "dy", true, false); // last argument determines whether or not a ratio is drawn, and whether or not to show cuts
+    plot_distributions(Samples, vars, lumi, plot_type, plot_style, "dy", true, true); // last argument determines whether or not a ratio is drawn, and whether or not to show cuts
 
 }

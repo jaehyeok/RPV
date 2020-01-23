@@ -483,6 +483,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         nbLow       = nbVHighCut;
         nbHigh      = nbInfCut;
     }
+// nb=0 binning
     else if(bin==34)
     {
 	nleps       = 1;

@@ -156,7 +156,6 @@ int main(int argc, char *argv[])
   else if(cardType=="mconly") dataCardPath += "/variations/11jan2016/35/sum_rescaled_mconly.root";
   else if(cardType=="control") dataCardPath += "/variations/11jan2016/12p9/sum_rescaled_control.root";
   else dataCardPath += "/variations/sum_rescaled.root"; 
-  dataCardPath = "/homes/jaehyeokyoo/RPV/rpv_macros/variations_loop/15mar2017_35p9ifb/sum_rescaled_mconly_loop.root";
   TFile *variations = TFile::Open(dataCardPath.c_str());
   std::ofstream file;
   // card name

@@ -100,8 +100,8 @@ int main(int argc, char *argv[])
   std::vector<std::string> bins_sr_highnj_highmj = {"bin13", "bin15"};
   std::vector<std::string> bins_sr_highnj_vhighmj = {"bin19", "bin21"};
     
-  //std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
-  std::vector<std::string> bins_all = {"bin2", "bin5"};
+  std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
+  //std::vector<std::string> bins_all = {"bin2", "bin5"};
 
   if(includeLowMJ) {
     bins_all.push_back("bin6");
@@ -110,16 +110,16 @@ int main(int argc, char *argv[])
     bins_all.push_back("bin9");
   }
   if(cardType=="default" || cardType=="mconly") {
-//    bins_all.push_back("bin10");
+    bins_all.push_back("bin10");
     bins_all.push_back("bin11");
     bins_all.push_back("bin12");
-//    bins_all.push_back("bin13");
+    bins_all.push_back("bin13");
     bins_all.push_back("bin14");
     bins_all.push_back("bin15");
-//    bins_all.push_back("bin16");
-//    bins_all.push_back("bin17");
-//    bins_all.push_back("bin18");
-//    bins_all.push_back("bin19");
+    bins_all.push_back("bin16");
+    bins_all.push_back("bin17");
+    bins_all.push_back("bin18");
+    bins_all.push_back("bin19");
     bins_all.push_back("bin20");
     bins_all.push_back("bin21");
   }

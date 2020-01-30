@@ -481,7 +481,7 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
     // overall normalization   
     TString line_norm;
     for(uint idash=0; idash<nbins; idash++)
-        line_norm+="- - - 2 - ";
+        line_norm+="-    -    -    2    -    ";
     line_norm.Prepend("normwjets                 lnU  ");
     file << line_norm.Data() << endl;
 
@@ -497,12 +497,12 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
             tmpLine = line;
 
             if(jbin=="bin0"){
-                tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),4,"1.53");
-                tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),4,"1.53");
-                tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),4,"1.53");
-                tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),4,"1.53");
-                tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),4,"1.53");
-                tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),4,"1.53");
+                tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),4,"1.50");
+                tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),4,"1.50");
+                tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),4,"1.50");
+                tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),4,"1.50");
+                tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),4,"1.50");
+                tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),4,"1.50");
                 tmpLine.Replace(5*(bindex["bin5"]*nprocesses+3),4,"1.01");
                 tmpLine.Replace(5*(bindex["bin4"]*nprocesses+3),4,"1.01");
                 tmpLine.Replace(5*(bindex["bin3"]*nprocesses+3),4,"1.01");

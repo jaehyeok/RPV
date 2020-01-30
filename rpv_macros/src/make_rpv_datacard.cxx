@@ -497,34 +497,34 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
             tmpLine = line;
 
             if(jbin=="bin0"){
-                tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),1,"1.5");
-                tmpLine.Replace(5*(bindex["bin5"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin4"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin3"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin2"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin1"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin0"]*nprocesses+3),1,"1.01");
+                tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),4,"1.53");
+                tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),4,"1.53");
+                tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),4,"1.53");
+                tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),4,"1.53");
+                tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),4,"1.53");
+                tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),4,"1.53");
+                tmpLine.Replace(5*(bindex["bin5"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin4"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin3"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin2"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin1"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin0"]*nprocesses+3),4,"1.01");
                 tmpLine.Prepend("normwjets_mednjets        lnN  ");
                 file << tmpLine.Data() << endl;
             }
             if(jbin=="bin11"){
-                tmpLine.Replace(5*(bindex["bin21"]*nprocesses+3),1,"1.35");
-                tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin19"]*nprocesses+3),1,"1.35");
-                tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin15"]*nprocesses+3),1,"1.35");
-                tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin13"]*nprocesses+3),1,"1.35");
-                tmpLine.Replace(5*(bindex["bin12"]*nprocesses+3),1,"1.35");
-                tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),1,"1.01");
-                tmpLine.Replace(5*(bindex["bin10"]*nprocesses+3),1,"1.35");
+                tmpLine.Replace(5*(bindex["bin21"]*nprocesses+3),4,"1.35");
+                tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin19"]*nprocesses+3),4,"1.35");
+                tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin15"]*nprocesses+3),4,"1.35");
+                tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin13"]*nprocesses+3),4,"1.35");
+                tmpLine.Replace(5*(bindex["bin12"]*nprocesses+3),4,"1.35");
+                tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),4,"1.01");
+                tmpLine.Replace(5*(bindex["bin10"]*nprocesses+3),4,"1.35");
                 tmpLine.Prepend("normwjets_highnjets       lnN  ");
                 file << tmpLine.Data() << endl;
             }

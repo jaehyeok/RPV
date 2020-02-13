@@ -154,7 +154,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
    
     // cut values
     const float ht0lepCut    = 1500;
-    const float ht1lepCut    = 1000;
+    const float ht1lepCut    = 1200;
 
     const float mjVLowCut    = 300;
     const float mjLowCut     = 500;
@@ -375,14 +375,15 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         mjHigh      = mjInfCut;
     }
 //for now, binning for mj plots in nb-njets scheme
+// nb=0 binning
     else if(bin==22)
     {
 	nleps       = 1;
         ht          = ht1lepCut;
         njetsLow    = njetsVLowCut;
         njetsHigh   = njetsVLowCut+1;
-        nbLow       = nbLowCut;
-        nbHigh      = nbMedCut;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
     }
     else if(bin==23)
     {
@@ -390,8 +391,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsLowCut;
         njetsHigh   = njetsLowCut+1;
-        nbLow       = nbLowCut;
-        nbHigh      = nbMedCut;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
     }
     else if(bin==24)
     {
@@ -399,8 +400,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsMedCut;
         njetsHigh   = njetsInfCut;
-        nbLow       = nbLowCut;
-        nbHigh      = nbMedCut;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
     }
     else if(bin==25)
     {
@@ -408,8 +409,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsVLowCut;
         njetsHigh   = njetsVLowCut+1;
-        nbLow       = nbMedCut;
-        nbHigh      = nbHighCut;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
     }
     else if(bin==26)
     {
@@ -417,8 +418,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsLowCut;
         njetsHigh   = njetsLowCut+1;
-        nbLow       = nbMedCut;
-        nbHigh      = nbHighCut;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
     }
     else if(bin==27)
     {
@@ -426,8 +427,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsMedCut;
         njetsHigh   = njetsInfCut;
-        nbLow       = nbMedCut;
-        nbHigh      = nbHighCut;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
     }
     else if(bin==28)
     {
@@ -435,8 +436,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsVLowCut;
         njetsHigh   = njetsVLowCut+1;
-        nbLow       = nbHighCut;
-        nbHigh      = nbVHighCut;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
     }
     else if(bin==29)
     {
@@ -444,8 +445,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsLowCut;
         njetsHigh   = njetsLowCut+1;
-        nbLow       = nbHighCut;
-        nbHigh      = nbVHighCut;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
     }
     else if(bin==30)
     {
@@ -453,8 +454,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsMedCut;
         njetsHigh   = njetsInfCut;
-        nbLow       = nbHighCut;
-        nbHigh      = nbVHighCut;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
     }
     else if(bin==31)
     {
@@ -462,8 +463,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsVLowCut;
         njetsHigh   = njetsVLowCut+1;
-        nbLow       = nbVHighCut;
-        nbHigh      = nbInfCut;
+        nbLow       = nbHighCut;
+        nbHigh      = nbVHighCut;
     }
     else if(bin==32)
     {
@@ -471,8 +472,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsLowCut;
         njetsHigh   = njetsLowCut+1;
-        nbLow       = nbVHighCut;
-        nbHigh      = nbInfCut;
+        nbLow       = nbHighCut;
+        nbHigh      = nbVHighCut;
     }
     else if(bin==33)
     {
@@ -480,18 +481,17 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsMedCut;
         njetsHigh   = njetsInfCut;
-        nbLow       = nbVHighCut;
-        nbHigh      = nbInfCut;
+        nbLow       = nbHighCut;
+        nbHigh      = nbVHighCut;
     }
-// nb=0 binning
     else if(bin==34)
     {
 	nleps       = 1;
         ht          = ht1lepCut;
         njetsLow    = njetsVLowCut;
         njetsHigh   = njetsVLowCut+1;
-        nbLow       = nbVLowCut;
-        nbHigh      = nbLowCut;
+        nbLow       = nbVHighCut;
+        nbHigh      = nbInfCut;
     }
     else if(bin==35)
     {
@@ -499,8 +499,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsLowCut;
         njetsHigh   = njetsLowCut+1;
-        nbLow       = nbVLowCut;
-        nbHigh      = nbLowCut;
+        nbLow       = nbVHighCut;
+        nbHigh      = nbInfCut;
     }
     else if(bin==36)
     {
@@ -508,9 +508,146 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsMedCut;
         njetsHigh   = njetsInfCut;
+        nbLow       = nbVHighCut;
+        nbHigh      = nbInfCut;
+    }
+    //nleps = 0
+    else if(bin==37)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
         nbLow       = nbVLowCut;
         nbHigh      = nbLowCut;
     }
+    else if(bin==38)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
+    }
+    else if(bin==39)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
+    }
+    else if(bin==40)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
+    }
+    else if(bin==41)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
+    }
+    else if(bin==42)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
+    }
+    else if(bin==43)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
+    }
+    else if(bin==44)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
+    }
+    else if(bin==45)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
+    }
+    else if(bin==46)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
+        nbLow       = nbHighCut;
+        nbHigh      = nbVHighCut;
+    }
+    else if(bin==47)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbHighCut;
+        nbHigh      = nbVHighCut;
+    }
+    else if(bin==48)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbHighCut;
+        nbHigh      = nbVHighCut;
+    }
+    else if(bin==49)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
+        nbLow       = nbVHighCut;
+        nbHigh      = nbInfCut;
+    }
+    else if(bin==50)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbVHighCut;
+        nbHigh      = nbInfCut;
+    }
+    else if(bin==51)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbVHighCut;
+        nbHigh      = nbInfCut;
+    }
+    //lepton-0
     else  // in case of wrong bin number
     { 
         std::cout << "[Error] I don't like your bin number: " << bin << " !!" << std::endl; 

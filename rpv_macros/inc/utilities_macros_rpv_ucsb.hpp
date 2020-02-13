@@ -82,6 +82,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
   // For 0 or 1 lepton wjets apply a ntruleps cut at the sfeat level
   else if(process=="wjets"){
     files.push_back(folder+"*_WJetsToLNu_*");
+    files.push_back(folder+"*_WJetsToQQ_*");
 //  files.push_back(folder+"*_WJetsToQQ_HT-600ToInf_*");
   }
   else if(process=="singlet"){
@@ -92,7 +93,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.push_back(folder+"*_ZJetsToNuNu_HT-*");
   }
   else if(process=="other"){
-    files.push_back(folder+"*_DYJetsToLL_M-50_HT-*");
+    files.push_back(folder+"*_DYJetsToLL_*");
     files.push_back(folder+"*_ttHTobb_*");
     files.push_back(folder+"*_TTTT_*");
     files.push_back(folder+"*_TTWJetsToLNu_*");
@@ -100,6 +101,17 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
     files.push_back(folder+"*_TTZToQQ_*");
     files.push_back(folder+"*_TTZToLLNuNu_*");
     files.push_back(folder+"*_WZTo1L1Nu2Q_*");
+    files.push_back(folder+"*_WH_*");
+    files.push_back(folder+"*_WZTo1L3Nu_*");
+    files.push_back(folder+"*_TTGJets_*");
+    files.push_back(folder+"*_WZTo2L2Q_*");
+    files.push_back(folder+"*_ZJetsToNuNu_*");
+    files.push_back(folder+"*_ZH_*");
+    files.push_back(folder+"*_ZZ_*");
+    files.push_back(folder+"*_WZTo3LNu_*");
+    files.push_back(folder+"*_WWTo2L2Nu_*");
+    files.push_back(folder+"*_WWToLNuQQ_*");
+    files.push_back(folder+"*_ST_*");
     /*
     files.push_back(folder+"*_DYJetsToLL_*");
     files.push_back(folder+"*_TTTT_*");
@@ -164,7 +176,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
    
     // cut values
     const float ht0lepCut    = 1500;
-    const float ht1lepCut    = 1000;
+    const float ht1lepCut    = 1200;
 
     const float mjVLowCut    = 300;
     const float mjLowCut     = 500;
@@ -178,7 +190,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
     const float njetsHighCut = 10; 
     const float njetsInfCut  = 999; 
 
-    //const float nbVLowCut = 0;
+    const float nbVLowCut = 0;
     const float nbLowCut = 1;
     const float nbMedCut = 2;
     const float nbHighCut = 3;
@@ -391,8 +403,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsVLowCut;
         njetsHigh   = njetsVLowCut+1;
-        nbLow       = nbLowCut;
-        nbHigh      = nbMedCut;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
     }
     else if(bin==23)
     {
@@ -400,8 +412,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsLowCut;
         njetsHigh   = njetsLowCut+1;
-        nbLow       = nbLowCut;
-        nbHigh      = nbMedCut;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
     }
     else if(bin==24)
     {
@@ -409,8 +421,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsMedCut;
         njetsHigh   = njetsInfCut;
-        nbLow       = nbLowCut;
-        nbHigh      = nbMedCut;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
     }
     else if(bin==25)
     {
@@ -418,8 +430,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsVLowCut;
         njetsHigh   = njetsVLowCut+1;
-        nbLow       = nbMedCut;
-        nbHigh      = nbHighCut;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
     }
     else if(bin==26)
     {
@@ -427,8 +439,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsLowCut;
         njetsHigh   = njetsLowCut+1;
-        nbLow       = nbMedCut;
-        nbHigh      = nbHighCut;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
     }
     else if(bin==27)
     {
@@ -436,10 +448,37 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         ht          = ht1lepCut;
         njetsLow    = njetsMedCut;
         njetsHigh   = njetsInfCut;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
+    }
+    else if(bin==28)
+    {
+	nleps       = 1;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut;
+        njetsHigh   = njetsVLowCut+1;
         nbLow       = nbMedCut;
         nbHigh      = nbHighCut;
     }
-    else if(bin==28)
+    else if(bin==29)
+    {
+	nleps       = 1;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut;
+        njetsHigh   = njetsLowCut+1;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
+    }
+    else if(bin==30)
+    {
+	nleps       = 1;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
+    }
+    else if(bin==31)
     {
 	nleps       = 1;
         ht          = ht1lepCut;
@@ -448,7 +487,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         nbLow       = nbHighCut;
         nbHigh      = nbVHighCut;
     }
-    else if(bin==29)
+    else if(bin==32)
     {
 	nleps       = 1;
         ht          = ht1lepCut;
@@ -457,7 +496,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         nbLow       = nbHighCut;
         nbHigh      = nbVHighCut;
     }
-    else if(bin==30)
+    else if(bin==33)
     {
 	nleps       = 1;
         ht          = ht1lepCut;
@@ -466,7 +505,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         nbLow       = nbHighCut;
         nbHigh      = nbVHighCut;
     }
-    else if(bin==31)
+    else if(bin==34)
     {
 	nleps       = 1;
         ht          = ht1lepCut;
@@ -475,7 +514,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         nbLow       = nbVHighCut;
         nbHigh      = nbInfCut;
     }
-    else if(bin==32)
+    else if(bin==35)
     {
 	nleps       = 1;
         ht          = ht1lepCut;
@@ -484,11 +523,147 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
         nbLow       = nbVHighCut;
         nbHigh      = nbInfCut;
     }
-    else if(bin==33)
+    else if(bin==36)
     {
 	nleps       = 1;
         ht          = ht1lepCut;
         njetsLow    = njetsMedCut;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbVHighCut;
+        nbHigh      = nbInfCut;
+    }
+    //nleps = 0
+    else if(bin==37)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
+    }
+    else if(bin==38)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
+    }
+    else if(bin==39)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbVLowCut;
+        nbHigh      = nbLowCut;
+    }
+    else if(bin==40)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
+    }
+    else if(bin==41)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
+    }
+    else if(bin==42)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbLowCut;
+        nbHigh      = nbMedCut;
+    }
+    else if(bin==43)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
+    }
+    else if(bin==44)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
+    }
+    else if(bin==45)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbMedCut;
+        nbHigh      = nbHighCut;
+    }
+    else if(bin==46)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
+        nbLow       = nbHighCut;
+        nbHigh      = nbVHighCut;
+    }
+    else if(bin==47)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbHighCut;
+        nbHigh      = nbVHighCut;
+    }
+    else if(bin==48)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
+        njetsHigh   = njetsInfCut;
+        nbLow       = nbHighCut;
+        nbHigh      = nbVHighCut;
+    }
+    else if(bin==49)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsVLowCut+2;
+        njetsHigh   = njetsVLowCut+3;
+        nbLow       = nbVHighCut;
+        nbHigh      = nbInfCut;
+    }
+    else if(bin==50)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsLowCut+2;
+        njetsHigh   = njetsLowCut+3;
+        nbLow       = nbVHighCut;
+        nbHigh      = nbInfCut;
+    }
+    else if(bin==51)
+    {
+	nleps       = 0;
+        ht          = ht1lepCut;
+        njetsLow    = njetsMedCut+2;
         njetsHigh   = njetsInfCut;
         nbLow       = nbVHighCut;
         nbHigh      = nbInfCut;

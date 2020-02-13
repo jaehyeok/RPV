@@ -40,7 +40,7 @@ int main()
     cout << " .. I am making yield table " << endl; 
     cout << " ........................... "<< endl; 
 
-    TString bin[34] = {
+    TString bin[52] = {
         // control regions
         "0-lepton,HT>1500,4#leq N_{jets}#leq5,500<MJ<800",
         "0-lepton,HT>1500,6#leq N_{jets}#leq7,500<MJ<800",
@@ -70,6 +70,9 @@ int main()
         "1-lepton,HT>1200,6#leq N_{jets}#leq7,MJ>100",
         "1-lepton,HT>1200,N_{jets}#geq8,MJ>1000",
 	// Njets-Nb basis
+	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=0",
+	"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
+	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=0",
 	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=1",
 	"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1",
 	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=1",
@@ -82,9 +85,24 @@ int main()
 	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
 	"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",
 	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4"
+	"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
+	"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=0",
+	"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=0",
+	"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1",
+	"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=1",
+	"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=1",
+	"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
+	"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=2",
+	"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=2",
+	"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
+	"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=3",
+	"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=3",
+	"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",
+	"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}#geq4",
+	"0-lepton,HT>1200,N_{jets}#geq10,N_{b}#geq4"
     };
 
-    TString binLatex[34] = {
+    TString binLatex[52] = {
         // control regions
         "N_{leps}=0,H_{T}>1500~\\textrm{GeV},4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\textrm{GeV}",
         "N_{leps}=0,H_{T}>1500~\\textrm{GeV},6\\leq N_{jets}\\leq7, 500<M_{J}<800~\\textrm{GeV}",
@@ -114,6 +132,9 @@ int main()
         "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,M_{J}>1000~\\textrm{GeV}",
         "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,M_{J}>1000~\\textrm{GeV}",
 	// Njets-Nb basis
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=0",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=0",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,N_{b}=0",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=1",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=1",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,N_{b}=1",    
@@ -125,16 +146,31 @@ int main()
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=3",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}\\geq4",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}\\geq4",    
-	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}\\geq4"    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}\\geq4",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=0",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=0",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq10,N_{b}=0",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=1",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=1",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq10,N_{b}=1",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=2",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=2",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}=2",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=3",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=3",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}=3",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}\\geq4",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}\\geq4",    
+	"N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}\\geq4"    
     };
 
     TFile* infile  = TFile::Open("variations/output_nominal_newnt.root", "READ");
   
-    float data[34][3], qcd[34][3], ttbar[34][3], wjets[34][3], other[34][3],
-          sig1500[34][3], sig1600[34][3], sig1700[34][3], sig1800[34][3], sig1900[34][3], 
-          data_err[34][3], qcd_err[34][3], ttbar_err[34][3], wjets_err[34][3], other_err[34][3],
-          sig1500_err[34][3], sig1600_err[34][3], sig1700_err[34][3], sig1800_err[34][3], sig1900_err[34][3];
-    for(int ibin=0; ibin<34; ibin++)  
+    float data[52][3], qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3],
+          sig1500[52][3], sig1600[52][3], sig1700[52][3], sig1800[52][3], sig1900[52][3], 
+          data_err[52][3], qcd_err[52][3], ttbar_err[52][3], wjets_err[52][3], other_err[52][3],
+          sig1500_err[52][3], sig1600_err[52][3], sig1700_err[52][3], sig1800_err[52][3], sig1900_err[52][3];
+    for(int ibin=0; ibin<52; ibin++)  
     { 
         //if(ibin>=6 && ibin<=9) continue;
         for(int inb=0; inb<3; inb++) 
@@ -163,7 +199,7 @@ int main()
         }
     }
     //
-    for(int ibin=22; ibin<34; ibin++) 
+    for(int ibin=22; ibin<52; ibin++) 
     {
         //if(ibin>=6 && ibin<=9) continue;
         //TDirectory* dir = infile->GetDirectory(Form("bin%i", ibin));
@@ -199,7 +235,7 @@ int main()
     }
         
     float sig1500sum(0), sig1600sum(0), sig1700sum(0), sig1800sum(0), sig1900sum(0);
-    for(int ibin=22; ibin<34; ibin++) 
+    for(int ibin=22; ibin<52; ibin++) 
     {
       //if(ibin>5 && ibin<10) continue; // skip low MJ bins 
       for(int inb=0; inb<3; inb++)  
@@ -215,7 +251,7 @@ int main()
     // -----------------------------------------------------
     // table for AN
     // -----------------------------------------------------
-    for(int ibin=22; ibin<34; ibin++) 
+    for(int ibin=22; ibin<52; ibin++) 
     {
 
        //if(ibin>5 && ibin<10) continue; // skip low MJ bins
@@ -279,9 +315,9 @@ int main()
     // -----------------------------------------------------
 
     // Get pre-fit errors
-    float err[4][34][3];
+    float err[4][52][3];
 
-    for(int ibin=22; ibin<34; ibin++)
+    for(int ibin=22; ibin<52; ibin++)
     {
         for(int inb=0; inb<3; inb++)
         {
@@ -294,7 +330,7 @@ int main()
 
     // Get relative error using up variations
     // using both up and down is be better way, but should be very close
-    for(int ibin=22; ibin<34; ibin++) 
+    for(int ibin=22; ibin<52; ibin++) 
     {
         
         if(ibin>=6 && ibin<=9) continue;
@@ -470,7 +506,7 @@ int main()
     //
     // 1-lepton
     //
-    int tablebin_1lep[12]={22,23,24,25,26,27,28,29,30,31,32,33};
+    int tablebin_1lep[30]={22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51};
     cout << "\\begin{table}" << endl;
     cout << "\\centering" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
@@ -478,7 +514,7 @@ int main()
     cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1600\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
-    for(int ibin=22; ibin<34; ibin++)
+    for(int ibin=22; ibin<52; ibin++)
     { 
         int tablebin=tablebin_1lep[ibin-22];
         

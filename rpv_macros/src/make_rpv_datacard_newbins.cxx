@@ -101,20 +101,22 @@ int main(int argc, char *argv[])
   std::vector<std::string> bins_sr_highnj_vhighmj = {"bin19", "bin21"};
   
   std::vector<std::string> bins_cr_nb1_lownjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb2_lownjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb3_lownjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb4_lownjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb1_mednjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb2_mednjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb3_mednjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb4_mednjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb1_highnjets   = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb2_highnjets   = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb3_highnjets   = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb4_highnjets   = {"bin40","bin25"}; 
-  std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
+  std::vector<std::string> bins_cr_nb2_lownjets    = {"bin43","bin28"}; 
+  std::vector<std::string> bins_cr_nb3_lownjets    = {"bin46","bin31"}; 
+  std::vector<std::string> bins_cr_nb4_lownjets    = {"bin49","bin34"}; 
+  std::vector<std::string> bins_cr_nb1_mednjets    = {"bin41","bin26"}; 
+  std::vector<std::string> bins_cr_nb2_mednjets    = {"bin44","bin29"}; 
+  std::vector<std::string> bins_cr_nb3_mednjets    = {"bin47","bin32"}; 
+  std::vector<std::string> bins_cr_nb4_mednjets    = {"bin50","bin35"}; 
+  std::vector<std::string> bins_cr_nb1_highnjets   = {"bin42","bin27"}; 
+  std::vector<std::string> bins_cr_nb2_highnjets   = {"bin45","bin30"}; 
+  std::vector<std::string> bins_cr_nb3_highnjets   = {"bin48","bin33"}; 
+  std::vector<std::string> bins_cr_nb4_highnjets   = {"bin51","bin36"}; 
+  
+  std::vector<std::string> bins_all = {};
+  //std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
   //std::vector<std::string> bins_all = {"bin2", "bin5"};
-
+  /*
   if(includeLowMJ) {
     bins_all.push_back("bin6");
     bins_all.push_back("bin7");
@@ -135,7 +137,8 @@ int main(int argc, char *argv[])
     bins_all.push_back("bin20");
     bins_all.push_back("bin21");
   }
-
+  */
+  /*
   bins.push_back(bins_cr_lowmj);
   bins.push_back(bins_cr_highmj);
   if(cardType=="default" || cardType=="mconly") {
@@ -146,6 +149,19 @@ int main(int argc, char *argv[])
       bins.push_back(bins_sr_highnj_highmj); 
       bins.push_back(bins_sr_highnj_vhighmj); 
   }
+  */
+  bins.push_back(bins_cr_nb1_lownjets);
+  bins.push_back(bins_cr_nb2_lownjets);
+  bins.push_back(bins_cr_nb3_lownjets);
+  bins.push_back(bins_cr_nb4_lownjets);
+  bins.push_back(bins_cr_nb1_mednjets);
+  bins.push_back(bins_cr_nb2_mednjets);
+  bins.push_back(bins_cr_nb3_mednjets);
+  bins.push_back(bins_cr_nb4_mednjets);
+  bins.push_back(bins_cr_nb1_highnjets);
+  bins.push_back(bins_cr_nb2_highnjets);
+  bins.push_back(bins_cr_nb3_highnjets);
+  bins.push_back(bins_cr_nb4_highnjets);
   bins.push_back(bins_all);
  
   // include pdf syst to the shapeSysts
@@ -175,7 +191,7 @@ int main(int argc, char *argv[])
   filename+=gluinoMass;
   if(cardType=="control") filename+="_control";
   else if(cardType=="mconly") filename+="_mconly";
-
+  /*
   if(ipair==0) filename+="_cr_lowmj";
   if(ipair==1) filename+="_cr_highmj"; 
   if(cardType!="control") 
@@ -186,7 +202,21 @@ int main(int argc, char *argv[])
       if(ipair==5) filename+="_sr_highnj_lowmj";
       if(ipair==6) filename+="_sr_highnj_highmj";
       if(ipair==7) filename+="_sr_highnj_vhighmj";
-  } 
+  }
+  */
+  if(ipair==0) filename+="_cr_nb1_lownjets";
+  if(ipair==0) filename+="_cr_nb2_lownjets";
+  if(ipair==0) filename+="_cr_nb3_lownjets";
+  if(ipair==0) filename+="_cr_nb4_lownjets";
+  if(ipair==0) filename+="_cr_nb1_mednjets";
+  if(ipair==0) filename+="_cr_nb2_mednjets";
+  if(ipair==0) filename+="_cr_nb3_mednjets";
+  if(ipair==0) filename+="_cr_nb4_mednjets";
+  if(ipair==0) filename+="_cr_nb1_highnjets";
+  if(ipair==0) filename+="_cr_nb2_highnjets";
+  if(ipair==0) filename+="_cr_nb3_highnjets";
+  if(ipair==0) filename+="_cr_nb4_highnjets";
+ 
   if(!includePDFUncert) filename+="_nopdf";
 
   if(argc>3){

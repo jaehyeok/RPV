@@ -60,12 +60,12 @@ int main(int argc, char *argv[])
     cout << endl; 
   }
  // Define samples
-   TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
-   TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
-   TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
-   //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
-   //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
-   //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
+   //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
+   //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
+   //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
+   TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
+   TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
+   TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
    //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
    //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
    //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";

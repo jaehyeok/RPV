@@ -9,6 +9,7 @@
 #include "TGraphErrors.h"
 #include "TStyle.h"
 #include "TMath.h"
+#include "TList.h"
 
 #include "small_tree_rpv.hpp"
 #include "utilities.hpp"
@@ -17,17 +18,21 @@
 
 using namespace std;
 
-void getSyst(small_tree_rpv &trees, TString variations, TFile *f, TString procname);
+vector<TH1F *> getSyst(small_tree_rpv &trees, TString variations, TFile *f, TString procname, TH1F *hst[]);
 double addError(double error, double added_error);
 double divideErrors(double x, double y, double dx, double dy);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
-float lumi = 35.8; // fb-1
+float lumi = 137; // fb-1
 const int nbins = 22;
 int w_pdf_index = 0;
 
+
 int main(int argc, char *argv[])
 {
+  TH1F *data_obs[nbins];
+  TH1F *epty[nbins];
+
   gErrorIgnoreLevel=kError+1;
 
   cout << argv[0] << endl;
@@ -117,31 +122,54 @@ int main(int argc, char *argv[])
   // Depending on the process, turn on/off variation
   
   // data 
-  if(variations=="nominal") getSyst(data,  variations, f, "data_obs");
+  cout<<"data"<<endl;
+  if(variations=="nominal") getSyst(data,  variations, f, "data_obs", epty);
   
   // loop over a tree and get up/dawn shapes for all bins at once 
-  getSyst(qcd,       variations, f, "qcd");
-  getSyst(ttbar,     variations, f, "ttbar");
-  getSyst(wjets,     variations, f, "wjets");
-  getSyst(other,     variations, f, "other");
-  getSyst(rpv_m1000, variations, f, "signal_M1000");
-  getSyst(rpv_m1100, variations, f, "signal_M1100");
-  getSyst(rpv_m1200, variations, f, "signal_M1200");
-  getSyst(rpv_m1300, variations, f, "signal_M1300");
-  getSyst(rpv_m1400, variations, f, "signal_M1400");
-  getSyst(rpv_m1500, variations, f, "signal_M1500");
-  getSyst(rpv_m1600, variations, f, "signal_M1600");
-  getSyst(rpv_m1700, variations, f, "signal_M1700");
-  getSyst(rpv_m1800, variations, f, "signal_M1800");
-  getSyst(rpv_m1900, variations, f, "signal_M1900");
-  getSyst(rpv_m2000, variations, f, "signal_M2000");
+  cout<<"mc"<<endl;
+  vector<TH1F*> h_qcd;
+  vector<TH1F*> h_ttbar;
+  vector<TH1F*> h_wjets;
+  vector<TH1F*> h_other;
 
+  h_qcd = getSyst(qcd,       variations, f, "qcd", data_obs);
+  h_ttbar = getSyst(ttbar,     variations, f, "ttbar", data_obs);
+  h_wjets = getSyst(wjets,     variations, f, "wjets", data_obs);
+  h_other = getSyst(other,     variations, f, "other", data_obs);
+  getSyst(rpv_m1000, variations, f, "signal_M1000", epty);
+  getSyst(rpv_m1100, variations, f, "signal_M1100", epty);
+  getSyst(rpv_m1200, variations, f, "signal_M1200", epty);
+  getSyst(rpv_m1300, variations, f, "signal_M1300", epty);
+  getSyst(rpv_m1400, variations, f, "signal_M1400", epty);
+  getSyst(rpv_m1500, variations, f, "signal_M1500", epty);
+  getSyst(rpv_m1600, variations, f, "signal_M1600", epty);
+  getSyst(rpv_m1700, variations, f, "signal_M1700", epty);
+  getSyst(rpv_m1800, variations, f, "signal_M1800", epty);
+  getSyst(rpv_m1900, variations, f, "signal_M1900", epty);
+  getSyst(rpv_m2000, variations, f, "signal_M2000", epty);
+  f->cd();
+  for(int ibin=0; ibin<nbins; ibin++)
+  {
+      data_obs[ibin] = static_cast<TH1F*>(h_qcd.at(ibin)->Clone("data_obs"));
+      data_obs[ibin]->Add(h_ttbar.at(ibin));
+      data_obs[ibin]->Add(h_wjets.at(ibin));
+      data_obs[ibin]->Add(h_other.at(ibin));
+      gDirectory->cd("/");
+      TString directory(Form("bin%d", ibin));
+      if(!gDirectory->GetDirectory(directory)) gDirectory->mkdir(directory);
+      gDirectory->cd(directory);
+      data_obs[ibin]->SetTitle("data_obs");
+      data_obs[ibin]->SetName("data_obs");
+      data_obs[ibin]->Write();
+      f->Print();
+  }
   // close output root file
   f->Close();
 } 
 
-void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procname)
+vector<TH1F*> getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procname, TH1F *hst[])
 {
+    vector<TH1F*> ret;
 
     cout << "Running syst: " << variations << endl;  
     //TString procname = "qcd";
@@ -566,11 +594,20 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         }
 */       
         //
-        if(variations=="nominal")
+	cout<<"aaa"<<endl;
+        if(procname.Data()=="data_obs"){
+	    continue;
+	}
+	cout<<"bbb"<<endl;
+	if(variations=="nominal")
         {
             h1nominal[ibin]->SetTitle(procname.Data());
             h1nominal[ibin]->SetName(procname.Data());
             h1nominal[ibin]->Write();
+	    cout<<"ccc"<<endl;
+            TH1F *hist = h1nominal[ibin];
+	    ret.push_back(hist);
+	    cout<<"ddd"<<endl;
         }
         else
         {
@@ -582,7 +619,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             h1down[ibin]->Write();
         }
     }
-    f->Print(); 
+    f->Print();
+    return ret;
 }
 
 //void fillTH1F(TH1F* &h1, float var, float weight)

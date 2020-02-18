@@ -35,7 +35,7 @@ void drawHeader()
   lat->SetTextSize(0.038);
   lat->DrawLatexNDC(0.12, 0.93, "CMS #font[52]{Preliminary}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.66, 0.93, "35 fb^{-1} (13 TeV)");
+  lat->DrawLatexNDC(0.66, 0.93, "137 fb^{-1} (13 TeV)");
 }
 
 void pulls()
@@ -79,7 +79,7 @@ void pulls()
 
 }
 
-void limit()
+void limits()
 {
   std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
@@ -87,7 +87,7 @@ void limit()
   std::vector<float> dummy;
 
   for(unsigned int i=0; i<gluinoMasses.size(); i++) {
-    TString filename(Form("higgsCombineM%d.Asymptotic.mH120.root", static_cast<int>(gluinoMasses.at(i))));
+    TString filename(Form("higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
     TFile *f = TFile::Open(filename);
     if(!f->IsOpen()) {
       std::cout << "Could not open file " << filename << std::endl;

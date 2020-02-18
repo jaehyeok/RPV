@@ -23,7 +23,7 @@ double divideErrors(double x, double y, double dx, double dy);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
 float lumi = 35.8; // fb-1
-const int nbins = 37;
+const int nbins = 52;
 int w_pdf_index = 0;
 
 int main(int argc, char *argv[])
@@ -60,12 +60,15 @@ int main(int argc, char *argv[])
     cout << endl; 
   }
  // Define samples
+   //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
+   //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
+   //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
    TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
    TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
-// TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/ucsb_babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
-// TString folder_dat = "/xrootd_user/jaehyeok/xrootd/ucsb_babies/2017_02_14/data/merged_rpvdata_rpvfit/";
-//  TString folder_sig = "/xrootd_user/jaehyeok/xrootd/ucsb_babies/2017_03_21/mc/T1tbs/";
-    TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
+   TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
+   //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
+   //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
+   //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
 //  TString folder_bkg = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_27/mc/merged_rpvmc_rpvfit/";
 //  TString folder_dat = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
 //  TString folder_sig = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_10/mc/T1tbs/";

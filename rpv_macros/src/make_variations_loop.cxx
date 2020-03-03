@@ -151,11 +151,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
     TString nominalname = procname+"_"+variations;
     TString upname      = nominalname+"Up";
     TString downname    = nominalname+"Down";
-        
+
     // Get QCD flavor weights/systematics
     TFile *csv_weight_file = TFile::Open("data/csvfit_low_njet.root");
     TH1F *csv_weight = static_cast<TH1F*>(csv_weight_file->Get("csv_weight"));
-
     TFile *csv_weight_file_highnjet = TFile::Open("data/csvfit_high_njet.root");
     TH1F *csv_weight_highnjet = static_cast<TH1F*>(csv_weight_file_highnjet->Get("csv_weight"));
 

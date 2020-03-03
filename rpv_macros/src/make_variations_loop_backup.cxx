@@ -23,7 +23,7 @@ double addError(double error, double added_error);
 double divideErrors(double x, double y, double dx, double dy);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
-float lumi = 35.8; // fb-1
+float lumi = 137; // fb-1
 const int nbins = 22;
 int w_pdf_index = 0;
 

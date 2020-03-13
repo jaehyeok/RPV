@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 
   // Depending on the process, turn on/off variation
   
-  // data 
+  // data
   if(variations=="nominal") getSyst(data,  variations, f, "data_obs");
   
   // loop over a tree and get up/dawn shapes for all bins at once 

@@ -551,7 +551,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             {
                 if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                 {
-                    h1nominal[ibin]->Fill(tree.mj12()>1399.999?1399.999:tree.mj12(), nominalweight);  // nominal  
+		    float mjmax = 1399.9999;
+		    if(tree.nleps()==0) mjmax = 599.9999;
+                    h1nominal[ibin]->Fill(tree.mj12()>mjmax?mjmax:tree.mj12(), nominalweight);  // nominal  
                     h1up[ibin]->Fill(tree.mj12()>1399.999?1399.999:tree.mj12(), upweight);            // up  
                     h1down[ibin]->Fill(tree.mj12()>1399.999?1399.999:tree.mj12(), downweight);        // down 
                 }

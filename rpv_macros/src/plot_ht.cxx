@@ -64,7 +64,6 @@ int main(){
 		tree[i]->SetBranchAddress("weight",&weight);
 
 		h1[i] = new TH1F(Form("h1_%d",i),Form("TTJets_HT"),100,1100,7000);
-		tree[i]->Project(Form("h1_%d",i),"ht");
 
 		for(int j=0; j<tree[i]->GetEntries();j++){
 			tree[i]->GetEntry(j);

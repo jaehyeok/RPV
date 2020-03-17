@@ -67,9 +67,10 @@ int main(){
 
 		for(int j=0; j<tree[i]->GetEntries();j++){
 			tree[i]->GetEntry(j);
-			h1[i]->Fill(ht,weight);
+			h1[i]->Fill(ht,w_lumi);
 		}
 
+		cout<<"weight: "<<weight<<", w_isr: "<<w_isr_tr<<", w_lumi: "<<w_lumi<<endl;
 		if(i==0)h1[i]->SetLineColor(kRed);
 		else if(i==1)h1[i]->SetLineColor(kBlue);
 		else if(i==2)h1[i]->SetLineColor(kGreen);
@@ -90,5 +91,5 @@ int main(){
 		else if(i>0)h1[i]->Draw("histsame");
 		l->Draw();
 	}
-	c->SaveAs(outputdir+"TTJets_ht.png");
+	c->SaveAs(outputdir+"TTJets_ht_lumi.png");
 }

@@ -563,7 +563,9 @@ vector<TH1F*> getSyst(small_tree_rpv &tree, TString variations, TFile *f, TStrin
             {
                 if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                 {
-                    h1nominal[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), nominalweight);  // nominal  
+		    float nbmax = 1;
+		    if(tree.nleps()==1) nbmax = nBBins; 
+                    h1nominal[ibin]->Fill(tree.nbm()>nbmax?nbmax:tree.nbm(), nominalweight);  // nominal  
                     h1up[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), upweight);            // up  
                     h1down[ibin]->Fill(tree.nbm()>nBBins?nBBins:tree.nbm(), downweight);        // down 
                 }

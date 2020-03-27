@@ -181,7 +181,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
     const float mjVLowCut    = 300;
     const float mjLowCut     = 500;
     const float mjMedCut     = 800;
-    const float mjHighCut    = 1000;
+    //const float mjHighCut    = 1000;
+    const float mjHighCut    = 1100;
     const float mjInfCut     = 9999999;
     
     const float njetsVLowCut = 4;

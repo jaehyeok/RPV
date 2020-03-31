@@ -25,6 +25,7 @@ double divideErrors(double x, double y, double dx, double dy);
 float mjmin = 600;
 float mjmax = 1500;
 bool isv5 = true;
+bool nl0shape = true;
 
 float lumi = 35.8; // fb-1
 const int nbins = 52;
@@ -38,6 +39,7 @@ int main(int argc, char *argv[])
   cout << argv[1] << endl;
   //
   TString variations = "nominal";
+  TString onoff = "off";
   if(argc<2) {
     cout << "[Error] Provide name of variation" << endl; 
     return 0;
@@ -52,16 +54,27 @@ int main(int argc, char *argv[])
     }
     else 
     {
+        if(onoff=="off") nl0shape = false;
         cout << "Running variation: " << variations << endl;
     }
   }
   else 
   {
     variations = argv[1];  
-    w_pdf_index = atoi(argv[2]);  
-    cout << "Running variation: " << variations;
-    cout << " with w_pdf index " << w_pdf_index; 
-    cout << endl; 
+    if(variations=="w_pdf")
+    {
+      w_pdf_index = atoi(argv[2]);  
+      cout << "Running variation: " << variations;
+      cout << " with w_pdf index " << w_pdf_index; 
+      cout << endl; 
+    }
+    else
+    {
+        onoff=argv[2];
+        if(onoff=="off") nl0shape = false; 
+        cout << "Running variation: " << variations << endl;
+	cout << "0 Lepton shape:    " << (nl0shape?"on":"off") << endl;
+    }
   }
  // Define samples
    //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
@@ -131,7 +144,9 @@ int main(int argc, char *argv[])
   small_tree_rpv rpv_m2000((static_cast<std::string>(s_rpv_m2000.at(0))));
 
   // open output root file
-  TFile *f = new TFile(Form("variations/output_%s_newnt.root", variations.Data()), "recreate");
+  TString shape = "_nl0shape";
+  if(nl0shape == false) shape = "";
+  TFile *f = new TFile(Form("variations/output_%s_newnt%s.root", variations.Data(), shape.Data()), "recreate");
 
   // Depending on the process, turn on/off variation
   
@@ -568,7 +583,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
                 if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                 {
 		    float hmjmax = mjmax-0.001;
-		    if(tree.nleps()==0){
+		    if(tree.nleps()==0 && !nl0shape){
 			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
 		   	 //cout<<hmjmax<<endl;
 		    }

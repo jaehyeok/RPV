@@ -270,6 +270,23 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
     // loop over tree 
     for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++)
     {
+	float progress = 0.0;
+	if(ientry%1000 == 0){
+            progress = float(ientry)/float(tree.GetEntries());
+	    int barWidth = 70;
+	    TString space = "";
+	    for(int sp = 0 ; sp < 5-strlen(procname.Data()) ; sp++) space = space + " ";
+	    cout << "Process name      : " << procname.Data() << space.Data() <<  "[";
+	    int pos = barWidth*progress;
+	    for(int i = 0; i < barWidth;++i){
+	      if(i < pos) cout << "■";
+	      else if(i==pos) cout << " ";
+	      else cout << " ";
+	    } 
+            cout<<"]";
+	    cout << " " << ientry << " / " << tree.GetEntries() << "\r";
+	    cout.flush();
+        }
         tree.GetEntry(ientry); 
 	int nbm_csv=0;
 	for(unsigned int k=0; k<tree.jets_pt().size(); k++)

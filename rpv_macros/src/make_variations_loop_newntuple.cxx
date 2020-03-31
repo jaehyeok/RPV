@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     else 
     {
         if(onoff=="off") nl0shape = false;
-        cout << "Running variation: " << variations << endl;
+        cout << "Running variation : " << variations << endl;
     }
   }
   else 
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     if(variations=="w_pdf")
     {
       w_pdf_index = atoi(argv[2]);  
-      cout << "Running variation: " << variations;
+      cout << "Running variation : " << variations << endl;
       cout << " with w_pdf index " << w_pdf_index; 
       cout << endl; 
     }
@@ -72,8 +72,8 @@ int main(int argc, char *argv[])
     {
         onoff=argv[2];
         if(onoff=="off") nl0shape = false; 
-        cout << "Running variation: " << variations << endl;
-	cout << "0 Lepton shape:    " << (nl0shape?"on":"off") << endl;
+        cout << "Running variation : " << variations << endl;
+	cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
     }
   }
  // Define samples
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procname)
 {
 
-    cout << "Running syst: " << variations << endl;  
+    cout << "Running syst      : " << variations << endl;  
     //TString procname = "qcd";
     TString nominalname = procname+"_"+variations;
     TString upname      = nominalname+"Up";

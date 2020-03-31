@@ -22,6 +22,10 @@ double addError(double error, double added_error);
 double divideErrors(double x, double y, double dx, double dy);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
+float mjmin = 600;
+float mjmax = 1500;
+bool isv5 = true;
+
 float lumi = 35.8; // fb-1
 const int nbins = 52;
 int w_pdf_index = 0;
@@ -63,9 +67,12 @@ int main(int argc, char *argv[])
    //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
    //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
    //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
-   TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_rpvfitnbge0/";
-   TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_rpvfitnbge0/";
-   TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_rpvfitnbge0/";
+   //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_rpvfitnbge0/";
+   //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_rpvfitnbge0/";
+   //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_rpvfitnbge0/";
+   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0/";
+   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0/";
+   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0/";
    //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_02_21/merged_rpvfitnbge0/";
    //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_02_21/merged_rpvfitnbge0/";
    //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_02_21/merged_rpvfitnbge0/";
@@ -79,24 +86,24 @@ int main(int argc, char *argv[])
 //  TString folder_dat = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_02_14/data/merged_rpvdata_rpvfit/";
 //  TString folder_sig = "/Users/jaehyeok/Research/cms/UCSB/babies/2017_01_10/mc/T1tbs/";
 
-  vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
+  vector<TString> s_jetht = getRPVProcess(folder_dat,"data",isv5);
 
-  vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
-  vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar");
-  vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
-  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
+  vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd",isv5);
+  vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar",isv5);
+  vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets",isv5);
+  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public",isv5);
   
-  vector<TString> s_rpv_m1000 = getRPVProcess(folder_sig,"rpv_m1000");
-  vector<TString> s_rpv_m1100 = getRPVProcess(folder_sig,"rpv_m1100");
-  vector<TString> s_rpv_m1200 = getRPVProcess(folder_sig,"rpv_m1200");
-  vector<TString> s_rpv_m1300 = getRPVProcess(folder_sig,"rpv_m1300");
-  vector<TString> s_rpv_m1400 = getRPVProcess(folder_sig,"rpv_m1400");
-  vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
-  vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");
-  vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700");
-  vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");
-  vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900");
-  vector<TString> s_rpv_m2000 = getRPVProcess(folder_sig,"rpv_m2000");
+  vector<TString> s_rpv_m1000 = getRPVProcess(folder_sig,"rpv_m1000",isv5);
+  vector<TString> s_rpv_m1100 = getRPVProcess(folder_sig,"rpv_m1100",isv5);
+  vector<TString> s_rpv_m1200 = getRPVProcess(folder_sig,"rpv_m1200",isv5);
+  vector<TString> s_rpv_m1300 = getRPVProcess(folder_sig,"rpv_m1300",isv5);
+  vector<TString> s_rpv_m1400 = getRPVProcess(folder_sig,"rpv_m1400",isv5);
+  vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500",isv5);
+  vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600",isv5);
+  vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700",isv5);
+  vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800",isv5);
+  vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900",isv5);
+  vector<TString> s_rpv_m2000 = getRPVProcess(folder_sig,"rpv_m2000",isv5);
   
   small_tree_rpv data((static_cast<std::string>(s_jetht.at(0))));
   
@@ -239,7 +246,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         //h1nominal[ibin]    = new TH1F(nominalname.Data(),  nominalname.Data(), MjBin+1, 0, MjBin+1);
         //h1up[ibin]         = new TH1F(upname.Data(),       upname.Data(),      MjBin+1, 0, MjBin+1);
         //h1down[ibin]       = new TH1F(downname.Data(),     downname.Data(),    MjBin+1, 0, MjBin+1);
-        h1nominal[ibin]    = new TH1F(Form("%s_bin%i",nominalname.Data(),ibin),    Form("%s_bin%i",nominalname.Data(),ibin), MjBin+1, 500, 1400);
+        h1nominal[ibin]    = new TH1F(Form("%s_bin%i",nominalname.Data(),ibin),    Form("%s_bin%i",nominalname.Data(),ibin), MjBin+1, mjmin, mjmax);
         h1up[ibin]         = new TH1F(Form("%s_bin%i",upname.Data(),ibin),         Form("%s_bin%i",upname.Data(),ibin), MjBin+1, 500, 1400);
         h1down[ibin]       = new TH1F(Form("%s_bin%i",downname.Data(),ibin),       Form("%s_bin%i",downname.Data(),ibin), MjBin+1, 500, 1400);
     }
@@ -560,15 +567,18 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             {
                 if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                 {
-		    float mjmax = 1399.9999;
-		    if(tree.nleps()==0)mjmax = 599.9999;
+		    float hmjmax = mjmax-0.001;
+		    if(tree.nleps()==0){
+			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
+		   	 //cout<<hmjmax<<endl;
+		    }
                     h1nominal[ibin]->Fill(tree.mj12()>mjmax?mjmax:tree.mj12(), nominalweight);  // nominal  
                     h1up[ibin]->Fill(tree.mj12()>1399.999?1399.999:tree.mj12(), upweight);            // up  
                     h1down[ibin]->Fill(tree.mj12()>1399.999?1399.999:tree.mj12(), downweight);        // down 
                 }
             }
         }
-
+    
     } //for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++) 
 
     //

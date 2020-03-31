@@ -177,7 +177,8 @@ std::vector<TString> getRPVProcess(TString folder, TString process, bool isv5 = 
 			   files.push_back(folder+"*_TTJets_Tune*");
 			   */
 			//			files.push_back(folder+"*_TT_*"); //v4
-			files.push_back(folder+"TT_*"); //v5
+			files.push_back(folder+"TT_*"); //v5 powheg
+			//files.push_back(folder+"TTJets_HT*"); //v5 MG
 			//std::cout<<folder+"TT_*"<<std::endl;
 		}
 		//Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection

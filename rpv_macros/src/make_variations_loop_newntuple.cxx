@@ -27,7 +27,7 @@ float mjmax = 1500;
 bool isv5 = true;
 bool nl0shape = true;
 
-float lumi = 35.8; // fb-1
+float lumi = 137; // fb-1
 const int nbins = 52;
 int w_pdf_index = 0;
 
@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
   //
   TString variations = "nominal";
   TString onoff = "off";
+  cout << "Luminosity        : " << lumi << "fb-1" << endl;
   if(argc<2) {
     cout << "[Error] Provide name of variation" << endl; 
     return 0;

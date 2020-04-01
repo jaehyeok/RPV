@@ -4,6 +4,10 @@
 #include <cmath>
 #include <stdlib.h>
 
+#include <sys/ioctl.h>
+#include <stdio.h>
+#include <unistd.h>
+
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TGraphErrors.h"
@@ -17,9 +21,12 @@
 
 using namespace std;
 
+struct winsize w;
+
 void getSyst(small_tree_rpv &trees, TString variations, TFile *f, TString procname);
 double addError(double error, double added_error);
 double divideErrors(double x, double y, double dx, double dy);
+TString color(TString procname);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
 float mjmin = 600;
@@ -31,9 +38,22 @@ float lumi = 137; // fb-1
 const int nbins = 52;
 int w_pdf_index = 0;
 
+TString red = "\033[0;31m";
+TString green = "\033[1;32m";
+TString blue = "\033[1;34m";
+TString yellow = "\033[1;33m";
+TString gray = "\033[0;90m";
+TString cyan = "\033[0;36m";
+TString reset = "\033[0m";
+
 int main(int argc, char *argv[])
 {
   gErrorIgnoreLevel=kError+1;
+
+  ioctl(0,TIOCGWINSZ, &w);
+  int cols = w.ws_col;
+
+  cout << cols << endl;
 
   cout << argv[0] << endl;
   cout << argv[1] << endl;
@@ -74,7 +94,8 @@ int main(int argc, char *argv[])
         onoff=argv[2];
         if(onoff=="off") nl0shape = false; 
         cout << "Running variation : " << variations << endl;
-	cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
+	cout << "0 Lepton shape    : " << (nl0shape?"on":"off");
+	cout << endl;
     }
   }
  // Define samples
@@ -177,6 +198,8 @@ int main(int argc, char *argv[])
 
 void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procname)
 {
+    ioctl(0,TIOCGWINSZ, &w);
+    int cols = w.ws_col;
 
     cout << "Running syst      : " << variations << endl;  
     //TString procname = "qcd";
@@ -271,20 +294,28 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
     for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++)
     {
 	float progress = 0.0;
-	if(ientry%1000 == 0){
-            progress = float(ientry)/float(tree.GetEntries());
-	    int barWidth = 70;
+	if(ientry%71 == 0||ientry+1 == tree.GetEntries()){
+            ioctl(0,TIOCGWINSZ, &w);
+            cols = w.ws_col;
+            //cols = 104;
+            progress = float(ientry+1)/float(tree.GetEntries());
+	    int barWidth = cols - 78;
 	    TString space = "";
-	    for(int sp = 0 ; sp < 5-strlen(procname.Data()) ; sp++) space = space + " ";
+	    for(int sp = 0 ; sp < 20-strlen(procname.Data()) ; sp++){
+              space = space + " "; 
+            }
 	    cout << "Process name      : " << procname.Data() << space.Data() <<  "[";
 	    int pos = barWidth*progress;
 	    for(int i = 0; i < barWidth;++i){
-	      if(i < pos) cout << "■";
-	      else if(i==pos) cout << " ";
+	      if(i < pos) cout << color(procname).Data() << "■";
+	      else if(i==pos) cout << "■";
 	      else cout << " ";
 	    } 
-            cout<<"]";
-	    cout << " " << ientry << " / " << tree.GetEntries() << "\r";
+            cout<<"\033[0m]";
+	    TString space2 = "";
+	    TString space3 = "";
+	    for(int sp2 = 0 ; sp2 < 22-strlen(Form("%d",ientry))-strlen(Form("%d",tree.GetEntries())) ; sp2++) space2 = space2 +" ";
+	    cout << space2.Data() << ientry+1 << " / " << tree.GetEntries() << "   (" << space3.Data() << Form("%5.1f",progress*100.0) <<"%)\r";
 	    cout.flush();
         }
         tree.GetEntry(ientry); 
@@ -652,9 +683,20 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             h1down[ibin]->Write();
         }
     }
-    f->Print(); 
+    //f->Print();
+    cout<<"\n"; 
+    for(int al=0 ; al<cols ; al++) cout << "=";
+    cout<<endl;
 }
 
+TString color(TString procname){
+	if(procname == "data_obs") return reset;
+	else if(procname == "qcd") return yellow;
+	else if(procname == "ttbar") return blue;
+	else if(procname == "wjets") return green;
+	else if(procname == "other") return gray;
+	else return red;
+}
 //void fillTH1F(TH1F* &h1, float var, float weight)
 //{
 //    if(var >= h1->GetXaxis()->GetBinUpEdge(h1->GetXaxis()->GetNbins()))

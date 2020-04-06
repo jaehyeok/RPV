@@ -97,6 +97,7 @@ int main(){
 		tree[i]->SetBranchAddress("w_isr_tr",&w_isr_tr);
 		tree[i]->SetBranchAddress("w_lumi",&w_lumi);
 		tree[i]->SetBranchAddress("weight",&weight);
+		tree[i]->SetBranchAddress("lhe_ht",&lhe_ht);
 
 		h1[i] = new TH1F(Form("h1_%d",i),Form("TTJets_HT"),25,0,5000);
 		set_histo_style(h1[i]);

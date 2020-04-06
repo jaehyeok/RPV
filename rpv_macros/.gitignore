@@ -3,7 +3,7 @@ plots/*
 run/*.exe
 archive
 txt/data_card*
-datacard*
+datacards/datacard*
 codes_backup/*
 
 # Compiled Object files

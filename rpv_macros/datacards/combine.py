@@ -4,7 +4,7 @@ import sys
 mass = sys.argv[1]
 
 if len(sys.argv) == 2:
-	g = open("result.txt","w")
+	g = open("datacards/result.txt","w")
 	dname = 'datacards/datacard_M'+str(mass)+'_mconly_'
 	for nbs in {"nb1","nb2","nb3","nb4"}:
 		for njets in {"low","med","high"}:

@@ -5,15 +5,15 @@ mass = sys.argv[1]
 
 if len(sys.argv) == 2:
 	g = open("result.txt","w")
-	dname = 'datacard_M'+str(mass)+'_mconly_'
+	dname = 'datacards/datacard_M'+str(mass)+'_mconly_'
 	for nbs in {"nb1","nb2","nb3","nb4"}:
 		for njets in {"low","med","high"}:
 			region = "sr"
 			if nbs=="nb1" or njets=="low":
 				region = "cr"
 			fname = dname+region+"_"+nbs+"_"+njets+"njets_nopdfoutput_nominal_newnt.dat"
-			os.system("./combine.sh "+fname)
-			f = open("combine.txt","r")
+			os.system("datacards/combine.sh "+fname)
+			f = open("datacards/combine.txt","r")
 			res = f.read()
 			f.close()
 			spl_res = res.split()

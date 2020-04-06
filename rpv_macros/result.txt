@@ -1,0 +1,12 @@
+nb3 / highjets : 0.2393
+nb3 / medjets : 0.5859
+nb3 / lowjets : 2.8828
+nb2 / highjets : 0.3984
+nb2 / medjets : 0.9062
+nb2 / lowjets : 4.2812
+nb1 / highjets : 0.8086
+nb1 / medjets : 1.8516
+nb1 / lowjets : 8.9062
+nb4 / highjets : 0.3008
+nb4 / medjets : 0.8477
+nb4 / lowjets : 4.6719

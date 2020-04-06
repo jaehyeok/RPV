@@ -1,4 +1,4 @@
 #!/bin/bash
 export TERM=linux
 
-combine -M AsymptoticLimits $1 > combine.txt
+combine -M AsymptoticLimits $1 > datacards/combine.txt

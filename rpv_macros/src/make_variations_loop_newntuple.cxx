@@ -29,8 +29,9 @@ double divideErrors(double x, double y, double dx, double dy);
 TString color(TString procname);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
-float mjmin = 600;
-float mjmax = 1500;
+float mjmin = 650;
+float mjmax = 1550;
+float binsize = 300;
 bool isv5 = true;
 bool nl0shape = true;
 
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
   ioctl(0,TIOCGWINSZ, &w);
   int cols = w.ws_col;
 
-  cout << cols << endl;
+  //cout << cols << endl;
 
   cout << argv[0] << endl;
   cout << argv[1] << endl;
@@ -79,7 +80,7 @@ int main(int argc, char *argv[])
         cout << "Running variation : " << variations << endl;
     }
   }
-  else 
+  else if(argc<4)
   {
     variations = argv[1];  
     if(variations=="w_pdf")
@@ -96,6 +97,32 @@ int main(int argc, char *argv[])
         cout << "Running variation : " << variations << endl;
 	cout << "0 Lepton shape    : " << (nl0shape?"on":"off");
 	cout << endl;
+    }
+  }
+  else 
+  {
+    variations = argv[1];  
+    if(variations=="w_pdf")
+    {
+      mjmin=atof(argv[3]);
+      mjmax=atof(argv[4]);
+      w_pdf_index = atoi(argv[2]);  
+      cout << "Running variation : " << variations << endl;
+      cout << " with w_pdf index " << w_pdf_index; 
+      cout << endl; 
+    }
+    else
+    {
+        onoff=argv[2];
+	mjmin=atof(argv[3]);
+	mjmax=atof(argv[4]);
+        if(onoff=="off") nl0shape = false; 
+        cout << "Running variation : " << variations << endl;
+	cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
+//	cout << "MJ minimum        : " << mjmin << endl;
+//	cout << "MJ maximum        : " << mjmax << endl;
+	binsize = (mjmax-mjmin)/3;
+	cout << "Bins distribution : [ " << mjmin << ", " << mjmin + binsize << ", " << mjmin + 2*binsize << " ]" << endl;
     }
   }
  // Define samples
@@ -294,7 +321,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
     for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++)
     {
 	float progress = 0.0;
-	if(ientry%71 == 0||ientry+1 == tree.GetEntries()){
+	if(ientry%int(tree.GetEntries()/1000) == 0||ientry+1 == tree.GetEntries()){
             ioctl(0,TIOCGWINSZ, &w);
             cols = w.ws_col;
             //cols = 104;
@@ -308,7 +335,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
 	    int pos = barWidth*progress;
 	    for(int i = 0; i < barWidth;++i){
 	      if(i < pos) cout << color(procname).Data() << "■";
-	      else if(i==pos) cout << "■";
+	      else if(i==pos) cout << color(procname).Data() << "■";
 	      else cout << " ";
 	    } 
             cout<<"\033[0m]";

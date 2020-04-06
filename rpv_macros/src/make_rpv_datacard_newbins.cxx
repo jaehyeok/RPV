@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
   TFile *variations = TFile::Open(dataCardPath.c_str());
   std::ofstream file;
   // card name
-  std::string filename("datacard_M");
+  std::string filename("datacards/datacard_M");
   filename+=gluinoMass;
   if(cardType=="control") filename+="_control";
   else if(cardType=="mconly") filename+="_mconly";

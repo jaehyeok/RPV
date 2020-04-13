@@ -36,10 +36,10 @@ void set_piechart(TPie *p_opt){
 int main()
 {
 	TString inputdir, outputdir;
-	outputdir = "plots/pi/";
+	outputdir = "plots/";
 	inputdir = "variations/";
 
-  TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape.root", "READ");
+	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_MG.root", "READ");
 
 	float qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3], sig1600[52][3];
 
@@ -83,44 +83,44 @@ int main()
 		"",
 		"",
 		"",
-    "",//15
-    "",
-    "",
-    "",
-    "",
-    "",//20
-    "",
-    // Njets-Nb basis
-    "1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=0", // 22
-    "1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
-    "1-lepton,HT>1200,N_{jets}#geq8,N_{b}=0",
-    "1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=1", // 25
-    "1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1",
-    "1-lepton,HT>1200,N_{jets}#geq8,N_{b}=1",
-    "1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=2",
-    "1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
-    "1-lepton,HT>1200,N_{jets}#geq8,N_{b}=2", // 30
-    "1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=3",
-    "1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
-    "1-lepton,HT>1200,N_{jets}#geq8,N_{b}=3",
-    "1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
-    "1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4", // 35
-    "1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4",
-    "0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
-    "0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=0",
-    "0-lepton,HT>1200,N_{jets}#geq10,N_{b}=0",
-    "0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1", // 40
-    "0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=1",
-    "0-lepton,HT>1200,N_{jets}#geq10,N_{b}=1",
-    "0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
-    "0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=2",
-    "0-lepton,HT>1200,N_{jets}#geq10,N_{b}=2", // 45
-    "0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
-    "0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=3",
-    "0-lepton,HT>1200,N_{jets}#geq10,N_{b}=3",
-    "0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",
-    "0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}#geq4", // 50
-    "0-lepton,HT>1200,N_{jets}#geq10,N_{b}#geq4"
+		"",//15
+		"",
+		"",
+		"",
+		"",
+		"",//20
+		"",
+		// Njets-Nb basis
+		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0", // 22
+		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=0",
+		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=0",
+		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1", // 25
+		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=1",
+		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=1",
+		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
+		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=2",
+		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=2", // 30
+		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
+		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=3",
+		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=3",
+		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",
+		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}#geq4", // 35
+		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4",
+		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=0",
+		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}=0",
+		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=0",
+		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=1", // 40
+		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}=1",
+		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=1",
+		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=2",
+		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}=2",
+		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=2", // 45
+		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=3",
+		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}=3",
+		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=3",
+		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}#geq4",
+		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}#geq4", // 50
+		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}#geq4"
 	};
 
 	TString Mj_txt[3]={", 500<M_{J}<800",", 800<M_{J}<1100",", 1100<M_{J}"};
@@ -134,7 +134,7 @@ int main()
 			pie4[ibin][iMj] = new TPie(Form("pie4_%i_%i", ibin,iMj),Form(title_1[ibin]+Mj_txt[iMj]),nvals,vals,colors);
 			set_piechart(pie4[ibin][iMj]);
 			pie4[ibin][iMj]->Draw("nol <");
-			cpie[ibin][iMj]->SaveAs(outputdir+Form("piechart_%i_%i",ibin,iMj));
+			cpie[ibin][iMj]->SaveAs(outputdir+Form("piechart_%i_%i.png",ibin,iMj));
 			cpie[ibin][iMj]->SaveAs(outputdir+Form("piechart_%i_%i.pdf",ibin,iMj));
 		}
 	}

@@ -133,11 +133,9 @@ int main()
 			cpie[ibin][iMj] = new TCanvas(Form("cpie_%i_%i",ibin,iMj),Form("TPie test_%i_%i",ibin,iMj),700,700);
 			pie4[ibin][iMj] = new TPie(Form("pie4_%i_%i", ibin,iMj),Form(title_1[ibin]+Mj_txt[iMj]),nvals,vals,colors);
 			set_piechart(pie4[ibin][iMj]);
-			if(!(ibin==31 && iMj==2)){
-				pie4[ibin][iMj]->Draw("nol <");
-				cpie[ibin][iMj]->SaveAs(outputdir+Form("piechart_%i_%i",ibin,iMj));
-				cpie[ibin][iMj]->SaveAs(outputdir+Form("piechart_%i_%i.pdf",ibin,iMj));
-			}
+			pie4[ibin][iMj]->Draw("nol <");
+			cpie[ibin][iMj]->SaveAs(outputdir+Form("piechart_%i_%i",ibin,iMj));
+			cpie[ibin][iMj]->SaveAs(outputdir+Form("piechart_%i_%i.pdf",ibin,iMj));
 		}
 	}
 }

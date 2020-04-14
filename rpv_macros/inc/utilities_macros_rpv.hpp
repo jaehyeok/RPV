@@ -107,8 +107,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process, bool isv5 = 
 			   files.push_back(folder+"WZZ_*"); 
 			   files.push_back(folder+"WWZ_*"); 
 			   files.push_back(folder+"ZZZ_*"); 
-			   files.push_back(folder+"WWW_*"); 
-			   files.push_back(folder+"ST_*"); //v5
+			   files.push_back(folder+"WWW_*"); //v5
 			   */
 			files.push_back(folder+"*_DYJetsToLL_*");
 			files.push_back(folder+"*_TTTT_*");
@@ -121,8 +120,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process, bool isv5 = 
 			files.push_back(folder+"*_WZZ_*"); 
 			files.push_back(folder+"*_WWZ_*"); 
 			files.push_back(folder+"*_ZZZ_*"); 
-			files.push_back(folder+"*_WWW_*"); 
-			files.push_back(folder+"*_ST_*"); // v5
+			files.push_back(folder+"*_WWW_*"); // v5
 		}
 		//Contains all processes except for QCD, ttbar, and wjets. Typically used for public plots. Recursive so only need to change samples in one place
 		else if(process=="other_public"){

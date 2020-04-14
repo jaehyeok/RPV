@@ -36,10 +36,10 @@ void set_piechart(TPie *p_opt){
 int main()
 {
 	TString inputdir, outputdir;
-	outputdir = "plots/";
-	inputdir = "variations/";
+	outputdir = "/cms/scratch/yjeong/CMSSW_10_2_13/src/RPV/rpv_macros/plots/";
+	inputdir = "/cms/scratch/yjeong/CMSSW_10_2_13/src/RPV/rpv_macros/variations/";
 
-	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_MG.root", "READ");
+	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape.root", "READ");
 
 	float qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3], sig1600[52][3];
 
@@ -58,7 +58,6 @@ int main()
 			qcd[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinContent(iMj+1);
 			ttbar[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(iMj+1);
 			wjets[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinContent(iMj+1);
-			wjets[ibin][iMj]=1.53*wjets[ibin][iMj];
 			other[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinContent(iMj+1);
 			sig1600[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1600", ibin)))->GetBinContent(iMj+1);
 		}
@@ -91,35 +90,35 @@ int main()
 		"",//20
 		"",
 		// Njets-Nb basis
-		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0", // 22
-		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=0",
+		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=0", // 22
+		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=0",
-		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1", // 25
-		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=1",
+		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=1", // 25
+		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1",
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=1",
+		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=2",
 		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
-		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=2",
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=2", // 30
+		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=3",
 		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
-		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=3",
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=3",
-		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",
-		"1-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}#geq4", // 35
+		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
+		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4", // 35
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4",
+		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
 		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=0",
-		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}=0",
 		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=0",
-		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=1", // 40
-		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}=1",
+		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1", // 40
+		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=1",
 		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=1",
+		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
 		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=2",
-		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}=2",
 		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=2", // 45
+		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
 		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=3",
-		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}=3",
 		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=3",
-		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}#geq4",
-		"0-lepton,HT>1200,10#leq N_{jets}#leq9,N_{b}#geq4", // 50
+		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",
+		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}#geq4", // 50
 		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}#geq4"
 	};
 

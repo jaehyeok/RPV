@@ -164,7 +164,8 @@ int main()
 	"N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}\\geq4"    
     };
 
-    TFile* infile  = TFile::Open("variations/output_nominal_newnt.root", "READ");
+    //TFile* infile  = TFile::Open("variations/output_nominal_newnt.root", "READ");
+    TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape.root", "READ");
   
     float data[52][3], qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3],
           sig1500[52][3], sig1600[52][3], sig1700[52][3], sig1800[52][3], sig1900[52][3], 
@@ -210,7 +211,6 @@ int main()
 	    qcd[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinContent(inb+1);
 	    ttbar[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(inb+1);
             wjets[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinContent(inb+1);
-            wjets[ibin][inb]=1.53*wjets[ibin][inb]; //FIXME
 	    other[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinContent(inb+1);
             //data[ibin][inb]=qcd[ibin][inb]+ttbar[ibin][inb]+wjets[ibin][inb]+other[ibin][inb];
             sig1500[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1500", ibin)))->GetBinContent(inb+1);

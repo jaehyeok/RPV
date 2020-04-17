@@ -135,9 +135,9 @@ int main(int argc, char *argv[])
    //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_02_21/merged_rpvfitnbge0/";
    //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
    //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
-  TString flode_bkg = "/cms/scratch/yjeong/RPV_MC/2016/skim_rpvfitnbge0_v6/";
-  TString flode_dat = "/cms/scratch/yjeong/RPV_MC/2016/skim_rpvfitnbge0_v6/";
-  TString flode_sig = "/cms/scratch/yjeong/RPV_MC/2016/skim_rpvfitnbge0_v6/";
+  TString folder_bkg = "/cms/scratch/yjeong/RPV_MC/2016/skim_rpvfitnbge0_v6/";
+  TString folder_dat = "/cms/scratch/yjeong/RPV_MC/2016/skim_rpvfitnbge0_v6/";
+  TString folder_sig = "/cms/scratch/yjeong/RPV_MC/2016/skim_rpvfitnbge0_v6/";
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data",isv6);
 

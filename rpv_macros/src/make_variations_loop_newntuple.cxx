@@ -29,13 +29,13 @@ double divideErrors(double x, double y, double dx, double dy);
 TString color(TString procname);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
-float mjmin = 650;
-float mjmax = 1550;
+float mjmin = 500;
+float mjmax = 1400;
 float binsize = 300;
 bool isv6 = true;
 bool nl0shape = true;
 
-float lumi = 137; // fb-1
+float lumi = 35.9; // fb-1
 const int nbins = 52;
 int w_pdf_index = 0;
 

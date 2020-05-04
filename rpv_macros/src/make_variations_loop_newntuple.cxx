@@ -360,7 +360,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
 	
 
-        else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig_jet450()||tree.trig_ht900()); // rereco
+        if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig_jet450()||tree.trig_ht900()); // rereco
         //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
         else if (procname=="signal") nominalweight = nominalweight * 1; 
        

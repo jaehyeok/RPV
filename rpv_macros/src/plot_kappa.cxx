@@ -389,7 +389,7 @@ int main(int argc, char *argv[])
     h1_0l_summary2->SetMinimum(0);
     h1_0l_summary2->SetMaximum(3);
     h1_0l_summary2->Draw("ep");
-    c->Print("plots/kappa_summary.pdf");
+    c->Print("plots/kappa_summary_"+syst+updo+".pdf");
    
 /*
     //

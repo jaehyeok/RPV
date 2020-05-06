@@ -22,8 +22,34 @@ vector<float> calculateR(TH1F* h1, int mjbin);
 //
 // main
 //
-int main()
+int main(int argc, char *argv[])
 {
+    TString syst("nominal"), updo("X");
+    float mjmin(500), mjmax(1100);
+    TString arg(argv[1]);
+    if(argc<=2){
+      cout << "if you want to know about arguments, use --help to get help" << endl;
+    }
+    else if(argc<=2 && arg == "--help"){
+      cout << "./run/plot_kappa [Systematics] [Up/Down] [MJ minimum] [MJ maximum]" << endl;
+      return 1;
+    }
+    else if(argc>2){
+
+      syst = argv[1];
+      updo = argv[2];
+      if(argc>4){
+        mjmin = atof(argv[3]);
+        mjmax = atof(argv[4]);
+      }
+    }
+    cout << "Systematics : " << syst <<endl;
+    cout << "Up / Down   : " << updo <<endl;
+    
+    float binsize = (mjmax-mjmin)/3;
+    cout << "MJ bimn     : [ " << mjmin << ", " << mjmin+binsize << ", " << mjmin+2*binsize << "+ ]" << endl; 
+    cout << endl;
+
     cout << " ........................... "<< endl; 
     cout << " .... Evaluating kappas .... " << endl; 
     cout << " ........................... "<< endl; 
@@ -153,31 +179,55 @@ int main()
     };
 
     //TFile* infile  = TFile::Open("variations/output_nominal_newnt_inclnb0.root", "READ");
-    TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape.root", "READ");
+    TFile* infile  = TFile::Open("variations/output_newnt_nl0shape.root", "READ");
    
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;
-
+    
     //
     TH1F *h1_mj_data[52], *h1_mj_qcd[52], *h1_mj_ttbar[52], *h1_mj_wjets[52], *h1_mj_other[52], *h1_mj_mc[52];
+    TH1F *h1_mj_qcd_syst[52], *h1_mj_ttbar_syst[52], *h1_mj_wjets_syst[52], *h1_mj_other_syst[52], *h1_mj_mc_syst[52];
     for(int ibin=22; ibin<52; ibin++)  
     { 
       // define histograms
-      h1_mj_data[ibin]  = new TH1F(Form("h1_mj_data_bin%i", ibin), Form("h1_mj_data_bin%i", ibin), 3, 500, 1100);
-      h1_mj_qcd[ibin]   = new TH1F(Form("h1_mj_qcd_bin%i", ibin), Form("h1_mj_qcd_bin%i", ibin), 3, 500, 1100);
-      h1_mj_ttbar[ibin] = new TH1F(Form("h1_mj_ttbar_bin%i", ibin), Form("h1_mj_ttbar_bin%i", ibin), 3, 500, 1100);
-      h1_mj_wjets[ibin] = new TH1F(Form("h1_mj_wjets_bin%i", ibin), Form("h1_mj_wjets_bin%i", ibin), 3, 500, 1100);
-      h1_mj_other[ibin] = new TH1F(Form("h1_mj_other_bin%i", ibin), Form("h1_mj_other_bin%i", ibin), 3, 500, 1100);
-      h1_mj_mc[ibin]    = new TH1F(Form("h1_mj_mc_bin%i", ibin), Form("h1_mj_mc_bin%i", ibin), 3, 500, 1100);
+      h1_mj_data[ibin]  = new TH1F(Form("h1_mj_data_bin%i", ibin), Form("h1_mj_data_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_qcd[ibin]   = new TH1F(Form("h1_mj_qcd_bin%i", ibin), Form("h1_mj_qcd_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_ttbar[ibin] = new TH1F(Form("h1_mj_ttbar_bin%i", ibin), Form("h1_mj_ttbar_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_wjets[ibin] = new TH1F(Form("h1_mj_wjets_bin%i", ibin), Form("h1_mj_wjets_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_other[ibin] = new TH1F(Form("h1_mj_other_bin%i", ibin), Form("h1_mj_other_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_mc[ibin]    = new TH1F(Form("h1_mj_mc_bin%i", ibin), Form("h1_mj_mc_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_qcd_syst[ibin]   = new TH1F(Form("h1_mj_qcd_syst_bin%i", ibin), Form("h1_mj_qcd_syst_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_ttbar_syst[ibin] = new TH1F(Form("h1_mj_ttbar_syst_bin%i", ibin), Form("h1_mj_ttbar_syst_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_wjets_syst[ibin] = new TH1F(Form("h1_mj_wjets_syst_bin%i", ibin), Form("h1_mj_wjets_syst_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_other_syst[ibin] = new TH1F(Form("h1_mj_other_syst_bin%i", ibin), Form("h1_mj_other_syst_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_mc_syst[ibin]    = new TH1F(Form("h1_mj_mc_syst_bin%i", ibin), Form("h1_mj_mc_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_data[ibin]->Sumw2(); 
       h1_mj_qcd[ibin]->Sumw2(); 
       h1_mj_ttbar[ibin]->Sumw2(); 
       h1_mj_wjets[ibin]->Sumw2(); 
       h1_mj_other[ibin]->Sumw2(); 
       h1_mj_mc[ibin]->Sumw2(); 
+      h1_mj_qcd_syst[ibin]->Sumw2(); 
+      h1_mj_ttbar_syst[ibin]->Sumw2(); 
+      h1_mj_wjets_syst[ibin]->Sumw2(); 
+      h1_mj_other_syst[ibin]->Sumw2(); 
+      h1_mj_mc_syst[ibin]->Sumw2(); 
 
       // Get histograms from root file
+      if(syst=="nominal"){
       h1_mj_data[ibin]  = static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin))); 
+      }
+      else if(syst!="nominal"){
+      h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s%s", ibin, syst.Data(), updo.Data()))); 
+      h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s%s", ibin, syst.Data(), updo.Data()))); 
+      h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s%s", ibin, syst.Data(), updo.Data()))); 
+      //h1_mj_wjets[ibin]->Scale(1.53); //FIXME
+      h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s%s", ibin, syst.Data(), updo.Data()))); 
+      h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
+      h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
+      h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
+      h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);
+      }
       h1_mj_qcd[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin))); 
       h1_mj_ttbar[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin))); 
       h1_mj_wjets[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin))); 

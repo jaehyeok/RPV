@@ -407,8 +407,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         //
         if(variations=="btag_bc") 
         { 
-            upweight    = upweight*tree.sys_bctag()[0]/tree.w_btag();
-            downweight  = downweight*tree.sys_bctag()[1]/tree.w_btag();
+            upweight    = upweight*tree.sys_bctag()[0];///tree.w_btag();
+            downweight  = downweight*tree.sys_bctag()[1];///tree.w_btag();
         }
         if(variations=="btag_udsg") 
         { 

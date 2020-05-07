@@ -25,7 +25,7 @@ vector<float> calculateR(TH1F* h1, int mjbin);
 int main(int argc, char *argv[])
 {
     TString syst("nominal"), updo("X");
-    float mjmin(500), mjmax(1100);
+    float mjmin(500), mjmax(1400);
     TString arg(argv[1]);
     if(argc<=2){
       cout << "if you want to know about arguments, use --help to get help" << endl;

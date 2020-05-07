@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
       cout << "if you want to know about arguments, use --help to get help" << endl;
     }
     else if(argc<=2 && arg == "--help"){
-      cout << "./run/plot_kappa [Systematics] [Up/Down] [MJ minimum] [MJ maximum]" << endl;
+      cout << "./run/plot_kappa.exe [Systematics] [Up/Down] [MJ minimum] [MJ maximum]" << endl;
       return 1;
     }
     else if(argc>2){
@@ -190,12 +190,12 @@ int main(int argc, char *argv[])
     for(int ibin=22; ibin<52; ibin++)  
     { 
       // define histograms
-      h1_mj_data[ibin]  = new TH1F(Form("h1_mj_data_bin%i", ibin), Form("h1_mj_data_bin%i", ibin), 3, mjmin, mjmax);
-      h1_mj_qcd[ibin]   = new TH1F(Form("h1_mj_qcd_bin%i", ibin), Form("h1_mj_qcd_bin%i", ibin), 3, mjmin, mjmax);
-      h1_mj_ttbar[ibin] = new TH1F(Form("h1_mj_ttbar_bin%i", ibin), Form("h1_mj_ttbar_bin%i", ibin), 3, mjmin, mjmax);
-      h1_mj_wjets[ibin] = new TH1F(Form("h1_mj_wjets_bin%i", ibin), Form("h1_mj_wjets_bin%i", ibin), 3, mjmin, mjmax);
-      h1_mj_other[ibin] = new TH1F(Form("h1_mj_other_bin%i", ibin), Form("h1_mj_other_bin%i", ibin), 3, mjmin, mjmax);
-      h1_mj_mc[ibin]    = new TH1F(Form("h1_mj_mc_bin%i", ibin), Form("h1_mj_mc_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_data[ibin]       = new TH1F(Form("h1_mj_data_bin%i", ibin), Form("h1_mj_data_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_qcd[ibin]        = new TH1F(Form("h1_mj_qcd_bin%i", ibin), Form("h1_mj_qcd_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_ttbar[ibin]      = new TH1F(Form("h1_mj_ttbar_bin%i", ibin), Form("h1_mj_ttbar_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_wjets[ibin]      = new TH1F(Form("h1_mj_wjets_bin%i", ibin), Form("h1_mj_wjets_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_other[ibin]      = new TH1F(Form("h1_mj_other_bin%i", ibin), Form("h1_mj_other_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_mc[ibin]         = new TH1F(Form("h1_mj_mc_bin%i", ibin), Form("h1_mj_mc_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_qcd_syst[ibin]   = new TH1F(Form("h1_mj_qcd_syst_bin%i", ibin), Form("h1_mj_qcd_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_ttbar_syst[ibin] = new TH1F(Form("h1_mj_ttbar_syst_bin%i", ibin), Form("h1_mj_ttbar_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_wjets_syst[ibin] = new TH1F(Form("h1_mj_wjets_syst_bin%i", ibin), Form("h1_mj_wjets_syst_bin%i", ibin), 3, mjmin, mjmax);
@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
       h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s%s", ibin, syst.Data(), updo.Data()))); 
       //h1_mj_wjets[ibin]->Scale(1.53); //FIXME
       h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s%s", ibin, syst.Data(), updo.Data()))); 
-      h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
+      h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
       h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
       h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
       h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);

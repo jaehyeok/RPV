@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
     };
 
     //TFile* infile  = TFile::Open("variations/output_nominal_newnt_inclnb0.root", "READ");
-    TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape.root", "READ");
+    TFile* infile  = TFile::Open("variations/output_newnt_nl0shape.root", "READ");
    
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;
@@ -389,12 +389,8 @@ int main(int argc, char *argv[])
     h1_0l_summary2->SetMinimum(0);
     h1_0l_summary2->SetMaximum(3);
     h1_0l_summary2->Draw("ep");
-<<<<<<< HEAD
-    c->Print("plots/kappa_summary.pdf");
-    c->Print("plots/kappa_summary.png");
-=======
     c->Print("plots/kappa_summary_"+syst+updo+".pdf");
->>>>>>> aff78e55023d2deeadaa018448453a6b3055b102
+    c->Print("plots/kappa_summary_"+syst+updo+".png");
    
 /*
     //

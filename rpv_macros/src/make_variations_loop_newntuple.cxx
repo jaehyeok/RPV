@@ -56,23 +56,28 @@ int main(int argc, char *argv[])
 
   //cout << cols << endl;
 
-  cout << argv[0] << endl;
-  cout << argv[1] << endl;
   //
+  TString test = argv[1];
   TString variations = "nominal";
   TString onoff = "off";
-  cout << "Luminosity        : " << lumi << "fb-1" << endl;
   if(argc<2) {
-    cout << "[Error] Provide name of variation" << endl; 
-    return 0;
+    cout << "[Error] Not Enough Arguments! argument \"--help\" may help you" << endl; 
+    return 1;
+  }
+  else if(test == "--help" && argc<3){
+    cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [0 lepton shape argmuments] [MJ minimum] [MJ maximum]" << endl;
+    return 1;
   }
   else if(argc<3) 
   { 
+  cout << argv[0] << endl;
+  cout << argv[1] << endl;
+  cout << "Luminosity        : " << lumi << "fb-1" << endl;
     variations = argv[1];  
     if(variations=="w_pdf") 
     { 
         cout << "[Error] Provide an index for w_pdf:" << endl;
-        return 0;
+        return 1;
     }
     else 
     {
@@ -82,6 +87,9 @@ int main(int argc, char *argv[])
   }
   else if(argc<4)
   {
+  cout << argv[0] << endl;
+  cout << argv[1] << endl;
+  cout << "Luminosity        : " << lumi << "fb-1" << endl;
     variations = argv[1];  
     if(variations=="w_pdf")
     {
@@ -101,6 +109,9 @@ int main(int argc, char *argv[])
   }
   else 
   {
+  cout << argv[0] << endl;
+  cout << argv[1] << endl;
+  cout << "Luminosity        : " << lumi << "fb-1" << endl;
     variations = argv[1];  
     if(variations=="w_pdf")
     {

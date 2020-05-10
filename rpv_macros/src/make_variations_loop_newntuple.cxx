@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
   //
   TString test = argv[1];
   TString variations = "nominal";
-  //TString onoff = "off";
   if(argc<2) {
     cout << "[Error] Not Enough Arguments! argument \"--help\" may help you" << endl; 
     return 1;
@@ -78,10 +77,6 @@ int main(int argc, char *argv[])
         cout << "[Error] Provide an index for w_pdf:" << endl;
         return 1;
     }
-    /*else 
-    {
-        cout << "Running variation : " << variations << endl;
-    }*/
   }
   else if(argc<4)
   {
@@ -96,12 +91,6 @@ int main(int argc, char *argv[])
       cout << " with w_pdf index " << w_pdf_index; 
       cout << endl; 
     }
-   /* else
-    {
-        onoff=argv[2];
-        cout << "Running variation : " << variations << endl;
-	cout << endl;
-    }*/
   }
   else 
   {
@@ -120,7 +109,6 @@ int main(int argc, char *argv[])
     }
     else
     {
-        //onoff=argv[2];
 	mjmin=atof(argv[2]);
 	mjmax=atof(argv[3]);
         cout << "Running variation : " << variations << endl;

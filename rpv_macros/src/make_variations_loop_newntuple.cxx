@@ -32,7 +32,8 @@ TString color(TString procname);
 float mjmin = 500;
 float mjmax = 1400;
 float binsize = 300;
-bool isv6 = true;
+bool isv5 = true;
+bool nl0shape = true;
 
 float lumi = 35.9; // fb-1
 const int nbins = 52;
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
   //
   TString test = argv[1];
   TString variations = "nominal";
+  TString onoff = "off";
   if(argc<2) {
     cout << "[Error] Not Enough Arguments! argument \"--help\" may help you" << endl; 
     return 1;
@@ -77,6 +79,11 @@ int main(int argc, char *argv[])
         cout << "[Error] Provide an index for w_pdf:" << endl;
         return 1;
     }
+    else 
+    {
+        if(onoff=="off") nl0shape = false;
+        cout << "Running variation : " << variations << endl;
+    }
   }
   else if(argc<4)
   {
@@ -91,6 +98,14 @@ int main(int argc, char *argv[])
       cout << " with w_pdf index " << w_pdf_index; 
       cout << endl; 
     }
+    else
+    {
+       // onoff=argv[2];
+        if(onoff=="off") nl0shape = false; 
+        cout << "Running variation : " << variations << endl;
+	cout << "0 Lepton shape    : " << (nl0shape?"on":"off");
+	cout << endl;
+    }
   }
   else 
   {
@@ -104,14 +119,17 @@ int main(int argc, char *argv[])
       mjmax=atof(argv[3]);
       w_pdf_index = atoi(argv[2]);  
       cout << "Running variation : " << variations << endl;
-      cout << " with w_pdf index " << w_pdf_index;
+      cout << " with w_pdf index " << w_pdf_index; 
       cout << endl; 
     }
     else
     {
+        //onoff=argv[2];
 	mjmin=atof(argv[2]);
 	mjmax=atof(argv[3]);
+        if(onoff=="off") nl0shape = false; 
         cout << "Running variation : " << variations << endl;
+	//cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
 //	cout << "MJ minimum        : " << mjmin << endl;
 //	cout << "MJ maximum        : " << mjmax << endl;
 	binsize = (mjmax-mjmin)/3;
@@ -137,24 +155,24 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
 
-  vector<TString> s_jetht = getRPVProcess(folder_dat,"data",isv6);
+  vector<TString> s_jetht = getRPVProcess(folder_dat,"data",isv5);
 
-  vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd",isv6);
-  vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar",isv6);
-  vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets",isv6);
-  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public",isv6);
+  vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd",isv5);
+  vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar",isv5);
+  vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets",isv5);
+  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public",isv5);
   
-  vector<TString> s_rpv_m1000 = getRPVProcess(folder_sig,"rpv_m1000",isv6);
-  vector<TString> s_rpv_m1100 = getRPVProcess(folder_sig,"rpv_m1100",isv6);
-  vector<TString> s_rpv_m1200 = getRPVProcess(folder_sig,"rpv_m1200",isv6);
-  vector<TString> s_rpv_m1300 = getRPVProcess(folder_sig,"rpv_m1300",isv6);
-  vector<TString> s_rpv_m1400 = getRPVProcess(folder_sig,"rpv_m1400",isv6);
-  vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500",isv6);
-  vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600",isv6);
-  vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700",isv6);
-  vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800",isv6);
-  vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900",isv6);
-  vector<TString> s_rpv_m2000 = getRPVProcess(folder_sig,"rpv_m2000",isv6);
+  vector<TString> s_rpv_m1000 = getRPVProcess(folder_sig,"rpv_m1000",isv5);
+  vector<TString> s_rpv_m1100 = getRPVProcess(folder_sig,"rpv_m1100",isv5);
+  vector<TString> s_rpv_m1200 = getRPVProcess(folder_sig,"rpv_m1200",isv5);
+  vector<TString> s_rpv_m1300 = getRPVProcess(folder_sig,"rpv_m1300",isv5);
+  vector<TString> s_rpv_m1400 = getRPVProcess(folder_sig,"rpv_m1400",isv5);
+  vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500",isv5);
+  vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600",isv5);
+  vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700",isv5);
+  vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800",isv5);
+  vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900",isv5);
+  vector<TString> s_rpv_m2000 = getRPVProcess(folder_sig,"rpv_m2000",isv5);
   
   small_tree_rpv data((static_cast<std::string>(s_jetht.at(0))));
   
@@ -182,6 +200,8 @@ int main(int argc, char *argv[])
   small_tree_rpv rpv_m2000((static_cast<std::string>(s_rpv_m2000.at(0))));
 
   // open output root file
+  TString shape = "_nl0shape";
+  if(nl0shape == false) shape = "";
   TFile *f = new TFile(Form("variations/output_%s_newnt.root", variations.Data()), "recreate");
 
   // Depending on the process, turn on/off variation
@@ -189,6 +209,7 @@ int main(int argc, char *argv[])
   // data
   if(variations=="nominal") getSyst(data,  variations, f, "data_obs");
   
+  // loop over a tree and get up/dawn shapes for all bins at once 
   getSyst(qcd,       variations, f, "qcd");
   getSyst(ttbar,     variations, f, "ttbar");
   getSyst(wjets,     variations, f, "wjets");
@@ -621,10 +642,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             if(variations=="jer")//jet energy resolution
             {  
 		    float hmjmax = mjmax-0.001;
-		    if(tree.nleps()==0){
+		    /*if(tree.nleps()==0 && !nl0shape){
 			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
 		   	 //cout<<hmjmax<<endl;
-		    }
+		    }*/
                 if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                     h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
                 if(tree.sys_mj12()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2], tree.sys_nbm()[2])) 
@@ -636,10 +657,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             else if(variations=="jes") //jet energy scale
             { 
 		    float hmjmax = mjmax-0.001;
-		    if(tree.nleps()==0){
+		    /*if(tree.nleps()==0 && !nl0shape){
 			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
 		   	 //cout<<hmjmax<<endl;
-		    }
+		    }*/
                 if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                     h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
                 if(tree.sys_mj12()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0], tree.sys_nbm()[0]))  
@@ -652,10 +673,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
                 if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                 {
 		    float hmjmax = mjmax-0.001;
-		    if(tree.nleps()==0){
+		    /*if(tree.nleps()==0 && !nl0shape){
 			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
 		   	 //cout<<hmjmax<<endl;
-		    }
+		    }*/
                     h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);  // nominal  
                     h1up[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), upweight);            // up  
                     h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);        // down 

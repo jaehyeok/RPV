@@ -36,10 +36,10 @@ void set_piechart(TPie *p_opt){
 int main()
 {
 	TString inputdir, outputdir;
-	outputdir = "/cms/scratch/yjeong/CMSSW_10_2_13/src/RPV/rpv_macros/plots/";
-	inputdir = "/cms/scratch/yjeong/CMSSW_10_2_13/src/RPV/rpv_macros/variations/";
+	outputdir = "/cms/scratch/yjeong/CMSSW_10_5_0/src/RPV/rpv_macros/plots/";
+	inputdir = "/cms/scratch/yjeong/CMSSW_10_5_0/src/RPV/rpv_macros/variations/";
 
-	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape.root", "READ");
+	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt.root", "READ");
 
 	float qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3], sig1600[52][3];
 

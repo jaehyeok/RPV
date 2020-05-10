@@ -1,0 +1,17 @@
+./run/make_variations_loop_newntuple.exe nominal on 500 1400
+./run/make_variations_loop_newntuple.exe jes Up 500 1400
+./run/make_variations_loop_newntuple.exe jes Down 500 1400
+./run/make_variations_loop_newntuple.exe btag_bc Up 500 1400
+./run/make_variations_loop_newntuple.exe btag_bc Down 500 1400
+./run/make_variations_loop_newntuple.exe btag_udsg Up 500 1400
+./run/make_variations_loop_newntuple.exe btag_udsg Down 500 1400
+./run/make_variations_loop_newntuple.exe lep_eff Up 500 1400
+./run/make_variations_loop_newntuple.exe lep_eff Down 500 1400
+./run/make_variations_loop_newntuple.exe mur Up 500 1400
+./run/make_variations_loop_newntuple.exe mur Down 500 1400
+./run/make_variations_loop_newntuple.exe muf Up 500 1400
+./run/make_variations_loop_newntuple.exe muf Down 500 1400
+./run/make_variations_loop_newntuple.exe murf Up 500 1400
+./run/make_variations_loop_newntuple.exe murf Down 500 1400
+./run/make_variations_loop_newntuple.exe isr Up 500 1400
+./run/make_variations_loop_newntuple.exe isr Down 500 1400

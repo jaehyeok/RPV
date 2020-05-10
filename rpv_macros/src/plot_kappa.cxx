@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
     };
 
     //TFile* infile  = TFile::Open("variations/output_nominal_newnt_inclnb0.root", "READ");
-    TFile* infile  = TFile::Open("variations/output_newnt_nl0shape.root", "READ");
+    TFile* infile  = TFile::Open("variations/output_newnt.root", "READ");
    
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;

@@ -423,8 +423,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         }
         if(variations=="btag_udsg") 
         { 
-            upweight    = upweight*tree.sys_udsgtag()[0]/tree.w_btag();
-            downweight  = downweight*tree.sys_udsgtag()[1]/tree.w_btag();
+            upweight    = upweight*tree.sys_udsgtag()[0];
+            downweight  = downweight*tree.sys_udsgtag()[1];
         }
         if(variations=="gs45") 
         { 

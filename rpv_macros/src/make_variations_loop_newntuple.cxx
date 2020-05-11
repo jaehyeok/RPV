@@ -59,13 +59,14 @@ int main(int argc, char *argv[])
   //
   TString test = argv[1];
   TString variations = "nominal";
-  TString onoff = "off";
+  TString onoff = "on";
   if(argc<2) {
     cout << "[Error] Not Enough Arguments! argument \"--help\" may help you" << endl; 
     return 1;
   }
   else if(test == "--help" && argc<3){
     cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [MJ minimum] [MJ maximum]" << endl;
+    cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [0 Lepton Shape on/off] [MJ minimum] [MJ maximum]" << endl;
     return 1;
   }
   else if(argc<3) 
@@ -107,6 +108,34 @@ int main(int argc, char *argv[])
 	cout << endl;
     }
   }
+  else if(argc==4)
+  {
+  cout << argv[0] << endl;
+  cout << argv[1] << endl;
+  cout << "Luminosity        : " << lumi << "fb-1" << endl;
+    variations = argv[1];  
+    if(variations=="w_pdf")
+    {
+      w_pdf_index = atoi(argv[2]);  
+      cout << "Running variation : " << variations << endl;
+      cout << " with w_pdf index " << w_pdf_index; 
+      cout << endl; 
+    }
+    else
+    {
+//      onoff=argv[2];
+	mjmin=atof(argv[2]);
+	mjmax=atof(argv[3]);
+        if(onoff=="off") nl0shape = false; 
+        cout << "There are only 3 arguments! 0 Lepton shape is entered as on..." << endl;
+        cout << "Running variation : " << variations << endl;
+	cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
+//	cout << "MJ minimum        : " << mjmin << endl;
+//	cout << "MJ maximum        : " << mjmax << endl;
+	binsize = (mjmax-mjmin)/3;
+	cout << "Bins distribution : [ " << mjmin << ", " << mjmin + binsize << ", " << mjmin + 2*binsize << " ]" << endl;
+    } 
+  }
   else 
   {
   cout << argv[0] << endl;
@@ -115,8 +144,6 @@ int main(int argc, char *argv[])
     variations = argv[1];  
     if(variations=="w_pdf")
     {
-      mjmin=atof(argv[2]);
-      mjmax=atof(argv[3]);
       w_pdf_index = atoi(argv[2]);  
       cout << "Running variation : " << variations << endl;
       cout << " with w_pdf index " << w_pdf_index; 
@@ -124,12 +151,12 @@ int main(int argc, char *argv[])
     }
     else
     {
-        //onoff=argv[2];
-	mjmin=atof(argv[2]);
-	mjmax=atof(argv[3]);
+        onoff=argv[2];
+	mjmin=atof(argv[3]);
+	mjmax=atof(argv[4]);
         if(onoff=="off") nl0shape = false; 
         cout << "Running variation : " << variations << endl;
-	//cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
+	cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
 //	cout << "MJ minimum        : " << mjmin << endl;
 //	cout << "MJ maximum        : " << mjmax << endl;
 	binsize = (mjmax-mjmin)/3;
@@ -642,10 +669,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             if(variations=="jer")//jet energy resolution
             {  
 		    float hmjmax = mjmax-0.001;
-		    /*if(tree.nleps()==0 && !nl0shape){
+		    if(tree.nleps()==0 && !nl0shape){
 			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
 		   	 //cout<<hmjmax<<endl;
-		    }*/
+		    }
                 if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                     h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
                 if(tree.sys_mj12()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2], tree.sys_nbm()[2])) 
@@ -657,10 +684,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             else if(variations=="jes") //jet energy scale
             { 
 		    float hmjmax = mjmax-0.001;
-		    /*if(tree.nleps()==0 && !nl0shape){
+		    if(tree.nleps()==0 && !nl0shape){
 			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
 		   	 //cout<<hmjmax<<endl;
-		    }*/
+		    }
                 if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                     h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
                 if(tree.sys_mj12()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0], tree.sys_nbm()[0]))  
@@ -673,10 +700,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
                 if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
                 {
 		    float hmjmax = mjmax-0.001;
-		    /*if(tree.nleps()==0 && !nl0shape){
+		    if(tree.nleps()==0 && !nl0shape){
 			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
 		   	 //cout<<hmjmax<<endl;
-		    }*/
+		    }
                     h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);  // nominal  
                     h1up[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), upweight);            // up  
                     h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);        // down 

@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
 
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     if(argc>3)
-      file << "shapes * " << bins.at(ipair).at(ibin) << " ../variations/" << inputname.Data() << " " << bins.at(ipair).at(ibin);    
+      file << "shapes * " << bins.at(ipair).at(ibin) << " ../../variations/" << inputname.Data() << " " << bins.at(ipair).at(ibin);    
     else if(cardType=="mconly")
       file << "shapes * " << bins.at(ipair).at(ibin) << " sum_rescaled_mconly.root " << bins.at(ipair).at(ibin);    
     else if(cardType=="control")

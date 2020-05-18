@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
     };
 
     //TFile* infile  = TFile::Open("variations/output_nominal_newnt_inclnb0.root", "READ");
-    TFile* infile  = TFile::Open("variations/output_newnt.root", "READ");
+    TFile* infile  = TFile::Open("variations/output_newnt_nl0shape.root", "READ");
    
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;
@@ -350,6 +350,8 @@ int main(int argc, char *argv[])
         }
       }
     }
+    
+    TFile *f = new TFile("plots/kappa_summary_"+syst+updo+".root","recreate");
 
     TCanvas *c = new TCanvas("c", "c", 1200, 1400);
     c->Divide(1,4);
@@ -362,6 +364,7 @@ int main(int argc, char *argv[])
     h1_1l_summary1->SetMinimum(0);
     h1_1l_summary1->SetMaximum(3);
     h1_1l_summary1->Draw("ep");
+    h1_1l_summary1->Write();
     c->cd(2);
     h1_1l_summary2->SetTitle("#kappa (1100-inf/500-800 GeV)");
     h1_1l_summary2->SetLineColor(kBlack);
@@ -371,6 +374,7 @@ int main(int argc, char *argv[])
     h1_1l_summary2->SetMinimum(0);
     h1_1l_summary2->SetMaximum(3);
     h1_1l_summary2->Draw("ep");
+    h1_1l_summary2->Write();
     c->cd(3);
     h1_0l_summary1->SetTitle("#kappa (800-1100/500-800 GeV)");
     h1_0l_summary1->SetLineColor(kBlue);
@@ -380,6 +384,7 @@ int main(int argc, char *argv[])
     h1_0l_summary1->SetMinimum(0);
     h1_0l_summary1->SetMaximum(3);
     h1_0l_summary1->Draw("ep");
+    h1_0l_summary1->Write();
     c->cd(4);
     h1_0l_summary2->SetTitle("#kappa (1100-inf/500-800 GeV)");
     h1_0l_summary2->SetLineColor(kBlue);
@@ -389,10 +394,10 @@ int main(int argc, char *argv[])
     h1_0l_summary2->SetMinimum(0);
     h1_0l_summary2->SetMaximum(3);
     h1_0l_summary2->Draw("ep");
+    h1_0l_summary2->Write();
     c->Print("plots/kappa_summary_"+syst+updo+".pdf");
     c->Print("plots/kappa_summary_"+syst+updo+".png");
-    c->Print("plots/kappa_summary_"+syst+updo+".root");
-   
+    f->Close();  
 /*
     //
     // 1-lepton

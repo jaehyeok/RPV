@@ -1,7 +1,0 @@
-imax 2 number of bins
-jmax 4
-kmax * number of nuisance parameters
-------------------------------------
-shapes * bin40 variations/output_nominal_newnt.root bin40/$PROCESS bin40/$PROCESS_$SYSTEMATIC
-shapes * bin25 variations/output_nominal_newnt.root bin25/$PROCESS bin25/$PROCESS_$SYSTEMATIC
-------------------------------------

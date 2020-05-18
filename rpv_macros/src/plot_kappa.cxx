@@ -391,6 +391,7 @@ int main(int argc, char *argv[])
     h1_0l_summary2->Draw("ep");
     c->Print("plots/kappa_summary_"+syst+updo+".pdf");
     c->Print("plots/kappa_summary_"+syst+updo+".png");
+    c->Print("plots/kappa_summary_"+syst+updo+".root");
    
 /*
     //

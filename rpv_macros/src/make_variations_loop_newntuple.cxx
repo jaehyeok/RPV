@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
   // open output root file
   TString shape = "_nl0shape";
   if(nl0shape == false) shape = "";
-  TFile *f = new TFile(Form("variations/output_%s_newnt.root", variations.Data()), "recreate");
+  TFile *f = new TFile(Form("variations/output_%s_newnt_%s.root", variations.Data()), shape, "recreate");
 
   // Depending on the process, turn on/off variation
   

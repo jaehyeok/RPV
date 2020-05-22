@@ -25,7 +25,7 @@ namespace {
 
   bool makeNm1 = false; // Make only N=1 plots. Does not draw data
   
-  TString plot_type=".pdf";
+  TString plot_type=".png";
   TString plot_style="CMSPaper_Preliminary";
 }
 
@@ -37,13 +37,12 @@ int main(){
   //TString folder_dat = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/data/merged_rpvdata_st1000/";
   //TString folder_bkg = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvregion/";
   //TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
-  TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
-  TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
-  TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/skim_rpvfitnbge0/";
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
 
   // Get file lists
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
-    
   vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
   vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700");
 
@@ -141,7 +140,7 @@ int main(){
   
   /*////////////
     N-1 PLOTS
-  ///////////*/
+  /////////// */
 
   else{
     // Set baseline cuts

@@ -20,7 +20,7 @@ namespace rpv{
     c_qcd      = kYellow-7, 
     c_tt       = kAzure+7, 
     c_wjets    = kGreen+2, 
-    c_other    = kGray+1
+    c_other    = kGray+2
   };
 }
 

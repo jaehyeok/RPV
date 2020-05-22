@@ -36,10 +36,10 @@ void set_piechart(TPie *p_opt){
 int main()
 {
 	TString inputdir, outputdir;
-	outputdir = "plots/";
+	outputdir = "plots/pie/";
 	inputdir = "variations/";
 
-	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt.root", "READ");
+	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape.root", "READ");
 
 	float qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3], sig1600[52][3];
 

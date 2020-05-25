@@ -53,7 +53,7 @@ int main(){
   vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
   //vector<TString> s_singlet = getRPVProcess(folder_bkg,"singlet");
   //vector<TString> s_zjets = getRPVProcess(folder_bkg,"zjets");
-  vector<TString> s_other = getRPVProcess(folder_bkg,"other");
+  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
   
   // Reading ntuples
   vector<sfeats> Samples; 
@@ -98,7 +98,7 @@ int main(){
     TString basecut = "mj12>=500";
     //vector<TString> lepcuts = {"nleps==0&&ht>1500", "nleps==1&&ht>1200"};
     TString lepcuts = "nleps==1&&ht>1200";
-    vector<TString> nbcuts = {"nbm==0","nbm==1","nbm==2","nbm==3","nbm>=4"};
+    vector<TString> nbcuts = {"nbm==0","nbm==1"};
     vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8"};
 
     // Loop over cuts to make histograms
@@ -130,7 +130,7 @@ int main(){
 	  cut = lepcuts + "&&" + inb + "&&" + injet + "&&" + basecut;
 	  
 	  // Define histograms
-	  hists.push_back(hfeats("mj12", 3, 500, 1200, rpv_sam, "M_{J}", cut));
+	  hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cut));
 	  if(showData) hists.back().normalize = true;	
 	}
       }
@@ -156,7 +156,7 @@ int main(){
       hists.push_back(hfeats("ht", 40, 0, 4000, rpv_sam, "H_{T}", cutNm1));
 
       cutNm1 = lepcutsNm1 + "&&" + htcutsNm1 + "&&" + njetcutNm1 + "&&" + nbcutNm1;
-      hists.push_back(hfeats("mj12", 3, 500, 1200, rpv_sam, "M_{J}", cutNm1));
+      hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cutNm1));
 
       cutNm1 = lepcutsNm1 + "&&" + htcutsNm1 + "&&" + mjcutNm1 + "&&" + nbcutNm1;
       hists.push_back(hfeats("njets", 12, 0, 12, rpv_sam, "N_{jets}", cutNm1));

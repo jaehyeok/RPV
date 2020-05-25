@@ -403,7 +403,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
         else if (procname=="signal") nominalweight = nominalweight * 1; 
        
         // qcd jet flavor central weights
-        if(procname=="qcd") 
+       /* if(procname=="qcd") 
         { 
             int n_bflavor=0;
             int n_cflavor=0;
@@ -429,7 +429,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
             { 
                 nominalweight = nominalweight*lflavorValCentral;
             }
-        }
+        }*/
 
         // scale W+jet normialzation
         if(procname=="wjets") nominalweight = nominalweight; 

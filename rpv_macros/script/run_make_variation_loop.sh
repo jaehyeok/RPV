@@ -1,3 +1,4 @@
+cd ..
 ./run/make_variations_loop_newntuple.exe nominal 500 1400
 ./run/make_variations_loop_newntuple.exe jes 500 1400
 ./run/make_variations_loop_newntuple.exe btag_bc 500 1400

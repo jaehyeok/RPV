@@ -1,3 +1,4 @@
+cd ..
 ./run/plot_kappa.exe
 ./run/plot_kappa.exe jes Up 500 1400
 ./run/plot_kappa.exe jes Down 500 1400

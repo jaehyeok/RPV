@@ -16,14 +16,21 @@
 #include "utilities_macros_rpv.hpp"
 
 namespace {
-  TString lumi = "35.9";
+
+  /*TString lumi = "35.9"; //FIXME
+  TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
+
+  /*TString lumi = "41.5";
+  TString trigger = "trig_ht1050";// */
+
+  TString lumi = "59.7";
+  TString trigger = "trig_ht1050";// */
   
   bool showData = true; // Draw with/wihout data
   bool unblindSRs = false; // Draw data in (unblind) SRs
   TString json = "1";
-  TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450
 
-  bool makeNm1 = false; // Make only N=1 plots. Does not draw data
+  bool makeNm1 = true; // Make only N=1 plots. Does not draw data
   
   TString plot_type=".png";
   TString plot_style="CMSPaper_Preliminary";
@@ -32,14 +39,41 @@ namespace {
 using namespace std;
 
 int main(){
+  /*int year;
+  year = argv[1];
+
+  if(year == 2016){
+    TString lumi = "35.9";
+    TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450
+  }
+
+  if(year == 2017){
+    TString lumi = "41.529";
+    TString trigger = "trig_ht1050";
+  }
+
+  if(year == 2018){
+    TString lumi = "59.74";
+    TString trigger = "trig_ht1050";
+  }*/
+
 
   // ntuple folders
   //TString folder_dat = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/data/merged_rpvdata_st1000/";
   //TString folder_bkg = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvregion/";
   //TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
+ 
+  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/"; //FIXME
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";// */
+
+  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";// */
+
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/"; // */
 
   // Get file lists
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
@@ -93,7 +127,7 @@ int main(){
   vector<hfeats> hists;
 
   // Make analysis regions plots
-  if(!makeNm1){
+  if(makeNm1==true){
     // Set cuts
     TString basecut = "mj12>=500";
     //vector<TString> lepcuts = {"nleps==0&&ht>1500", "nleps==1&&ht>1200"};

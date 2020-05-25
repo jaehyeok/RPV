@@ -32,10 +32,10 @@ TString color(TString procname);
 float mjmin = 500;
 float mjmax = 1400;
 float binsize = 300;
-bool isv6 = true;
 bool nl0shape = true;
 
-float lumi = 35.9; // fb-1
+//float lumi = 35.9; // fb-1 FIXME
+float lumi = 41.5; // fb-1
 const int nbins = 52;
 int w_pdf_index = 0;
 
@@ -178,28 +178,32 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_rpvfitnbge0_v6/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_rpvfitnbge0_v6/";*/
 
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
+  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";//FIXME
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";// */
 
-  vector<TString> s_jetht = getRPVProcess(folder_dat,"data",isv6);
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
 
-  vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd",isv6);
-  vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar",isv6);
-  vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets",isv6);
-  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public",isv6);
+  vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
+
+  vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
+  vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar");
+  vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
+  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
   
-  vector<TString> s_rpv_m1000 = getRPVProcess(folder_sig,"rpv_m1000",isv6);
-  vector<TString> s_rpv_m1100 = getRPVProcess(folder_sig,"rpv_m1100",isv6);
-  vector<TString> s_rpv_m1200 = getRPVProcess(folder_sig,"rpv_m1200",isv6);
-  vector<TString> s_rpv_m1300 = getRPVProcess(folder_sig,"rpv_m1300",isv6);
-  vector<TString> s_rpv_m1400 = getRPVProcess(folder_sig,"rpv_m1400",isv6);
-  vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500",isv6);
-  vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600",isv6);
-  vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700",isv6);
-  vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800",isv6);
-  vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900",isv6);
-  vector<TString> s_rpv_m2000 = getRPVProcess(folder_sig,"rpv_m2000",isv6);
+  vector<TString> s_rpv_m1000 = getRPVProcess(folder_sig,"rpv_m1000");
+  vector<TString> s_rpv_m1100 = getRPVProcess(folder_sig,"rpv_m1100");
+  vector<TString> s_rpv_m1200 = getRPVProcess(folder_sig,"rpv_m1200");
+  vector<TString> s_rpv_m1300 = getRPVProcess(folder_sig,"rpv_m1300");
+  vector<TString> s_rpv_m1400 = getRPVProcess(folder_sig,"rpv_m1400");
+  vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
+  vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");
+  vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700");
+  vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");
+  vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900");
+  vector<TString> s_rpv_m2000 = getRPVProcess(folder_sig,"rpv_m2000");
   
   small_tree_rpv data((static_cast<std::string>(s_jetht.at(0))));
   

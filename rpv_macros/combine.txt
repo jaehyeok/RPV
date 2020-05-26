@@ -1,3 +1,0 @@
- <<< Combine >>> 
->>> method used is AsymptoticLimits
->>> random number generator seed is 123456

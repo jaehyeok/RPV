@@ -3,8 +3,8 @@
 namespace rpv
 {
 	//TString luminosity="35.9";//FIXME
-	TString luminosity="41.5";//FIXME
-	//TString luminosity="59.7";//FIXME
+	//TString luminosity="41.5";//FIXME
+	TString luminosity="59.7";//FIXME
 }
 
 TString filestring(TString dataset, bool isSkimmed=true)
@@ -60,8 +60,8 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		   files.push_back(folder+"*_TTJets_HT*");
 		   files.push_back(folder+"*_TTJets_Tune*");
 		   */
-		//files.push_back(folder+"*_TT_*"); //v4
-		files.push_back(folder+"TTJets_*"); //v6
+		//files.push_back(folder+"*_TT_*"); //
+		files.push_back(folder+"TTJets_*"); //
 		//std::cout<<folder+"TT_*"<<std::endl;
 	}
 	//Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection

@@ -39,30 +39,8 @@ namespace {
 using namespace std;
 
 int main(){
-  /*int year;
-  year = argv[1];
-
-  if(year == 2016){
-    TString lumi = "35.9";
-    TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450
-  }
-
-  if(year == 2017){
-    TString lumi = "41.529";
-    TString trigger = "trig_ht1050";
-  }
-
-  if(year == 2018){
-    TString lumi = "59.74";
-    TString trigger = "trig_ht1050";
-  }*/
-
 
   // ntuple folders
-  //TString folder_dat = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/data/merged_rpvdata_st1000/";
-  //TString folder_bkg = "/net/cms29/cms29r0/babymaker/babies/2017_01_27/mc/merged_rpvmc_rpvregion/";
-  //TString folder_sig = "/net/cms2/cms2r0/jaehyeokyoo/babies/2017_01_10/mc/T1tbs/";
- 
   /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/"; //FIXME
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";// */

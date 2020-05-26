@@ -35,8 +35,8 @@ float binsize = 300;
 bool nl0shape = true;
 
 //float lumi = 35.9; // fb-1 FIXME
-float lumi = 41.5; // fb-1
-//float lumi = 59.7; // fb-1
+//float lumi = 41.5; // fb-1
+float lumi = 59.7; // fb-1
 const int nbins = 52;
 int w_pdf_index = 0;
 
@@ -183,11 +183,11 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";// */
 
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
+  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";// */
 
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";// */
 

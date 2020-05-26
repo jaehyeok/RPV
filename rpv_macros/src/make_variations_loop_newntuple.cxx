@@ -35,8 +35,8 @@ float binsize = 300;
 bool nl0shape = true;
 
 //float lumi = 35.9; // fb-1 FIXME
-//float lumi = 41.5; // fb-1
-float lumi = 59.7; // fb-1
+float lumi = 41.5; // fb-1
+//float lumi = 59.7; // fb-1
 const int nbins = 52;
 int w_pdf_index = 0;
 
@@ -183,11 +183,11 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";// */
 
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";// */
 
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
+  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";// */
 
@@ -209,6 +209,8 @@ int main(int argc, char *argv[])
   vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");
   vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900");
   vector<TString> s_rpv_m2000 = getRPVProcess(folder_sig,"rpv_m2000");
+  vector<TString> s_rpv_m2100 = getRPVProcess(folder_sig,"rpv_m2100");
+  vector<TString> s_rpv_m2200 = getRPVProcess(folder_sig,"rpv_m2200");
   
   small_tree_rpv data((static_cast<std::string>(s_jetht.at(0))));
   
@@ -234,6 +236,8 @@ int main(int argc, char *argv[])
   small_tree_rpv rpv_m1800((static_cast<std::string>(s_rpv_m1800.at(0))));
   small_tree_rpv rpv_m1900((static_cast<std::string>(s_rpv_m1900.at(0))));
   small_tree_rpv rpv_m2000((static_cast<std::string>(s_rpv_m2000.at(0))));
+  small_tree_rpv rpv_m2100((static_cast<std::string>(s_rpv_m2100.at(0))));
+  small_tree_rpv rpv_m2200((static_cast<std::string>(s_rpv_m2200.at(0))));
 
   // open output root file
   TString shape = "_nl0shape";
@@ -261,6 +265,8 @@ int main(int argc, char *argv[])
   getSyst(rpv_m1800, variations, f, "signal_M1800");
   getSyst(rpv_m1900, variations, f, "signal_M1900");
   getSyst(rpv_m2000, variations, f, "signal_M2000");
+  getSyst(rpv_m2100, variations, f, "signal_M2100");
+  getSyst(rpv_m2200, variations, f, "signal_M2200");
 
   // close output root file
   f->Close();

@@ -29,6 +29,7 @@ bool pass
 bool json7p65
 bool json12p9
 bool fromGS
+bool trig_ht1050
 bool trig_ht900
 bool trig_jet450
 

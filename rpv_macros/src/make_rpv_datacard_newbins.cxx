@@ -12,6 +12,7 @@
 
 void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType);
 void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins);
+void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins);
 void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bins);
 void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts);
 void outputLognormalSystematics(std::ofstream &file);
@@ -258,7 +259,7 @@ int main(int argc, char *argv[])
 
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     if(argc>3)
-      file << "shapes * " << bins.at(ipair).at(ibin) << " ../../variations/" << inputname.Data() << " " << bins.at(ipair).at(ibin);    
+      file << "shapes * " << bins.at(ipair).at(ibin) << " ../variations/" << inputname.Data() << " " << bins.at(ipair).at(ibin);    
     else if(cardType=="mconly")
       file << "shapes * " << bins.at(ipair).at(ibin) << " sum_rescaled_mconly.root " << bins.at(ipair).at(ibin);    
     else if(cardType=="control")
@@ -309,10 +310,13 @@ int main(int argc, char *argv[])
   file << "\n------------------------------------" << std::endl;
 
   //output the normalization sharing between lepton bins
-  outputNormSharing(file, bins.at(ipair));
+  //outputNormSharing(file, bins.at(ipair));
 
   //output the MJ connection
-  outputMJConnection(file, bins.at(ipair));
+//  outputMJConnection(file, bins.at(ipair));
+  
+  //output if you want to see only normalizations between nleps
+  outputOnlyNormalization(file, bins.at(ipair));
 
   //output the W+jet normalization and Njets connection
   outputWjets(file, bins.at(ipair), cardType);
@@ -494,6 +498,64 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Prepend("normtt_highnjets          lnU  ");
       file << tmpLine.Data() << endl;
     }
+  }
+}
+
+void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins){
+  map<string, int> bindex;
+  for(uint ibin=0; ibin<nbins; ibin++){
+    bindex[bins[ibin]]=ibin;
+  }
+
+  TString line;
+  for(uint idash=0; idash<(nprocesses*nbins); idash++){
+    line+="-    ";
+  }
+
+  int numbin;
+  TString tmpLine;  
+  TString tmpbin;
+/*
+  for(auto jbin:bins){ // QCD 
+    tmpbin  = jbin;
+    tmpbin.Replace(0,3,"");
+    numbin = atoi(tmpbin);
+    tmpLine = line;
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+1),1,"5");
+    tmpLine.Prepend(Form("normqcd_bin%d             lnU  ",numbin));
+    file << tmpLine.Data() << endl;
+  }
+  for(auto jbin:bins){ // QCD 
+    tmpbin  = jbin;
+    tmpbin.Replace(0,3,"");
+    numbin = atoi(tmpbin);
+    tmpLine = line;
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+2),1,"5");
+    tmpLine.Prepend(Form("normttbar_bin%d           lnU  ",numbin));
+    file << tmpLine.Data() << endl;
+  }
+*/
+  for(auto jbin:bins){ // QCD 
+    tmpbin  = jbin;
+    tmpbin.Replace(0,3,"");
+    numbin = atoi(tmpbin);
+    if(numbin > 36) continue;
+    tmpLine = line;
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+1),1,"5");
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+1),1,"5");
+    tmpLine.Prepend(Form("normqcd_bin%d_bin%d       lnU  ",numbin,numbin+15));
+    file << tmpLine.Data() << endl;
+  }
+  for(auto jbin:bins){ // QCD 
+    tmpbin  = jbin;
+    tmpbin.Replace(0,3,"");
+    numbin = atoi(tmpbin);
+    if(numbin > 36) continue;
+    tmpLine = line;
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+2),1,"5");
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+2),1,"5");
+    tmpLine.Prepend(Form("normttbar_bin%d_bin%d     lnN  ",numbin,numbin+15));
+    file << tmpLine.Data() << endl;
   }
 }
 

@@ -1,6 +1,7 @@
 // rescales selected nuisance parameters and adds variations corresponding to statistical uncertainties
 #include "TString.h"
 #include "TFile.h"
+#include "TMath.h"
 #include "TH1.h"
 #include <iostream>
 
@@ -14,11 +15,18 @@ int main()
   std::string cardType="mconly"; 
   //    std::string cardType="control";
 
+    std::string rootfile_org("variations/output_nominal_newnt.root");
+    std::string rootfile("variations/output_nominal_rescaled.root");
+    if(cardType=="mconly") rootfile = "variations/output_nominal_mconly.root";
+    else if(cardType=="control") rootfile = "variations/output_nominal_control.root";
+    TFile *f = TFile::Open(rootfile_org.c_str(), "read");
+    TFile *g = TFile::Open(rootfile.c_str(), "recreate");
+/*
     std::string rootfile("variations/sum_rescaled.root");
     if(cardType=="mconly") rootfile = "variations/sum_rescaled_mconly.root";
     else if(cardType=="control") rootfile = "variations/sum_rescaled_control.root";
     TFile *f = TFile::Open(rootfile.c_str(), "update");
-
+*/
     // samples for which MC statistics should be considered
     std::vector<std::string> mcStatisticsList = {
       "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500", 
@@ -30,7 +38,7 @@ int main()
     // in the fit
     std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets"};
     // systematics for which the template should be rescaled for qcd, ttbar, and wjets
-    std::vector<std::string> rescaleList = {
+    /* std::vector<std::string> rescaleList = {
       "btag_bc", "btag_udsg",
       "gs",
       "jes", "jer",
@@ -39,8 +47,8 @@ int main()
       "qcd_flavor",
       "qcd_mur", "qcd_muf", "qcd_murf",
       "ttbar_mur", "ttbar_muf", "ttbar_murf",
-      "wjets_mur", "wjets_muf", "wjets_murf"};
-    
+      "wjets_mur", "wjets_muf", "wjets_murf"}; */
+    std::vector<std::string> rescaleList = {}; 
     // signal list
     std::vector<std::string> signalList = 
     {
@@ -48,37 +56,48 @@ int main()
       "signal_M1500", 
       "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000"};
     std::vector<std::string> signalRescaleList = {
-      "gs"
+      //"gs"
     };
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
-    
+  
     // Bins
     std::vector<std::string> binNames = { 
-      "bin0", "bin1", "bin2",                     // bins for control region fit
-      "bin3", "bin4", "bin5",                     // bins for control region fit
-      //"bin6", "bin7", "bin8", "bin9",           // lower mj bins
-      "bin10", "bin11", "bin12",                  // signal bins
-      "bin13", "bin14", "bin15","bin16","bin17",  // signal bins
-      "bin18", "bin19", "bin20","bin21"};         // signal bins
+      "bin22", "bin23", "bin24",                  // bins for control region fit
+      "bin25", "bin26", "bin27",                  // bins for control region fit
+      "bin28", "bin29", "bin30",                  // signal bins
+      "bin31", "bin32", "bin33",
+      "bin34", "bin35", "bin36",                   
+      "bin37", "bin38", "bin39",                  // 0 lepton bins
+      "bin40", "bin41", "bin42",
+      "bin43", "bin44", "bin45",
+      "bin46", "bin47", "bin48",
+      "bin49", "bin50", "bin51"};                 // signal bins
     std::vector<std::string> blindedBins={};      // bins where data_obs = sum of bkg mc
-    if(cardType=="control") blindedBins = {
-        "bin10", "bin12",
-        "bin13", "bin14", "bin15", "bin17", 
-        "bin18", "bin19", "bin20", "bin21"};         // signal bins
+    if(cardType=="control") blindedBins = { 
+      "bin22", "bin23", "bin24",                  // bins for control region fit
+      "bin25",                                    // bins for control region fit
+      "bin28",                                    // signal bins
+      "bin31", 
+      "bin34",                   
+      "bin37", "bin38", "bin39",                  // 0 lepton bins
+      "bin40", 
+      "bin43", 
+      "bin46", 
+      "bin49" }; 
     else if (cardType=="mconly") blindedBins=binNames; 
     
     unsigned int nbins=binNames.size();
     
     // Add pdfs to the background (qcd, ttbar, wjets) and signal rescale list
     for(unsigned int i=0; i<100; i++) {
-      rescaleList.push_back("w_pdf"+std::to_string(i));
+      //rescaleList.push_back("w_pdf"+std::to_string(i));
       //      signalRescaleList.push_back("w_pdf"+std::to_string(i));
     }
-    
+    g->cd();
     for(unsigned int ibin=0; ibin<nbins; ibin++) { 
-
       TString binname(binNames.at(ibin).c_str());
-        f->cd(binname);
+      if(!g->GetDirectory(binname)) g->mkdir(binname);
+      g->cd(binname);
         for(unsigned int isyst=0; isyst<rescaleList.size(); isyst++) 
         {
             for(unsigned int idir=0; idir<upAndDown.size(); idir++) 
@@ -92,7 +111,6 @@ int main()
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
                     TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
-
                     std::cout << "Getting histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
@@ -166,16 +184,18 @@ int main()
                             + ttbar->GetBinContent(i)
                             + wjets->GetBinContent(i)
                             + other->GetBinContent(i)));
+		data_obs->SetBinError(i, TMath::Sqrt(data_obs->GetBinContent(i)));
             }
             //data_obs->Write("",TObject::kOverwrite);
             data_obs->Write();
         }
 
         // go back to the top left directory to start processing next bin
-        f->cd("/");
+        g->cd("/");
     }
 
-    f->Write();
+    g->Write();
+    g->Close();
     f->Close();
 
     return 0;

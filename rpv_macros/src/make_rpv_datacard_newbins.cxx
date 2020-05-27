@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
   // high njet, high MJ : bin 13 15
 
   std::vector<std::vector<std::string> > bins;
-
+/*
   std::vector<std::string> bins_cr_lowmj        = {"bin0", "bin1", "bin2"};
   std::vector<std::string> bins_cr_highmj       = {"bin3", "bin4", "bin5"};
   std::vector<std::string> bins_sr_lownj_lowmj  = {"bin16", "bin11"};
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
   std::vector<std::string> bins_sr_highnj_lowmj  = {"bin10", "bin12"};
   std::vector<std::string> bins_sr_highnj_highmj = {"bin13", "bin15"};
   std::vector<std::string> bins_sr_highnj_vhighmj = {"bin19", "bin21"};
-  
+  */
   std::vector<std::string> bins_cr_nb1_lownjets    = {"bin40","bin25"}; 
   std::vector<std::string> bins_cr_nb2_lownjets    = {"bin43","bin28"}; 
   std::vector<std::string> bins_cr_nb3_lownjets    = {"bin46","bin31"}; 

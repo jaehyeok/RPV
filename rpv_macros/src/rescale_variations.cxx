@@ -28,15 +28,16 @@ int main()
     TFile *f = TFile::Open(rootfile.c_str(), "update");
 */
     // samples for which MC statistics should be considered
-    std::vector<std::string> mcStatisticsList = {
+/*    std::vector<std::string> mcStatisticsList = {
       "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500", 
       "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000", 
       "qcd", "ttbar", "wjets", "other"};
-    
+*/
+    std::vector<std::string> mcStatisticsList = {};    
     // only QCD, ttbar, wjets shapes should be rescaled
     // as only these processes have a floating normalization
     // in the fit
-    std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets"};
+    std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets","other"};
     // systematics for which the template should be rescaled for qcd, ttbar, and wjets
     /* std::vector<std::string> rescaleList = {
       "btag_bc", "btag_udsg",
@@ -48,7 +49,7 @@ int main()
       "qcd_mur", "qcd_muf", "qcd_murf",
       "ttbar_mur", "ttbar_muf", "ttbar_murf",
       "wjets_mur", "wjets_muf", "wjets_murf"}; */
-    std::vector<std::string> rescaleList = {}; 
+    std::vector<std::string> rescaleList = {""}; 
     // signal list
     std::vector<std::string> signalList = 
     {
@@ -56,7 +57,7 @@ int main()
       "signal_M1500", 
       "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000"};
     std::vector<std::string> signalRescaleList = {
-      //"gs"
+      ""//"gs"
     };
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
   
@@ -110,16 +111,18 @@ int main()
 
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
+                    //TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
+                    TString histnameRescale(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));//, rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
                     std::cout << "Getting histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
-                    if(rescale->Integral()!=0) 
+/*                    if(rescale->Integral()!=0) 
                     {
                         rescale->Scale(nominal->Integral()/rescale->Integral());
                     }
-                    //rescale->Write("",TObject::kOverwrite);
-                    rescale->Write();
+*/
+                    rescale->Write("",TObject::kOverwrite);
+                   // rescale->Write();
                 }
             }
         }
@@ -129,16 +132,17 @@ int main()
                 for(unsigned int idir=0; idir<upAndDown.size(); idir++) {
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
-                    //	  histnameRescale = Form("%s/%s%s", binNames.at(ibin).c_str(), signalRescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str());
+                    //TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
+                    TString histnameRescale = Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str());//, upAndDown.at(idir).c_str());
                     std::cout << "Getting signal histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
-                    if(rescale->Integral()!=0) {
+/*                    if(rescale->Integral()!=0) {
                         rescale->Scale(nominal->Integral()/rescale->Integral());
                     }
-                    //rescale->Write("",TObject::kOverwrite);
-                    rescale->Write();
+*/
+                    rescale->Write("",TObject::kOverwrite);
+                    //rescale->Write();
                 }
             }
         } // end rescaling of signal systematics
@@ -166,8 +170,8 @@ int main()
 		up->Scale(nominal->Integral()/up->Integral());
 		down->Scale(nominal->Integral()/down->Integral());
 
-                up->Write();
-                down->Write();
+                //up->Write();
+                //down->Write();
             }
         }
 
@@ -186,8 +190,8 @@ int main()
                             + other->GetBinContent(i)));
 		data_obs->SetBinError(i, TMath::Sqrt(data_obs->GetBinContent(i)));
             }
-            //data_obs->Write("",TObject::kOverwrite);
-            data_obs->Write();
+            data_obs->Write("",TObject::kOverwrite);
+            //data_obs->Write();
         }
 
         // go back to the top left directory to start processing next bin

@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
         "N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}\\geq4"   
     };
 
-    //TFile* infile  = TFile::Open("variations/output_nominal_newnt_inclnb0.root", "READ");
+    //TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape.root", "READ");
     TFile* infile  = TFile::Open("variations/output_newnt_nl0shape.root", "READ");
    
     vector<vector<float>> kappa1;

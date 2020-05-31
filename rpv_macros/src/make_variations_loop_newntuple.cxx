@@ -35,9 +35,8 @@ float binsize = 300;
 bool nl0shape = true;
 
 //float lumi = 35.9; // fb-1 FIXME
-//float lumi = 41.5; // fb-1
+float lumi = 41.5; // fb-1
 //float lumi = 59.7; // fb-1
-float lumi = 137;
 const int nbins = 52;
 int w_pdf_index = 0;
 
@@ -169,28 +168,28 @@ int main(int argc, char *argv[])
    //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
    //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
    //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
-   //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_rpvfitnbge0/";
-   //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_rpvfitnbge0/";
-   //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_rpvfitnbge0/";
-   //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_02_21/merged_rpvfitnbge0/";
+   //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_norm/";
+   //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_norm/";
+   //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_03_25/merged_norm/";
+   //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v5/2020_02_21/merged_norm/";
    //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
    //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
 
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_rpvfitnbge0_v6/";
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_rpvfitnbge0_v6/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_rpvfitnbge0_v6/";*/
+  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_norm_v6/";
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_norm_v6/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_norm_v6/";*/
 
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";//FIXME
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0_sys_v1-1/";// */
+  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";//FIXME
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";// */
 
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_rpvfitnbge0/";// */
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";// */
 
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_rpvfitnbge0/";// */
+  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";// */
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 

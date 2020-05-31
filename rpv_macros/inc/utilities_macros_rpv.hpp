@@ -3,8 +3,8 @@
 namespace rpv
 {
 	//TString luminosity="35.9";//FIXME
-	//TString luminosity="41.5";//FIXME
-	TString luminosity="59.7";//FIXME
+	TString luminosity="41.5";//FIXME
+	//TString luminosity="59.7";//FIXME
 }
 
 TString filestring(TString dataset, bool isSkimmed=true)
@@ -96,19 +96,6 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"ZJetsToNuNu_HT-*");
 	}
 	else if(process=="other"){
-		/*			files.push_back(folder+"*_DYJetsToLL_M-50_HT-*");
-					files.push_back(folder+"*_TTTT_*");
-					files.push_back(folder+"*_TTWJetsToLNu_*");
-					files.push_back(folder+"*_TTZToQQ_*");
-					files.push_back(folder+"*_TTZToLLNuNu_*");
-					files.push_back(folder+"*_WZ_*"); 
-					files.push_back(folder+"*_ZZ_*"); 
-					files.push_back(folder+"*_WW_*"); 
-					files.push_back(folder+"*_WZZ_*"); 
-					files.push_back(folder+"*_WWZ_*"); 
-					files.push_back(folder+"*_ZZZ_*"); 
-					files.push_back(folder+"*_WWW_*"); 
-					*/
 		files.push_back(folder+"DYJetsToLL_M-50_HT-*");
 		files.push_back(folder+"TTTT_*");
 		files.push_back(folder+"TTWJetsToLNu_*");
@@ -150,10 +137,6 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 	return files;
 }
 
-
-//
-//
-//
 bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
 {
 	bool pass = false;

@@ -36,6 +36,8 @@ if len(sys.argv) == 2:
 	c.cd()
 	hist.SetTitle(exp50)
 	hist.SetStats(0)
+	hist.SetMarkerSize(2);
 	hist.Draw("colz text")
-	c.Print("result.pdf")
+	c.SetLogz();
+	c.Print("results_"+str(mass)+"/result.pdf")
 	g.close()

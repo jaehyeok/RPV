@@ -3,8 +3,8 @@
 namespace rpv
 {
 	//TString luminosity="35.9";//FIXME
-	TString luminosity="41.5";//FIXME
-	//TString luminosity="59.7";//FIXME
+	//TString luminosity="41.5";//FIXME
+	TString luminosity="59.7";//FIXME
 }
 
 TString filestring(TString dataset, bool isSkimmed=true)

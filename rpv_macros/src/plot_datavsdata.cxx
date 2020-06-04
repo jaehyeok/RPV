@@ -18,7 +18,7 @@
 
 namespace {
   TString luminosity="1.";
-  TString plot_type=".pdf";
+  TString plot_type=".png";
   TString plot_style="CMSPaper_Preliminary";
 }
 
@@ -35,101 +35,131 @@ int main(){
 
 
 
-  
-  //Data
-   TString folder_dat_16 = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1200/";
+   //data
+   TString folder_dat_16 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
    vector<TString> s_data_2016 = getRPVProcess(folder_dat_16,"data");
 
-   vector<TString> s_data_2015;
-   s_data_2015.push_back(filestring("JetHT_Run2015C_25ns-05Oct2015-v1"));
-   s_data_2015.push_back(filestring("JetHT_Run2015D-05Oct2015-v1"));
-   s_data_2015.push_back(filestring("JetHT_Run2015D-PromptReco-v4"));
- 
+   TString folder_dat_17 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
+   vector<TString> s_data_2017 = getRPVProcess(folder_dat_17,"data");
+
+   TString folder_dat_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
+   vector<TString> s_data_2018 = getRPVProcess(folder_dat_18,"data");
+
    //MC
-   TString folder_bkg_16 = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1200/";
-   vector<TString> s_allBG_2016 = getRPVProcess(folder_bkg_16,"all_bg");
+   TString folder_bkg_16 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
+   vector<TString> s_wjets_2016 = getRPVProcess(folder_bkg_16,"wjets");
    vector<TString> s_ttbar_2016 = getRPVProcess(folder_bkg_16,"ttbar");
    vector<TString> s_qcd_2016 = getRPVProcess(folder_bkg_16,"qcd");
    vector<TString> s_other_2016 = getRPVProcess(folder_bkg_16,"other_public"); //This doesn't include W+jets
 
-   TString folder_bkg_15 = "/net/cms29/cms29r0/cawest/skims/ht1200/";
-   vector<TString> s_allBG_2015 = getRPVProcess(folder_bkg_15,"all_bg");
-   vector<TString> s_ttbar_2015 = getRPVProcess(folder_bkg_15,"ttbar");
-   vector<TString> s_qcd_2015 = getRPVProcess(folder_bkg_15,"qcd");
-   vector<TString> s_other_2015 = getRPVProcess(folder_bkg_15,"other_public"); //This doesn't include W+jets
+   TString folder_bkg_17 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
+   vector<TString> s_wjets_2017 = getRPVProcess(folder_bkg_17,"wjets");
+   vector<TString> s_ttbar_2017 = getRPVProcess(folder_bkg_17,"ttbar");
+   vector<TString> s_qcd_2017 = getRPVProcess(folder_bkg_17,"qcd");
+   vector<TString> s_other_2017 = getRPVProcess(folder_bkg_17,"other_public"); //This doesn't include W+jets
 
+   TString folder_bkg_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
+   vector<TString> s_wjets_2018 = getRPVProcess(folder_bkg_18,"wjets");
+   vector<TString> s_ttbar_2018 = getRPVProcess(folder_bkg_18,"ttbar");
+   vector<TString> s_qcd_2018 = getRPVProcess(folder_bkg_18,"qcd");
+   vector<TString> s_other_2018 = getRPVProcess(folder_bkg_18,"other_public"); //This doesn't include W+jets
   
 
    /*
-     if(rpv2015){
+     if(rpv2017){
     extraWeight = "w_pu_rpv/eff_trig";
-    cutandweight("stitch&&pass",extraWeight)
+    cutandweight("pass",extraWeight)
     csvm = "0.890";
   }
    */
 
 
-   //2015 MC weight
-   std::string extraWeight = "w_pu_rpv/eff_trig";
+   //2017 MC weight
+   std::string extraWeight = "weight";
 
   vector<sfeats> Samples;
 
-  Samples.push_back(sfeats(s_data_2016, "2016 data (7.7 fb^{-1})", kBlack,1,"trig[12] && pass && json7p65")); Samples.back().isData=true;
-  Samples.push_back(sfeats(s_data_2015, "2015 data (2.7 fb^{-1})", kBlue+2,1,"trig[12] && pass")); //Samples.back().isData=true; //
+  Samples.push_back(sfeats(s_data_2016, "2016 data (1 fb^{-1})", kBlack,1,"trig_ht900==1 && trig_jet450==1 && pass==1")); Samples.back().isData=true;
+  Samples.push_back(sfeats(s_data_2017, "2017 data (1 fb^{-1})", kBlue,1,"trig_ht1050==1 && pass==1")); //Samples.back().isData=true; //
+  Samples.push_back(sfeats(s_data_2018, "2018 data (1 fb^{-1})", kRed,1,"trig_ht1050==1 && pass==1")); //Samples.back().isData=true; //
   Samples.back().doBand = true;
   vector<int> data;
   data.push_back(0);
   data.push_back(1);
+  data.push_back(2);
   
-  Samples.push_back(sfeats(s_qcd_2016, "2016 QCD", kBlack,1,"stitch&&pass")); Samples.back().mcerr=true; Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_qcd_2015, "2015 QCD", kBlue+2,1,cutandweight("stitch&&pass",extraWeight))); 
+  Samples.push_back(sfeats(s_qcd_2016, "2016 QCD", kBlack,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true; Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_qcd_2017, "2017 QCD", kBlue,1,cutandweight("pass==1",extraWeight))); 
+  Samples.push_back(sfeats(s_qcd_2018, "2017 QC8", kRed,1,cutandweight("pass==1",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> qcd;
-  qcd.push_back(2);
   qcd.push_back(3);
+  qcd.push_back(4);
+  qcd.push_back(5);
 
-  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar", kBlack,1,"stitch&&pass")); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_ttbar_2015, "2015 ttbar", kBlue+2,1,cutandweight("stitch&&pass",extraWeight))); 
+  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar", kBlack,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_ttbar_2017, "2017 ttbar", kBlue,1,cutandweight("pass==1",extraWeight))); 
+  Samples.push_back(sfeats(s_ttbar_2018, "2018 ttbar", kRed,1,cutandweight("pass==1",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> ttbar;
-  ttbar.push_back(4);
-  ttbar.push_back(5);
+  ttbar.push_back(6);
+  ttbar.push_back(7);
+  ttbar.push_back(8);
   
-  Samples.push_back(sfeats(s_other_2016, "2016 other", kBlack,1,"stitch&&pass")); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_other_2015, "2015 other", kBlue+2,1,cutandweight("stitch&&pass",extraWeight))); 
+  Samples.push_back(sfeats(s_other_2016, "2016 other", kBlack,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_other_2017, "2017 other", kBlue,1,cutandweight("pass==1",extraWeight))); 
+  Samples.push_back(sfeats(s_other_2018, "2018 other", kRed,1,cutandweight("pass==1",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> other;
-  other.push_back(6);
-  other.push_back(7);
+  other.push_back(9);
+  other.push_back(10);
+  other.push_back(11);
   
-  Samples.push_back(sfeats(s_allBG_2016, "2016 all BG", kBlack,1,"stitch&&pass")); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_allBG_2015, "2015 all BG", kBlue+2,1,cutandweight("stitch&&pass",extraWeight))); 
+  Samples.push_back(sfeats(s_wjets_2016, "2016 all Bkg", kBlack,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_wjets_2017, "2017 all Bkg", kBlue,1,cutandweight("pass==1",extraWeight))); 
+  Samples.push_back(sfeats(s_wjets_2018, "2018 all Bkg", kRed,1,cutandweight("pass==1",extraWeight))); 
   Samples.back().doBand = true;
-  vector<int> allbg;
-  allbg.push_back(8);
-  allbg.push_back(9);
+  vector<int> wjets;
+  wjets.push_back(12);
+  wjets.push_back(13);
+  wjets.push_back(14);
   
 
 
   /*
    Samples.push_back(sfeats(s_2016, "Dilepton events", kBlack,1,"nonblind&&((nleps==2&&nbm>=0&&nbm<=2&&njets>=5)||(nleps==1&&nveto==1&&nbm>=1&&nbm<=2&&njets>=6&&mt>140))&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass")); Samples.back().isData=true;
-   Samples.push_back(sfeats(s_2016, "Single lepton events, m_{T} < 140", kBlue+2,1,"nonblind&&nleps==1&&nveto==0&&nbm>=1&&njets>=6&&mt<=140&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass"));   Samples.back().doBand = true;*/
+   Samples.push_back(sfeats(s_2016, "Single lepton events, m_{T} < 140", kBlue,1,"nonblind&&nleps==1&&nveto==0&&nbm>=1&&njets>=6&&mt<=140&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass"));   Samples.back().doBand = true;*/
   
 
 
   vector<hfeats> vars;
-  std::vector<TString> cuts = {"(nmus+nels)==0&&ht>1500&&njets>=4&&njets<=5","(nmus+nels)==0&&ht>1500&&njets>=6&&njets<=7","(nmus+nels)==1&&ht>1200&&njets>=4&&njets<=5"};
-  
+  std::vector<TString> cuts = {"(nmus+nels)==0&&ht>1200&&njets>=4&&njets<=5","(nmus+nels)==0&&ht>1200&&njets>=6&&njets<=7","(nmus+nels)==1&&ht>1200&&njets>=4&&njets<=5"};
+
   for(auto icut : cuts){
     vars.push_back(hfeats("nbm", 6, 0, 6, data, "N_{b}", icut,-1,"data"));
+    vars.push_back(hfeats("njets", 21, 0, 21, data, "NJets", icut,-1,"data"));
+    vars.push_back(hfeats("mj12", 100, 0, 4000, data, "mj12", icut,-1,"data"));
+    vars.push_back(hfeats("ht", 100, 0, 8000, data, "H_{t}", icut,-1,"data"));
     vars.back().normalize = true;
     vars.push_back(hfeats("nbm", 6, 0, 6, ttbar, "N_{b}", icut,-1,"ttbar"));
+    vars.push_back(hfeats("njets", 21, 0, 21, ttbar, "NJets", icut,-1,"ttbar"));
+    vars.push_back(hfeats("mj12", 100, 0, 4000, ttbar, "mj12", icut,-1,"ttbar"));
+    vars.push_back(hfeats("ht", 100, 0, 8000, ttbar, "H_{t}", icut,-1,"ttbar"));
     vars.back().normalize = true;
     vars.push_back(hfeats("nbm", 6, 0, 6, qcd, "N_{b}", icut,-1,"qcd"));
+    vars.push_back(hfeats("njets", 21, 0, 21, qcd, "NJets", icut,-1,"qcd"));
+    vars.push_back(hfeats("mj12", 100, 0, 4000, qcd, "mj12", icut,-1,"qcd"));
+    vars.push_back(hfeats("ht", 100, 0, 8000, qcd, "H_{t}", icut,-1,"qcd"));
     vars.back().normalize = true;
     vars.push_back(hfeats("nbm", 6, 0, 6, other, "N_{b}", icut,-1,"other"));
+    vars.push_back(hfeats("njets", 21, 0, 21, qcd, "NJets", icut,-1,"qcd"));
+    vars.push_back(hfeats("mj12", 100, 0, 4000, qcd, "mj12", icut,-1,"qcd"));
+    vars.push_back(hfeats("ht", 100, 0, 8000, qcd, "H_{t}", icut,-1,"qcd"));
     vars.back().normalize = true;
-    vars.push_back(hfeats("nbm", 6, 0, 6, allbg, "N_{b}", icut,-1,"allbg"));
+    vars.push_back(hfeats("nbm", 6, 0, 6, wjets, "N_{b}", icut,-1,"wjets"));
+    vars.push_back(hfeats("njets", 21, 0, 21, wjets, "NJets", icut,-1,"wjets"));
+    vars.push_back(hfeats("mj12", 100, 0, 4000, wjets, "mj12", icut,-1,"wjets"));
+    vars.push_back(hfeats("ht", 100, 0, 8000, wjets, "H_{t}", icut,-1,"wjets"));
     vars.back().normalize = true;
   }
 

@@ -20,10 +20,10 @@ namespace {
   /*TString lumi = "35.9"; //FIXME
   TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
 
-  TString lumi = "41.5";
+  /*TString lumi = "41.5";
   TString trigger = "trig_ht1050";// */
 
-  /*TString lumi = "59.7";
+  TString lumi = "59.7";
   TString trigger = "trig_ht1050";// */
   
   bool showData = true; // Draw with/wihout data
@@ -45,11 +45,11 @@ int main(){
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";// */
 
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
+  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";// */
 
-  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/"; // */
 

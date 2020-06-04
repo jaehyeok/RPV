@@ -13,10 +13,10 @@
 
 
 namespace{
-  double lumi = 7.7; //Need to change json bool mask as well for data
+  double lumi = 1.; //Need to change json bool mask as well for data
 
   TString outdir = "dmc_mjnjets";
-  TString plot_type= ".pdf";
+  TString plot_type= ".png";
 
   bool do1DPlots=true;
   bool do2DPlots=false;
@@ -30,8 +30,8 @@ void formatAndSaveHist(TH2D* hist);
 int main(){
   gErrorIgnoreLevel=kError+1;
 
-  TString mc = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/mc/skim_rpv_st1000/";
-  TString data = "/net/cms2/cms2r0/babymaker/babies/2016_08_10/data/skim_rpv_st1000/";
+  TString mc = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
+  TString data = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
 
   if(do1DPlots) make1DPlots(mc, data);
   if(do2DPlots) make2DPlots(mc, data);
@@ -120,7 +120,7 @@ void make1DPlots(TString folder_mc, TString folder_data){
   for(unsigned int ievent=0; ievent<data.GetEntries(); ievent++){
     data.GetEntry(ievent);
 
-    if(!(data.trig().at(12)&&data.pass()&&data.json7p65())) continue;
+    if(!(data.trig().at(12)&&data.pass())) continue;
 
     //Zero Lepton Selection
     if(data.nleps()==0&&data.ht()>1300&&data.nbm()>=1&&data.njets()>=4&&data.mj12()>300){
@@ -372,9 +372,9 @@ void make2DPlots(TString folder_mc, TString folder_data){
   for(unsigned int ievent=0; ievent<data.GetEntries(); ievent++){
     data.GetEntry(ievent);
 
-    if(!(data.trig().at(12)&&data.pass()&&data.json7p65())) continue;
+    if(!(data.trig().at(12)&&data.pass())) continue;
     //Zero Lepton Selection
-    if(data.nleps()==0&&data.ht()>1500&&data.nbm()>=1&&data.njets()>=4&&data.njets()<=7&&data.mj12()>300)
+    if(data.nleps()==0&&data.ht()>1200&&data.nbm()>=1&&data.njets()>=4&&data.njets()<=7&&data.mj12()>300)
       zLeptPlot_data->Fill(data.njets(),data.mj12());
     //One Lepton Selection
     if(data.nleps()==1&&data.ht()>1200&&data.nbm()>=1&&data.njets()>=4&&data.njets()<=5&&data.mj12()>300)
@@ -394,17 +394,17 @@ void make2DPlots(TString folder_mc, TString folder_data){
 
     if(!(bkg.stitch()&&bkg.pass())) continue;
     //Zero Lepton Selection
-    if(bkg.nleps()==0&&bkg.ht()>1500&&bkg.nbm()>=1&&bkg.njets()>=4&&bkg.njets()<=7&&bkg.mj12()>300)
+    if(bkg.nleps()==0&&bkg.ht()>1200&&bkg.nbm()>=1&&bkg.njets()>=4&&bkg.njets()<=7&&bkg.mj12()>300)
       zLeptPlot_mc->Fill(bkg.njets(),bkg.mj12(),lumi*bkg.weight());
     //One Lepton Selection
     if(bkg.nleps()==1&&bkg.ht()>1200&&bkg.nbm()>=1&&bkg.njets()>=4&&bkg.njets()<=5&&bkg.mj12()>300)
       oLeptPlot_mc->Fill(bkg.njets(),bkg.mj12(),lumi*bkg.weight());
     // Low HT //
     //Zero Lepton Selection
-    if(bkg.nleps()==0&&bkg.ht()>1300&&bkg.ht()<=1500&&bkg.nbm()>=1&&bkg.njets()>=4&&bkg.njets()<=7&&bkg.mj12()>300)
+    if(bkg.nleps()==0&&bkg.ht()>1200&&bkg.ht()<=1500&&bkg.nbm()>=1&&bkg.njets()>=4&&bkg.njets()<=7&&bkg.mj12()>300)
       zLeptPlot_mc_lowht->Fill(bkg.njets(),bkg.mj12(),lumi*bkg.weight());
     //One Lepton Selection
-    if(bkg.nleps()==1&&bkg.ht()>1000&&bkg.ht()<=1200&&bkg.nbm()>=1&&bkg.njets()>=4&&bkg.njets()<=5&&bkg.mj12()>300)
+    if(bkg.nleps()==1&&bkg.ht()>1200&&bkg.ht()<=1500&&bkg.nbm()>=1&&bkg.njets()>=4&&bkg.njets()<=5&&bkg.mj12()>300)
       oLeptPlot_mc_lowht->Fill(bkg.njets(),bkg.mj12(),lumi*bkg.weight());
   } 
 

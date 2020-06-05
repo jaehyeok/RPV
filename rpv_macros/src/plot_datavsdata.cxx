@@ -79,50 +79,40 @@ int main(){
 
   vector<sfeats> Samples;
 
-  Samples.push_back(sfeats(s_data_2016, "2016 data (1 fb^{-1})", kBlack,1,"trig_ht900==1 && trig_jet450==1 && pass==1")); Samples.back().isData=true;
+  Samples.push_back(sfeats(s_data_2016, "2016 data (1 fb^{-1})", kRed,1,"trig_ht900==1 && trig_jet450==1 && pass==1")); Samples.back().isData=true;
   Samples.push_back(sfeats(s_data_2017, "2017 data (1 fb^{-1})", kBlue,1,"trig_ht1050==1 && pass==1")); //Samples.back().isData=true; //
-  Samples.push_back(sfeats(s_data_2018, "2018 data (1 fb^{-1})", kRed,1,"trig_ht1050==1 && pass==1")); //Samples.back().isData=true; //
   Samples.back().doBand = true;
   vector<int> data;
   data.push_back(0);
   data.push_back(1);
-  data.push_back(2);
   
-  Samples.push_back(sfeats(s_qcd_2016, "2016 QCD", kBlack,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true; Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_qcd_2016, "2016 QCD", kRed,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true; Samples.back().isSig=true;
   Samples.push_back(sfeats(s_qcd_2017, "2017 QCD", kBlue,1,cutandweight("pass==1",extraWeight))); 
-  Samples.push_back(sfeats(s_qcd_2018, "2018 QCD", kRed,1,cutandweight("pass==1",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> qcd;
+  qcd.push_back(2);
   qcd.push_back(3);
-  qcd.push_back(4);
-  qcd.push_back(5);
 
-  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar", kBlack,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar", kRed,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
   Samples.push_back(sfeats(s_ttbar_2017, "2017 ttbar", kBlue,1,cutandweight("pass==1",extraWeight))); 
-  Samples.push_back(sfeats(s_ttbar_2018, "2018 ttbar", kRed,1,cutandweight("pass==1",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> ttbar;
-  ttbar.push_back(6);
-  ttbar.push_back(7);
-  ttbar.push_back(8);
+  ttbar.push_back(4);
+  ttbar.push_back(5);
   
-  Samples.push_back(sfeats(s_other_2016, "2016 other", kBlack,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_other_2016, "2016 other", kRed,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
   Samples.push_back(sfeats(s_other_2017, "2017 other", kBlue,1,cutandweight("pass==1",extraWeight))); 
-  Samples.push_back(sfeats(s_other_2018, "2018 other", kRed,1,cutandweight("pass==1",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> other;
-  other.push_back(9);
-  other.push_back(10);
-  other.push_back(11);
+  other.push_back(6);
+  other.push_back(7);
   
-  Samples.push_back(sfeats(s_wjets_2016, "2016 all Bkg", kBlack,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_wjets_2016, "2016 all Bkg", kRed,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
   Samples.push_back(sfeats(s_wjets_2017, "2017 all Bkg", kBlue,1,cutandweight("pass==1",extraWeight))); 
-  Samples.push_back(sfeats(s_wjets_2018, "2018 all Bkg", kRed,1,cutandweight("pass==1",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> wjets;
-  wjets.push_back(12);
-  wjets.push_back(13);
-  wjets.push_back(14);
+  wjets.push_back(8);
+  wjets.push_back(9);
   
 
 
@@ -133,7 +123,7 @@ int main(){
 
 
   vector<hfeats> vars;
-  std::vector<TString> cuts = {"(nmus+nels)==0&&ht>1200&&njets>=4&&njets<=5","(nmus+nels)==0&&ht>1200&&njets>=6&&njets<=7","(nmus+nels)==1&&ht>1200&&njets>=4&&njets<=5"};
+  std::vector<TString> cuts = {"ht>1200&&njets>=4&&njets<=5","ht>1200&&njets>=6&&njets<=7","ht>1200&&8<=njets"};
 
   for(auto icut : cuts){
     vars.push_back(hfeats("nbm", 6, 0, 6, data, "N_{b}", icut,-1,"data"));

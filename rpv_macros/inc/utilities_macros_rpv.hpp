@@ -53,16 +53,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 	}
 	// For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
 	else if(process=="ttbar"){
-		/*
-		   files.push_back(folder+"*_TTJets_DiLept_Tune*");
-		   files.push_back(folder+"*_TTJets_SingleLeptFromT_Tune*");
-		   files.push_back(folder+"*_TTJets_SingleLeptFromTbar_Tune*");
-		   files.push_back(folder+"*_TTJets_HT*");
-		   files.push_back(folder+"*_TTJets_Tune*");
-		   */
-		//files.push_back(folder+"*_TT_*"); //
 		files.push_back(folder+"TTJets_*"); //
-		//std::cout<<folder+"TT_*"<<std::endl;
 	}
 	//Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
 	else if(process=="ttbar_2l"){
@@ -80,12 +71,10 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 	}
 	else if(process=="qcd"){
 		files.push_back(folder+"QCD_*"); //v5
-		//files.push_back(folder+"*_QCD_HT*"); //v4
 	}
 	// For 0 or 1 lepton wjets apply a ntruleps cut at the sfeat level
 	else if(process=="wjets"){
-		files.push_back(folder+"WJetsToLNu_*"); // v5
-		// files.push_back(folder+"*_WJetsToLNu_*"); // v4
+		files.push_back(folder+"WJetsToLNu*"); // v5
 		files.push_back(folder+"WJetsToQQ*");
 	}
 	else if(process=="singlet"){

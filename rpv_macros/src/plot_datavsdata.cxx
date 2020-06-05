@@ -90,7 +90,7 @@ int main(){
   
   Samples.push_back(sfeats(s_qcd_2016, "2016 QCD", kBlack,1,cutandweight("pass==1",extraWeight))); Samples.back().mcerr=true; Samples.back().isSig=true;
   Samples.push_back(sfeats(s_qcd_2017, "2017 QCD", kBlue,1,cutandweight("pass==1",extraWeight))); 
-  Samples.push_back(sfeats(s_qcd_2018, "2017 QC8", kRed,1,cutandweight("pass==1",extraWeight))); 
+  Samples.push_back(sfeats(s_qcd_2018, "2018 QCD", kRed,1,cutandweight("pass==1",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> qcd;
   qcd.push_back(3);
@@ -152,9 +152,9 @@ int main(){
     vars.push_back(hfeats("ht", 100, 0, 8000, qcd, "H_{t}", icut,-1,"qcd"));
     vars.back().normalize = true;
     vars.push_back(hfeats("nbm", 6, 0, 6, other, "N_{b}", icut,-1,"other"));
-    vars.push_back(hfeats("njets", 21, 0, 21, qcd, "NJets", icut,-1,"qcd"));
-    vars.push_back(hfeats("mj12", 100, 0, 4000, qcd, "mj12", icut,-1,"qcd"));
-    vars.push_back(hfeats("ht", 100, 0, 8000, qcd, "H_{t}", icut,-1,"qcd"));
+    vars.push_back(hfeats("njets", 21, 0, 21, other, "NJets", icut,-1,"other"));
+    vars.push_back(hfeats("mj12", 100, 0, 4000, other, "mj12", icut,-1,"other"));
+    vars.push_back(hfeats("ht", 100, 0, 8000, other, "H_{t}", icut,-1,"other"));
     vars.back().normalize = true;
     vars.push_back(hfeats("nbm", 6, 0, 6, wjets, "N_{b}", icut,-1,"wjets"));
     vars.push_back(hfeats("njets", 21, 0, 21, wjets, "NJets", icut,-1,"wjets"));

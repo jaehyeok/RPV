@@ -39,10 +39,10 @@ int main(){
    TString folder_dat_16 = "/xrootd_user/jaehyeok/xrootd/2016v6/2020_05_31/norm_rpvfitnbge0/";
    vector<TString> s_data_2016 = getRPVProcess(folder_dat_16,"data");
 
-   TString folder_dat_17 = "/xrootd_user/jaehyeok/xrootd/2017v6/2020_05_31/norm_rpvfitnbge0//";
+   TString folder_dat_17 = "/xrootd_user/jaehyeok/xrootd/2017v6/2020_05_31/norm_rpvfitnbge0/";
    vector<TString> s_data_2017 = getRPVProcess(folder_dat_17,"data");
 
-   TString folder_dat_18 = "/xrootd_user/jaehyeok/xrootd/2018v6/2020_05_31/norm_rpvfitnbge0/ ";
+   TString folder_dat_18 = "/xrootd_user/jaehyeok/xrootd/2018v6/2020_05_31/norm_rpvfitnbge0/";
    vector<TString> s_data_2018 = getRPVProcess(folder_dat_18,"data");
 
    //MC

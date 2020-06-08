@@ -300,6 +300,14 @@ vector<double> LinearSpacing(size_t npts, double low, double high){
   return pts;
 }
 
+vector<TString> folder_year(TString year){
+  vector<TString> ret;
+  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+  return ret;
+}
+
 //#ifndef INT_ROOT
 //using namespace fastjet;
 //bool greater_m(const PseudoJet &a, const PseudoJet &b){

@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
 	small_tree_rpv events((static_cast<std::string>(s_proc.at(0))));
 	for(unsigned int iproc=1; iproc<s_proc.size(); iproc++) events.Add((static_cast<std::string>(s_proc.at(iproc))));
-	TFile *f = new TFile("trig_eff.root","recreate");
+	TFile *f = new TFile("plots/trig_eff.root","recreate");
 	make_te(events, f, year, procname);
 	f->Close();
 }
@@ -64,6 +64,8 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 	TH1D* h1den[4];
 	TH1D* h1num[4];
 	TH1D* h1eff[4];
+
+	f->cd();
 
 	float min[4] = {0,500,3.5,-0.5};
 	float max[4] = {2000,2000,15.5,15.5};
@@ -128,9 +130,11 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 			else if(year=="2017"||year=="2018") trig=(tree.trig_ht1050());
 			h1den[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight);
 			h1num[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight*trig);
-			h1den[ibin]->Write();
-			h1num[ibin]->Write();
 		}
+	}
+	for(unsigned int ibin=0; ibin<4; ibin++){
+		h1den[ibin]->Write();
+		h1num[ibin]->Write();
 	}	
 }
 

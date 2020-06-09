@@ -55,8 +55,9 @@ int main(int argc, char *argv[])
   ioctl(0,TIOCGWINSZ, &w);
   int cols = w.ws_col;
 
+  TString year;
   //cout << cols << endl;
-
+  cout<<argc<<endl;
   //
   TString test = argv[1];
   TString variations = "nominal";
@@ -66,8 +67,9 @@ int main(int argc, char *argv[])
     return 1;
   }
   else if(test == "--help" && argc<3){
-    cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [MJ minimum] [MJ maximum]" << endl;
-    cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [0 Lepton Shape on/off] [MJ minimum] [MJ maximum]" << endl;
+    cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [MJ minimum] [MJ maximum] [year]" << endl;
+    cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [MJ minimum] [MJ maximum] [year] [luminosity]" << endl;
+    cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [0 Lepton Shape on/off] [MJ minimum] [MJ maximum] [year] [luminosity]" << endl;
     return 1;
   }
   else if(argc<3) 
@@ -109,12 +111,11 @@ int main(int argc, char *argv[])
 	cout << endl;
     }
   }
-  else if(argc==4)
+  else if(argc==5)
   {
   cout << argv[0] << endl;
   cout << argv[1] << endl;
-  cout << "Luminosity        : " << lumi << "fb-1" << endl;
-    variations = argv[1];  
+  variations = argv[1];  
     if(variations=="w_pdf")
     {
       w_pdf_index = atoi(argv[2]);  
@@ -127,8 +128,62 @@ int main(int argc, char *argv[])
 //      onoff=argv[2];
 	mjmin=atof(argv[2]);
 	mjmax=atof(argv[3]);
+        year =argv[4];
+        cout<<year<<endl;
+        if(year=="2016") lumi = 35.9;
+        else if(year=="2017") lumi = 41.5;
+        else if(year=="2018") lumi = 59.7;
+        cout << "Luminosity        : " << lumi << "fb-1" << endl;
         if(onoff=="off") nl0shape = false; 
-        cout << "There are only 3 arguments! 0 Lepton shape is entered as on..." << endl;
+        cout << "There are only 5 arguments! 0 Lepton shape is entered as on..." << endl;
+        cout << "Running variation : " << variations << endl;
+	cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
+//	cout << "MJ minimum        : " << mjmin << endl;
+//	cout << "MJ maximum        : " << mjmax << endl;
+	binsize = (mjmax-mjmin)/3;
+	cout << "Bins distribution : [ " << mjmin << ", " << mjmin + binsize << ", " << mjmin + 2*binsize << " ]" << endl;
+    } 
+  }
+  else if(argc==6)
+  {
+  cout << argv[0] << endl;
+  cout << argv[1] << endl;
+  variations = argv[1]; 
+  TString temp = argv[2]; 
+    if(variations=="w_pdf")
+    {
+      w_pdf_index = atoi(argv[2]);  
+      cout << "Running variation : " << variations << endl;
+      cout << " with w_pdf index " << w_pdf_index; 
+      cout << endl; 
+    }
+    else if(temp=="on"||temp=="off"){
+        onoff=argv[2];
+	mjmin=atof(argv[3]);
+	mjmax=atof(argv[4]);
+        year = argv[5];
+        if(year=="2016") lumi = 35.9;
+        else if(year=="2017") lumi = 41.5;
+        else if(year=="2018") lumi = 59.7;
+        cout << "Luminosity        : " << lumi << "fb-1" << endl;
+        if(onoff=="off") nl0shape = false; 
+        cout << "Running variation : " << variations << endl;
+	cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
+//	cout << "MJ minimum        : " << mjmin << endl;
+//	cout << "MJ maximum        : " << mjmax << endl;
+	binsize = (mjmax-mjmin)/3;
+	cout << "Bins distribution : [ " << mjmin << ", " << mjmin + binsize << ", " << mjmin + 2*binsize << " ]" << endl;
+    }
+    else
+    {
+//      onoff=argv[2];
+	mjmin=atof(argv[2]);
+	mjmax=atof(argv[3]);
+        year =argv[4];
+        lumi =atof(argv[5]);
+        cout << "Luminosity        : " << lumi << "fb-1" << endl;
+        if(onoff=="off") nl0shape = false; 
+        cout << "There are only 6 arguments! 0 Lepton shape is entered as on..." << endl;
         cout << "Running variation : " << variations << endl;
 	cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
 //	cout << "MJ minimum        : " << mjmin << endl;
@@ -141,7 +196,6 @@ int main(int argc, char *argv[])
   {
   cout << argv[0] << endl;
   cout << argv[1] << endl;
-  cout << "Luminosity        : " << lumi << "fb-1" << endl;
     variations = argv[1];  
     if(variations=="w_pdf")
     {
@@ -155,6 +209,9 @@ int main(int argc, char *argv[])
         onoff=argv[2];
 	mjmin=atof(argv[3]);
 	mjmax=atof(argv[4]);
+        year = argv[5];
+        lumi =atof(argv[6]);
+        cout << "Luminosity        : " << lumi << "fb-1" << endl;
         if(onoff=="off") nl0shape = false; 
         cout << "Running variation : " << variations << endl;
 	cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
@@ -179,7 +236,7 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_norm_v6/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_norm_v6/";*/
 
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";//FIXME
+  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";//FIXME
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";// */
 
@@ -190,6 +247,11 @@ int main(int argc, char *argv[])
   /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";// */
+
+  TString folder_bkg = folder_year(year).at(0);
+  TString folder_dat = folder_year(year).at(1);
+  TString folder_sig = folder_year(year).at(2);
+
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 
@@ -242,7 +304,7 @@ int main(int argc, char *argv[])
   // open output root file
   TString shape = "_nl0shape";
   if(nl0shape == false) shape = "";
-  TFile *f = new TFile(Form("variations/output_%s_newnt%s.root", variations.Data(), shape.Data()), "recreate");
+  TFile *f = new TFile(Form("variations/output_%s_newnt%s_%s.root", variations.Data(), shape.Data(), year.Data()), "recreate");
 
   // Depending on the process, turn on/off variation
   

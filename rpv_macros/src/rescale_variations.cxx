@@ -7,20 +7,22 @@
 
 bool isBlinded(const std::string &binName, const std::vector<std::string>& blindBins);
 
-int main()
+int main(int argc, char* argv[])
 {
     // Choose the type of cards to produce: mconly, control, and default
     //    For signal injection studies(mconly), only want to use MC as nuisance parameters
     //    are different for data in sideband regions and MC
-  std::string cardType="mconly"; 
+    std::string cardType=argv[1]; 
   //    std::string cardType="control";
 
-    std::string rootfile_org("variations/output_nominal_newnt.root");
-    std::string rootfile("variations/output_nominal_rescaled.root");
-    if(cardType=="mconly") rootfile = "variations/output_nominal_mconly.root";
-    else if(cardType=="control") rootfile = "variations/output_nominal_control.root";
-    TFile *f = TFile::Open(rootfile_org.c_str(), "read");
-    TFile *g = TFile::Open(rootfile.c_str(), "recreate");
+    TString rootfile_org = argv[2];
+    rootfile_org = "variations/"+rootfile_org;
+    TString rootfile(rootfile_org+"_rescaled.root");
+    if(cardType=="mconly") rootfile = rootfile_org+"_mconly.root";
+    else if(cardType=="control") rootfile = rootfile_org+"control.root";
+    rootfile_org = rootfile_org+".root";
+    TFile *f = TFile::Open(rootfile_org.Data(), "read");
+    TFile *g = TFile::Open(rootfile.Data(), "recreate");
 /*
     std::string rootfile("variations/sum_rescaled.root");
     if(cardType=="mconly") rootfile = "variations/sum_rescaled_mconly.root";

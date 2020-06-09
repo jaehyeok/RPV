@@ -27,6 +27,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname);
 
 int main(int argc, char *argv[])
 {
+	gErrorIgnoreLevel=kError+1;
 	TString procname = argv[1]; 
 	TString year = argv[2];
 	TString folder;
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
 void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 	ioctl(0, TIOCGWINSZ, &w);
 	int cols = w.ws_col;
-	cout<<"A"<<endl;
+
 	TH1D* h1den[4];
 	TH1D* h1num[4];
 	TH1D* h1eff[4];
@@ -132,9 +133,13 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 			h1num[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight*trig);
 		}
 	}
+	
 	for(unsigned int ibin=0; ibin<4; ibin++){
+		h1eff[ibin] = dynamic_cast<TH1D*>(h1num[ibin]->Clone("h1_eff"));
+		h1eff[ibin]->Divide(h1num[ibin],h1den[ibin],1,1,"B");
 		h1den[ibin]->Write();
 		h1num[ibin]->Write();
+		h1eff[ibin]->Write();
 	}	
 }
 

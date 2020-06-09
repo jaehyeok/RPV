@@ -2,9 +2,9 @@
 
 namespace rpv
 {
-	//TString luminosity="35.9";//FIXME
+	TString luminosity="35.9";//FIXME
 	//TString luminosity="41.5";//FIXME
-	TString luminosity="59.7";//FIXME
+	//TString luminosity="59.7";//FIXME
 }
 
 TString filestring(TString dataset, bool isSkimmed=true)
@@ -34,7 +34,7 @@ std::string cutandweight(std::string cut, std::string weight)
 std::vector<TString> getRPVProcess(TString folder, TString process){
 	std::vector<TString> files;
 	if(process=="data"){
-		files.push_back(folder+"*JetHT*");
+		files.push_back(folder+"JetHT*");
 	}
 	else if(process.Contains("rpv")){
 		if(process=="rpv_m1000") files.push_back(folder+"*mGluino*1000*");

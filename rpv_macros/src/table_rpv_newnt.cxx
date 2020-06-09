@@ -167,7 +167,8 @@ int main()
     //TFile* infile  = TFile::Open("variations/output_nominal_newnt.root", "READ");
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2017.root", "READ");
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2018.root", "READ");
-    TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2016.root", "READ"); 
+    //TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape2016.root", "READ"); 
+    TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape2016.root", "READ"); 
  
     float data[52][3], qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3],
           sig1500[52][3], sig1600[52][3], sig1700[52][3], sig1800[52][3], sig1900[52][3], 

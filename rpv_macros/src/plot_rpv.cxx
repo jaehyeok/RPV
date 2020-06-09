@@ -83,10 +83,10 @@ int main(){
   }
 
   string extraweight = "1";
-  Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("1&&pass",extraweight)));
-  Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("1&&pass",extraweight)));
-  Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("1&&pass",extraweight)));
-  Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("1&&pass",extraweight)));
+  Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("pass",extraweight)));
   /*
   Samples.push_back(sfeats(s_wjets, "W+jets, 0 l", ra4::c_wjets, 1, cutandweight("1&&pass&&nleps==0",extraweight)));
   Samples.push_back(sfeats(s_zjets, "Z+jets, 0 l", kBlack, 1, cutandweight("1&&pass",extraweight)));

@@ -176,8 +176,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       else chain[isam]->Project(histo[0][var][sam]->GetName(), samVariable, totCut);
       if(vars[var].addOverflow) 
 	histo[0][var][sam]->SetBinContent(vars[var].nbins,
-					  histo[0][var][sam]->GetBinContent(vars[var].nbins)+
-					  histo[0][var][sam]->GetBinContent(vars[var].nbins+1));
+	histo[0][var][sam]->GetBinContent(vars[var].nbins)+
+	histo[0][var][sam]->GetBinContent(vars[var].nbins+1));
       
      
       nentries[sam] = histo[0][var][sam]->Integral(1,vars[var].nbins);

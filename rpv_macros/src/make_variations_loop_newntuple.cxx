@@ -248,9 +248,9 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";// */
 
-  TString folder_bkg = folder_year(year).at(0);
-  TString folder_dat = folder_year(year).at(1);
-  TString folder_sig = folder_year(year).at(2);
+  folder_bkg = folder_year(year).at(0);
+  folder_dat = folder_year(year).at(1);
+  folder_sig = folder_year(year).at(2);
 
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");

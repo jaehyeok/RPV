@@ -300,11 +300,18 @@ vector<double> LinearSpacing(size_t npts, double low, double high){
   return pts;
 }
 
-vector<TString> folder_year(TString year){
+vector<TString> folder_year(TString year, bool te){
   vector<TString> ret;
-  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
-  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
-  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+  if(te){
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
+  }
+  else{
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+  }
   return ret;
 }
 

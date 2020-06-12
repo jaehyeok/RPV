@@ -11,6 +11,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TGraphErrors.h"
+#include "TGaxis.h"
 #include "TStyle.h"
 #include "TMath.h"
 
@@ -33,12 +34,13 @@ int main(int argc, char *argv[])
 	TString folder;
 	vector<TString> s_proc;
 	if(procname == "data"){ 
-		folder = folder_year(year).at(1);
+		folder = folder_year(year,true).at(1);
+		vector<TString> s_singlemuon = getRPVProcess(folder,"data_te");
 		vector<TString> s_jetht = getRPVProcess(folder,"data");
-		s_proc = s_jetht; 
+		s_proc = s_singlemuon; 
 	}
 	if(procname == "mc"){
-		folder = folder_year(year).at(0);
+		folder = folder_year(year,true).at(0);
 		vector<TString> s_qcd = getRPVProcess(folder,"qcd");
 		vector<TString> s_tt = getRPVProcess(folder,"ttbar");
 		vector<TString> s_wjets = getRPVProcess(folder,"wjets");
@@ -53,7 +55,7 @@ int main(int argc, char *argv[])
 
 	small_tree_rpv events((static_cast<std::string>(s_proc.at(0))));
 	for(unsigned int iproc=1; iproc<s_proc.size(); iproc++) events.Add((static_cast<std::string>(s_proc.at(iproc))));
-	TFile *f = new TFile("plots/trig_eff.root","recreate");
+	TFile *f = new TFile("plots/trig_eff"+year+"_"+procname+".root","recreate");
 	make_te(events, f, year, procname);
 	f->Close();
 }
@@ -65,17 +67,25 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 	TH1D* h1den[4];
 	TH1D* h1num[4];
 	TH1D* h1eff[4];
+	TH1D* h1innum[4];
+	TH1D* h1ineff[4];
+	TCanvas* c[4];
 
 	f->cd();
 
 	float min[4] = {0,500,3.5,-0.5};
 	float max[4] = {2000,2000,15.5,15.5};
 	int nbins[4] = {20,15,12,16};
+	TString var[4] = {"H_{T}", "M_{J}", "N_{Jets}","N_b"};
 
 	for(int j=0;j<4;j++){
+		c[j] = new TCanvas(Form("c%d",j),Form("c%d",j),1600,800);
+		c[j]->Divide(2,1);
 		h1den[j] = new TH1D(Form("den%d",j),Form("den%d",j),nbins[j],min[j],max[j]);
 		h1num[j] = new TH1D(Form("num%d",j),Form("num%d",j),nbins[j],min[j],max[j]);
+		h1innum[j] = new TH1D(Form("innum%d",j),Form("innum%d",j),nbins[j],min[j],max[j]);
 		h1eff[j] = new TH1D(Form("eff%d",j),Form("eff%d",j),nbins[j],min[j],max[j]);
+		h1ineff[j] = new TH1D(Form("ineff%d",j),Form("ineff%d",j),nbins[j],min[j],max[j]);
 	}
 
 	for(unsigned int ientry=0; ientry<tree.GetEntries(); ientry++)
@@ -129,17 +139,102 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 			float trig;
 			if(year=="2016") trig=(tree.trig_ht900()||tree.trig_jet450());
 			else if(year=="2017"||year=="2018") trig=(tree.trig_ht1050());
+			if(ibin==0) nomweight = nomweight;
+			else nomweight = (tree.ht()>1200)*nomweight;
 			h1den[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight);
 			h1num[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight*trig);
+			h1innum[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight*(1-trig));
 		}
 	}
-	
 	for(unsigned int ibin=0; ibin<4; ibin++){
 		h1eff[ibin] = dynamic_cast<TH1D*>(h1num[ibin]->Clone("h1_eff"));
 		h1eff[ibin]->Divide(h1num[ibin],h1den[ibin],1,1,"B");
 		h1den[ibin]->Write();
 		h1num[ibin]->Write();
 		h1eff[ibin]->Write();
+
+		h1ineff[ibin] = dynamic_cast<TH1D*>(h1num[ibin]->Clone("h1_eff"));
+		h1ineff[ibin]->Divide(h1innum[ibin],h1den[ibin],1,1,"B");
+		h1innum[ibin]->Write();
+		h1ineff[ibin]->Write();
+
+		double denmax = h1den[ibin]->GetMaximum();
+	
+		c[ibin]->cd(1);
+
+		h1eff[ibin]->SetTitle(var[ibin]);
+		h1eff[ibin]->SetStats(0);
+		h1eff[ibin]->SetMaximum(1.2);
+		h1eff[ibin]->SetMinimum(0);
+		h1eff[ibin]->SetLineWidth(2);
+		h1eff[ibin]->SetLineColor(kBlack);
+		h1eff[ibin]->Draw("e");
+
+		TGaxis *ax1 = new TGaxis(max[ibin],0,max[ibin],1.2,0,denmax*3,10510,"+L");
+		ax1->SetLabelSize(0.03);
+		ax1->SetLabelFont(40);
+		ax1->SetTitle("Events");
+		ax1->SetTitleSize(0.04);
+		ax1->SetTitleFont(40);
+		ax1->SetTitleOffset(1.3);
+		ax1->Draw("same");
+
+		TLine *h1 = new TLine(min[ibin],1,max[ibin],1);
+		h1->SetLineColor(kGray);
+		h1->SetLineWidth(1);
+		h1->Draw("same");
+
+		h1den[ibin]->Scale(1/(3*denmax));
+		h1den[ibin]->SetLineWidth(2);
+		h1den[ibin]->SetLineColor(kRed);
+		h1den[ibin]->Draw("hist same");
+
+		h1num[ibin]->Scale(1/(3*denmax));
+		h1num[ibin]->SetFillStyle(3254);
+		h1num[ibin]->SetFillColor(kBlue);
+		h1num[ibin]->SetLineColor(kBlue);
+		h1num[ibin]->SetLineWidth(2);
+		h1num[ibin]->Draw("hist same");
+
+		h1eff[ibin]->Draw("same e");
+
+		c[ibin]->cd(2);
+
+		h1ineff[ibin]->SetTitle(var[ibin]);
+		h1ineff[ibin]->SetStats(0);
+		h1ineff[ibin]->SetMaximum(1.2);
+		h1ineff[ibin]->SetMinimum(0);
+		h1ineff[ibin]->SetLineWidth(2);
+		h1ineff[ibin]->SetLineColor(kBlack);
+		h1ineff[ibin]->Draw("e");
+
+		TGaxis *ax2 = new TGaxis(max[ibin],0,max[ibin],1.2,0,denmax*3,10510,"+L");
+		ax2->SetLabelSize(0.03);
+		ax2->SetLabelFont(40);
+		ax2->SetTitle("Events");
+		ax2->SetTitleSize(0.04);
+		ax2->SetTitleFont(40);
+		ax2->SetTitleOffset(1.3);
+		ax2->Draw("same");
+
+		TLine *h2 = new TLine(min[ibin],1,max[ibin],1);
+		h2->SetLineColor(kGray);
+		h2->SetLineWidth(1);
+		h2->Draw("same");
+
+		h1den[ibin]->Draw("hist same");
+
+		h1innum[ibin]->Scale(1/(3*denmax));
+		h1innum[ibin]->SetFillStyle(3254);
+		h1innum[ibin]->SetFillColor(kBlue);
+		h1innum[ibin]->SetLineColor(kBlue);
+		h1innum[ibin]->SetLineWidth(2);
+		h1innum[ibin]->Draw("hist same");
+
+		h1ineff[ibin]->Draw("same e");
+
+
+		c[ibin]->Print(Form("plots/trig_eff_%s_%s_%d.pdf",year.Data(),procname.Data(),ibin));
 	}	
 }
 

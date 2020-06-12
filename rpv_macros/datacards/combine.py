@@ -16,7 +16,7 @@ if len(sys.argv) == 2:
 			region = "sr"
 			if nbs=="nb1" or njets=="low":
 				region = "cr"
-			fname = dname+region+"_"+nbs+"_"+njets+"njets_nopdfoutput_nominal_mconly.dat"
+			fname = dname+region+"_"+nbs+"_"+njets+"njets_nopdfoutput_runII_mconly.dat"
 			os.system("datacards/combine.sh "+fname)
 			f = open("datacards/combine.txt","r")
 			res = f.read()
@@ -26,7 +26,7 @@ if len(sys.argv) == 2:
 			pline = nbs + " / " + njets + "jets : " + exp50 + "\n"
 			g.write(pline)
 			hist.SetBinContent(njets_list.index(njets)+1,nb_list.index(nbs)+1,float(exp50))
-	os.system("datacards/combine.sh datacards/datacard_M"+str(mass)+"_mconly_nopdfoutput_nominal_mconly.dat")
+	os.system("datacards/combine.sh datacards/datacard_M"+str(mass)+"_mconly_nopdfoutput_runII_mconly.dat")
 	f = open("datacards/combine.txt","r")
 	res = f.read()
 	f.close()

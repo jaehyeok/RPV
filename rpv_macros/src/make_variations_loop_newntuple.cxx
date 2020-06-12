@@ -23,7 +23,7 @@ using namespace std;
 
 struct winsize w;
 
-void getSyst(small_tree_rpv &trees, TString variations, TFile *f, TString procname);
+void getSyst(small_tree_rpv &trees, TString variations, TString year, TFile *f, TString procname);
 double addError(double error, double added_error);
 double divideErrors(double x, double y, double dx, double dy);
 TString color(TString procname);
@@ -248,9 +248,9 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";// */
 
-  TString folder_bkg = folder_year(year).at(0);
-  TString folder_dat = folder_year(year).at(1);
-  TString folder_sig = folder_year(year).at(2);
+  TString folder_bkg = folder_year(year,false).at(0);
+  TString folder_dat = folder_year(year,false).at(1);
+  TString folder_sig = folder_year(year,false).at(2);
 
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
@@ -309,32 +309,32 @@ int main(int argc, char *argv[])
   // Depending on the process, turn on/off variation
   
   // data
-  if(variations=="nominal") getSyst(data,  variations, f, "data_obs");
+  if(variations=="nominal") getSyst(data,  variations, year, f, "data_obs");
   
   // loop over a tree and get up/dawn shapes for all bins at once 
-  getSyst(qcd,       variations, f, "qcd");
-  getSyst(ttbar,     variations, f, "ttbar");
-  getSyst(wjets,     variations, f, "wjets");
-  getSyst(other,     variations, f, "other");
-  getSyst(rpv_m1000, variations, f, "signal_M1000");
-  getSyst(rpv_m1100, variations, f, "signal_M1100");
-  getSyst(rpv_m1200, variations, f, "signal_M1200");
-  getSyst(rpv_m1300, variations, f, "signal_M1300");
-  getSyst(rpv_m1400, variations, f, "signal_M1400");
-  getSyst(rpv_m1500, variations, f, "signal_M1500");
-  getSyst(rpv_m1600, variations, f, "signal_M1600");
-  getSyst(rpv_m1700, variations, f, "signal_M1700");
-  getSyst(rpv_m1800, variations, f, "signal_M1800");
-  getSyst(rpv_m1900, variations, f, "signal_M1900");
-  getSyst(rpv_m2000, variations, f, "signal_M2000");
-  getSyst(rpv_m2100, variations, f, "signal_M2100");
-  getSyst(rpv_m2200, variations, f, "signal_M2200");
+  getSyst(qcd,       variations, year, f, "qcd");
+  getSyst(ttbar,     variations, year, f, "ttbar");
+  getSyst(wjets,     variations, year, f, "wjets");
+  getSyst(other,     variations, year, f, "other");
+  getSyst(rpv_m1000, variations, year, f, "signal_M1000");
+  getSyst(rpv_m1100, variations, year, f, "signal_M1100");
+  getSyst(rpv_m1200, variations, year, f, "signal_M1200");
+  getSyst(rpv_m1300, variations, year, f, "signal_M1300");
+  getSyst(rpv_m1400, variations, year, f, "signal_M1400");
+  getSyst(rpv_m1500, variations, year, f, "signal_M1500");
+  getSyst(rpv_m1600, variations, year, f, "signal_M1600");
+  getSyst(rpv_m1700, variations, year, f, "signal_M1700");
+  getSyst(rpv_m1800, variations, year, f, "signal_M1800");
+  getSyst(rpv_m1900, variations, year, f, "signal_M1900");
+  getSyst(rpv_m2000, variations, year, f, "signal_M2000");
+  getSyst(rpv_m2100, variations, year, f, "signal_M2100");
+  getSyst(rpv_m2200, variations, year, f, "signal_M2200");
 
   // close output root file
   f->Close();
 } 
 
-void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procname)
+void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, TString procname)
 {
     ioctl(0,TIOCGWINSZ, &w);
     int cols = w.ws_col;
@@ -358,6 +358,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
     float cflavorValError = csv_weight->GetBinError(2);
     float lflavorValCentral = csv_weight->GetBinContent(3);
     float lflavorValError = csv_weight->GetBinError(3);
+
 
     if(procname=="qcd")  
     {
@@ -476,7 +477,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TFile *f, TString procnam
 	
 
         //if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig_jet450()||tree.trig_ht900()); // rereco FIXME
-        if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
+        if (procname=="data_obs" && year=="2016") nominalweight = tree.pass() * (tree.trig_ht900()||tree.trig_jet450());
+        else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
         //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
         else if (procname=="signal") nominalweight = nominalweight * 1; 
        

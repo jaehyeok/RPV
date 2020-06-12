@@ -36,6 +36,9 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 	if(process=="data"){
 		files.push_back(folder+"*JetHT*");
 	}
+	else if(process=="data_te"){
+		files.push_back(folder+"*SingleMuon*");
+	}
 	else if(process.Contains("rpv")){
 		if(process=="rpv_m1000") files.push_back(folder+"*mGluino*1000*");
 		else if(process=="rpv_m1100") files.push_back(folder+"*mGluino*1100*");

@@ -51,7 +51,7 @@ void get_count_and_uncertainty(TTree& tree,
                                double& count,
                                double& uncertainty);
 void AddPoint(TGraph& graph, const double x, const double y);
-std::vector<TString> folder_year(TString year);
+std::vector<TString> folder_year(TString year, bool te);
 
 template<class T>
 bool is_nan(const T &x){return x!=x;}

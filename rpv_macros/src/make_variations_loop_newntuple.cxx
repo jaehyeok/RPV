@@ -251,7 +251,8 @@ int main(int argc, char *argv[])
   TString folder_bkg = folder_year(year,false).at(0);
   TString folder_dat = folder_year(year,false).at(1);
   TString folder_sig = folder_year(year,false).at(2);
-
+  
+  cout<<folder_bkg<<endl;
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 
@@ -458,17 +459,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 	    cout.flush();
         }
         tree.GetEntry(ientry); 
-	int nbm_csv=0;
-	for(unsigned int k=0; k<tree.jets_pt().size(); k++)
-	{
-          if(tree.jets_islep().at(k)) continue;
-          if(tree.jets_pt().at(k)<30) continue;
-          if(abs(tree.jets_eta().at(k))>2.4) continue;
-          if(tree.jets_csv().at(k)<0.8484) continue;
-	  if(tree.jets_id().at(k)==false) continue;
-          nbm_csv++;
-	}
-
+	
         // 
         // Central weights
         // 

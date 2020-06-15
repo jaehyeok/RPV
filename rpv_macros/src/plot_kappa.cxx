@@ -27,20 +27,24 @@ int main(int argc, char *argv[])
     TString syst("nominal"), updo("X");
     float mjmin(500), mjmax(1400);
     TString arg(argv[1]);
-    if(argc<=2){
+    TString year;
+    if(argc<=3){
       cout << "if you want to know about arguments, use --help to get help" << endl;
     }
-    else if(argc<=2 && arg == "--help"){
-      cout << "./run/plot_kappa.exe [Systematics] [Up/Down] [MJ minimum] [MJ maximum]" << endl;
+    else if(argc<=3 && arg == "--help"){
+      cout << "./run/plot_kappa.exe [Systematics] [Up/Down] [year]" << endl;
+      cout << "./run/plot_kappa.exe [Systematics] [Up/Down] [MJ minimum] [MJ maximum] [year]" << endl;
       return 1;
     }
-    else if(argc>2){
+    else if(argc>3){
 
       syst = argv[1];
       updo = argv[2];
+      year = argv[3];
       if(argc>4){
         mjmin = atof(argv[3]);
         mjmax = atof(argv[4]);
+        year = argv[5];
       }
     }
     cout << "Systematics : " << syst <<endl;
@@ -180,7 +184,9 @@ int main(int argc, char *argv[])
 
     //TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape.root", "READ");
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2017.root", "READ");
-    TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2018.root", "READ");
+    //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2018.root", "READ");
+
+    TFile* infile = TFile::Open("variations/output_newnt_nl0shape_"+year+".root");
    
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;

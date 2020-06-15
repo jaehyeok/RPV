@@ -17,13 +17,13 @@
 
 namespace {
 
-  /*TString lumi = "35.9"; //FIXME
+  TString lumi = "35.9"; //FIXME
   TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
 
   /*TString lumi = "41.5";
   TString trigger = "trig_ht1050";// */
 
-  TString lumi = "59.7";
+  /*TString lumi = "59.7";
   TString trigger = "trig_ht1050";// */
   
   bool showData = true; // Draw with/wihout data
@@ -41,7 +41,7 @@ using namespace std;
 int main(){
 
   // ntuple folders
-  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/"; //FIXME
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/"; //FIXME
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";// */
 
@@ -49,7 +49,7 @@ int main(){
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";// */
 
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
+  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/"; // */
 
@@ -83,10 +83,10 @@ int main(){
   }
 
   string extraweight = "1";
-  Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("1&&pass",extraweight)));
-  Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("1&&pass",extraweight)));
-  Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("1&&pass",extraweight)));
-  Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("1&&pass",extraweight)));
+  Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("pass",extraweight)));
   /*
   Samples.push_back(sfeats(s_wjets, "W+jets, 0 l", ra4::c_wjets, 1, cutandweight("1&&pass&&nleps==0",extraweight)));
   Samples.push_back(sfeats(s_zjets, "Z+jets, 0 l", kBlack, 1, cutandweight("1&&pass",extraweight)));
@@ -110,8 +110,10 @@ int main(){
     TString basecut = "mj12>=500";
     //vector<TString> lepcuts = {"nleps==0&&ht>1500", "nleps==1&&ht>1200"};
     TString lepcuts = "nleps==1&&ht>1200";
+    //vector<TString> nbcuts = {"nbm==0","nbm==1"};
     vector<TString> nbcuts = {"nbm==0","nbm==1"};
-    vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8"};
+    //vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8"};
+    vector<TString> njetcuts = {"njets>=4&&njets<=5"};
 
     // Loop over cuts to make histograms
     TString cut = "";
@@ -142,7 +144,8 @@ int main(){
 	  cut = lepcuts + "&&" + inb + "&&" + injet + "&&" + basecut;
 	  
 	  // Define histograms
-	  hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cut));
+	  //hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cut));
+	  hists.push_back(hfeats("ht", 20, 1200, 2600, rpv_sam, "H_{T}", cut));
 	  if(showData) hists.back().normalize = true;	
 	}
       }

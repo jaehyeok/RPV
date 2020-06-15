@@ -35,8 +35,8 @@ float binsize = 300;
 bool nl0shape = true;
 
 //float lumi = 35.9; // fb-1 FIXME
-//float lumi = 41.5; // fb-1
-float lumi = 59.7; // fb-1
+float lumi = 41.5; // fb-1
+//float lumi = 59.7; // fb-1
 const int nbins = 52;
 int w_pdf_index = 0;
 
@@ -240,9 +240,9 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";// */
 
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";// */
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
+  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";// */
 
   /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
@@ -251,8 +251,6 @@ int main(int argc, char *argv[])
   TString folder_bkg = folder_year(year,false).at(0);
   TString folder_dat = folder_year(year,false).at(1);
   TString folder_sig = folder_year(year,false).at(2);
-  
-  cout<<folder_bkg<<endl;
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 

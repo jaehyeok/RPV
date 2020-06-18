@@ -15,6 +15,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
 void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins);
 void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bins);
 void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts);
+void outputkappaSystematics(std::ofstream &file);
 void outputLognormalSystematics(std::ofstream &file);
 void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> &bins, const std::string & signalBinName);
 // determine if a histogram has an entry for a given nB
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
 
   // signal is added later
   std::vector<std::string> processes = { "qcd", "ttbar", "wjets", "other"};
-  std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg",
+  std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg", "kappa"
 					                     "gs45", "gs67", "gs89", "gs10Inf",
 					                     //"jes", "jer",
 					                     /*"pileup",*/"lep_eff", "ttbar_pt",
@@ -320,6 +321,9 @@ int main(int argc, char *argv[])
 
   //output the W+jet normalization and Njets connection
   outputWjets(file, bins.at(ipair), cardType);
+
+  // output kappa systematics
+  outputkappaSystematics(file);
 
   // output shape systematics
 //  outputShapeSystematics(file, shapeSysts);
@@ -930,12 +934,12 @@ void outputLognormalSystematics(std::ofstream &file)
 
 }
 
-void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts)
+void outputshapesystematics(std::ofstream &file, const std::vector<std::string> shapesysts)
 {
-  for(unsigned int isyst=0; isyst<shapeSysts.size(); isyst++) {
-    file << shapeSysts.at(isyst) << "     shape     ";
-    if(shapeSysts.at(isyst).find("pdf")!=std::string::npos) {
-      // there are 100 NNPDF variations and so each needs to be scaled down by a factor 1/sqrt(100)
+  for(unsigned int isyst=0; isyst<shapesysts.size(); isyst++) {
+    file << shapesysts.at(isyst) << "     shape     ";
+    if(shapesysts.at(isyst).find("pdf")!=std::string::npos) {
+      // there are 100 nnpdf variations and so each needs to be scaled down by a factor 1/sqrt(100)
       for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
     }
     else {
@@ -943,6 +947,16 @@ void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> 
     }
     file << "\n";
   }
+}
+
+void outputkappaSystematics(std::ofstream &file)
+{
+    file << "kappa" << "                     shape     ";
+    for(unsigned int index=0; index<nbins*nprocesses; index++){
+      if(index%nprocesses==0) file << "-    ";
+      else file << "1.0" << "  ";
+    }
+    file << "\n";
 }
 
 // outputs MC statistical uncertainties

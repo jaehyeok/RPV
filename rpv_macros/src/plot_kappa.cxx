@@ -27,24 +27,26 @@ int main(int argc, char *argv[])
     TString syst("nominal"), updo("X");
     float mjmin(500), mjmax(1400);
     TString arg(argv[1]);
-    TString year;
+    TString year, filename;
     if(argc<=3){
       cout << "if you want to know about arguments, use --help to get help" << endl;
     }
-    else if(argc<=3 && arg == "--help"){
+    else if(argc<=4 && arg == "--help"){
       cout << "./run/plot_kappa.exe [Systematics] [Up/Down] [year]" << endl;
       cout << "./run/plot_kappa.exe [Systematics] [Up/Down] [MJ minimum] [MJ maximum] [year]" << endl;
       return 1;
     }
-    else if(argc>3){
+    else if(argc>4){
 
       syst = argv[1];
       updo = argv[2];
       year = argv[3];
-      if(argc>4){
+      filename = argv[4];
+      if(argc>5){
         mjmin = atof(argv[3]);
         mjmax = atof(argv[4]);
         year = argv[5];
+	filename = argv[6];
       }
     }
     cout << "Systematics : " << syst <<endl;
@@ -186,7 +188,7 @@ int main(int argc, char *argv[])
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2017.root", "READ");
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2018.root", "READ");
 
-    TFile* infile = TFile::Open("variations/output_newnt_nl0shape_"+year+".root");
+    TFile* infile = TFile::Open(filename,"READ");
    
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;
@@ -357,13 +359,18 @@ int main(int argc, char *argv[])
         }
       }
     }
-    
-    TFile *f = new TFile("plots/kappa_summary_"+syst+updo+".root","recreate");
+    TString outputname="plots/kappa_summary_"+syst+updo+".root";
+    if(filename.Contains("mconly")) outputname="plots/kappa_summary_"+syst+updo+"_mconly.root"; 
+    TFile *f = new TFile(outputname,"recreate");
+
+    TString s_mj1 = Form("%.0f",mjmin);
+    TString s_mj2 = Form("%.0f",mjmin+300);
+    TString s_mj3 = Form("%.0f",mjmin+600);
 
     TCanvas *c = new TCanvas("c", "c", 1200, 1400);
     c->Divide(1,4);
     c->cd(1);
-    h1_1l_summary1->SetTitle("#kappa (800-1100/500-800 GeV)");
+    h1_1l_summary1->SetTitle("#kappa ("+s_mj2+"-"+s_mj3+"/"+s_mj1+"-"+s_mj2+" GeV)");
     h1_1l_summary1->SetLineColor(kBlack);
     h1_1l_summary1->SetMarkerColor(kBlack);
     h1_1l_summary1->SetMarkerStyle(21);
@@ -373,7 +380,7 @@ int main(int argc, char *argv[])
     h1_1l_summary1->Draw("ep");
     h1_1l_summary1->Write();
     c->cd(2);
-    h1_1l_summary2->SetTitle("#kappa (1100-inf/500-800 GeV)");
+    h1_1l_summary2->SetTitle("#kappa ("+s_mj3+"-inf/"+s_mj1+"-"+s_mj2+" GeV)");
     h1_1l_summary2->SetLineColor(kBlack);
     h1_1l_summary2->SetMarkerColor(kBlack);
     h1_1l_summary2->SetMarkerStyle(21);
@@ -383,7 +390,7 @@ int main(int argc, char *argv[])
     h1_1l_summary2->Draw("ep");
     h1_1l_summary2->Write();
     c->cd(3);
-    h1_0l_summary1->SetTitle("#kappa (800-1100/500-800 GeV)");
+    h1_0l_summary1->SetTitle("#kappa ("+s_mj2+"-"+s_mj3+"/"+s_mj1+"-"+s_mj2+" GeV)");
     h1_0l_summary1->SetLineColor(kBlue);
     h1_0l_summary1->SetMarkerColor(kBlue);
     h1_0l_summary1->SetMarkerStyle(21);
@@ -393,7 +400,7 @@ int main(int argc, char *argv[])
     h1_0l_summary1->Draw("ep");
     h1_0l_summary1->Write();
     c->cd(4);
-    h1_0l_summary2->SetTitle("#kappa (1100-inf/500-800 GeV)");
+    h1_0l_summary2->SetTitle("#kappa ("+s_mj3+"-inf/"+s_mj1+"-"+s_mj2+" GeV)");
     h1_0l_summary2->SetLineColor(kBlue);
     h1_0l_summary2->SetMarkerColor(kBlue);
     h1_0l_summary2->SetMarkerStyle(21);

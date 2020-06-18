@@ -34,8 +34,9 @@ void printYieldBin(int nb, float data,
 //
 // main
 //
-int main()
+int main(int argc, char* argv[])
 {
+    TString inputName = argv[1];
     cout << " ........................... "<< endl; 
     cout << " .. I am making yield table " << endl; 
     cout << " ........................... "<< endl; 
@@ -168,7 +169,7 @@ int main()
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2017.root", "READ");
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2018.root", "READ");
     //TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape2016.root", "READ"); 
-    TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape2016.root", "READ"); 
+    TFile* infile  = TFile::Open(inputName, "READ"); 
  
     float data[52][3], qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3],
           sig1500[52][3], sig1600[52][3], sig1700[52][3], sig1800[52][3], sig1900[52][3], 
@@ -537,7 +538,7 @@ int main()
                     ttbar[tablebin][inb],
                     wjets[tablebin][inb],
                     other[tablebin][inb],
-                    sig1600[tablebin][inb],
+                    sig1900[tablebin][inb],
                     err[0][tablebin][inb],//*qcd[tablebin][inb],
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],
                     err[2][tablebin][inb],//*wjets[tablebin][inb],

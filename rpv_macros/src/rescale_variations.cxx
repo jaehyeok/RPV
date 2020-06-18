@@ -16,11 +16,10 @@ int main(int argc, char* argv[])
   //    std::string cardType="control";
 
     TString rootfile_org = argv[2];
-    rootfile_org = "variations/"+rootfile_org;
-    TString rootfile(rootfile_org+"_rescaled.root");
-    if(cardType=="mconly") rootfile = rootfile_org+"_mconly.root";
-    else if(cardType=="control") rootfile = rootfile_org+"control.root";
-    rootfile_org = rootfile_org+".root";
+    TString temp = rootfile_org;
+    TString rootfile(temp.ReplaceAll(".root","_rescaled.root"));
+    if(cardType=="mconly") rootfile = rootfile.ReplaceAll("_rescaled","_mconly");
+    else if(cardType=="control") rootfile = rootfile.ReplaceAll("_rescaled","_control");
     TFile *f = TFile::Open(rootfile_org.Data(), "read");
     TFile *g = TFile::Open(rootfile.Data(), "recreate");
 /*

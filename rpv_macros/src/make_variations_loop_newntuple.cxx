@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";// */
 
   TString folder_bkg = folder_year(year,false).at(0);
-  TString folder_dat = folder_year(year,false).at(1);
+  TString folder_dat = folder_year(year,false).at(3);
   TString folder_sig = folder_year(year,false).at(2);
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
@@ -302,8 +302,11 @@ int main(int argc, char *argv[])
 
   // open output root file
   TString shape = "_nl0shape";
+  TString temp = argv[2];
   if(nl0shape == false) shape = "";
-  TFile *f = new TFile(Form("variations/output_%s_newnt%s_%s.root", variations.Data(), shape.Data(), year.Data()), "recreate");
+  TString output_filename = Form("variations/output_%s_newnt%s_%s.root", variations.Data(), shape.Data(), year.Data());
+  if(argc==7) output_filename = Form("variations/output_%s_newnt%s_%s_%.0f.root",variations.Data(), shape.Data(), year.Data(), lumi);
+  TFile *f = new TFile(output_filename, "recreate");
 
   // Depending on the process, turn on/off variation
   

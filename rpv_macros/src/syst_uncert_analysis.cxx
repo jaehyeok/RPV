@@ -184,7 +184,7 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
   comp->Draw();
   comp->GetUpperPad()->SetLogy();
   comp->GetUpperRefYaxis()->SetTitle("Events");
-  comp->GetLowerRefYaxis()->SetTitle("Data/MC");
+  comp->GetLowerRefYaxis()->SetTitle("MC/Data");
   comp->GetUpperRefYaxis()->SetLabelSize(0.02);
   comp->GetLowerRefYaxis()->SetLabelSize(0.02);
   comp->GetLowerRefXaxis()->SetLabelSize(0.02);

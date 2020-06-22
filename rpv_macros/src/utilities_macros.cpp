@@ -486,7 +486,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       pad->SetLogy(1);
       pname = outfolder+"/log_lumi_"+vars[var].tag+plot_tag;
       if(vars[var].normalize) pname.ReplaceAll("/log_lumi","/log_norm");
-      if(!vars[var].skiplog && (vars[var].whichPlots.Contains("0") || vars[var].whichPlots.Contains("1"))) 
+      if(!vars[var].skiplog && (vars[var].whichPlots.Contains("0") || vars[var].whichPlots.Contains("1")))
         can.SaveAs(pname);
       pad->SetLogy(0);
  
@@ -561,7 +561,11 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     float minhisto(0), maxpad(minhisto + (maxhisto-minhisto)/(1-fracLeg));
     histo[1][var][0]->SetMinimum(minhisto);
     histo[1][var][0]->SetMaximum(maxpad);
-    histo[1][var][0]->Draw("axis same");
+    histo[1][var][0]->Draw("axis same");//FIXME
+    /*histo[1][var][0]->Draw("e same");//FIXME
+    histo[1][var][1]->Draw("same");//FIXME
+    histo[1][var][2]->Draw("same");//FIXME
+    histo[1][var][3]->Draw("same");//FIXME*/
     style.moveYAxisLabel(histo[1][var][0], maxpad, false);
     can.SetLogy(0);
     if(vars[var].cuts.Contains("abs(isr_tru_pt)")){

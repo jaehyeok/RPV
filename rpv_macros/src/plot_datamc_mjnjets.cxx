@@ -30,8 +30,8 @@ void formatAndSaveHist(TH2D* hist);
 int main(){
   gErrorIgnoreLevel=kError+1;
 
-  TString mc = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
-  TString data = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
+  TString mc = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
+  TString data = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
 
   if(do1DPlots) make1DPlots(mc, data);
   if(do2DPlots) make2DPlots(mc, data);
@@ -54,7 +54,8 @@ void make1DPlots(TString folder_mc, TString folder_data){
   TH1::SetDefaultSumw2(true);
   gStyle->SetOptStat(0);
 
-  double xbins[] = {300, 500, 800, 1000, 1500};
+  //double xbins[] = {300, 500, 800, 1000, 1500};
+  double xbins[] = {500, 800, 1100};
 
   // plots[data/mc][0/1 Lept][4-5/6-7 jets] --> 6-7 jets not used for 1-lepton
   vector<vector<vector<TH1D*> > > plots(2, vector<vector<TH1D*> >(2, vector<TH1D*>(2)));

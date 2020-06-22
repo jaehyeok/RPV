@@ -26,8 +26,8 @@ namespace {
   /*TString lumi = "59.7";
   TString trigger = "trig_ht1050";// */
   
-  bool showData = true; // Draw with/wihout data
-  bool unblindSRs = false; // Draw data in (unblind) SRs
+  bool showData = false; // Draw with/wihout data
+  bool unblindSRs = true; // Draw data in (unblind) SRs
   TString json = "1";
 
   bool makeNm1 = true; // Make only N=1 plots. Does not draw data
@@ -55,7 +55,7 @@ int main(){
 
   // Get file lists
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
-  vector<TString> s_rpv_m1500 = getRPVProcess(folder_sig,"rpv_m1500");
+  vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");
   vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700");
 
   //vector<TString> s_tt1l = getRPVProcess(folder_bkg,"ttbar_1l");
@@ -83,20 +83,13 @@ int main(){
   }
 
   string extraweight = "1";
+  //Samples.push_back(sfeats(s_rpv_m1600, "m1600", kRed, 1, cutandweight("pass",extraweight)));
+  //Samples.back().isSig = true;
   Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("pass",extraweight)));
-  /*
-  Samples.push_back(sfeats(s_wjets, "W+jets, 0 l", ra4::c_wjets, 1, cutandweight("1&&pass&&nleps==0",extraweight)));
-  Samples.push_back(sfeats(s_zjets, "Z+jets, 0 l", kBlack, 1, cutandweight("1&&pass",extraweight)));
-  Samples.push_back(sfeats(s_tt1l, "t#bar{t}, 1 l", ra4::c_tt_1l, 1, cutandweight("1&&pass&&nleps==1",extraweight)));
-  Samples.push_back(sfeats(s_tt2l, "t#bar{t}, 2 l", ra4::c_tt_2l, 1, cutandweight("1&&pass&&nleps==2",extraweight)));
-  Samples.push_back(sfeats(s_tthad, "t#bar{t}, 0 l", kTeal, 1, cutandweight("1&&pass&&nleps==0",extraweight)));
-  Samples.push_back(sfeats(s_wjets, "W+jets, 1 l", ra4::c_wjets, 1, cutandweight("1&&pass&&nleps==1",extraweight)));
-  Samples.push_back(sfeats(s_singlet, "Single t", ra4::c_singlet, 1, cutandweight("1&&pass",extraweight)));
-  Samples.push_back(sfeats(s_other, "Other", ra4::c_other, 1, cutandweight("1&&pass",extraweight)));
-  */
+
   // Loop over samples
   vector<int> rpv_sam;
   for(unsigned sam(0); sam < Samples.size(); sam++) rpv_sam.push_back(sam);
@@ -110,10 +103,10 @@ int main(){
     TString basecut = "mj12>=500";
     //vector<TString> lepcuts = {"nleps==0&&ht>1500", "nleps==1&&ht>1200"};
     TString lepcuts = "nleps==1&&ht>1200";
-    //vector<TString> nbcuts = {"nbm==0","nbm==1"};
-    vector<TString> nbcuts = {"nbm==0","nbm==1"};
-    //vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8"};
-    vector<TString> njetcuts = {"njets>=4&&njets<=5"};
+    vector<TString> nbcuts = {"nbm==2","nbm>=3"};
+    vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8"};
+    //vector<TString> njetcuts = {"4<=njets&&njets<=5"};
+    //vector<TString> njetcuts = {"0<=njets&&njets<=18"};
 
     // Loop over cuts to make histograms
     TString cut = "";
@@ -145,8 +138,10 @@ int main(){
 	  
 	  // Define histograms
 	  //hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cut));
-	  hists.push_back(hfeats("ht", 20, 1200, 2600, rpv_sam, "H_{T}", cut));
-	  if(showData) hists.back().normalize = true;	
+	  //hists.push_back(hfeats("ht", 20, 1200, 2600, rpv_sam, "H_{T}", cut));
+	  hists.push_back(hfeats("nbm", 6, 0, 6, rpv_sam, "nbm", cut));
+	  //hists.push_back(hfeats("njets", 9, 0, 18, rpv_sam, "njets", cut));
+	  //if(showData) hists.back().normalize = true;	
 	}
       }
     

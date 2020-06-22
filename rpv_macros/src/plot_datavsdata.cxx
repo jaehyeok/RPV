@@ -17,7 +17,7 @@
 #include "utilities_macros_rpv.hpp"
 
 namespace {
-  TString luminosity="35.9";
+  TString luminosity="41.5";
   TString plot_type=".png";
   TString plot_style="CMSPaper_Preliminary";
 }
@@ -84,43 +84,43 @@ int main(){
 
   vector<sfeats> Samples;
 
-  Samples.push_back(sfeats(s_data_2017, "2017 data (1 fb^{-1})", kRed,1,"trig_ht1050 && pass")); Samples.back().isData=true;
-  Samples.push_back(sfeats(s_data_2016, "2016 data (1 fb^{-1})", kBlue,1,"trig_ht900 && trig_jet450 && pass")); //Samples.back().isData=true; //
+  Samples.push_back(sfeats(s_data_2018, "2018 data (1 fb^{-1})", kRed,1,"trig_ht1050 && pass")); Samples.back().isData=true;
+  Samples.push_back(sfeats(s_data_2017, "2017 data (1 fb^{-1})", kBlue,1,"trig_ht900 && trig_jet450 && pass")); //Samples.back().isData=true; //
   Samples.back().doBand = true;
   vector<int> data;
   data.push_back(0);
   data.push_back(1);
   
-  Samples.push_back(sfeats(s_qcd_2017, "2017 QCD", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true; Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_qcd_2016, "2016 QCD", kBlue,1,cutandweight("pass",extraWeight))); 
+  Samples.push_back(sfeats(s_qcd_2018, "2018 QCD", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true; Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_qcd_2017, "2017 QCD", kBlue,1,cutandweight("pass",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> qcd;
   qcd.push_back(2);
   qcd.push_back(3);
 
-  Samples.push_back(sfeats(s_ttbar_2017, "2017 ttbar", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar", kBlue,1,cutandweight("pass",extraWeight))); 
+  Samples.push_back(sfeats(s_ttbar_2018, "2018 ttbar", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_ttbar_2017, "2017 ttbar", kBlue,1,cutandweight("pass",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> ttbar;
   ttbar.push_back(4);
   ttbar.push_back(5);
   
-  Samples.push_back(sfeats(s_other_2017, "2017 other", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_other_2016, "2016 other", kBlue,1,cutandweight("pass",extraWeight))); 
+  Samples.push_back(sfeats(s_other_2018, "2018 other", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_other_2017, "2017 other", kBlue,1,cutandweight("pass",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> other;
   other.push_back(6);
   other.push_back(7);
   
-  Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kBlue,1,cutandweight("pass",extraWeight))); 
+  Samples.push_back(sfeats(s_wjets_2018, "2018 W+jets", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kBlue,1,cutandweight("pass",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> wjets;
   wjets.push_back(8);
   wjets.push_back(9);
 
-  Samples.push_back(sfeats(s_all_bg_2017, "2017 All_Bkg", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_all_bg_2016, "2016 All_Bkg", kBlue,1,cutandweight("pass",extraWeight)));
+  Samples.push_back(sfeats(s_all_bg_2018, "2018 All_Bkg", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_all_bg_2017, "2017 All_Bkg", kBlue,1,cutandweight("pass",extraWeight)));
   Samples.back().doBand = true;
   vector<int> all_bg;
   all_bg.push_back(10);
@@ -133,39 +133,41 @@ int main(){
 
 
   vector<hfeats> vars;
-  //std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==0&&mj12>500&&nleps==1&&ht>1200&&8<=njets","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==1&&mj12>500&&nleps==1&&ht>1200&&8<=njets"};
-  //std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=8"};
-  std::vector<TString> cuts = {"nbm==0&&nleps==1&&mj12>=500&&ht>1200"};
+  //std::vector<TString> cuts = {"nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==2&&mj12>500&&nleps==1&&ht>1200&&8<=njets","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&8<=njets"};
+  std::vector<TString> cuts = {"nbm==2&&mj12>500&&nleps==1&&ht>1200","nbm>=3&&mj12>500&&nleps==1&&ht>1200"};
+  //std::vector<TString> cuts = {"nbm==0&&nleps==1&&mj12>=500&&ht>1200","nbm==1&&nleps==1&&mj12>=500&&ht>1200"};
+  //std::vector<TString> cuts = {"mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","mj12>500&&nleps==1&&ht>1200&&njets>=8"};
 
   for(auto icut : cuts){
     //vars.push_back(hfeats("nbm", 6, 0, 6, data, "N_{b}", icut,-1,"data"));
     //vars.push_back(hfeats("njets", 6, 0, 12, data, "NJets", icut,-1,"data"));
     //vars.push_back(hfeats("mj12", 3, 500, 1400, data, "mj12", icut,-1,"data"));
-    //vars.push_back(hfeats("ht", 20, 0, 2000, data, "H_{t}", icut,-1,"data"));// */
+    //vars.push_back(hfeats("ht", 20, 1200, 2600, data, "H_{t}", icut,-1,"data"));// */
     //vars.back().normalize = true;
     //vars.push_back(hfeats("nbm", 6, 0, 6, ttbar, "N_{b}", icut,-1,"ttbar"));
-    vars.push_back(hfeats("njets", 6, 0, 12, ttbar, "NJets", icut,-1,"ttbar"));
+    //vars.push_back(hfeats("njets", 10, 0, 20, ttbar, "NJets", icut,-1,"ttbar"));
     //vars.push_back(hfeats("mj12", 3, 500, 1400, ttbar, "mj12", icut,-1,"ttbar"));
-    //vars.push_back(hfeats("ht", 3, 1200, 2600, ttbar, "H_{t}", icut,-1,"ttbar"));// */
-    vars.back().normalize = true;
+    //vars.push_back(hfeats("ht", 20, 1200, 2600, ttbar, "H_{t}", icut,-1,"ttbar"));// */
+    //vars.back().normalize = true;
     //vars.push_back(hfeats("nbm", 6, 0, 6, qcd, "N_{b}", icut,-1,"qcd"));
     //vars.push_back(hfeats("njets", 6, 0, 12, qcd, "NJets", icut,-1,"qcd"));
     //vars.push_back(hfeats("mj12", 3, 500, 1400, qcd, "mj12", icut,-1,"qcd"));
-    //vars.push_back(hfeats("ht", 20, 0, 2000, qcd, "H_{t}", icut,-1,"qcd"));// */
-    /*vars.back().normalize = true;
+    //vars.push_back(hfeats("ht", 20, 1200, 2600, qcd, "H_{t}", icut,-1,"qcd"));// */
+    //vars.back().normalize = true;
     //vars.push_back(hfeats("nbm", 6, 0, 6, other, "N_{b}", icut,-1,"other"));
     //vars.push_back(hfeats("njets", 6, 0, 12, other, "NJets", icut,-1,"other"));
-    vars.push_back(hfeats("mj12", 3, 500, 1400, other, "mj12", icut,-1,"other"));
-    //vars.push_back(hfeats("ht", 20, 0, 2000, other, "H_{t}", icut,-1,"other"));// */
-    /*vars.back().normalize = true;
+    //vars.push_back(hfeats("mj12", 3, 500, 1400, other, "mj12", icut,-1,"other"));
+    //vars.push_back(hfeats("ht", 20, 1200, 2600, other, "H_{t}", icut,-1,"other"));// */
+    //vars.back().normalize = true;
     //vars.push_back(hfeats("nbm", 6, 0, 6, wjets, "N_{b}", icut,-1,"wjets"));
     //vars.push_back(hfeats("njets", 6, 0, 12, wjets, "NJets", icut,-1,"wjets"));
-    vars.push_back(hfeats("mj12", 3, 500, 1400, wjets, "mj12", icut,-1,"wjets"));
-    //vars.push_back(hfeats("ht", 20, 0, 2000, wjets, "H_{t}", icut,-1,"wjets"));// */
+    //vars.push_back(hfeats("mj12", 3, 500, 1400, wjets, "mj12", icut,-1,"wjets"));
+    //vars.push_back(hfeats("ht", 20, 1200, 2600, wjets, "H_{t}", icut,-1,"wjets"));// */
     //vars.back().normalize = true;
+    //vars.push_back(hfeats("nbm", 6, 0, 6, all_bg, "N_{b}", icut,-1,"all_bg"));
     //vars.push_back(hfeats("mj12", 3, 500, 1400, all_bg, "mj12", icut,-1,"all_bg"));
-    vars.push_back(hfeats("njets", 6, 0, 12, all_bg, "Njets", icut,-1,"all_bg"));
-    //vars.push_back(hfeats("ht", 3, 1200, 2600, all_bg, "H_{t}", icut,-1,"all_bg"));
+    vars.push_back(hfeats("njets", 9, 0, 18, all_bg, "Njets", icut,-1,"all_bg"));
+    //vars.push_back(hfeats("ht", 20, 1200, 2600, all_bg, "H_{t}", icut,-1,"all_bg"));
     vars.back().normalize = true;
   }
 

@@ -34,9 +34,7 @@ float mjmax = 1400;
 float binsize = 300;
 bool nl0shape = true;
 
-//float lumi = 35.9; // fb-1 FIXME
-float lumi = 41.5; // fb-1
-//float lumi = 59.7; // fb-1
+float lumi = 1.; // fb-1
 const int nbins = 52;
 int w_pdf_index = 0;
 

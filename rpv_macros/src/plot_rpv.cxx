@@ -17,7 +17,7 @@
 
 namespace {
 
-  TString lumi = "35.9"; //FIXME
+  /*TString lumi = "35.9"; //FIXME
   TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
 
   /*TString lumi = "41.5";
@@ -26,7 +26,7 @@ namespace {
   /*TString lumi = "59.7";
   TString trigger = "trig_ht1050";// */
   
-  bool showData = false; // Draw with/wihout data
+  bool showData = true; // Draw with/wihout data
   bool unblindSRs = true; // Draw data in (unblind) SRs
   TString json = "1";
 
@@ -38,10 +38,40 @@ namespace {
 
 using namespace std;
 
-int main(){
+int main(int argc, char *argv[]){
+
+  TString year;
+
+  /*TString lumi = "35.9";
+  TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
+  /*TString lumi = "41.5";
+  TString trigger = "trig_ht1050";// */
+  TString lumi = "59.7";
+  TString trigger = "trig_ht1050";// */
+
+  year = argv[1];
+  //lumi = argv[2];
+  cout << argc << endl;
+ // cout << "./run/plot_rpv.exe [year]" << endl;
+  if(year == 2016){
+  //  lumi = 35.9;
+  //  trigger = "(trig_ht900 || trig_jet450)";
+  }
+
+  else if(year == 2017){
+  //  lumi = 41.5;
+  //  trigger = "trig_ht1050";
+  }
+
+  else if(year == 2018){
+   // lumi = 59.7;
+   //trigger = "trig_ht1050";
+  }// */
+
+  //cout << trigger << ": trigger"  << endl;
 
   // ntuple folders
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/"; //FIXME
+  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/"; //FIXME
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";// */
 
@@ -49,9 +79,13 @@ int main(){
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";// */
 
-  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/"; // */
+  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/"; // */
+
+  TString folder_bkg = folder_year(year,false).at(0);
+  TString folder_dat = folder_year(year,false).at(1);
+  TString folder_sig = folder_year(year,false).at(2);// */
 
   // Get file lists
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
@@ -103,9 +137,11 @@ int main(){
     TString basecut = "mj12>=500";
     //vector<TString> lepcuts = {"nleps==0&&ht>1500", "nleps==1&&ht>1200"};
     TString lepcuts = "nleps==1&&ht>1200";
-    vector<TString> nbcuts = {"nbm==2","nbm>=3"};
-    vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8"};
-    //vector<TString> njetcuts = {"4<=njets&&njets<=5"};
+    //vector<TString> nbcuts = {"nbm==2","nbm>=3"};
+    //vector<TString> nbcuts = {"nbm==4","nbm==0","nbm==1"};
+    vector<TString> nbcuts = {"nbm==1"};
+    //vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8"};
+    vector<TString> njetcuts = {"4<=njets&&njets<=5"};
     //vector<TString> njetcuts = {"0<=njets&&njets<=18"};
 
     // Loop over cuts to make histograms
@@ -137,9 +173,9 @@ int main(){
 	  cut = lepcuts + "&&" + inb + "&&" + injet + "&&" + basecut;
 	  
 	  // Define histograms
-	  //hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cut));
+	  hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cut));
 	  //hists.push_back(hfeats("ht", 20, 1200, 2600, rpv_sam, "H_{T}", cut));
-	  hists.push_back(hfeats("nbm", 6, 0, 6, rpv_sam, "nbm", cut));
+	  //hists.push_back(hfeats("nbm", 6, 0, 6, rpv_sam, "nbm", cut));
 	  //hists.push_back(hfeats("njets", 9, 0, 18, rpv_sam, "njets", cut));
 	  //if(showData) hists.back().normalize = true;	
 	}

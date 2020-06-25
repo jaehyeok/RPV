@@ -104,13 +104,13 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 
   TString lumi_nodot = luminosity; lumi_nodot.ReplaceAll(".","p");
   TString plot_tag("_lumi"+lumi_nodot+filetype);
-  float minLog = 0.04, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend
+  float minLog = 0.5, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend
 
   double legLeft(style.PadLeftMargin+0.03), legRight(1-style.PadRightMargin-0.03);
-  double legY(1-style.PadTopMargin-0.020)/*-0.027*/, legSingle = 0.03;//= 0.052
-  if (doRatio) {legY=1-style.PadTopMargin-0.020; legSingle = 0.03;}
-  double legW = 0.10, legH = legSingle*(vars[0].samples.size()+1)/2;
-  double legX1[] = {legLeft, (legLeft+legRight)/2};
+  double legY(1-style.PadTopMargin-0.020)/*-0.027*/, legSingle = 0.052;//= 0.052
+  if (doRatio) {legY=1-style.PadTopMargin-0.020; legSingle = 0.052;}
+  double legW = 0.33, legH = legSingle*(vars[0].samples.size()+1)/2;
+  double legX1[2] = {legLeft, (legLeft+legRight)/2};
   TLegend leg[2]; int nLegs(2);
   for(int ileg(0); ileg<nLegs; ileg++){
     leg[ileg].SetX1NDC(legX1[ileg]); leg[ileg].SetX2NDC(legX1[ileg]+legW); 
@@ -179,11 +179,10 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	histo[0][var][sam]->GetBinContent(vars[var].nbins)+
 	histo[0][var][sam]->GetBinContent(vars[var].nbins+1));
       
-     
-      nentries[sam] = histo[0][var][sam]->Integral(1,vars[var].nbins);
-      if(nentries[sam]<0) nentries[sam]=0;
-      ytitle = "Events";
-      if(vars[var].normalizeByBin){
+        nentries[sam] = histo[0][var][sam]->Integral(1,vars[var].nbins);
+        if(nentries[sam]<0) nentries[sam]=0;
+        ytitle = "Events";
+        if(vars[var].normalizeByBin){
 	ytitle = "Events [% by bin]";
       }      
 
@@ -366,7 +365,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 
       // Setting Y-axis for log_lumi plot
       if(histo[0][var][firstplotted]->GetMinimum() > minLog) histo[0][var][firstplotted]->SetMinimum(minLog);
-      float maxpadLog(maxhisto*exp(fracLeg*log(maxhisto/minLog)/(1-fracLeg)));
+      float maxpadLog(maxhisto*10*exp(fracLeg*log(maxhisto/minLog)/(1-fracLeg)));
       histo[0][var][firstplotted]->SetMinimum(minLog);
       histo[0][var][firstplotted]->SetMaximum(maxpadLog);
       if (!doRatio) style.moveYAxisLabel(histo[0][var][firstplotted], maxpadLog, true);
@@ -434,7 +433,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       if(!namestyle.Contains("CMSPaper") || showcuts) {
 	TString lumilbl = TString::Format("%1.1f",luminosity.Atof())+" fb^{-1}, "+norm_s;
 	TLatex llbl;
-	llbl.SetTextSize(style.LegendSize*0.8); 
+	llbl.SetTextSize(style.LegendSize); 
 	llbl.SetNDC(); llbl.SetTextAlign(33);
 	llbl.DrawLatex(1-style.PadRightMargin-0.02,leg[0].GetY1NDC()-0.02,lumilbl);
       }
@@ -449,7 +448,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 
       if(vars[var].normalizeByBin){
 
-	float textSize = 0.05;
+	float textSize = 0.055;
 	TLatex *TexNlep = new TLatex();
 	TLatex *TexNjets = new TLatex();
 	TLatex *TexMJ = new TLatex();
@@ -579,7 +578,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       TString lsp = "{#lower[-0.1]{#tilde{#chi}}#lower[0.2]{#scale[0.85]{^{0}}}#kern[-1.3]{#scale[0.85]{_{1}}}}";
       TString t1t_label = "#scale[0.95]{#tilde{g}#kern[0.2]{#tilde{g}}, #tilde{g}#rightarrowt#kern[0.18]{#bar{t}}#kern[0.18]"+lsp;
       TLatex tla;
-      tla.SetTextSize(0.045);
+      tla.SetTextSize(0.055);
       tla.SetTextFont(42);
       tla.DrawLatexNDC(0.52,0.70,"#font[62]{"+t1t_label+" (1500,100)}}");
       histo[1][var][0]->SetMaximum(60);

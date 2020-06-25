@@ -189,8 +189,9 @@ int main(int argc, char *argv[])
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2017.root", "READ");
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2018.root", "READ");
 
-    if(argc==6) TFile* infile = TFile::Open(filename,"READ");
-    else TFile* infile  = TFile::Open("variations/output_newnt_nl0shape.root", "READ");
+    TFile *infile;
+    if(argc==6) infile = TFile::Open(filename,"READ");
+    else infile = TFile::Open("variations/output_newnt_nl0shape_"+year+".root", "READ");
 
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;

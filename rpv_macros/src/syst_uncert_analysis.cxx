@@ -11,8 +11,10 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TGraphErrors.h"
+#include "TGaxis.h"
 #include "TRatioPlot.h"
 #include "TStyle.h"
+#include "TLegend.h"
 #include "TMath.h"
 
 #include "small_tree_rpv.hpp"
@@ -154,49 +156,180 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
  
   float SF          = mjbin_data[0]/mjbin_mc[0];
 
+  for(int i=0; i<3; i++) h_mc_proc1->SetBinContent(i+1, mjbin_mc[i]*SF);
+
   h_mc->SetBinContent(1, mjbin_mc[0]*SF);
   h_mc->SetBinContent(2, mjbin_mc[1]*SF*SF_kap(kappa,1,ibin));
   h_mc->SetBinContent(3, mjbin_mc[2]*SF*SF_kap(kappa,2,ibin));
 
-  float ymax;
+  TFile *f = new TFile(Form("kappa_correction_%d.root",ibin),"recreate");
+  f->cd(); 
 
+  float ymax, ymin;
+
+  data->SetTitle("data");
   data->SetStats(0);
   data->SetLineColor(kBlack);
   data->SetMarkerStyle(20);
-  data->SetLineWidth(2);
+//  data->SetLineWidth(2);
+  data->SetLineWidth(0);
   data->GetXaxis()->SetTitle("M_{J}");
+  data->Write();
+
   ymax = data->GetMaximum();
+  ymin = data->GetMinimum();
+  h_mc->SetTitle("MC with \kappa Factor Correction");
   h_mc->SetStats(0);
   h_mc->SetLineColor(kBlue);
-  h_mc->SetLineWidth(2);
+//  h_mc->SetLineWidth(2);
+  h_mc->SetLineWidth(0);
   h_mc->GetXaxis()->SetTitle("M_{J}");
+  h_mc->Write();
 
+  h_mc_proc1->SetTitle("MC with First bin rescaled");
+  h_mc_proc1->SetStats(0);
+  h_mc_proc1->SetLineColor(kRed);
+//  h_mc_proc1->SetLineWidth(2);
+  h_mc_proc1->SetLineWidth(0);
+  h_mc_proc1->GetXaxis()->SetTitle("M_{J}");
+  h_mc_proc1->Write();
+
+  mc_tot->SetTitle("MC without any correction");
   mc_tot->SetStats(0);
   mc_tot->SetLineColor(kRed);
-  mc_tot->SetLineWidth(2);
+  mc_tot->SetLineWidth(0);
   mc_tot->GetXaxis()->SetTitle("M_{J}");
+  mc_tot->Write();
 
+  f->Close();
   vector<double> lines = {1.};
 
   TCanvas *c = new TCanvas("c","c",1000,1000);
-  TRatioPlot *comp = new TRatioPlot(h_mc,data);
+  TRatioPlot *comp = new TRatioPlot(data,h_mc);
+
+  TH1F *h_mc_cp       = dynamic_cast<TH1F*>(h_mc->Clone("h_mc_cp"));
+  TH1F *data_cp       = dynamic_cast<TH1F*>(data->Clone("data_cp"));
+  TH1F *h_mc_proc1_cp = dynamic_cast<TH1F*>(h_mc_proc1->Clone("h_mc_proc1_cp"));
+  TH1F *mc_tot_cp     = dynamic_cast<TH1F*>(mc_tot->Clone("mc_tot_cp"));
+  TH1F *comp_org      = dynamic_cast<TH1F*>(data->Clone("comp_org"));
+
+  comp_org->Divide(data,h_mc_proc1,1,1,"B");
+  comp_org->SetLineColor(kRed); 
+  comp_org->SetLineWidth(1); 
+  comp_org->SetMarkerStyle(21);
+  comp_org->SetMarkerSize(0.01);
+
   comp->SetGridlines(lines);
-  comp->Draw();
+  comp->Draw("");
+  comp->GetUpperPad()->cd();
+  data->SetMarkerStyle(20);
+  h_mc_cp->SetLineWidth(2);
+  h_mc_proc1_cp->SetLineWidth(2);
+  data_cp->SetLineWidth(2);
+  h_mc_cp->Draw("same hist");
+  h_mc_proc1_cp->Draw("hist same");
+  data_cp->Draw("same e1");
+
+  TLegend *l = new TLegend(0.15,0.8,0.85,0.89);
+  l->AddEntry(h_mc_cp,"Corrected by kappa factor","l");
+  l->AddEntry(h_mc_proc1_cp,"Not Corrected","l");
+  l->AddEntry(data_cp,"Data","lep");
+  l->SetBorderSize(0);
+  l->SetNColumns(3);
+  l->Draw();
+
   comp->GetUpperPad()->SetLogy();
   comp->GetUpperRefYaxis()->SetTitle("Events");
-  comp->GetLowerRefYaxis()->SetTitle("MC/Data");
+  comp->GetLowerRefYaxis()->SetTitle("Data/MC");
   comp->GetUpperRefYaxis()->SetLabelSize(0.02);
-  comp->GetLowerRefYaxis()->SetLabelSize(0.02);
   comp->GetLowerRefXaxis()->SetLabelSize(0.02);
-  comp->GetLowerRefYaxis()->SetRangeUser(0.5,1.5);
+  comp->GetLowerRefYaxis()->SetLabelSize(0.02);
+  comp->GetLowerRefYaxis()->SetRangeUser(0.3,2.1);
   comp->GetUpperRefYaxis()->SetRangeUser(0.1,ymax*5);
-  comp->GetUpperPad()->cd();
-  mc_tot->Draw("hist same");
+  comp->GetLowerPad()->cd();
+  comp_org->Draw("same e1");
+  comp_org->Draw("same e1");
+  comp->GetLowerRefGraph()->SetLineColor(kBlue+2);
+  comp->GetLowerRefGraph()->SetLineWidth(1);
+  comp->GetLowerRefGraph()->SetMarkerStyle(21);
+  comp->GetLowerRefGraph()->SetMarkerSize(0.01);
+  comp->GetLowerRefGraph()->Draw("same e");
   c->Print(Form("plots/kappa_syst_uncert_%d.pdf",ibin));
 
+  TCanvas *c1 = new TCanvas("c1","c1",2700,800);
+  c1->Divide(3,1);
+  c1->cd(1);
+  TRatioPlot *comp1 = new TRatioPlot(data,mc_tot);
+  comp1->SetGridlines(lines);
+  comp1->Draw("");
+  comp1->GetUpperPad()->cd();
+  data_cp->Draw("same e1");
+  mc_tot_cp->SetLineWidth(2);
+  mc_tot_cp->SetLineColor(kBlue);
+  mc_tot_cp->Draw("same hist");
+  comp1->GetUpperRefYaxis()->SetTitle("Events");
+  comp1->GetLowerRefYaxis()->SetTitle("Data/MC");
+  comp1->GetUpperRefYaxis()->SetLabelSize(0.02);
+  comp1->GetLowerRefXaxis()->SetLabelSize(0.02);
+  comp1->GetLowerRefYaxis()->SetLabelSize(0.02);
+  comp1->GetUpperPad()->SetLogy();
+  comp1->GetLowerRefYaxis()->SetRangeUser(0.3,2.1);
+  comp1->GetUpperRefYaxis()->SetRangeUser(0.1,ymax*5);
+  TLegend *l1 = new TLegend(0.75,0.75,0.85,0.89);
+  l1->AddEntry(mc_tot_cp,"MC","l");
+  l1->AddEntry(data_cp,"Data","lep");
+  l1->SetBorderSize(0);
+  l1->Draw();
+
+  c1->cd(2);
+  TRatioPlot *comp2 = new TRatioPlot(data,h_mc_proc1);
+  comp2->SetGridlines(lines);
+  comp2->Draw("");
+  comp2->GetUpperPad()->cd();
+  data_cp->Draw("same e1");
+  h_mc_proc1_cp->SetLineWidth(2);
+  h_mc_proc1_cp->SetLineColor(kBlue);
+  h_mc_proc1_cp->Draw("same hist");
+  comp2->GetUpperRefYaxis()->SetTitle("Events");
+  comp2->GetLowerRefYaxis()->SetTitle("Data/MC");
+  comp2->GetUpperRefYaxis()->SetLabelSize(0.02);
+  comp2->GetLowerRefXaxis()->SetLabelSize(0.02);
+  comp2->GetLowerRefYaxis()->SetLabelSize(0.02);
+  comp2->GetUpperPad()->SetLogy();
+  comp2->GetLowerRefYaxis()->SetRangeUser(0.3,2.1);
+  comp2->GetUpperRefYaxis()->SetRangeUser(0.1,ymax*5);
+  TLegend *l2 = new TLegend(0.75,0.75,0.85,0.89);
+  l2->AddEntry(h_mc_proc1_cp,"MC","l");
+  l2->AddEntry(data_cp,"Data","lep");
+  l2->SetBorderSize(0);
+  l2->Draw();
+
+  
+  c1->cd(3);
+  TRatioPlot *comp3 = new TRatioPlot(data,h_mc);
+  comp3->SetGridlines(lines);
+  comp3->Draw("");
+  comp3->GetUpperPad()->cd();
+  data_cp->Draw("same e1");
+  h_mc_cp->SetLineWidth(2);
+  h_mc_cp->Draw("same hist");
+  comp3->GetUpperRefYaxis()->SetTitle("Events");
+  comp3->GetLowerRefYaxis()->SetTitle("Data/MC");
+  comp3->GetUpperRefYaxis()->SetLabelSize(0.02);
+  comp3->GetLowerRefXaxis()->SetLabelSize(0.02);
+  comp3->GetLowerRefYaxis()->SetLabelSize(0.02);
+  comp3->GetUpperPad()->SetLogy();
+  comp3->GetLowerRefYaxis()->SetRangeUser(0.3,2.1);
+  comp3->GetUpperRefYaxis()->SetRangeUser(0.1,ymax*5);
+  TLegend *l3 = new TLegend(0.75,0.75,0.85,0.89);
+  l3->AddEntry(h_mc_cp,"MC","l");
+  l3->AddEntry(data_cp,"Data","lep");
+  l3->SetBorderSize(0);
+  l3->Draw("same ");
+ 
+  c1->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
+
 }
-
-
 
 float SF_kap(TFile *kappa, int ikap, int ibin){
   TH1F *h = static_cast<TH1F*> (kappa->Get(Form("h1_1l_summary%d",ikap)));

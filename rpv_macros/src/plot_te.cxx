@@ -13,6 +13,7 @@
 #include "TGraphErrors.h"
 #include "TGaxis.h"
 #include "TStyle.h"
+#include "TLegend.h"
 #include "TMath.h"
 
 #include "small_tree_rpv.hpp"
@@ -162,7 +163,9 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 	
 		c[ibin]->cd(1);
 
-		h1eff[ibin]->SetTitle(var[ibin]);
+		h1eff[ibin]->SetTitle("");
+		h1eff[ibin]->GetXaxis()->SetTitle(var[ibin]);
+		h1eff[ibin]->GetYaxis()->SetTitle("Trigger Efficiency");
 		h1eff[ibin]->SetStats(0);
 		h1eff[ibin]->SetMaximum(1.2);
 		h1eff[ibin]->SetMinimum(0);
@@ -178,6 +181,14 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		ax1->SetTitleFont(40);
 		ax1->SetTitleOffset(1.3);
 		ax1->Draw("same");
+
+		TLegend *l1 = new TLegend(0.15,0.85,0.85,0.89);
+		l1->AddEntry(h1eff[ibin],"Trigger Efficiency","l");
+		l1->AddEntry(h1den[ibin],"Denominator","l");
+		l1->AddEntry(h1num[ibin],"Numerator","f");
+		l1->SetNColumns(3);
+		l1->SetBorderSize(0);
+		l1->Draw("same");
 
 		TLine *h1 = new TLine(min[ibin],1,max[ibin],1);
 		h1->SetLineColor(kGray);
@@ -200,7 +211,8 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 
 		c[ibin]->cd(2);
 
-		h1ineff[ibin]->SetTitle(var[ibin]);
+		h1ineff[ibin]->GetXaxis()->SetTitle(var[ibin]);
+		h1ineff[ibin]->GetYaxis()->SetTitle("Trigger Efficiency");
 		h1ineff[ibin]->SetStats(0);
 		h1ineff[ibin]->SetMaximum(1.2);
 		h1ineff[ibin]->SetMinimum(0);

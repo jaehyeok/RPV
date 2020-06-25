@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     else if(argc<=4 && arg == "--help"){
       cout << "./run/plot_kappa.exe [Systematics] [Up/Down] [year]" << endl;
       cout << "./run/plot_kappa.exe [Systematics] [Up/Down] [MJ minimum] [MJ maximum] [year]" << endl;
+      cout << "./run/plot_kappa.exe [Systematics] [Up/Down] [MJ minimum] [MJ maximum] [year] [input file] " << endl;
       return 1;
     }
     else if(argc>4){
@@ -188,8 +189,9 @@ int main(int argc, char *argv[])
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2017.root", "READ");
     //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2018.root", "READ");
 
-    TFile* infile = TFile::Open(filename,"READ");
-   
+    if(argc==6) TFile* infile = TFile::Open(filename,"READ");
+    else TFile* infile  = TFile::Open("variations/output_newnt_nl0shape.root", "READ");
+
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;
     

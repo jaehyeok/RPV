@@ -1,3 +1,4 @@
+// run the script !!!!! -> ./script/run_kappa [year]
 #include <iostream> 
 #include <vector> 
 #include <iomanip> 
@@ -184,10 +185,6 @@ int main(int argc, char *argv[])
         "N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}\\geq4",    
         "N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}\\geq4"   
     };
-
-    //TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape.root", "READ");
-    //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2017.root", "READ");
-    //TFile* infile  = TFile::Open("variations/output_newnt_nl0shape2018.root", "READ");
 
     TFile *infile;
     if(argc==6) infile = TFile::Open(filename,"READ");

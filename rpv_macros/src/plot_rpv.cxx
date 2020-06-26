@@ -17,15 +17,6 @@
 
 namespace {
 
-  /*TString lumi = "35.9"; //FIXME
-  TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
-
-  /*TString lumi = "41.5";
-  TString trigger = "trig_ht1050";// */
-
-  /*TString lumi = "59.7";
-  TString trigger = "trig_ht1050";// */
-  
   bool showData = true; // Draw with/wihout data
   bool unblindSRs = true; // Draw data in (unblind) SRs
   TString json = "1";
@@ -44,16 +35,17 @@ int main(int argc, char *argv[]){
 
   /*TString lumi = "35.9";
   TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
+
   /*TString lumi = "41.5";
   TString trigger = "trig_ht1050";// */
+
   TString lumi = "59.7";
   TString trigger = "trig_ht1050";// */
 
   year = argv[1];
-  //lumi = argv[2];
   cout << argc << endl;
  // cout << "./run/plot_rpv.exe [year]" << endl;
-  if(year == 2016){
+  /*if(year == 2016){
   //  lumi = 35.9;
   //  trigger = "(trig_ht900 || trig_jet450)";
   }

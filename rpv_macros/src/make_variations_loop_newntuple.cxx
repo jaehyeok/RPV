@@ -600,7 +600,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
                 upweight    = upweight*tree.w_toppt();
                 downweight  = downweight*(2-tree.w_toppt());
             }
-            if(variations=="isr") 
+            if(variations=="ISR") 
             { 
                 upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
                 downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
@@ -623,7 +623,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         }
         if(procname.Contains("signal")) 
         { 
-            if(variations=="isr") 
+            if(variations=="ISR") 
             { 
                 upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
                 downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
@@ -751,7 +751,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
                     h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);                    // down  
                
             } 
-            else if(variations=="jes") //jet energy scale
+            else if(variations=="JES") //jet energy scale
             { 
 		    float hmjmax = mjmax-0.001;
 		    if(tree.nleps()==0 && !nl0shape){

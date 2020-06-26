@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     cout << "[Error] Not Enough Arguments! argument \"--help\" may help you" << endl; 
     return 1;
   }
-  else if(test == "--help" && argc<3){
+  else if(test == "--help" or argc<3){
     cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [MJ minimum] [MJ maximum] [year]" << endl;
     cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [MJ minimum] [MJ maximum] [year] [luminosity]" << endl;
     cout<< "./run/make_variations_loop_newntuple.exe [Systematics] [0 Lepton Shape on/off] [MJ minimum] [MJ maximum] [year] [luminosity]" << endl;

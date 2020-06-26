@@ -39,21 +39,19 @@ int main(int argc, char *argv[]){
 	year = argv[4];
 
 	if(Systematic1 == "--help" || argc<3){
+		cout << "" <<endl;
 		cout << "./run/plot_overLayKappa.exe [Systematic1] [Systematic2] [Up/Down] [year]" << endl;
+		cout << "" <<endl;
+		cout << "Systematic1: JES,btag_bc,btag_udsg,mur,muf,murf,ISR" << endl;
+		cout << "Systematic2: JES,btag_bc,btag_udsg,mur,muf,murf,ISR" << endl;
+		cout << "Up/Down: Up or Down" << endl;
+		cout << "year: 2016, 2017, 2018" << endl;
 		cout << "" << endl;
 	}
 
-	TFile *f1;
-	TFile *f2;
-	TFile *f3;
-	TFile *f4;
-	TH1D *h1;
-	TH1D *h2;
-	TH1D *h3;
-	TH1D *h4;
-
-	TLegend *l1;
-	TLegend *l2;
+	TFile *f1, *f2, *f3, *f4;
+	TH1D *h1, *h2, *h3, *h4;
+	TLegend *l1, *l2;
 
 	l1 = new TLegend(0.65,0.54,0.75,0.8);
 	l2 = new TLegend(0.65,0.54,0.75,0.8);

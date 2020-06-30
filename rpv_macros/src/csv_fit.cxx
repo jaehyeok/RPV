@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
   // allow variation of range
   fit->SetRangeX(1, maxbin);
 
-  ROOT::Fit::Fitter* fitter = fit->GetFitter();
+  ROOT::Fit::Fitter* fitter = (ROOT::Fit::Fitter*)fit->GetFitter();
   fitter->Config().ParSettings(1).SetValue(other->Integral()/total_yield);
   fitter->Config().ParSettings(1).Fix();
   if(!fitCharmWithLight){

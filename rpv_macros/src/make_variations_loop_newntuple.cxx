@@ -29,6 +29,7 @@ double divideErrors(double x, double y, double dx, double dy);
 TString color(TString procname);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
+
 float mjmin = 500;
 float mjmax = 1400;
 float binsize = 300;
@@ -49,6 +50,7 @@ TString reset = "\033[0m";
 int main(int argc, char *argv[])
 {
   gErrorIgnoreLevel=kError+1;
+  TH1::SetDefaultSumw2();
 
   ioctl(0,TIOCGWINSZ, &w);
   int cols = w.ws_col;
@@ -242,13 +244,14 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";// */
 
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";// */
+  TString folder_bkg = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
+  TString folder_dat = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
+  TString folder_sig = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
 
-  TString folder_bkg = folder_year(year,false).at(0);
-  TString folder_dat = folder_year(year,false).at(3);
-  TString folder_sig = folder_year(year,false).at(2);
+//  TString folder_bkg = folder_year(year,false).at(0);
+//  TString folder_dat = folder_year(year,false).at(3);
+//  TString folder_sig = folder_year(year,false).at(2);
+
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 
@@ -501,14 +504,24 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             }
         }*/
 
-        // scale W+jet normialzation
-        if(procname=="wjets") nominalweight = nominalweight; 
-
         //
         // Now assign up and down weights
         //
         float upweight      = nominalweight;
         float downweight    = nominalweight;
+        
+	// scale qcd normialzation
+//        if(procname=="qcd") {upweight = upweight*2; downweight = downweight/2;}
+
+        // scale W+jet normialzation
+//        if(procname=="wjets") {upweight = upweight*2; downweight = downweight/2;}
+
+        // scale ttbar normialzation
+//        if(procname=="ttbar") {upweight = upweight*2; downweight = downweight/2;}
+
+        // scale other normialzation
+//        if(procname=="other") {upweight = upweight*2; downweight = downweight/2;}
+
         
         //
         // variations that are common in all processes

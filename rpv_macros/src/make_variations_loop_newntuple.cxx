@@ -244,13 +244,13 @@ int main(int argc, char *argv[])
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";// */
 
-  TString folder_bkg = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
-  TString folder_dat = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
-  TString folder_sig = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
+//  TString folder_bkg = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
+//  TString folder_dat = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
+//  TString folder_sig = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
 
-//  TString folder_bkg = folder_year(year,false).at(0);
-//  TString folder_dat = folder_year(year,false).at(3);
-//  TString folder_sig = folder_year(year,false).at(2);
+  TString folder_bkg = folder_year(year,false).at(0);
+  TString folder_dat = folder_year(year,false).at(3);
+  TString folder_sig = folder_year(year,false).at(2);
 
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");

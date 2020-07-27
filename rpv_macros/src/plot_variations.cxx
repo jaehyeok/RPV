@@ -24,7 +24,7 @@ TString getBinName(int bin);
 int main() 
 {
 
-    vector<TString> variations={
+/*    vector<TString> variations={
         "btag_bc","btag_udsg",
         "gs45", "gs67", "gs89", "gs10Inf",
         "jes", "jer",
@@ -36,16 +36,21 @@ int main()
         "ttbar_mur", "ttbar_muf", "ttbar_murf",
         "wjets_mur", "wjets_muf", "wjets_murf",
         "other_mur", "other_muf", "other_murf"};
-   
-    vector<int> bins={0,1,2,3,4,5, // CR
-                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
-    
+// */
+  
+    vector<TString> variations={
+        "btag_bc"
+    };
+//    vector<int> bins={0,1,2,3,4,5, // CR
+//                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
+  
+    vector<int> bins = {22, 23, 24, 25, 26, 27, 28, 31, 34, 
+			29, 30, 32, 33, 35, 36};
     //for(int i=0; i<100; i++) variations.push_back(Form("w_pdf%i",i)); 
     
-    for(unsigned int ibin=0; ibin<bins.size(); ibin++) 
-    { 
+    for(auto ibin : bins){ 
         //if(bins.at(ibin)!=0) continue; 
-        drawUpDown(bins.at(ibin), variations); 
+        drawUpDown(ibin, variations); 
     } 
     return 0;
 }
@@ -79,7 +84,9 @@ void drawUpDown(int bin, vector<TString> variations)
 	gStyle->SetPaintTextFormat(".1f");
 	gStyle->SetMarkerSize(2.5);
 
-    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
+//    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
+
+    TFile* infile = TFile::Open("variations/output_2016.root");
 
     for(unsigned int iprocess=0; iprocess<5; iprocess++) 
     {
@@ -99,6 +106,16 @@ void drawUpDown(int bin, vector<TString> variations)
             TH1F *h1_central  = static_cast<TH1F*>(infile->Get(Form("bin%i/%s", bin, hname.Data())));
             TH1F *h1_up       = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%sUp", bin, hname.Data(), haltername))); 
             TH1F *h1_down     = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%sDown", bin, hname.Data(), haltername))); 
+
+            float stat_cent   = h1_central->Integral();
+            float stat_up     = h1_up->Integral();
+            float stat_down   = h1_down->Integral();
+
+            float SF_up       = stat_cent/stat_up;
+            float SF_down     = stat_cent/stat_down;
+
+            h1_up->Scale(SF_up);
+            h1_down->Scale(SF_down);
 
             h1cosmetic(h1_central,   "", kBlack, 1, 0, "N_{b}");
             h1cosmetic(h1_up,        "", kRed,   1, 0, "N_{b}");
@@ -155,7 +172,7 @@ void drawUpDown(int bin, vector<TString> variations)
             textSize=textSize-0.01;
             TLatex *TexNlep=0;
             TLatex *TexNjets=0;
-            TLatex *TexMJ=0;
+            TLatex *TexNb=0;
             TLatex *TexSyst=0;
             TString binname_tstr = getBinName(bin); 
             if(binname_tstr.Contains("nlep1"))   TexNlep = new TLatex(0.6,0.75,"N_{lep} = 1,");
@@ -173,11 +190,16 @@ void drawUpDown(int bin, vector<TString> variations)
             TexNjets->SetTextFont(42);
             TexNjets->SetTextSize(textSize);
             //TexNjets->SetLineWidth(2);
-            if(binname_tstr.Contains("lowmj"))    TexMJ = new TLatex(0.6,0.70,"500 < M_{J} < 800 GeV");
-            if(binname_tstr.Contains("highmj"))   TexMJ = new TLatex(0.6,0.70,"M_{J} > 800 GeV");
-            TexMJ->SetNDC();
-            TexMJ->SetTextFont(42);
-            TexMJ->SetTextSize(textSize);
+            //if(binname_tstr.Contains("lowmj"))    TexMJ = new TLatex(0.6,0.70,"500 < M_{J} < 800 GeV");
+            //if(binname_tstr.Contains("highmj"))   TexMJ = new TLatex(0.6,0.70,"M_{J} > 800 GeV");
+            if(binname_tstr.Contains("nb0"))   TexNb = new TLatex(0.6,0.70,"N_{b} = 0");
+            if(binname_tstr.Contains("nb1"))   TexNb = new TLatex(0.6,0.70,"N_{b} = 1");
+            if(binname_tstr.Contains("nb2"))   TexNb = new TLatex(0.6,0.70,"N_{b} = 2");
+            if(binname_tstr.Contains("nb3"))   TexNb = new TLatex(0.6,0.70,"N_{b} = 3");
+            if(binname_tstr.Contains("nb4"))   TexNb = new TLatex(0.6,0.70,"N_{b} #geq 4");
+            TexNb->SetNDC();
+            TexNb->SetTextFont(42);
+            TexNb->SetTextSize(textSize);
             //TexMJ->SetLineWidth(2);
             TexSyst = new TLatex(0.6,0.65, Form("Bin %i: %s %s", bin, hname.Data(), haltername));
             TexSyst->SetNDC();
@@ -187,7 +209,7 @@ void drawUpDown(int bin, vector<TString> variations)
 
             TexNlep->Draw("same");
             TexNjets->Draw("same");
-            TexMJ->Draw("same");
+            TexNb->Draw("same");
             TexSyst->Draw("same");
 
             c->cd();
@@ -199,16 +221,25 @@ void drawUpDown(int bin, vector<TString> variations)
             pad_ratio->SetRightMargin(0.1);
             pad_ratio->SetBottomMargin(0.4);
     
+            TH1F *h1_cent_rat   =static_cast<TH1F*>(h1_central->Clone("h1_cent_rat"));
             TH1F *h1_up_ratio   =static_cast<TH1F*>(h1_up->Clone("h1_up_ratio")); 
             TH1F *h1_down_ratio =static_cast<TH1F*>(h1_down->Clone("h1_down_ratio")); 
+
+            TH1F *h1_cent_rat_deno = static_cast<TH1F*>(h1_central->Clone("h1_cent_rat_deno"));
+
+            for(int hbin = 1 ; hbin < 4 ; hbin ++) h1_cent_rat_deno->SetBinError(hbin,0);
+
+	    h1_cent_rat->Divide(h1_cent_rat_deno);
             h1_up_ratio->Divide(h1_central);
             h1_down_ratio->Divide(h1_central);
             
-            h1cosmetic(h1_up_ratio,   "", kRed, 1, 0, "N_{b}");
-            h1cosmetic(h1_down_ratio,   "", kBlue, 1, 0, "N_{b}");
+
+            h1cosmetic(h1_up_ratio,   "", kRed, 1, 0, "M_{J}");
+            h1cosmetic(h1_down_ratio,   "", kBlue, 1, 0, "M_{J}");
 
             h1_up_ratio->SetLabelSize(0.15,"XY");
             h1_up_ratio->GetXaxis()->SetLabelSize(0.10);
+            h1_up_ratio->GetYaxis()->SetLabelSize(0.10);
             h1_up_ratio->SetTitleSize(0.14,"XY");
             h1_up_ratio->SetTitleOffset(1.0);
             h1_up_ratio->GetYaxis()->SetNdivisions(/*3,false*/706);
@@ -217,9 +248,14 @@ void drawUpDown(int bin, vector<TString> variations)
             h1_up_ratio->SetMaximum(1.3);
             h1_up_ratio->GetYaxis()->SetTitle("#frac{up/down}{central}");
             h1_up_ratio->GetYaxis()->SetTitleOffset(0.5);
+            h1_cent_rat->SetMarkerSize(0);
+            h1_cent_rat->SetFillColor(kBlack);
+            h1_cent_rat->SetLineColor(kBlack);
+            h1_cent_rat->SetFillStyle(3354);
             h1_up_ratio->Draw("hist");
             h1_down_ratio->Draw("hist same");
-            
+            h1_cent_rat->Draw("same e2"); 
+           
             TLine *l = new TLine(0,1,5,1);
             l->SetLineStyle(2);
             l->Draw("same");
@@ -249,7 +285,7 @@ TString getBinName(int bin)
     // bin name 
     vector<TString> binname;
     vector<int> binnumber;
-    binname = {"nlep0_nj45_lowmj", "nlep0_nj67_lowmj", "nlep1_nj45_lowmj",
+/*    binname = {"nlep0_nj45_lowmj", "nlep0_nj67_lowmj", "nlep1_nj45_lowmj",
   			  "nlep0_nj45_highmj", "nlep0_nj67_highmj", "nlep1_nj45_highmj",
   			  "nlep0_nj10_lowmj", "nlep1_nj67_lowmj", "nlep1_nj8_lowmj", "nlep0_nj10_highmj",
   			  "nlep1_nj67_highmj", "nlep1_nj8_highmj", "nlep0_nj89_lowmj", "nlep0_nj89_highmj",
@@ -259,6 +295,19 @@ TString getBinName(int bin)
                  10,11,12,13,
                  14,15,16,17,
                  18,19,20,21}; 
+// */
+//
+    binname = {"nlep1_nj45_nb0", "nlep1_nj67_nb0", "nlep1_nj8_nb0",
+               "nlep1_nj45_nb1", "nlep1_nj67_nb1", "nlep1_nj8_nb1",
+               "nlep1_nj45_nb2", "nlep1_nj67_nb2", "nlep1_nj8_nb2",
+               "nlep1_nj45_nb3", "nlep1_nj67_nb3", "nlep1_nj8_nb3",
+               "nlep1_nj45_nb4", "nlep1_nj67_nb4", "nlep1_nj8_nb4"};
+
+    binnumber = {22, 23, 24,
+                 25, 26, 27,
+                 28, 29, 30,
+                 31, 32, 33,
+                 34, 35, 36};
 
     for(unsigned int i=0; i<binname.size(); i++)  
     { 

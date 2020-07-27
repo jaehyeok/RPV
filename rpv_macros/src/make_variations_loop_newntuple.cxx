@@ -536,13 +536,13 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             upweight    = upweight*tree.sys_udsgtag()[0];
             downweight  = downweight*tree.sys_udsgtag()[1];
         }
-        if(variations=="gs45") 
+        if(variations=="GS") 
         { 
-            if(tree.njets()==4 || tree.njets()==5)
+            if(tree.fromGS()==1)
             {
-                upweight    = upweight*(1+gs_dmc_syst[0]*tree.fromGS());
-                downweight  = downweight*(1-gs_dmc_syst[0]*tree.fromGS()); 
-            } 
+                upweight    = upweight*(1.5*tree.fromGS());
+                downweight  = downweight*(0.5*tree.fromGS()); 
+            }
         }
         if(variations=="gs67") 
         { 

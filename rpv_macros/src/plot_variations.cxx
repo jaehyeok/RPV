@@ -39,7 +39,7 @@ int main()
 // */
   
     vector<TString> variations={
-        "btag_bc"
+        "gs"
     };
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
@@ -86,7 +86,7 @@ void drawUpDown(int bin, vector<TString> variations)
 
 //    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
 
-    TFile* infile = TFile::Open("variations/output_2016.root");
+    TFile* infile = TFile::Open("variations/output_newnt_nl0shape_2016.root");
 
     for(unsigned int iprocess=0; iprocess<5; iprocess++) 
     {
@@ -271,6 +271,7 @@ void drawUpDown(int bin, vector<TString> variations)
 
             gSystem->mkdir(Form("plots/variations/bin%i",bin), kTRUE); 
             c->Print(Form("plots/variations/bin%i/bin%i_%s_%s_mconly.pdf", bin, bin, hname.Data(), haltername));
+            c->SaveAs(Form("plots/variations/bin%i/bin%i_%s_%s_mconly.png", bin, bin, hname.Data(), haltername));
 
             delete h1_central; 
             delete h1_up; 

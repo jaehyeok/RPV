@@ -36,14 +36,17 @@ int main(int argc, char *argv[]){
   /*TString lumi = "35.9";
   TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
 
-  /*TString lumi = "41.5";
+  TString lumi = "41.5";
   TString trigger = "trig_ht1050";// */
 
-  TString lumi = "59.7";
+  /*TString lumi = "59.7";
   TString trigger = "trig_ht1050";// */
 
   year = argv[1];
   cout << argc << endl;
+  if(argc<1){
+    cout<<"./run/plot_rpv [year] !!!!"<<endl;
+  }
  // cout << "./run/plot_rpv.exe [year]" << endl;
   /*if(year == 2016){
   //  lumi = 35.9;
@@ -63,17 +66,17 @@ int main(int argc, char *argv[]){
   //cout << trigger << ": trigger"  << endl;
 
   // ntuple folders
-  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/"; //FIXME
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";// */
+  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/"; //FIXME
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/";// */
 
-  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";// */
-
-  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
+  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/"; //FIXME
   TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/"; // */
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";// */
+
+  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/skim_rpvfitnbge0/"; //FIXME
+  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/skim_rpvfitnbge0/";
+  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/skim_rpvfitnbge0/";// */
 
   TString folder_bkg = folder_year(year,false).at(0);
   TString folder_dat = folder_year(year,false).at(1);
@@ -84,14 +87,10 @@ int main(int argc, char *argv[]){
   vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");
   vector<TString> s_rpv_m1700 = getRPVProcess(folder_sig,"rpv_m1700");
 
-  //vector<TString> s_tt1l = getRPVProcess(folder_bkg,"ttbar_1l");
-  //vector<TString> s_tt2l = getRPVProcess(folder_bkg,"ttbar_2l");
   vector<TString> s_ttbar = getRPVProcess(folder_bkg,"ttbar");
   vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
   vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
-  //vector<TString> s_singlet = getRPVProcess(folder_bkg,"singlet");
-  //vector<TString> s_zjets = getRPVProcess(folder_bkg,"zjets");
-  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
+  vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");// */
   
   // Reading ntuples
   vector<sfeats> Samples; 
@@ -111,10 +110,16 @@ int main(int argc, char *argv[]){
   string extraweight = "1";
   //Samples.push_back(sfeats(s_rpv_m1600, "m1600", kRed, 1, cutandweight("pass",extraweight)));
   //Samples.back().isSig = true;
+  
   Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass",extraweight)));
-  Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("pass",extraweight)));// */
+
+  /*Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
+  Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
+  Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
+  Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;// */
 
   // Loop over samples
   vector<int> rpv_sam;
@@ -122,16 +127,12 @@ int main(int argc, char *argv[]){
 
   // Define histogram vector
   vector<hfeats> hists;
-
   // Make analysis regions plots
   if(makeNm1==true){
     // Set cuts
     TString basecut = "mj12>=500";
-    //vector<TString> lepcuts = {"nleps==0&&ht>1500", "nleps==1&&ht>1200"};
     TString lepcuts = "nleps==1&&ht>1200";
-    //vector<TString> nbcuts = {"nbm==2","nbm>=3"};
-    //vector<TString> nbcuts = {"nbm==4","nbm==0","nbm==1"};
-    vector<TString> nbcuts = {"nbm==1"};
+    vector<TString> nbcuts = {"nbm==0"};
     //vector<TString> njetcuts = {"njets>=4&&njets<=5", "njets>=6&&njets<=7", "njets>=8"};
     vector<TString> njetcuts = {"4<=njets&&njets<=5"};
     //vector<TString> njetcuts = {"0<=njets&&njets<=18"};
@@ -173,7 +174,7 @@ int main(int argc, char *argv[]){
 	}
       }
     
-    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", showData, true);  
+    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", true, true);  
   }
   
   /*////////////

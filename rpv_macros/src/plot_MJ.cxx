@@ -38,20 +38,19 @@ namespace {
 
 using namespace std;
 
-int main(){
+int main(int argc, char *argv[]){
+
+  TString year;
+  year = argv[1];
+  cout << argc << endl;
+  if(argc < 1){
+    cout << "./run/plot_MJ.exe 2016" << endl;
+  }
 
   // ntuple folders
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/"; //FIXME
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";// */
-
-  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";// */
-
-  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/"; // */
+  TString folder_bkg = folder_year(year,false).at(0);
+  TString folder_dat = folder_year(year,false).at(1);
+  TString folder_sig = folder_year(year,false).at(2);
 
   // Get file lists
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
@@ -78,14 +77,10 @@ int main(){
     }
   }
 
-  Samples.push_back(sfeats(s_ttbar, "t#bar{t} nb==2",kRed, 1, "pass&&nbm==2"));
-  Samples.back().isSig = true;
-  Samples.push_back(sfeats(s_ttbar, "t#bar{t} nb>=3", rpv::c_wjets, 1, "pass&&nbm>=3"));
-  Samples.back().isSig = true;
-  Samples.push_back(sfeats(s_ttbar, "t#bar{t} nb==0", kBlue, 1, "pass&&nbm==0"));
-  Samples.back().isSig = true;
-  Samples.push_back(sfeats(s_ttbar, "t#bar{t} nb==1", rpv::c_other, 1, "pass&&nbm==1"));
-  Samples.back().isSig = true;// */
+  Samples.push_back(sfeats(s_ttbar, "t#bar{t}",kBlue, 1, "pass"));
+  Samples.back().isSig = true; Samples.back().mcerr = true;
+  Samples.push_back(sfeats(s_ttbar, "t#bar{t} with GS", kRed, 1, "pass&&fromGS"));
+  Samples.back().doBand = true;
 
   /*Samples.push_back(sfeats(s_qcd, "qcd nb==2",kRed, 1, "pass&&nbm==2"));
   Samples.back().isSig = true;
@@ -97,11 +92,8 @@ int main(){
   Samples.back().isSig = true;// */
 
   /*Samples.push_back(sfeats(s_wjets, "wjets nb==2",kRed, 1, "pass&&nbm==2"));
-  Samples.back().isSig = true;
   Samples.push_back(sfeats(s_wjets, "wjets nb>=3", rpv::c_wjets, 1, "pass&&nbm>=3"));
-  Samples.back().isSig = true;
   Samples.push_back(sfeats(s_wjets, "wjets nb==0", kBlue, 1, "pass&&nbm==0"));
-  Samples.back().isSig = true;
   Samples.push_back(sfeats(s_wjets, "wjets nb==1", rpv::c_other, 1, "pass&&nbm==1"));
   Samples.back().isSig = true;// */
 
@@ -127,9 +119,10 @@ int main(){
     // Set cuts
     TString basecut = "mj12>=500";
     TString lepcuts = "nleps==1&&ht>1200";
-    vector<TString> nbcuts = {"0<=nbm&&nbm<=3"};
-    vector<TString> njetcuts = {"njets>=4&&njets<=5","njets>=6&&njets<=7","njets>=8"};
-    //vector<TString> njetcuts = {"njets>=4&&njets<=5"};
+    vector<TString> nbcuts = {"nbm==0","nbm==1","nbm==2","nbm==3","nbm>=4"};
+    //vector<TString> nbcuts = {"nbm>=4"};
+    //vector<TString> njetcuts = {"njets>=4&&njets<=5","njets>=6&&njets<=7","njets>=8"};
+    vector<TString> njetcuts = {"njets>=4&&njets<=5"};
 
     // Loop over cuts to make histograms
     TString cut = "";
@@ -168,7 +161,7 @@ int main(){
 	}
       }
     
-    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "plot_MJ", false, true);  
+    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "plot_MJ", true, true);  
   }
   
   /*////////////

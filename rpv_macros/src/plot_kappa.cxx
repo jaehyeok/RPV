@@ -360,13 +360,8 @@ int main(int argc, char *argv[])
         }
       }
     }
-<<<<<<< Updated upstream
     TString outputname="plots/kappa/kappa_summary_"+syst+updo+year+".root";
     if(filename.Contains("mconly")) outputname="plots/kappa/kappa_summary_"+syst+updo+year+"_mconly.root"; 
-=======
-    TString outputname="plots/kappa_"+reweight+"/kappa_summary_"+syst+updo+".root";
-    if(filename.Contains("mconly")) outputname="plots/kappa_summary_"+syst+updo+"_mconly.root"; 
->>>>>>> Stashed changes
     TFile *f = new TFile(outputname,"recreate");
 
     TString s_mj1 = Form("%.0f",mjmin);
@@ -415,13 +410,8 @@ int main(int argc, char *argv[])
     h1_0l_summary2->SetMaximum(3);
     h1_0l_summary2->Draw("ep");
     h1_0l_summary2->Write();
-<<<<<<< Updated upstream
     c->Print("plots/kappa/kappa_summary_"+syst+updo+year+".pdf");
     c->Print("plots/kappa/kappa_summary_"+syst+updo+year+".png");
-=======
-    c->Print("plots/kappa_"+reweight+"/kappa_summary_"+syst+updo+".pdf");
-    c->Print("plots/kappa_"+reweight+"/kappa_summary_"+syst+updo+".png");
->>>>>>> Stashed changes
     f->Close();  
 /*
     //

@@ -40,28 +40,28 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"*SingleMuon*");
 	}
 	else if(process.Contains("rpv")){
-		if(process=="rpv_m1000") files.push_back(folder+"*mGluino*1000*");
-		else if(process=="rpv_m1100") files.push_back(folder+"*mGluino*1100*");
-		else if(process=="rpv_m1200") files.push_back(folder+"*mGluino*1200*");
-		else if(process=="rpv_m1300") files.push_back(folder+"*mGluino*1300*");
-		else if(process=="rpv_m1400") files.push_back(folder+"*mGluino*1400*");
-		else if(process=="rpv_m1500") files.push_back(folder+"*mGluino*1500*");
-		else if(process=="rpv_m1600") files.push_back(folder+"*mGluino*1600*");
-		else if(process=="rpv_m1700") files.push_back(folder+"*mGluino*1700*");
-		else if(process=="rpv_m1800") files.push_back(folder+"*mGluino*1800*");
-		else if(process=="rpv_m1900") files.push_back(folder+"*mGluino*1900*");
-		else if(process=="rpv_m2000") files.push_back(folder+"*mGluino*2000*");
-		else if(process=="rpv_m2100") files.push_back(folder+"*mGluino*2100*");
-		else if(process=="rpv_m2200") files.push_back(folder+"*mGluino*2200*");
+		if(process=="rpv_m1000") files.push_back(folder+"mGluino*1000*");
+		else if(process=="rpv_m1100") files.push_back(folder+"mGluino*1100*");
+		else if(process=="rpv_m1200") files.push_back(folder+"mGluino*1200*");
+		else if(process=="rpv_m1300") files.push_back(folder+"mGluino*1300*");
+		else if(process=="rpv_m1400") files.push_back(folder+"mGluino*1400*");
+		else if(process=="rpv_m1500") files.push_back(folder+"mGluino*1500*");
+		else if(process=="rpv_m1600") files.push_back(folder+"mGluino*1600*");
+		else if(process=="rpv_m1700") files.push_back(folder+"mGluino*1700*");
+		else if(process=="rpv_m1800") files.push_back(folder+"mGluino*1800*");
+		else if(process=="rpv_m1900") files.push_back(folder+"mGluino*1900*");
+		else if(process=="rpv_m2000") files.push_back(folder+"mGluino*2000*");
+		else if(process=="rpv_m2100") files.push_back(folder+"mGluino*2100*");
+		else if(process=="rpv_m2200") files.push_back(folder+"mGluino*2200*");
 	}
 	// For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
 	else if(process=="ttbar"){
-		files.push_back(folder+"TTJets_*"); //
+		//files.push_back(folder+"TTJets_*"); //
+		files.push_back(folder+"TTJets_HT*");
 	}
 	//Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
 	else if(process=="ttbar_2l"){
 		files.push_back(folder+"TTJets_DiLept_Tune*");
-		files.push_back(folder+"TTJets_HT*");
 	}
 	else if(process=="ttbar_1l"){
 		files.push_back(folder+"TTJets_SingleLeptFromT_Tune*");
@@ -73,12 +73,12 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"TTJets_Tune*"); //For this sample to be used in the hadronic-only selection it needs a ntruleps==0 skim
 	}
 	else if(process=="qcd"){
-		files.push_back(folder+"QCD_*"); //v5
+		files.push_back(folder+"QCD_*"); 
 	}
 	// For 0 or 1 lepton wjets apply a ntruleps cut at the sfeat level
 	else if(process=="wjets"){
-		files.push_back(folder+"WJetsToLNu*"); // v5
-		files.push_back(folder+"WJetsToQQ*");
+		files.push_back(folder+"WJetsToLNu_*"); 
+		//files.push_back(folder+"*WJetsToQQ*");//--->problem
 	}
 	else if(process=="singlet"){
 		files.push_back(folder+"ST_*");
@@ -88,18 +88,17 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"ZJetsToNuNu_HT-*");
 	}
 	else if(process=="other"){
-		files.push_back(folder+"DYJetsToLL_M-50_HT-*");
-		files.push_back(folder+"TTTT_*");
-		files.push_back(folder+"TTWJetsToLNu_*");
-		files.push_back(folder+"TTZToQQ_*");
-		files.push_back(folder+"TTZToLLNuNu_*");
-		files.push_back(folder+"WZ_*"); 
-		files.push_back(folder+"ZZ_*"); 
-		files.push_back(folder+"WW_*"); 
-		files.push_back(folder+"WZZ_*"); 
-		files.push_back(folder+"WWZ_*"); 
-		files.push_back(folder+"ZZZ_*"); 
-		files.push_back(folder+"WWW_*"); 
+		files.push_back(folder+"DYJetsToLL_M-50_HT-*");//-->problem
+		files.push_back(folder+"TTTT*");//-->problem
+		files.push_back(folder+"TTW*");//-->problem
+		files.push_back(folder+"TTZ*"); // -->problem 
+		files.push_back(folder+"WZ_*"); //-->problem
+		files.push_back(folder+"ZZ_*"); //-->problem
+		files.push_back(folder+"WW_*");  // -->problem
+		files.push_back(folder+"WZZ_*"); //-->problem
+		files.push_back(folder+"WWZ_*"); //-->problem
+		files.push_back(folder+"ZZZ_*"); //-->problem
+		files.push_back(folder+"WWW_*"); // */
 	}
 	//Contains all processes except for QCD, ttbar, and wjets. Typically used for public plots. Recursive so only need to change samples in one place
 	else if(process=="other_public"){

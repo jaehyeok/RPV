@@ -94,4 +94,5 @@ int main(int argc, char *argv[]){
 	h4->Draw("same");
 	l2->Draw();
 	c->SaveAs("plots/kappa/overlay_kappa"+Systematic1+"vs"+Systematic2+Scale+year+".png");
+	c->SaveAs("plots/kappa/overlay_kappa"+Systematic1+"vs"+Systematic2+Scale+year+".pdf");
 }

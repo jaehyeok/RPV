@@ -24,8 +24,8 @@
 
 using namespace std;
 
+void make_fit_mconly(TFile *fhist, TFile *kappa, TFile *f_out, int ibin);
 void make_fit(TFile *fhist, TFile *kappa, TFile *f_out, int ibin);
-void make_fit(TFile *fhist, TFile *kappa, int ibin);
 float SF_kap(TFile *kappa, int ikap, int ibin); 
 float SF_kap_err(TFile *kappa, int ikap, int ibin);
 
@@ -48,19 +48,23 @@ int main(int argc, char* argv[]){
     if(n_input.Contains("nominal")) n_out = temp.ReplaceAll("nominal","kappa");
     n_out = n_out.ReplaceAll("_mconly","");
     TFile *f_out = new TFile(n_out,"recreate");
-    for(int rg=22;rg<52;rg++){make_fit(fhist,kappa,f_out,rg);}
+    for(int rg=22;rg<52;rg++){make_fit_mconly(fhist,kappa,f_out,rg);}
     f_out->Close();
   }
   else{
-    make_fit(fhist,kappa,28); 
-    make_fit(fhist,kappa,29); 
-    make_fit(fhist,kappa,30); 
+    TFile *f_out = new TFile("result_kappa.root","recreate");
+/*
+    make_fit(fhist,kappa,f_out,28); 
+    make_fit(fhist,kappa,f_out,29); 
+    make_fit(fhist,kappa,f_out,30); 
+*/
+    for(int rg=22;rg<52;rg++) make_fit(fhist,kappa,f_out,rg);
   }
   kappa->Close();
   fhist->Close();
 }
 
-void make_fit( TFile *fhist, TFile *kappa, TFile *f_out, int ibin){
+void make_fit_mconly( TFile *fhist, TFile *kappa, TFile *f_out, int ibin){
 
   TH1F *data   = static_cast<TH1F*>(fhist->Get(Form("bin%i/data_obs", ibin)));
   TH1F *qcd    = static_cast<TH1F*>(fhist->Get(Form("bin%i/qcd"     , ibin)));
@@ -78,12 +82,31 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f_out, int ibin){
 
   float mjbin_data[3];
   float mjbin_mc[3];
+  float mjerr_mc[3];
  
   for(int i=0; i<3; i++){
     mjbin_data[i] = (float) data->GetBinContent(i+1);
     mjbin_mc[i]   = (float) mc_tot->GetBinContent(i+1); 
+    mjerr_mc[i]   = (float) mc_tot->GetBinError(i+1);
   }
 
+  float err_sum[3];
+  float err_dat(0), err_diff(0), err_kap(0);
+  float dat_bin(0), mc_bin(0);
+
+  float temp(0);
+
+  for(int i=0; i<3; i++){
+    dat_bin = (float)data->GetBinContent(i+1);
+    mc_bin  = (float)mc_tot->GetBinContent(i+1);
+
+    err_dat = (float)data->GetBinError(i+1);
+    err_diff = abs((dat_bin-mc_bin));
+    if(i==0) temp = 0;
+    else temp = SF_kap_err(kappa,i,ibin);
+    err_kap = TMath::Sqrt(mjerr_mc[i]*mjerr_mc[i]+temp*temp);  
+    err_sum[i] = TMath::Sqrt(err_dat*err_dat+ err_diff*err_diff+err_kap*err_kap);
+  }
 
   float SF     = mjbin_data[0]/mjbin_mc[0];
   float binsz  = (mjmax-mjmin)/3;
@@ -124,7 +147,9 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f_out, int ibin){
   }
 }
 
-void make_fit( TFile *fhist, TFile *kappa,int ibin){
+void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
+
+  cout<<ibin<<endl; 
 
   TH1F *data   = static_cast<TH1F*>(fhist->Get(Form("bin%i/data_obs", ibin)));
   TH1F *qcd    = static_cast<TH1F*>(fhist->Get(Form("bin%i/qcd"     , ibin)));
@@ -147,11 +172,12 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
 
   
   float mjbin_data[3];
-  float mjbin_mc[3];
+  float mjbin_mc[3], mjerr_mc[3];
  
   for(int i=0; i<3; i++){
     mjbin_data[i] = (float) data->GetBinContent(i+1);
     mjbin_mc[i]   = (float) mc_tot->GetBinContent(i+1); 
+    mjerr_mc[i]   = (float) mc_tot->GetBinError(i+1); 
   }
  
   float SF          = mjbin_data[0]/mjbin_mc[0];
@@ -162,8 +188,29 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
   h_mc->SetBinContent(2, mjbin_mc[1]*SF*SF_kap(kappa,1,ibin));
   h_mc->SetBinContent(3, mjbin_mc[2]*SF*SF_kap(kappa,2,ibin));
 
-  TFile *f = new TFile(Form("kappa_correction_%d.root",ibin),"recreate");
+  float err_sum[3];
+  float err_dat(0), err_diff(0), err_kap(0);
+  float dat_bin(0), mc_bin(0);
+
+  float temp(0);
+
+  for(int i=0; i<3; i++){
+    dat_bin = (float)data->GetBinContent(i+1);
+    mc_bin  = (float)h_mc->GetBinContent(i+1);
+
+    err_dat = (float)data->GetBinError(i+1);
+    err_diff = abs((dat_bin-mc_bin));
+    if(i==0) temp = 0;
+    else temp = SF_kap_err(kappa,i,ibin);
+    err_kap = TMath::Sqrt(mjerr_mc[i]*mjerr_mc[i]+temp*temp);  
+    err_sum[i] = TMath::Sqrt(err_dat*err_dat+ err_diff*err_diff+err_kap*err_kap);
+  }
+
   f->cd(); 
+  gDirectory->cd("/");
+  TString directory(Form("bin%d",ibin));
+  if(!gDirectory->GetDirectory(directory)) gDirectory->mkdir(directory);
+  gDirectory->cd(directory);
 
   float ymax, ymin;
 
@@ -178,7 +225,7 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
 
   ymax = data->GetMaximum();
   ymin = data->GetMinimum();
-  h_mc->SetTitle("MC with \kappa Factor Correction");
+  h_mc->SetTitle("MC with \{kappa} Factor Correction");
   h_mc->SetStats(0);
   h_mc->SetLineColor(kBlue);
 //  h_mc->SetLineWidth(2);
@@ -201,23 +248,35 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
   mc_tot->GetXaxis()->SetTitle("M_{J}");
   mc_tot->Write();
 
-  f->Close();
   vector<double> lines = {1.};
 
-  TCanvas *c = new TCanvas("c","c",1000,1000);
-  TRatioPlot *comp = new TRatioPlot(data,h_mc);
+  TCanvas *c = new TCanvas(Form("c%d",ibin),Form("c%d",ibin),1000,1000);
 
   TH1F *h_mc_cp       = dynamic_cast<TH1F*>(h_mc->Clone("h_mc_cp"));
   TH1F *data_cp       = dynamic_cast<TH1F*>(data->Clone("data_cp"));
   TH1F *h_mc_proc1_cp = dynamic_cast<TH1F*>(h_mc_proc1->Clone("h_mc_proc1_cp"));
   TH1F *mc_tot_cp     = dynamic_cast<TH1F*>(mc_tot->Clone("mc_tot_cp"));
   TH1F *comp_org      = dynamic_cast<TH1F*>(data->Clone("comp_org"));
+  TH1F *h_mc_err      = dynamic_cast<TH1F*>(h_mc->Clone("h_mc_err"));
+  for(int i=0;i<3;i++) h_mc_err->SetBinError(i+1,err_sum[i]);
+
+  TRatioPlot *comp = new TRatioPlot(data,h_mc);
+
+  h_mc_err->SetMarkerSize(0);
+  h_mc_err->SetFillColor(kBlack);
+  h_mc_err->SetLineColor(kBlack);
+  h_mc_err->SetFillStyle(3354);
+
+  h_mc_err->Write();
+
+
 
   comp_org->Divide(data,h_mc_proc1,1,1,"B");
   comp_org->SetLineColor(kRed); 
   comp_org->SetLineWidth(1); 
   comp_org->SetMarkerStyle(21);
   comp_org->SetMarkerSize(0.01);
+
 
   comp->SetGridlines(lines);
   comp->Draw("");
@@ -228,7 +287,8 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
   data_cp->SetLineWidth(2);
   h_mc_cp->Draw("same hist");
   h_mc_proc1_cp->Draw("hist same");
-  data_cp->Draw("same e1");
+  data_cp->Draw("same");
+  h_mc_err->Draw("same e2");
 
   TLegend *l = new TLegend(0.15,0.8,0.85,0.89);
   l->AddEntry(h_mc_cp,"Corrected by kappa factor","l");
@@ -247,15 +307,15 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
   comp->GetLowerRefYaxis()->SetRangeUser(0.3,2.1);
   comp->GetUpperRefYaxis()->SetRangeUser(0.1,ymax*5);
   comp->GetLowerPad()->cd();
-  comp_org->Draw("same e1");
-  comp_org->Draw("same e1");
+  comp_org->Draw("same");
+  comp_org->Draw("same");
   comp->GetLowerRefGraph()->SetLineColor(kBlue+2);
   comp->GetLowerRefGraph()->SetLineWidth(1);
   comp->GetLowerRefGraph()->SetMarkerStyle(21);
   comp->GetLowerRefGraph()->SetMarkerSize(0.01);
   comp->GetLowerRefGraph()->Draw("same e");
   c->Print(Form("plots/kappa_syst_uncert_%d.pdf",ibin));
-
+/*
   TCanvas *c1 = new TCanvas("c1","c1",2700,800);
   c1->Divide(3,1);
   c1->cd(1);
@@ -263,10 +323,11 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
   comp1->SetGridlines(lines);
   comp1->Draw("");
   comp1->GetUpperPad()->cd();
-  data_cp->Draw("same e1");
+  data_cp->Draw("same");
   mc_tot_cp->SetLineWidth(2);
   mc_tot_cp->SetLineColor(kBlue);
   mc_tot_cp->Draw("same hist");
+  h_mc_err->Draw("same e2");
   comp1->GetUpperRefYaxis()->SetTitle("Events");
   comp1->GetLowerRefYaxis()->SetTitle("Data/MC");
   comp1->GetUpperRefYaxis()->SetLabelSize(0.02);
@@ -286,7 +347,8 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
   comp2->SetGridlines(lines);
   comp2->Draw("");
   comp2->GetUpperPad()->cd();
-  data_cp->Draw("same e1");
+  data_cp->Draw("same");
+  h_mc_err->Draw("same e2");
   h_mc_proc1_cp->SetLineWidth(2);
   h_mc_proc1_cp->SetLineColor(kBlue);
   h_mc_proc1_cp->Draw("same hist");
@@ -310,7 +372,8 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
   comp3->SetGridlines(lines);
   comp3->Draw("");
   comp3->GetUpperPad()->cd();
-  data_cp->Draw("same e1");
+  data_cp->Draw("same");
+  h_mc_err->Draw("same e2");
   h_mc_cp->SetLineWidth(2);
   h_mc_cp->Draw("same hist");
   comp3->GetUpperRefYaxis()->SetTitle("Events");
@@ -326,9 +389,10 @@ void make_fit( TFile *fhist, TFile *kappa,int ibin){
   l3->AddEntry(data_cp,"Data","lep");
   l3->SetBorderSize(0);
   l3->Draw("same ");
- 
   c1->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
-
+ */
+ if(ibin==(28||29||30)) c->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
+ 
 }
 
 float SF_kap(TFile *kappa, int ikap, int ibin){

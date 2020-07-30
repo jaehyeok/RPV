@@ -39,11 +39,8 @@ int main()
 // */
   
     vector<TString> variations={
-<<<<<<< HEAD
+        //"GS","btag_bc", "btag_udsg"
         "GS"
-=======
-        "btag_bc", "btag_udsg"
->>>>>>> 6c21e125d9d10a53047556ad4bdf6ab0ad06be82
     };
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
@@ -91,6 +88,9 @@ void drawUpDown(int bin, vector<TString> variations)
 //    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
 
     TFile* infile = TFile::Open("variations/output_2016.root");
+    TCanvas *c1;//[number_of_bin][process]
+    TPad *pad1;
+    TPad *pad2;
 
     for(unsigned int iprocess=0; iprocess<6; iprocess++) 
     {
@@ -112,8 +112,8 @@ void drawUpDown(int bin, vector<TString> variations)
             TH1F *h1_up       = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%sUp", bin, hname.Data(), haltername))); 
             TH1F *h1_down     = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%sDown", bin, hname.Data(), haltername))); 
 
-	    TH1F *h1_ratio    = new TH1F(Form("bin%d/h1_ratio",bin),"h1_ratio",60,1,60);
-	    TH1F *h1_ratio2    = new TH1F(Form("bin%d/h1_ratio2",bin),"h1_ratio2",40,1,40);
+	    TH1F *h1_ratio    = new TH1F(Form("bin%i/h1_ratio_%s",bin,hname.Data()),"h1_ratio",60,1,60);
+	    TH1F *h1_ratio2    = new TH1F(Form("bin%i/h1_ratio2_%s",bin,hname.Data()),"h1_ratio2",40,1,40);
 
             float bc_cent(0), bc_up(0), bc_down(0);
 	    float err(0);
@@ -297,9 +297,10 @@ void drawUpDown(int bin, vector<TString> variations)
             c->Print(Form("plots/variations/bin%i/bin%i_%s_%s_mconly.pdf", bin, bin, hname.Data(), haltername));
             c->SaveAs(Form("plots/variations/bin%i/bin%i_%s_%s_mconly.png", bin, bin, hname.Data(), haltername));
 
-	    TCanvas *c1 = new TCanvas("c1","c1",2000,1000);
-            TPad *pad1 = new TPad("ratio","ratio",0.0,0.0,0.6,1.0);
-            TPad *pad2 = new TPad("ratio","ratio",0.6,0.0,1.0,1.0);
+	    //TCanvas *c1 = new TCanvas("c1","c1",2000,1000);
+	    c1 = new TCanvas(Form("c1_%i_%s",bin,hname.Data()),Form("c1_%i_%s",bin,hname.Data()),2000,1000);
+            pad1 = new TPad(Form("ratio_%i_%s",bin,hname.Data()),Form("ratio_%i_%s",bin,hname.Data()),0.0,0.0,0.6,1.0);
+            pad2 = new TPad(Form("ratio_%i_%s",bin,hname.Data()),Form("ratio_%i_%s",bin,hname.Data()),0.6,0.0,1.0,1.0);
 	    pad1->Draw();
 	    pad2->Draw();
 	    pad1->cd();

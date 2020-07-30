@@ -762,6 +762,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         //
         for(int ibin=0; ibin<nbins; ibin++)  
         {
+	   upweight   = nominalweight;
+	   downweight = nominalweight;
            if(variations=="kappa")
             {
               float sys_kappaup(1),sys_kappadown(1);
@@ -775,6 +777,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
  
               upweight    = upweight*sys_kappaup;
               downweight  = downweight*sys_kappadown;
+	      //cout<<upweight<<"::"<<downweight<<endl;
             }
             if(variations=="jer")//jet energy resolution
             {  

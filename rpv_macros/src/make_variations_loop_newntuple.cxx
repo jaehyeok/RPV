@@ -413,9 +413,27 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     TH1F * h1nominal[nbins];
     TH1F * h1up[nbins];     
     TH1F * h1down[nbins];   
-    
+    float kappa_err(0),kappa_cont(0);
+    float kappa_syst[nbins][3];    
+    TFile *f_kappa_syst = TFile::Open("data/result_kappa.root");
+           
     for(int ibin=0; ibin<nbins; ibin++)
     {
+      if(variations.Contains("kappa")&&ibin>21){
+       TH1F *h_kap_syst  = static_cast<TH1F*>(f_kappa_syst->Get(Form("%d/h_mc_err",ibin)));
+        for(int ihb=0; ihb<3; ihb++){
+          kappa_err  = h_kap_syst->GetBinError(ihb+1); 
+          kappa_cont = h_kap_syst->GetBinContent(ihb+1);
+          kappa_syst[ibin][ihb] = kappa_err/kappa_cont;
+	  cout<<"HI"<<endl;
+        }
+      }
+      else if(variations.Contains("kappa")&&ibin<22){
+        for(int ihb=0; ihb<3; ihb++){
+	  kappa_syst[ibin][ihb] = 1;
+        }
+      }
+
         //h1nominal[ibin]    = new TH1F(nominalname.Data(),  nominalname.Data(), MjBin+1, 0, MjBin+1);
         //h1up[ibin]         = new TH1F(upname.Data(),       upname.Data(),      MjBin+1, 0, MjBin+1);
         //h1down[ibin]       = new TH1F(downname.Data(),     downname.Data(),    MjBin+1, 0, MjBin+1);
@@ -740,6 +758,18 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         //
         for(int ibin=0; ibin<nbins; ibin++)  
         {
+            float sys_kappaup(1),sys_kappadown(1);
+            int ihb(0);
+            if(tree.mj12()>500 && tree.mj12()<800) ihb = 0;
+            if(tree.mj12()>800 && tree.mj12()<1100) ihb = 1;
+            if(tree.mj12()>1100) ihb = 2;
+            sys_kappaup   = 1+kappa_syst[ibin][ihb];
+            sys_kappadown = 1-kappa_syst[ibin][ihb];
+            if(variations=="kappa")
+            {
+              upweight    = upweight*sys_kappaup;
+              downweight  = downweight*sys_kappadown;
+            }
             if(variations=="jer")//jet energy resolution
             {  
 		    float hmjmax = mjmax-0.001;

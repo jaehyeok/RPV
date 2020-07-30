@@ -40,19 +40,19 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"SingleMuon*");
 	}
 	else if(process.Contains("rpv")){
-		if(process=="rpv_m1000") files.push_back(folder+"mGluino*1000*");
-		else if(process=="rpv_m1100") files.push_back(folder+"mGluino*1100*");
-		else if(process=="rpv_m1200") files.push_back(folder+"mGluino*1200*");
-		else if(process=="rpv_m1300") files.push_back(folder+"mGluino*1300*");
-		else if(process=="rpv_m1400") files.push_back(folder+"mGluino*1400*");
-		else if(process=="rpv_m1500") files.push_back(folder+"mGluino*1500*");
-		else if(process=="rpv_m1600") files.push_back(folder+"mGluino*1600*");
-		else if(process=="rpv_m1700") files.push_back(folder+"mGluino*1700*");
-		else if(process=="rpv_m1800") files.push_back(folder+"mGluino*1800*");
-		else if(process=="rpv_m1900") files.push_back(folder+"mGluino*1900*");
-		else if(process=="rpv_m2000") files.push_back(folder+"mGluino*2000*");
-		else if(process=="rpv_m2100") files.push_back(folder+"mGluino*2100*");
-		else if(process=="rpv_m2200") files.push_back(folder+"mGluino*2200*");
+		if(process=="rpv_m1000") files.push_back(folder+"*mGluino*1000*");
+		else if(process=="rpv_m1100") files.push_back(folder+"*mGluino*1100*");
+		else if(process=="rpv_m1200") files.push_back(folder+"*mGluino*1200*");
+		else if(process=="rpv_m1300") files.push_back(folder+"*mGluino*1300*");
+		else if(process=="rpv_m1400") files.push_back(folder+"*mGluino*1400*");
+		else if(process=="rpv_m1500") files.push_back(folder+"*mGluino*1500*");
+		else if(process=="rpv_m1600") files.push_back(folder+"*mGluino*1600*");
+		else if(process=="rpv_m1700") files.push_back(folder+"*mGluino*1700*");
+		else if(process=="rpv_m1800") files.push_back(folder+"*mGluino*1800*");
+		else if(process=="rpv_m1900") files.push_back(folder+"*mGluino*1900*");
+		else if(process=="rpv_m2000") files.push_back(folder+"*mGluino*2000*");
+		else if(process=="rpv_m2100") files.push_back(folder+"*mGluino*2100*");
+		else if(process=="rpv_m2200") files.push_back(folder+"*mGluino*2200*");
 	}
 	// For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
 	else if(process=="ttbar"){

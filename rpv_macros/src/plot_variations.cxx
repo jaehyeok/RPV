@@ -39,7 +39,11 @@ int main()
 // */
   
     vector<TString> variations={
+<<<<<<< HEAD
         "GS"
+=======
+        "btag_bc", "btag_udsg"
+>>>>>>> 6c21e125d9d10a53047556ad4bdf6ab0ad06be82
     };
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
@@ -88,13 +92,14 @@ void drawUpDown(int bin, vector<TString> variations)
 
     TFile* infile = TFile::Open("variations/output_2016.root");
 
-    for(unsigned int iprocess=0; iprocess<5; iprocess++) 
+    for(unsigned int iprocess=0; iprocess<6; iprocess++) 
     {
         TString hname = "ttbar";
         if(iprocess==1) hname = "qcd";
         if(iprocess==2) hname = "wjets";
         if(iprocess==3) hname = "other";
-        if(iprocess==4) hname = "signal_M1500";
+        if(iprocess==4) hname = "signal_M1600";
+        if(iprocess==5) hname = "signal_M1900";
 
         for(unsigned int ivariation=0; ivariation<variations.size(); ivariation++) 
         { 

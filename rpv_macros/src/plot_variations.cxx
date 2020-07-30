@@ -39,11 +39,7 @@ int main()
 // */
   
     vector<TString> variations={
-<<<<<<< HEAD
         "GS"
-=======
-        "btag_bc"
->>>>>>> 0ddd03950c5dbdab5b1c7e1d136593948876f06c
     };
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
@@ -309,6 +305,7 @@ void drawUpDown(int bin, vector<TString> variations)
 	    h1_ratio2->SetStats(0);
 	    h1_ratio2->Draw("hist");
             c1->Print(Form("plots/variations/bin%i/bin%i_%s_%s_ratio.pdf", bin, bin, hname.Data(), haltername));
+            c1->SaveAs(Form("plots/variations/bin%i/bin%i_%s_%s_ratio.png", bin, bin, hname.Data(), haltername));
 
             delete h1_central; 
             delete h1_up; 

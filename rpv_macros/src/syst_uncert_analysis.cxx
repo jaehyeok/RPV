@@ -53,12 +53,12 @@ int main(int argc, char* argv[]){
   }
   else{
     TFile *f_out = new TFile("result_kappa.root","recreate");
-/*
+
+    make_fit(fhist,kappa,f_out,27); 
     make_fit(fhist,kappa,f_out,28); 
     make_fit(fhist,kappa,f_out,29); 
-    make_fit(fhist,kappa,f_out,30); 
-*/
-    for(int rg=22;rg<52;rg++) make_fit(fhist,kappa,f_out,rg);
+
+//    for(int rg=22;rg<52;rg++) make_fit(fhist,kappa,f_out,rg);
   }
   kappa->Close();
   fhist->Close();
@@ -391,7 +391,7 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
   l3->Draw("same ");
   c1->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
  */
- if(ibin==(28||29||30)) c->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
+ if(ibin==(28||29||27)) c->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
  
 }
 
@@ -407,7 +407,8 @@ float SF_kap(TFile *kappa, int ikap, int ibin){
   kappa_0 = (float)h->GetBinContent(bin_index-2); 
   kappa_1 = (float)h->GetBinContent(bin_index); 
   kappa_2 = (float)h->GetBinContent(bin_index+2); 
-  kappa_ave = (kappa_1+kappa_2)/2;
+  if(njets_region==3) kappa_ave = kappa_1;
+  else kappa_ave = (kappa_1+kappa_2)/2;
   cout<<kappa_ave<<endl;
   return kappa_ave;
 }
@@ -424,6 +425,7 @@ float SF_kap_err(TFile *kappa, int ikap, int ibin){
   err_kappa_0 = (float)h->GetBinError(bin_index-2); 
   err_kappa_1 = (float)h->GetBinError(bin_index); 
   err_kappa_2 = (float)h->GetBinError(bin_index+2); 
-  err_kappa_ave = TMath::Sqrt((err_kappa_1*err_kappa_1+err_kappa_2*err_kappa_2)/2);
+  if(njets_region==3) err_kappa_ave = err_kappa_1;
+  else  err_kappa_ave = TMath::Sqrt((err_kappa_1*err_kappa_1+err_kappa_2*err_kappa_2)/2);
   return err_kappa_ave;
 }

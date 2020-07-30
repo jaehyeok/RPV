@@ -419,18 +419,22 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
            
     for(int ibin=0; ibin<nbins; ibin++)
     {
-      if(variations.Contains("kappa")&&ibin>21){
-       TH1F *h_kap_syst  = static_cast<TH1F*>(f_kappa_syst->Get(Form("%d/h_mc_err",ibin)));
+       if(variations.Contains("kappa")&&ibin>26){
+       int valbin;
+       if(ibin%3==0) valbin=27;
+       else if(ibin%3==1) valbin==28;
+       else if(ibin%3==2) valbin==29;
+       TH1F *h_kap_syst  = static_cast<TH1F*>(f_kappa_syst->Get(Form("bin%d/h_mc_err",valbin)));
         for(int ihb=0; ihb<3; ihb++){
           kappa_err  = h_kap_syst->GetBinError(ihb+1); 
           kappa_cont = h_kap_syst->GetBinContent(ihb+1);
           kappa_syst[ibin][ihb] = kappa_err/kappa_cont;
-	  cout<<"HI"<<endl;
+          cout<<ibin<<" "<<ihb<<":"<<kappa_syst[ibin][ihb]<<endl;
         }
       }
-      else if(variations.Contains("kappa")&&ibin<22){
+      else if(variations.Contains("kappa")&&ibin<27){
         for(int ihb=0; ihb<3; ihb++){
-	  kappa_syst[ibin][ihb] = 1;
+	  kappa_syst[ibin][ihb] = 0;
         }
       }
 
@@ -758,15 +762,17 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         //
         for(int ibin=0; ibin<nbins; ibin++)  
         {
-            float sys_kappaup(1),sys_kappadown(1);
-            int ihb(0);
-            if(tree.mj12()>500 && tree.mj12()<800) ihb = 0;
-            if(tree.mj12()>800 && tree.mj12()<1100) ihb = 1;
-            if(tree.mj12()>1100) ihb = 2;
-            sys_kappaup   = 1+kappa_syst[ibin][ihb];
-            sys_kappadown = 1-kappa_syst[ibin][ihb];
-            if(variations=="kappa")
+           if(variations=="kappa")
             {
+              float sys_kappaup(1),sys_kappadown(1);
+              int ihb(0);
+              if(tree.mj12()>500 && tree.mj12()<800) ihb = 0;
+              else if(tree.mj12()>800 && tree.mj12()<1100) ihb = 1;
+              else if(tree.mj12()>1100) ihb = 2;
+              sys_kappaup   = 1+kappa_syst[ibin][ihb];
+              sys_kappadown = 1-kappa_syst[ibin][ihb];
+	      //cout<<sys_kappaup<<"::"<<sys_kappadown<<endl;
+ 
               upweight    = upweight*sys_kappaup;
               downweight  = downweight*sys_kappadown;
             }
@@ -807,7 +813,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 		    if(tree.nleps()==0 && !nl0shape){
 			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
 		   	 //cout<<hmjmax<<endl;
-		    }
+		   }
                     h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);  // nominal  
                     h1up[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), upweight);            // up  
                     h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);        // down 

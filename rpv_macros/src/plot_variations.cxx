@@ -39,7 +39,11 @@ int main()
 // */
   
     vector<TString> variations={
+<<<<<<< HEAD
         "GS"
+=======
+        "btag_bc"
+>>>>>>> 0ddd03950c5dbdab5b1c7e1d136593948876f06c
     };
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
@@ -86,7 +90,7 @@ void drawUpDown(int bin, vector<TString> variations)
 
 //    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
 
-    TFile* infile = TFile::Open("variations/output_newnt_nl0shape_2016.root");
+    TFile* infile = TFile::Open("variations/output_2016.root");
 
     for(unsigned int iprocess=0; iprocess<5; iprocess++) 
     {
@@ -107,6 +111,13 @@ void drawUpDown(int bin, vector<TString> variations)
             TH1F *h1_up       = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%sUp", bin, hname.Data(), haltername))); 
             TH1F *h1_down     = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%sDown", bin, hname.Data(), haltername))); 
 
+	    TH1F *h1_ratio    = new TH1F(Form("bin%d/h1_ratio",bin),"h1_ratio",60,1,60);
+	    TH1F *h1_ratio2    = new TH1F(Form("bin%d/h1_ratio2",bin),"h1_ratio2",40,1,40);
+
+            float bc_cent(0), bc_up(0), bc_down(0);
+	    float err(0);
+
+
             float stat_cent   = h1_central->Integral();
             float stat_up     = h1_up->Integral();
             float stat_down   = h1_down->Integral();
@@ -116,6 +127,18 @@ void drawUpDown(int bin, vector<TString> variations)
 
             h1_up->Scale(SF_up);
             h1_down->Scale(SF_down);
+
+            for(int ibin = 0 ; ibin<3 ; ibin++){
+             bc_cent = h1_central->GetBinContent(ibin+1); 
+	     bc_up   = h1_up->GetBinContent(ibin+1);
+	     bc_down = h1_down->GetBinContent(ibin+1);
+	     err     = h1_central->GetBinError(ibin+1);
+	     h1_ratio->SetBinContent(10+3*ibin,(err)/bc_cent);
+	     h1_ratio->SetBinContent(30+3*ibin,(bc_up-bc_cent)/bc_cent);
+	     h1_ratio->SetBinContent(50+3*ibin,(bc_down-bc_cent)/bc_cent);
+	     h1_ratio2->SetBinContent(10+3*ibin,(bc_up-bc_cent)/err);
+	     h1_ratio2->SetBinContent(30+3*ibin,(bc_down-bc_cent)/err);
+	    }
 
             h1cosmetic(h1_central,   "", kBlack, 1, 0, "N_{b}");
             h1cosmetic(h1_up,        "", kRed,   1, 0, "N_{b}");
@@ -272,6 +295,20 @@ void drawUpDown(int bin, vector<TString> variations)
             gSystem->mkdir(Form("plots/variations/bin%i",bin), kTRUE); 
             c->Print(Form("plots/variations/bin%i/bin%i_%s_%s_mconly.pdf", bin, bin, hname.Data(), haltername));
             c->SaveAs(Form("plots/variations/bin%i/bin%i_%s_%s_mconly.png", bin, bin, hname.Data(), haltername));
+
+	    TCanvas *c1 = new TCanvas("c1","c1",2000,1000);
+            TPad *pad1 = new TPad("ratio","ratio",0.0,0.0,0.6,1.0);
+            TPad *pad2 = new TPad("ratio","ratio",0.6,0.0,1.0,1.0);
+	    pad1->Draw();
+	    pad2->Draw();
+	    pad1->cd();
+	    h1_ratio->SetStats(0);
+	    h1_ratio->GetYaxis()->SetRange(0.5,1.5);
+	    h1_ratio->Draw("hist");
+	    pad2->cd();
+	    h1_ratio2->SetStats(0);
+	    h1_ratio2->Draw("hist");
+            c1->Print(Form("plots/variations/bin%i/bin%i_%s_%s_ratio.pdf", bin, bin, hname.Data(), haltername));
 
             delete h1_central; 
             delete h1_up; 

@@ -39,7 +39,7 @@ int main()
 // */
   
     vector<TString> variations={
-        "gs"
+        "GS"
     };
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
@@ -155,7 +155,7 @@ void drawUpDown(int bin, vector<TString> variations)
     
             // CMS and lumi labels
             float textSize = 0.05;
-            TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", 12.9));
+            TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", 35.9));
             TexEnergyLumi->SetNDC();
             TexEnergyLumi->SetTextSize(textSize);
             TexEnergyLumi->SetTextAlign (31);

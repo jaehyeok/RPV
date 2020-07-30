@@ -38,6 +38,11 @@ int main(int argc, char *argv[]){
 	Scale = argv[3];
 	year = argv[4];
 
+	if(argc<2){
+		cout << "[Error] Not Enough Arguments! argument \"--help\" may help you" << endl;
+		return 1;
+	}
+
 	if(Systematic1 == "--help" || argc<3){
 		cout << "" <<endl;
 		cout << "./run/plot_overLayKappa.exe [Systematic1] [Systematic2] [Up/Down] [year]" << endl;
@@ -47,6 +52,7 @@ int main(int argc, char *argv[]){
 		cout << "Up/Down: Up or Down" << endl;
 		cout << "year: 2016, 2017, 2018" << endl;
 		cout << "" << endl;
+		return 1;
 	}
 
 	TFile *f1, *f2, *f3, *f4;

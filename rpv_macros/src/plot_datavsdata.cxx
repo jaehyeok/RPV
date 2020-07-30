@@ -136,7 +136,7 @@ int main(){
   vector<hfeats> vars;
   //td::vector<TString> cuts = {"nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==2&&mj12>500&&nleps==1&&ht>1200&&8<=njets","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&8<=njets"};
   //std::vector<TString> cuts = {"nbm==2&&mj12>500&&nleps==1&&ht>1200","nbm>=3&&mj12>500&&nleps==1&&ht>1200"};
-  std::vector<TString> cuts = {"nbm==0&&nleps==1&&mj12>=500&&ht>1200&&njets>=4&&njets<=5"};
+  std::vector<TString> cuts = {"nbm==2&&nleps==1&&mj12>=500&&ht>1200&&njets>=6&&njets<=7"};
   //std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=8"};
   //std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=8"};
   /*std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==3&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm>=4&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
@@ -154,7 +154,7 @@ int main(){
     vars.back().normalize = true; // */
     //vars.push_back(hfeats("nbm", 6, 0, 6, ttbar, "N_{b}", icut,-1,"ttbar"));
     //vars.push_back(hfeats("njets", 10, 0, 20, ttbar, "NJets", icut,-1,"ttbar"));
-    /*vars.push_back(hfeats("mj12", 3, 500, 1400, ttbar, "mj12", icut,-1,"ttbar"));
+    vars.push_back(hfeats("mj12", 3, 500, 1400, ttbar, "mj12", icut,-1,"ttbar"));
     //vars.push_back(hfeats("ht", 20, 1200, 2600, ttbar, "H_{t}", icut,-1,"ttbar"));//
     vars.back().normalize = true;// */
     //vars.push_back(hfeats("nbm", 6, 0, 6, qcd, "N_{b}", icut,-1,"qcd"));
@@ -164,7 +164,7 @@ int main(){
     vars.back().normalize = true;// */
     //vars.push_back(hfeats("nbm", 6, 0, 6, other, "N_{b}", icut,-1,"other"));
     //vars.push_back(hfeats("njets", 6, 0, 12, other, "NJets", icut,-1,"other"));
-    vars.push_back(hfeats("mj12", 3, 500, 1400, other, "mj12", icut,-1,"other"));
+    /*vars.push_back(hfeats("mj12", 3, 500, 1400, other, "mj12", icut,-1,"other"));
     //vars.push_back(hfeats("ht", 20, 1200, 2600, other, "H_{t}", icut,-1,"other"));//
     vars.back().normalize = true;// */
     //vars.push_back(hfeats("nbm", 6, 0, 6, wjets, "N_{b}", icut,-1,"wjets"));

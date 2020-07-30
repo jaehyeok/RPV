@@ -232,14 +232,6 @@ int main(int argc, char *argv[])
    //TString folder_dat = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
    //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
 
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_norm_v6/";
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_norm_v6/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/skim_norm_v6/";*/
-
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";//FIXME
-  TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";// */
-
   /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
   TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
   TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";// */
@@ -537,12 +529,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             downweight  = downweight*tree.sys_udsgtag()[1];
         }
         if(variations=="GS") 
-        { 
-            if(tree.fromGS()==1)
-            {
-                upweight    = upweight*(1.5*tree.fromGS());
-                downweight  = downweight*(0.5*tree.fromGS()); 
-            }
+        {
+	    if(tree.fromGS()==1){
+        	upweight    = upweight*(1.5*tree.fromGS());
+		downweight  = downweight*(0.5*tree.fromGS()); 
+	    }
         }
         if(variations=="gs67") 
         { 

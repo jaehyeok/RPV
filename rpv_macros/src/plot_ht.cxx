@@ -15,6 +15,7 @@
 #include "TString.h"
 #include "TTree.h"
 #include "THStack.h"
+#include "TSystem.h"
 using namespace std;
 
 void set_histo_style(TH1F *h){
@@ -37,7 +38,8 @@ int main(){
 	float w_isr_tr, w_lumi, weight;
 	const int nfiles = 5;
 	TString inputdir, outputdir;
-	outputdir = "/cms/scratch/yjeong/CMSSW_10_2_13/src/RPV/rpv_macros/plots_ht/";
+	outputdir = "plots/ht/";
+	gSystem->mkdir(outputdir);
 	//inputdir = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_rpvfitnbge0/";
 	inputdir = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/processed/";
 

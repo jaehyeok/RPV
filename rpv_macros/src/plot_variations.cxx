@@ -88,7 +88,7 @@ void drawUpDown(int bin, vector<TString> variations)
 //    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
 
     TFile* infile = TFile::Open("variations/output_2016.root");
-    TCanvas *c1;//[number_of_bin][process]
+    TCanvas *c1;
     TPad *pad1;
     TPad *pad2;
 

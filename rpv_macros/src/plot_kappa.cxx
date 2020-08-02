@@ -10,6 +10,7 @@
 #include "TFile.h"
 #include "TDirectory.h"
 #include "TMath.h"
+#include "TSystem.h"
 
 using namespace std;
 
@@ -25,6 +26,7 @@ vector<float> calculateR(TH1F* h1, int mjbin);
 //
 int main(int argc, char *argv[])
 {
+    gSystem->mkdir("plots/kappa/");
     TString syst("nominal"), updo("X");
     TString reweight("other");
     float mjmin(500), mjmax(1400);

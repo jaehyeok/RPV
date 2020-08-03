@@ -178,6 +178,7 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
     mjbin_data[i] = (float) data->GetBinContent(i+1);
     mjbin_mc[i]   = (float) mc_tot->GetBinContent(i+1); 
     mjerr_mc[i]   = (float) mc_tot->GetBinError(i+1); 
+    cout<<mjbin_mc[i]<<"::"<<mjbin_data[i]<<endl;
   }
  
   float SF          = mjbin_data[0]/mjbin_mc[0];
@@ -188,6 +189,7 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
   h_mc->SetBinContent(2, mjbin_mc[1]*SF*SF_kap(kappa,1,ibin));
   h_mc->SetBinContent(3, mjbin_mc[2]*SF*SF_kap(kappa,2,ibin));
 
+  for(int i=0;i<3;i++) cout<<h_mc->GetBinContent(i+1)<<endl;
   float err_sum[3];
   float err_dat(0), err_diff(0), err_kap(0);
   float dat_bin(0), mc_bin(0);
@@ -286,7 +288,7 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
   h_mc_proc1_cp->SetLineWidth(2);
   data_cp->SetLineWidth(2);
   h_mc_cp->Draw("same hist");
-  h_mc_proc1_cp->Draw("hist same");
+ // h_mc_proc1_cp->Draw("hist same");
   data_cp->Draw("same");
   h_mc_err->Draw("same e2");
 
@@ -307,14 +309,14 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
   comp->GetLowerRefYaxis()->SetRangeUser(0.3,2.1);
   comp->GetUpperRefYaxis()->SetRangeUser(0.1,ymax*5);
   comp->GetLowerPad()->cd();
-  comp_org->Draw("same");
-  comp_org->Draw("same");
+//  comp_org->Draw("same");
+//  comp_org->Draw("same");
   comp->GetLowerRefGraph()->SetLineColor(kBlue+2);
   comp->GetLowerRefGraph()->SetLineWidth(1);
   comp->GetLowerRefGraph()->SetMarkerStyle(21);
   comp->GetLowerRefGraph()->SetMarkerSize(0.01);
-  comp->GetLowerRefGraph()->Draw("same e");
-  c->Print(Form("plots/kappa_syst_uncert_%d.pdf",ibin));
+ // comp->GetLowerRefGraph()->Draw("same e");
+ // c->Print(Form("plots/kappa_syst_uncert_%d.pdf",ibin));
 /*
   TCanvas *c1 = new TCanvas("c1","c1",2700,800);
   c1->Divide(3,1);
@@ -391,7 +393,7 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
   l3->Draw("same ");
   c1->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
  */
- if(ibin==(28||29||27)) c->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
+ if(ibin==28||ibin==29||ibin==27) c->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
  
 }
 

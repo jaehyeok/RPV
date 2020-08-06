@@ -288,7 +288,7 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
   h_mc_proc1_cp->SetLineWidth(2);
   data_cp->SetLineWidth(2);
   h_mc_cp->Draw("same hist");
- // h_mc_proc1_cp->Draw("hist same");
+  h_mc_proc1_cp->Draw("hist same");
   data_cp->Draw("same");
   h_mc_err->Draw("same e2");
 
@@ -309,7 +309,7 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
   comp->GetLowerRefYaxis()->SetRangeUser(0.3,2.1);
   comp->GetUpperRefYaxis()->SetRangeUser(0.1,ymax*5);
   comp->GetLowerPad()->cd();
-//  comp_org->Draw("same");
+  comp_org->Draw("same");
 //  comp_org->Draw("same");
   comp->GetLowerRefGraph()->SetLineColor(kBlue+2);
   comp->GetLowerRefGraph()->SetLineWidth(1);

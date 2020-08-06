@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     float mjmin(500), mjmax(1400);
     TString arg(argv[1]);
     TString year, filename;
+    cout<<argc<<endl;
     if(argc<=3){
       cout << "if you want to know about arguments, use --help to get help" << endl;
     }
@@ -190,7 +191,7 @@ int main(int argc, char *argv[])
     };
 
     TFile *infile;
-    if(argc==6) infile = TFile::Open(filename,"READ");
+    if(argc>6) infile = TFile::Open(filename,"READ");
     else infile = TFile::Open("variations/output_newnt_nl0shape_"+year+".root", "READ");
 
     vector<vector<float>> kappa1;
@@ -362,8 +363,8 @@ int main(int argc, char *argv[])
         }
       }
     }
-    TString outputname="plots/kappa/kappa_summary_"+syst+updo+year+".root";
-    if(filename.Contains("mconly")) outputname="plots/kappa/kappa_summary_"+syst+updo+year+"_mconly.root"; 
+    TString outputname="plots/kappa/kappa_summary_"+syst+updo+"_"+year+".root";
+    if(filename.Contains("mconly")) outputname="plots/kappa/kappa_summary_"+syst+updo+"_"+year+"_mconly.root"; 
     TFile *f = new TFile(outputname,"recreate");
 
     TString s_mj1 = Form("%.0f",mjmin);
@@ -412,8 +413,8 @@ int main(int argc, char *argv[])
     h1_0l_summary2->SetMaximum(3);
     h1_0l_summary2->Draw("ep");
     h1_0l_summary2->Write();
-    c->Print("plots/kappa/kappa_summary_"+syst+updo+year+".pdf");
-    c->Print("plots/kappa/kappa_summary_"+syst+updo+year+".png");
+    c->Print("plots/kappa/kappa_summary_"+syst+updo+"_"+year+".pdf");
+    c->Print("plots/kappa/kappa_summary_"+syst+updo+"_"+year+".png");
     f->Close();  
 /*
     //

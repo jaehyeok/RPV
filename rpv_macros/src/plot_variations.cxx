@@ -39,8 +39,8 @@ int main()
 // */
   
     vector<TString> variations={
-        //"GS","btag_bc", "btag_udsg"
-        "GS"
+        //"GS",
+        "btag_bc", "btag_udsg"
     };
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
@@ -119,9 +119,9 @@ void drawUpDown(int bin, vector<TString> variations)
 	    float err(0);
 
 
-            float stat_cent   = h1_central->Integral();
-            float stat_up     = h1_up->Integral();
-            float stat_down   = h1_down->Integral();
+            float stat_cent   = h1_central->GetBinContent(1);
+            float stat_up     = h1_up->GetBinContent(1);
+            float stat_down   = h1_down->GetBinContent(1);
 
             float SF_up       = stat_cent/stat_up;
             float SF_down     = stat_cent/stat_down;
@@ -134,11 +134,15 @@ void drawUpDown(int bin, vector<TString> variations)
 	     bc_up   = h1_up->GetBinContent(ibin+1);
 	     bc_down = h1_down->GetBinContent(ibin+1);
 	     err     = h1_central->GetBinError(ibin+1);
+	     cout<<err<<"::"<<bc_cent<<"::"<<bc_up<<"::"<<bc_down<<endl;
 	     h1_ratio->SetBinContent(10+3*ibin,(err)/bc_cent);
 	     h1_ratio->SetBinContent(30+3*ibin,(bc_up-bc_cent)/bc_cent);
 	     h1_ratio->SetBinContent(50+3*ibin,(bc_down-bc_cent)/bc_cent);
 	     h1_ratio2->SetBinContent(10+3*ibin,(bc_up-bc_cent)/err);
 	     h1_ratio2->SetBinContent(30+3*ibin,(bc_down-bc_cent)/err);
+	     cout<<bc_up<<"::"<<bc_cent<<"::"<<(bc_up-bc_cent)/bc_cent<<endl;
+	     h1_ratio->SetMaximum(0.6);
+	     h1_ratio->SetMinimum(-0.6);
 	    }
 
             h1cosmetic(h1_central,   "", kBlack, 1, 0, "N_{b}");
@@ -172,9 +176,9 @@ void drawUpDown(int bin, vector<TString> variations)
     
             //h1_central->SetMaximum(h1_central->GetMaximum()*1.5);
             h1_central->SetMaximum(h1_central->GetMaximum()*10);
-            h1_central->Draw("histo e");
-            h1_up->Draw("histo same");
-            h1_down->Draw("histo same");
+            h1_central->Draw("hist e");
+            h1_up->Draw("hist same");
+            h1_down->Draw("hist same");
             l1->Draw("same");
     
             // CMS and lumi labels

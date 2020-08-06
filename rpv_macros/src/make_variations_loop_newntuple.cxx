@@ -455,7 +455,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             cols = w.ws_col;
             //cols = 104;
             progress = float(ientry+1)/float(tree.GetEntries());
-	    int barWidth = cols - 78;
+	    int barWidth = cols - 79;
 	    TString space = "";
 	    for(int sp = 0 ; sp < 20-strlen(procname.Data()) ; sp++){
               space = space + " "; 
@@ -542,8 +542,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         //
         if(variations=="btag_bc") 
         { 
-            upweight    = upweight*tree.sys_bctag()[0];///tree.w_btag();
-            downweight  = downweight*tree.sys_bctag()[1];///tree.w_btag();
+	    //cout<<tree.sys_bctag()[0]<<"::"<<tree.sys_bctag()[1]<<endl;
+            upweight    = upweight*tree.sys_bctag()[0]/tree.w_btag_dcsv();
+            downweight  = downweight*tree.sys_bctag()[1]/tree.w_btag_dcsv();
+	    //cout<<tree.sys_bctag()[0]<<"::"<<tree.sys_bctag()[1]<<endl;
+	    //cout<<upweight<<"::"<<downweight<<"::"<<nominalweight<<endl;
         }
         if(variations=="btag_udsg") 
         { 
@@ -762,10 +765,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         //
         for(int ibin=0; ibin<nbins; ibin++)  
         {
-	   upweight   = nominalweight;
-	   downweight = nominalweight;
            if(variations=="kappa")
-            {
+           {
+	      upweight   = nominalweight;
+	      downweight = nominalweight;
               float sys_kappaup(1),sys_kappadown(1);
               int ihb(0);
               if(tree.mj12()>500 && tree.mj12()<800) ihb = 0;

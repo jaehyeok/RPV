@@ -17,7 +17,9 @@
 #include "utilities_macros_rpv.hpp"
 
 namespace {
-  TString luminosity="35.9";
+  //TString luminosity="35.9";
+  //TString luminosity="41.5";
+  TString luminosity="59.7";
   //TString luminosity="1.";// when drawing data
   TString plot_type=".png";
   TString plot_style="CMSPaper_Preliminary";
@@ -48,28 +50,28 @@ int main(){
 
    //MC
    TString folder_bkg_16 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
-   //TString folder_bkg_16 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
    vector<TString> s_wjets_2016 = getRPVProcess(folder_bkg_16,"wjets");
    vector<TString> s_ttbar_2016 = getRPVProcess(folder_bkg_16,"ttbar");
    vector<TString> s_qcd_2016 = getRPVProcess(folder_bkg_16,"qcd");
    vector<TString> s_other_2016 = getRPVProcess(folder_bkg_16,"other_public"); //This doesn't include W+jets
    vector<TString> s_all_bg_2016 = getRPVProcess(folder_bkg_16,"all_bg");
+   vector<TString> s_Stealth_2016 = getRPVProcess(folder_bkg_16,"Stealth");
 
    TString folder_bkg_17 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
-   //TString folder_bkg_17 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
    vector<TString> s_wjets_2017 = getRPVProcess(folder_bkg_17,"wjets");
    vector<TString> s_ttbar_2017 = getRPVProcess(folder_bkg_17,"ttbar");
    vector<TString> s_qcd_2017 = getRPVProcess(folder_bkg_17,"qcd");
    vector<TString> s_other_2017 = getRPVProcess(folder_bkg_17,"other_public"); //This doesn't include W+jets
    vector<TString> s_all_bg_2017 = getRPVProcess(folder_bkg_17,"all_bg");
+   vector<TString> s_Stealth_2017 = getRPVProcess(folder_bkg_17,"Stealth");
 
    TString folder_bkg_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
-   //TString folder_bkg_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
    vector<TString> s_wjets_2018 = getRPVProcess(folder_bkg_18,"wjets");
    vector<TString> s_ttbar_2018 = getRPVProcess(folder_bkg_18,"ttbar");
    vector<TString> s_qcd_2018 = getRPVProcess(folder_bkg_18,"qcd");
    vector<TString> s_other_2018 = getRPVProcess(folder_bkg_18,"other_public"); //This doesn't include W+jets */  
    vector<TString> s_all_bg_2018 = getRPVProcess(folder_bkg_18,"all_bg");
+   vector<TString> s_Stealth_2018 = getRPVProcess(folder_bkg_18,"Stealth");
 
    /*
      if(rpv2017){
@@ -99,8 +101,8 @@ int main(){
   qcd.push_back(2);
   qcd.push_back(3);// */
 
-  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar GS false", kRed,1,cutandweight("pass&&fromGS==0",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar GS true ", kBlue,1,cutandweight("pass&&fromGS==1",extraWeight))); 
+  Samples.push_back(sfeats(s_ttbar_2017, "2017 ttbar", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar", kBlue,1,cutandweight("pass",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> ttbar;
   ttbar.push_back(4);
@@ -113,7 +115,7 @@ int main(){
   other.push_back(6);
   other.push_back(7);
   
-  Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets fromGS ", kRed,1,cutandweight("pass&&fromGS==0",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
   Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kBlue,1,cutandweight("pass",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> wjets;
@@ -126,6 +128,13 @@ int main(){
   vector<int> all_bg;
   all_bg.push_back(10);
   all_bg.push_back(11);// */
+
+  Samples.push_back(sfeats(s_Stealth_2018, "2018 StealthSHH", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_Stealth_2016, "2016 StealthSHH", kBlue,1,cutandweight("pass",extraWeight)));
+  Samples.back().doBand = true;
+  vector<int> Stealth;
+  Stealth.push_back(12);
+  Stealth.push_back(13);// */
   
   /*
    Samples.push_back(sfeats(s_2016, "Dilepton events", kBlack,1,"nonblind&&((nleps==2&&nbm>=0&&nbm<=2&&njets>=5)||(nleps==1&&nveto==1&&nbm>=1&&nbm<=2&&njets>=6&&mt>140))&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass")); Samples.back().isData=true;
@@ -134,17 +143,7 @@ int main(){
 
 
   vector<hfeats> vars;
-  //td::vector<TString> cuts = {"nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==2&&mj12>500&&nleps==1&&ht>1200&&8<=njets","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&8<=njets"};
-  //std::vector<TString> cuts = {"nbm==2&&mj12>500&&nleps==1&&ht>1200","nbm>=3&&mj12>500&&nleps==1&&ht>1200"};
-  std::vector<TString> cuts = {"nbm==2&&nleps==1&&mj12>=500&&ht>1200&&njets>=6&&njets<=7"};
-  //std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=8"};
-  //std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=8"};
-  /*std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==3&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm>=4&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
-
-"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==3&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm>=4&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
-
-"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm==3&&mj12>500&&nleps==1&&ht>1200&&njets>=8","nbm>=4&&mj12>500&&nleps==1&&ht>1200&&njets>=8"
-};// */
+  std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==0&&mj12>500&&nleps==1&&ht>1200&&8<=njets","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==1&&mj12>500&&nleps==1&&ht>1200&&8<=njets"};
 
   for(auto icut : cuts){
     //vars.push_back(hfeats("nbm", 6, 0, 6, data, "N_{b}", icut,-1,"data"));
@@ -154,7 +153,7 @@ int main(){
     vars.back().normalize = true; // */
     //vars.push_back(hfeats("nbm", 6, 0, 6, ttbar, "N_{b}", icut,-1,"ttbar"));
     //vars.push_back(hfeats("njets", 10, 0, 20, ttbar, "NJets", icut,-1,"ttbar"));
-    vars.push_back(hfeats("mj12", 3, 500, 1400, ttbar, "mj12", icut,-1,"ttbar"));
+    /*vars.push_back(hfeats("mj12", 3, 500, 1400, ttbar, "mj12", icut,-1,"ttbar"));
     //vars.push_back(hfeats("ht", 20, 1200, 2600, ttbar, "H_{t}", icut,-1,"ttbar"));//
     vars.back().normalize = true;// */
     //vars.push_back(hfeats("nbm", 6, 0, 6, qcd, "N_{b}", icut,-1,"qcd"));
@@ -177,6 +176,11 @@ int main(){
     //vars.push_back(hfeats("njets", 9, 0, 18, all_bg, "Njets", icut,-1,"all_bg"));
     //vars.push_back(hfeats("ht", 20, 1200, 2600, all_bg, "H_{t}", icut,-1,"all_bg"));
     vars.back().normalize = true;// */
+    //vars.push_back(hfeats("nbm", 6, 0, 6, Stealth, "N_{b}", icut,-1,"Stealth"));
+    //vars.push_back(hfeats("njets", 6, 0, 12, Stealth, "NJets", icut,-1,"Stealth"));
+    vars.push_back(hfeats("mj12", 3, 500, 1400, Stealth, "mj12", icut,-1,"Stealth"));
+    vars.push_back(hfeats("ht", 20, 1200, 2600, Stealth, "H_{t}", icut,-1,"Stealth"));// */
+    vars.back().normalize = true;// 
   }
 
 

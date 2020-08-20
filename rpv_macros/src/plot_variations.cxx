@@ -39,8 +39,8 @@ int main()
 // */
   
     vector<TString> variations={
-        //"GS",
-        "btag_bc", "btag_udsg"
+        "GS",
+        //"btag_bc", "btag_udsg"
     };
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
@@ -87,7 +87,7 @@ void drawUpDown(int bin, vector<TString> variations)
 
 //    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
 
-    TFile* infile = TFile::Open("variations/output_2016.root");
+    TFile* infile = TFile::Open("variations/output_2017.root");
     TCanvas *c1;
     TPad *pad1;
     TPad *pad2;

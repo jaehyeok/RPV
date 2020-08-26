@@ -265,7 +265,31 @@ int main(int argc, char *argv[])
   vector<TString> s_rpv_m2000 = getRPVProcess(folder_sig,"rpv_m2000");
   vector<TString> s_rpv_m2100 = getRPVProcess(folder_sig,"rpv_m2100");
   vector<TString> s_rpv_m2200 = getRPVProcess(folder_sig,"rpv_m2200");
-  
+
+  vector<TString> s_mStop_300 = getRPVProcess(folder_sig,"mStop_300");  
+  vector<TString> s_mStop_350 = getRPVProcess(folder_sig,"mStop_350");  
+  vector<TString> s_mStop_400 = getRPVProcess(folder_sig,"mStop_400");  
+  vector<TString> s_mStop_450 = getRPVProcess(folder_sig,"mStop_450");  
+  vector<TString> s_mStop_500 = getRPVProcess(folder_sig,"mStop_500");  
+  vector<TString> s_mStop_550 = getRPVProcess(folder_sig,"mStop_550");  
+  vector<TString> s_mStop_600 = getRPVProcess(folder_sig,"mStop_600");  
+  vector<TString> s_mStop_650 = getRPVProcess(folder_sig,"mStop_650");  
+  vector<TString> s_mStop_700 = getRPVProcess(folder_sig,"mStop_700");  
+  vector<TString> s_mStop_750 = getRPVProcess(folder_sig,"mStop_750");  
+  vector<TString> s_mStop_800 = getRPVProcess(folder_sig,"mStop_800");  
+  vector<TString> s_mStop_850 = getRPVProcess(folder_sig,"mStop_850");  
+  vector<TString> s_mStop_900 = getRPVProcess(folder_sig,"mStop_900");  
+  vector<TString> s_mStop_950 = getRPVProcess(folder_sig,"mStop_950");  
+  vector<TString> s_mStop_1000 = getRPVProcess(folder_sig,"mStop_1000");  
+  vector<TString> s_mStop_1050 = getRPVProcess(folder_sig,"mStop_1050");  
+  vector<TString> s_mStop_1100 = getRPVProcess(folder_sig,"mStop_1100");
+  vector<TString> s_mStop_1150 = getRPVProcess(folder_sig,"mStop_1150");
+  vector<TString> s_mStop_1200 = getRPVProcess(folder_sig,"mStop_1200");
+  vector<TString> s_mStop_1250 = getRPVProcess(folder_sig,"mStop_1250");
+  vector<TString> s_mStop_1300 = getRPVProcess(folder_sig,"mStop_1300");
+  vector<TString> s_mStop_1350 = getRPVProcess(folder_sig,"mStop_1350");
+  vector<TString> s_mStop_1400 = getRPVProcess(folder_sig,"mStop_1400");
+
   small_tree_rpv data((static_cast<std::string>(s_jetht.at(0))));
   
   // qcd ttbar wjets other 750 1000 1100 1200 1300 1400 1500
@@ -292,6 +316,31 @@ int main(int argc, char *argv[])
   small_tree_rpv rpv_m2000((static_cast<std::string>(s_rpv_m2000.at(0))));
   small_tree_rpv rpv_m2100((static_cast<std::string>(s_rpv_m2100.at(0))));
   small_tree_rpv rpv_m2200((static_cast<std::string>(s_rpv_m2200.at(0))));
+
+  // Stealth SUSY Signal
+  small_tree_rpv mStop_300((static_cast<std::string>(s_mStop_300.at(0))));
+  small_tree_rpv mStop_350((static_cast<std::string>(s_mStop_350.at(0))));
+  small_tree_rpv mStop_400((static_cast<std::string>(s_mStop_400.at(0))));
+  small_tree_rpv mStop_450((static_cast<std::string>(s_mStop_450.at(0))));
+  small_tree_rpv mStop_500((static_cast<std::string>(s_mStop_500.at(0))));
+  small_tree_rpv mStop_550((static_cast<std::string>(s_mStop_550.at(0))));
+  small_tree_rpv mStop_600((static_cast<std::string>(s_mStop_600.at(0))));
+  small_tree_rpv mStop_650((static_cast<std::string>(s_mStop_650.at(0))));
+  small_tree_rpv mStop_700((static_cast<std::string>(s_mStop_700.at(0))));
+  small_tree_rpv mStop_750((static_cast<std::string>(s_mStop_750.at(0))));
+  small_tree_rpv mStop_800((static_cast<std::string>(s_mStop_800.at(0))));
+  small_tree_rpv mStop_850((static_cast<std::string>(s_mStop_850.at(0))));
+  small_tree_rpv mStop_900((static_cast<std::string>(s_mStop_900.at(0))));
+  small_tree_rpv mStop_950((static_cast<std::string>(s_mStop_950.at(0))));
+  small_tree_rpv mStop_1000((static_cast<std::string>(s_mStop_1000.at(0))));
+  small_tree_rpv mStop_1050((static_cast<std::string>(s_mStop_1050.at(0))));
+  small_tree_rpv mStop_1100((static_cast<std::string>(s_mStop_1100.at(0))));
+  small_tree_rpv mStop_1150((static_cast<std::string>(s_mStop_1150.at(0))));
+  small_tree_rpv mStop_1200((static_cast<std::string>(s_mStop_1200.at(0))));
+  small_tree_rpv mStop_1250((static_cast<std::string>(s_mStop_1250.at(0))));
+  small_tree_rpv mStop_1300((static_cast<std::string>(s_mStop_1300.at(0))));
+  small_tree_rpv mStop_1350((static_cast<std::string>(s_mStop_1350.at(0))));
+  small_tree_rpv mStop_1400((static_cast<std::string>(s_mStop_1400.at(0))));
 
   // open output root file
   TString shape = "_nl0shape";
@@ -324,6 +373,29 @@ int main(int argc, char *argv[])
   getSyst(rpv_m2000, variations, year, f, "signal_M2000");
   getSyst(rpv_m2100, variations, year, f, "signal_M2100");
   getSyst(rpv_m2200, variations, year, f, "signal_M2200");
+  getSyst(mStop_300, variations, year, f, "Stop_M300");
+  getSyst(mStop_350, variations, year, f, "Stop_M350");
+  getSyst(mStop_400, variations, year, f, "Stop_M400");
+  getSyst(mStop_450, variations, year, f, "Stop_M450");
+  getSyst(mStop_500, variations, year, f, "Stop_M500");
+  getSyst(mStop_550, variations, year, f, "Stop_M550");
+  getSyst(mStop_600, variations, year, f, "Stop_M600");
+  getSyst(mStop_650, variations, year, f, "Stop_M650");
+  getSyst(mStop_700, variations, year, f, "Stop_M700");
+  getSyst(mStop_750, variations, year, f, "Stop_M750");
+  getSyst(mStop_800, variations, year, f, "Stop_M800");
+  getSyst(mStop_850, variations, year, f, "Stop_M850");
+  getSyst(mStop_900, variations, year, f, "Stop_M900");
+  getSyst(mStop_950, variations, year, f, "Stop_M950");
+  getSyst(mStop_1000, variations, year, f, "Stop_M1000");
+  getSyst(mStop_1050, variations, year, f, "Stop_M1050");
+  getSyst(mStop_1100, variations, year, f, "Stop_M1100");
+  getSyst(mStop_1150, variations, year, f, "Stop_M1150");
+  getSyst(mStop_1200, variations, year, f, "Stop_M1200");
+  getSyst(mStop_1250, variations, year, f, "Stop_M1250");
+  getSyst(mStop_1300, variations, year, f, "Stop_M1300");
+  getSyst(mStop_1350, variations, year, f, "Stop_M1350");
+  getSyst(mStop_1400, variations, year, f, "Stop_M1400");
 
   // close output root file
   f->Close();
@@ -879,6 +951,7 @@ TString color(TString procname){
 	else if(procname == "ttbar") return blue;
 	else if(procname == "wjets") return green;
 	else if(procname == "other") return gray;
+	else if(procname == "Stop") return cyan;
 	else return red;
 }
 //void fillTH1F(TH1F* &h1, float var, float weight)

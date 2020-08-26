@@ -55,29 +55,29 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		else if(process=="rpv_m2200") files.push_back(folder+"*mGluino*2200*");
 	}
 	else if(process.Contains("mStop")){
-		if(process=="mStop-300") files.push_back(folder+"*mStop-300*");
-		else if(process=="mStop-350") files.push_back(folder+"*mStop-350*");
-		else if(process=="mStop-400") files.push_back(folder+"*mStop-400*");
-		else if(process=="mStop-450") files.push_back(folder+"*mStop-450*");
-		else if(process=="mStop-500") files.push_back(folder+"*mStop-500*");
-		else if(process=="mStop-550") files.push_back(folder+"*mStop-550*");
-		else if(process=="mStop-600") files.push_back(folder+"*mStop-600*");
-		else if(process=="mStop-650") files.push_back(folder+"*mStop-650*");
-		else if(process=="mStop-700") files.push_back(folder+"*mStop-700*");
-		else if(process=="mStop-750") files.push_back(folder+"*mStop-750*");
-		else if(process=="mStop-800") files.push_back(folder+"*mStop-800*");
-		else if(process=="mStop-850") files.push_back(folder+"*mStop-850*");
-		else if(process=="mStop-900") files.push_back(folder+"*mStop-900*");
-		else if(process=="mStop-950") files.push_back(folder+"*mStop-950*");
-		else if(process=="mStop-1000") files.push_back(folder+"*mStop-1000*");
-		else if(process=="mStop-1050") files.push_back(folder+"*mStop-1050*");
-		else if(process=="mStop-1100") files.push_back(folder+"*mStop-1100*");
-		else if(process=="mStop-1150") files.push_back(folder+"*mStop-1150*");
-		else if(process=="mStop-1200") files.push_back(folder+"*mStop-1200*");
-		else if(process=="mStop-1250") files.push_back(folder+"*mStop-1250*");
-		else if(process=="mStop-1300") files.push_back(folder+"*mStop-1300*");
-		else if(process=="mStop-1350") files.push_back(folder+"*mStop-1350*");
-		else if(process=="mStop-1400") files.push_back(folder+"*mStop-1400*");
+		if(process=="mStop_300") files.push_back(folder+"*mStop-300*");
+		else if(process=="mStop_350") files.push_back(folder+"*mStop-350*");
+		else if(process=="mStop_400") files.push_back(folder+"*mStop-400*");
+		else if(process=="mStop_450") files.push_back(folder+"*mStop-450*");
+		else if(process=="mStop_500") files.push_back(folder+"*mStop-500*");
+		else if(process=="mStop_550") files.push_back(folder+"*mStop-550*");
+		else if(process=="mStop_600") files.push_back(folder+"*mStop-600*");
+		else if(process=="mStop_650") files.push_back(folder+"*mStop-650*");
+		else if(process=="mStop_700") files.push_back(folder+"*mStop-700*");
+		else if(process=="mStop_750") files.push_back(folder+"*mStop-750*");
+		else if(process=="mStop_800") files.push_back(folder+"*mStop-800*");
+		else if(process=="mStop_850") files.push_back(folder+"*mStop-850*");
+		else if(process=="mStop_900") files.push_back(folder+"*mStop-900*");
+		else if(process=="mStop_950") files.push_back(folder+"*mStop-950*");
+		else if(process=="mStop_1000") files.push_back(folder+"*mStop-1000*");
+		else if(process=="mStop_1050") files.push_back(folder+"*mStop-1050*");
+		else if(process=="mStop_1100") files.push_back(folder+"*mStop-1100*");
+		else if(process=="mStop_1150") files.push_back(folder+"*mStop-1150*");
+		else if(process=="mStop_1200") files.push_back(folder+"*mStop-1200*");
+		else if(process=="mStop_1250") files.push_back(folder+"*mStop-1250*");
+		else if(process=="mStop_1300") files.push_back(folder+"*mStop-1300*");
+		else if(process=="mStop_1350") files.push_back(folder+"*mStop-1350*");
+		else if(process=="mStop_1400") files.push_back(folder+"*mStop-1400*");
 	}
 	// For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
 	else if(process=="ttbar"){

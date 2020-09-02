@@ -30,8 +30,8 @@ float SF_kap(TFile *kappa, int ikap, int ibin);
 float SF_kap_err(TFile *kappa, int ikap, int ibin);
 
 int main(int argc, char* argv[]){
-  TString n_input = "variations/output_newnt_nl0shape_2016.root";
-  TString n_kappa = "plots/kappa_summary_nominalX.root";
+  TString n_input = "variations/output_2016.root";
+  TString n_kappa = "plots/kappa/kappa_summary_nominalX_2016.root";
   if(argc==2){
     n_kappa = argv[1];
   }
@@ -112,7 +112,7 @@ void make_fit_mconly( TFile *fhist, TFile *kappa, TFile *f_out, int ibin){
   float binsz  = (mjmax-mjmin)/3;
 
   vector<TString> proc = {"qcd","ttbar","wjets","other",
-                          "signal_M1100","signal_M1200","signal_M1300","signal_M1400","signal_M1500","signal_M1600","signal_M1700","signal_M1800","signal_M1900","signal_M2000"};
+                          "signal_M1100","signal_M1200","signal_M1300","signal_M1400","signal_M1500","signal_M1600","signal_M1700","signal_M1800","signal_M1900","signal_M2000","signal_M2100","signal_M2200"};
   vector<TString> updo = {"Up","Down"};
   
   f_out->cd();
@@ -393,7 +393,7 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
   l3->Draw("same ");
   c1->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
  */
- if(ibin==28||ibin==29||ibin==27) c->Print(Form("plots/kappa_syst_uncert_comp_%d.pdf",ibin));
+ if(ibin==28||ibin==29||ibin==27) c->Print(Form("plots/kappa/kappa_syst_uncert_comp_%d.pdf",ibin));
  
 }
 

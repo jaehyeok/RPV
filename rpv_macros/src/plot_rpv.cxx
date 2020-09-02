@@ -17,7 +17,7 @@
 
 namespace {
 
-  bool showData = false; // Draw with/wihout data
+  bool showData = true; // Draw with/wihout data
   bool unblindSRs = true; // Draw data in (unblind) SRs
   TString json = "1";
 
@@ -105,17 +105,17 @@ int main(int argc, char *argv[]){
   }
 
   string extraweight = "1";
-  //Samples.push_back(sfeats(s_rpv_m1600, "m1600", kRed, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_rpv_m1600, "m1600", kRed, 1, cutandweight("pass",extraweight)));
   //Samples.back().isSig = true;
   
-  //Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
-  //Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
+  Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_mStop_700, "mStop_700", kRed+1, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
   Samples.push_back(sfeats(s_mStop_950, "mStop_950", kRed-2, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;// */
-  Samples.push_back(sfeats(s_mStop_1200, "mStop_1200", kRed-1, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
+  //Samples.push_back(sfeats(s_mStop_1200, "mStop_1200", kRed-1, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
   //Samples.push_back(sfeats(s_mStop_1400, "mStop_1400", kRed-1, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
-  //Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("pass",extraweight)));// */
+  Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("pass",extraweight)));// */
 
   // Loop over samples
   vector<int> rpv_sam;
@@ -128,9 +128,9 @@ int main(int argc, char *argv[]){
     // Set cuts
     TString basecut = "mj12>=500";
     TString lepcuts = "nleps==1&&ht>1200";
-    vector<TString> nbcuts = {"nbm==2","nbm==3","nbm>=4"};
+    vector<TString> nbcuts = {"nbm==0"};
     //vector<TString> nbcuts = {"nbm>=0"};
-    vector<TString> njetcuts = {"4<=njets&&njets<=5","6<=njets&&njets<=7","8<=njets"};
+    vector<TString> njetcuts = {"4<=njets&&njets<=5"};
     //vector<TString> njetcuts = {"0<=njets&&njets<=20"};
 
     // Loop over cuts to make histograms
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]){
 	}
       }
     
-    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", false, true);  
+    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", true, true);  
   }
   
   /*////////////

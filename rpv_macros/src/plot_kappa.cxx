@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
 
     TFile *infile;
     if(argc>6) infile = TFile::Open(filename,"READ");
-    else infile = TFile::Open("variations/output_newnt_nl0shape_"+year+".root", "READ");
+    else infile = TFile::Open("variations/output_"+year+".root", "READ");
 
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;

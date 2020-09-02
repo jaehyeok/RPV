@@ -133,7 +133,7 @@ void limits_Stealth()
   c->SetLogy();
 
   TGraph *gr = new TGraph(mean.size(), &StopMasses.at(0), &mean.at(0));
-  gr->SetTitle(";m_{#tilde{g}} [GeV];#sigma(pp #rightarrow #tilde{g}#tilde{g}) (fb)");
+  gr->SetTitle(";m_{#tilde{t}} [GeV];#sigma(pp #rightarrow #tilde{t}#tilde{t}) (fb)");
   gr->SetMarkerStyle(kFullCircle);
   gr->GetYaxis()->SetTitleOffset(1.4);
   gr->GetYaxis()->SetTitleSize(0.04);
@@ -182,7 +182,7 @@ void limits_Stealth()
   leg->AddEntry(grMean, "Expected 95% CL limit", "L");
   leg->AddEntry(grMean, "Expected #pm 1#sigma", "F");
   leg->AddEntry(grMean2Sigma, "Expected #pm 2#sigma", "F");
-  leg->AddEntry(grTheory, "#sigma^{NLO+NLL} (pp #rightarrow #tilde{g}#tilde{g})", "LF");
+  leg->AddEntry(grTheory, "#sigma^{NLO+NLL} (pp #rightarrow #tilde{t}#tilde{t})", "LF");
   leg->SetFillStyle(0);
   leg->SetBorderSize(0);
   leg->Draw();

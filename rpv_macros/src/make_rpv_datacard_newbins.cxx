@@ -303,12 +303,9 @@ int main(int argc, char *argv[])
   file << "rate  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     for(unsigned int iprocess=0; iprocess<nprocesses; iprocess++) {
-cout<<"3"<<endl;
       TString histName(Form("%s/%s", bins.at(ipair).at(ibin).c_str(), processes.at(iprocess).c_str()));
       TH1F *hist = static_cast<TH1F*>(variations->Get(histName));
-cout<<"4"<<endl;
       file << hist->Integral() << "  ";
-cout<<"4.5"<<endl;
     }
   }
   file << "\n------------------------------------" << std::endl;

@@ -52,7 +52,7 @@ int main(int argc, char* argv[]){
     f_out->Close();
   }
   else{
-    TFile *f_out = new TFile("result_kappa.root","recreate");
+    TFile *f_out = new TFile("data/result_kappa.root","recreate");
 
     make_fit(fhist,kappa,f_out,27); 
     make_fit(fhist,kappa,f_out,28); 

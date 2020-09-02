@@ -62,7 +62,7 @@ void pulls()
   setStyle();
   TCanvas *c = new TCanvas;
   TGraphErrors *gr = new TGraphErrors(mean.size(), &StopMasses.at(0), &mean.at(0), &dummy.at(0), &meanError.at(0));
-  gr->SetTitle(";Gluino mass (GeV);Fitted signal strength");
+  gr->SetTitle(";Stop mass (GeV);Fitted signal strength");
   gr->SetMarkerStyle(kFullCircle);
   gr->SetMinimum(0.8);
   gr->SetMaximum(1.2);

@@ -188,8 +188,8 @@ void limits_Stealth()
   leg->Draw();
 
   drawHeader();
-  c->Print("limits.pdf");
-  c->Print("limits.png");
+  c->Print("limits_Stealth.pdf");
+  c->Print("limits_Stealth.png");
 }
 
 TGraphErrors * theoryGraph()

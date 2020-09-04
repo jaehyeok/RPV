@@ -306,13 +306,13 @@ vector<TString> folder_year(TString year, bool te){
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
-    ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
+    //ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
   }
   else{
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/v6/merged_norm/"); // background
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/v6/merged_norm/"); // signal
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/v6/merged_rpvfitnbge0/");    // data
-    ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+    //ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
   }
   return ret;
 }

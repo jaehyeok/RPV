@@ -62,7 +62,8 @@ int main(int argc, char *argv[])
   else {
     std::stringstream ss;
     gluinoMass = argv[1];
-    ss << "signal_M" << gluinoMass;
+    //ss << "signal_M" << gluinoMass;
+    ss << "Stop_M" << gluinoMass;
     signalBinName = ss.str();
     // this is supposed to be the first entry in the process list
     processes.insert(processes.begin(), signalBinName);
@@ -266,7 +267,7 @@ int main(int argc, char *argv[])
 
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     if(argc>3)
-      file << "shapes * " << bins.at(ipair).at(ibin) << " ../variations/" << inputname.Data() << " " << bins.at(ipair).at(ibin);    
+      file << "shapes * " << bins.at(ipair).at(ibin) << " variations/" << inputname.Data() << " " << bins.at(ipair).at(ibin); //FIXME
     else if(cardType=="mconly")
       file << "shapes * " << bins.at(ipair).at(ibin) << " sum_rescaled_mconly.root " << bins.at(ipair).at(ibin);    
     else if(cardType=="control")
@@ -304,7 +305,6 @@ int main(int argc, char *argv[])
   file << "\n";
   file << "process  ";
   for(unsigned int index=0; index<nbins*nprocesses; index++) file << index%nprocesses << " ";
-
   file << "\n";
   file << "rate  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
@@ -437,7 +437,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
     }
 
   }
-
+cout<<"5"<<endl;
   for(auto jbin:bins){ // ttbar 
     tmpLine = line;
     /*

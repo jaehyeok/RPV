@@ -42,3 +42,6 @@ if len(sys.argv) == 3:
 	c.SetLogz();
 	c.Print("result.pdf")
 	g.close()
+	h=TFile.Open('result.root','recreate')
+	hist.Write()
+	h.Close()

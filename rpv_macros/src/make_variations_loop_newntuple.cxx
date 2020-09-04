@@ -429,7 +429,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
           kappa_err  = h_kap_syst->GetBinError(ihb+1); 
           kappa_cont = h_kap_syst->GetBinContent(ihb+1);
           kappa_syst[ibin][ihb] = kappa_err/kappa_cont;
-          cout<<ibin<<" "<<ihb<<":"<<kappa_syst[ibin][ihb]<<endl;
+          //cout<<ibin<<" "<<ihb<<":"<<kappa_syst[ibin][ihb]<<endl;
         }
       }
       else if(variations.Contains("kappa")&&ibin<27){
@@ -442,8 +442,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         //h1up[ibin]         = new TH1F(upname.Data(),       upname.Data(),      MjBin+1, 0, MjBin+1);
         //h1down[ibin]       = new TH1F(downname.Data(),     downname.Data(),    MjBin+1, 0, MjBin+1);
         h1nominal[ibin]    = new TH1F(Form("%s_bin%i",nominalname.Data(),ibin),    Form("%s_bin%i",nominalname.Data(),ibin), MjBin+1, mjmin, mjmax);
-        h1up[ibin]         = new TH1F(Form("%s_bin%i",upname.Data(),ibin),         Form("%s_bin%i",upname.Data(),ibin), MjBin+1, 500, 1400);
-        h1down[ibin]       = new TH1F(Form("%s_bin%i",downname.Data(),ibin),       Form("%s_bin%i",downname.Data(),ibin), MjBin+1, 500, 1400);
+        h1up[ibin]         = new TH1F(Form("%s_bin%i",upname.Data(),ibin),         Form("%s_bin%i",upname.Data(),ibin), MjBin+1, mjmin, mjmax);
+        h1down[ibin]       = new TH1F(Form("%s_bin%i",downname.Data(),ibin),       Form("%s_bin%i",downname.Data(),ibin), MjBin+1, mjmin, mjmax);
     }
 
     // loop over tree 
@@ -550,8 +550,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         }
         if(variations=="btag_udsg") 
         { 
-            upweight    = upweight*tree.sys_udsgtag()[0];
-            downweight  = downweight*tree.sys_udsgtag()[1];
+            upweight    = upweight*tree.sys_udsgtag()[0]/tree.w_btag_dcsv();
+            downweight  = downweight*tree.sys_udsgtag()[1]/tree.w_btag_dcsv();
         }
         if(variations=="GS") 
         {
@@ -600,6 +600,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         { 
             upweight    = upweight*tree.sys_muf()[0];
             downweight  = downweight*tree.sys_muf()[1];
+/*	    if(procname=="ttbar"){
+	        upweight   = nominalweight;
+		downweight = nominalweight;
+	    } */
         }
         if(variations=="mur") 
         { 
@@ -771,9 +775,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 	      downweight = nominalweight;
               float sys_kappaup(1),sys_kappadown(1);
               int ihb(0);
-              if(tree.mj12()>500 && tree.mj12()<800) ihb = 0;
-              else if(tree.mj12()>800 && tree.mj12()<1100) ihb = 1;
-              else if(tree.mj12()>1100) ihb = 2;
+
+              if(tree.mj12()>mjmin && tree.mj12()<mjmin+300) ihb = 0;
+              else if(tree.mj12()>mjmin+300 && tree.mj12()<mjmin+600) ihb = 1;
+              else if(tree.mj12()>mjmin+600) ihb = 2;
+
               sys_kappaup   = 1+kappa_syst[ibin][ihb];
               sys_kappadown = 1-kappa_syst[ibin][ihb];
 	      //cout<<sys_kappaup<<"::"<<sys_kappadown<<endl;
@@ -856,6 +862,23 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             h1nominal[ibin]->SetTitle(procname.Data());
             h1nominal[ibin]->SetName(procname.Data());
             h1nominal[ibin]->Write();
+        }
+	else if(variations=="kappa")
+        {
+            TString temp_;
+            if(ibin%3==1) temp_ = "kappa_njets45";
+            else if(ibin%3==2) temp_ = "kappa_njets67";
+            else if(ibin%3==0) temp_ = "kappa_njets8";
+
+            upname = procname+"_"+temp_+"Up";
+            downname = procname+"_"+temp_+"Down";
+
+            h1up[ibin]->SetTitle(upname.Data());
+            h1up[ibin]->SetName(upname.Data());
+            h1down[ibin]->SetTitle(downname.Data());
+            h1down[ibin]->SetName(downname.Data());
+            h1up[ibin]->Write();
+            h1down[ibin]->Write();
         }
         else
         {

@@ -15,7 +15,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
 void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins);
 void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bins);
 void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts);
-void outputkappaSystematics(std::ofstream &file);
+void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename);
 void outputLognormalSystematics(std::ofstream &file);
 void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> &bins, const std::string & signalBinName);
 // determine if a histogram has an entry for a given nB
@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
 {
   bool includePDFUncert = false;
   bool includeLowMJ = false;
+  bool nocrvr = false;
 //  bool includeSignalRegion = true;
 
   // signal is added later
@@ -115,10 +116,15 @@ int main(int argc, char *argv[])
   std::vector<std::string> bins_sr_nb3_highnjets   = {"bin48","bin33"}; 
   std::vector<std::string> bins_sr_nb4_highnjets   = {"bin51","bin36"}; 
   
-  std::vector<std::string> bins_all = {"bin40","bin25","bin43","bin28","bin46","bin31","bin49","bin34","bin41","bin26","bin42","bin27"};
+  std::vector<std::string> bins_all = {"bin40","bin25","bin43","bin28","bin41","bin26","bin42","bin27","bin44","bin29"};
+  if(nocrvr){
+    bins_all = {};
+  }
   if(cardType=="default" || cardType=="mconly"){
-    bins_all.push_back("bin44");
-    bins_all.push_back("bin29");
+    bins_all.push_back("bin46");
+    bins_all.push_back("bin31");
+    bins_all.push_back("bin49");
+    bins_all.push_back("bin34");
     bins_all.push_back("bin47");
     bins_all.push_back("bin32");
     bins_all.push_back("bin50");
@@ -323,7 +329,7 @@ int main(int argc, char *argv[])
   outputWjets(file, bins.at(ipair), cardType);
 
   // output kappa systematics
-  outputkappaSystematics(file);
+  outputkappaSystematics(file, bins.at(ipair), filename);
 
   // output shape systematics
 //  outputShapeSystematics(file, shapeSysts);
@@ -949,14 +955,97 @@ void outputshapesystematics(std::ofstream &file, const std::vector<std::string> 
   }
 }
 
-void outputkappaSystematics(std::ofstream &file)
+void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename)
 {
-    file << "kappa" << "                     shape     ";
+  map<string, int> bindex;
+  for(uint ibin=0; ibin<nbins; ibin++){
+    bindex[bins[ibin]]=ibin;
+  }
+  for(uint ibin=22; ibin<52; ibin++){
+    if(bindex.find(Form("bin%d",ibin))==bindex.end()){
+       bindex[Form("bin%d",ibin)]=99999;
+    }
+    else{
+       continue;
+    }
+  }
+ 
+  if(filename.find("lownjets")!=std::string::npos){
+    file << "kappa_njets45" << "             shape     ";
+    //file << "kappa" << "                     shape     ";
     for(unsigned int index=0; index<nbins*nprocesses; index++){
       if(index%nprocesses==0) file << "-    ";
-      else file << "1.0" << "  ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",28)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",31)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",34)])file << "1.00" << " ";
+      else file << "-    ";
+      //std::cout<<(bindex["bin28"])<<std::endl;
     }
     file << "\n";
+  }
+  else if(filename.find("mednjets")!=std::string::npos){
+    file << "kappa_njets67" << "             shape     ";
+    //file << "kappa" << "                     shape     ";
+    for(unsigned int index=0; index<nbins*nprocesses; index++){
+      if(index%nprocesses==0) file << "-    ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",29)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",32)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",35)])file << "1.00" << " ";
+      else file << "-    ";
+    //  std::cout<<(int(index/nprocesses)-bindex["bin29"])<<std::endl;
+    }
+    file << "\n";
+  }
+  else if(filename.find("highnjets")!=std::string::npos){
+    file << "kappa_njets8" << "              shape     ";
+    //file << "kappa" << "                     shape     ";
+    for(unsigned int index=0; index<nbins*nprocesses; index++){
+      if(index%nprocesses==0) file << "-    ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",27)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",30)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",33)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",36)])file << "1.00" << " ";
+      else file << "-    ";
+    }
+    file << "\n";
+  }
+  else{  
+    file << "kappa_njets45" << "             shape     ";
+    //file << "kappa" << "                     shape     ";
+    for(unsigned int index=0; index<nbins*nprocesses; index++){
+      if(index%nprocesses==0) file << "-    ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",28)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",31)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",34)])file << "1.00" << " ";
+      else file << "-    ";
+    //  std::cout<<(int(index/nprocesses)-bindex["bin28"])<<std::endl;
+    }
+    file << "\n";
+  
+    file << "kappa_njets67" << "             shape     ";
+    //file << "kappa" << "                     shape     ";
+    for(unsigned int index=0; index<nbins*nprocesses; index++){
+      if(index%nprocesses==0) file << "-    ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",29)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",32)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",35)])file << "1.00" << " ";
+      else file << "-    ";
+    //  std::cout<<(int(index/nprocesses)-bindex["bin29"])<<std::endl;
+    }
+    file << "\n";
+
+    file << "kappa_njets8" << "              shape     ";
+    //file << "kappa" << "                     shape     ";
+    for(unsigned int index=0; index<nbins*nprocesses; index++){
+      if(index%nprocesses==0) file << "-    ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",27)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",30)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",33)])file << "1.00" << " ";
+      else if(int(index/nprocesses)==bindex[Form("bin%d",36)])file << "1.00" << " ";
+      else file << "-    ";
+    }
+    file << "\n";
+  }
 }
 
 // outputs MC statistical uncertainties

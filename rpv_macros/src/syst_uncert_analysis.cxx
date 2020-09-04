@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <cmath>
@@ -24,10 +25,15 @@
 
 using namespace std;
 
+vector<float> latex_err={};
+vector<float> latex_con={};
+
 void make_fit_mconly(TFile *fhist, TFile *kappa, TFile *f_out, int ibin);
 void make_fit(TFile *fhist, TFile *kappa, TFile *f_out, int ibin);
+void make_table();
 float SF_kap(TFile *kappa, int ikap, int ibin); 
 float SF_kap_err(TFile *kappa, int ikap, int ibin);
+
 
 int main(int argc, char* argv[]){
   TString n_input = "variations/output_newnt_nl0shape_2016.root";
@@ -44,14 +50,15 @@ int main(int argc, char* argv[]){
   temp = n_input;
   TFile *kappa = new TFile(n_kappa,"READ");
   TFile *fhist = new TFile(n_input,"READ");
-  if(n_kappa.Contains("mconly")){
+/*  if(n_kappa.Contains("mconly")){
     if(n_input.Contains("nominal")) n_out = temp.ReplaceAll("nominal","kappa");
     n_out = n_out.ReplaceAll("_mconly","");
     TFile *f_out = new TFile(n_out,"recreate");
     for(int rg=22;rg<52;rg++){make_fit_mconly(fhist,kappa,f_out,rg);}
     f_out->Close();
   }
-  else{
+*/
+//  else{
     TFile *f_out = new TFile("result_kappa.root","recreate");
 
     make_fit(fhist,kappa,f_out,27); 
@@ -59,7 +66,8 @@ int main(int argc, char* argv[]){
     make_fit(fhist,kappa,f_out,29); 
 
 //    for(int rg=22;rg<52;rg++) make_fit(fhist,kappa,f_out,rg);
-  }
+//  }
+  make_table();
   kappa->Close();
   fhist->Close();
 }
@@ -204,8 +212,11 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
     err_diff = abs((dat_bin-mc_bin));
     if(i==0) temp = 0;
     else temp = SF_kap_err(kappa,i,ibin);
-    err_kap = TMath::Sqrt(mjerr_mc[i]*mjerr_mc[i]+temp*temp);  
+    err_kap = TMath::Sqrt(mjerr_mc[i]*mjerr_mc[i]+temp*temp*mc_bin*mc_bin);  
+    cout<<"err_kap : "<<err_kap<<endl;
     err_sum[i] = TMath::Sqrt(err_dat*err_dat+ err_diff*err_diff+err_kap*err_kap);
+    latex_err.push_back(err_sum[i]);
+    latex_con.push_back(mc_bin);
   }
 
   f->cd(); 
@@ -397,6 +408,26 @@ void make_fit( TFile *fhist, TFile *kappa, TFile *f, int ibin){
  
 }
 
+void make_table(){
+
+  vector<float> latex_per ={};
+
+  for(int index=0; index<latex_err.size(); index++) latex_per.push_back(latex_err.at(index)/latex_con.at(index)*100.);
+
+  cout<<"\\usepackage{multirow}"<<endl;
+
+  cout<<"\\begin{table}[]"<<endl;
+  cout<<"\\caption{}"<<endl;
+  cout<<"\\label{tab:my-table}"<<endl;
+  cout<<"\\begin{tabular}{cccc}"<<endl;
+  cout<<"\\hline"<<endl;
+  cout<<"\\multirow{2}{*}{} & \\multicolumn{3}{c}{$M_{J}$} \\\\ \\cline{2-4}"<<endl;
+  cout<<" & 500 GeV $\\sim$800 GeV & 800 GeV $\\sim$1100 GeV & 1100 GeV $\\sim$ \\\\ \\hline\\hline"<<endl;
+  for(int i=0 ; i<3 ; i++) cout<< setprecision(2) << "\\multicolumn{1}{c|}{Bin "<< 27+i <<"} & "<< latex_per.at(3*i)<<" \\% & "<< latex_per.at(3*i+1) <<" \\% & "<< latex_per.at(3*i+2) <<" \\% \\\\"<<endl;
+  cout<<"\\end{tabular}"<<endl;
+  cout<<"\\end{table}"<<endl;
+}
+
 float SF_kap(TFile *kappa, int ikap, int ibin){
   TH1F *h = static_cast<TH1F*> (kappa->Get(Form("h1_1l_summary%d",ikap)));
 
@@ -429,5 +460,6 @@ float SF_kap_err(TFile *kappa, int ikap, int ibin){
   err_kappa_2 = (float)h->GetBinError(bin_index+2); 
   if(njets_region==3) err_kappa_ave = err_kappa_1;
   else  err_kappa_ave = TMath::Sqrt((err_kappa_1*err_kappa_1+err_kappa_2*err_kappa_2)/2);
+  cout<<"error : "<<err_kappa_ave<<endl;
   return err_kappa_ave;
 }

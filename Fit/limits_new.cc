@@ -79,7 +79,7 @@ void pulls()
 
 }
 
-void limits()
+void limits_new()
 {
   std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
@@ -87,7 +87,7 @@ void limits()
   std::vector<float> dummy;
 
   for(unsigned int i=0; i<gluinoMasses.size(); i++) {
-    TString filename(Form("higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
+    TString filename(Form("../rpv_macros/datacards/nopdfoutput_2016/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
     TFile *f = TFile::Open(filename);
     if(!f->IsOpen()) {
       std::cout << "Could not open file " << filename << std::endl;

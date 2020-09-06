@@ -62,8 +62,8 @@ int main(int argc, char *argv[])
   else {
     std::stringstream ss;
     gluinoMass = argv[1];
-    //ss << "signal_M" << gluinoMass;
-    ss << "Stop_M" << gluinoMass;
+    ss << "signal_M" << gluinoMass;
+    //ss << "Stop_M" << gluinoMass;
     signalBinName = ss.str();
     // this is supposed to be the first entry in the process list
     processes.insert(processes.begin(), signalBinName);

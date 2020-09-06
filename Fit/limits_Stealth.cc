@@ -224,266 +224,267 @@ TGraphErrors * theoryGraph()
 }
 
   void signalCrossSection(int mStop_mass, double &xsec, double &xsec_unc){
-    if (mStop_mass == 100 ) { xsec = 	1521.11 ; xsec_unc =  0.154038; return; }
-      else if (mStop_mass == 105 ) { xsec = 	1233.18 ; xsec_unc =  0.154059; return; }
-      else if (mStop_mass == 110 ) { xsec = 	1013.76 ; xsec_unc =  0.154088; return; }
-      else if (mStop_mass == 115 ) { xsec = 	832.656 ; xsec_unc =  0.151503; return; }
-      else if (mStop_mass == 120 ) { xsec = 	689.799 ; xsec_unc =  0.15044 ; return; }
-      else if (mStop_mass == 125 ) { xsec = 	574.981 ; xsec_unc =  0.149895; return; }
-      else if (mStop_mass == 130 ) { xsec = 	481.397 ; xsec_unc =  0.148906; return; }
-      else if (mStop_mass == 135 ) { xsec = 	405.159 ; xsec_unc =  0.148952; return; }
-      else if (mStop_mass == 140 ) { xsec = 	342.865 ; xsec_unc =  0.149119; return; }
-      else if (mStop_mass == 145 ) { xsec = 	291.752 ; xsec_unc =  0.148022; return; }
-      else if (mStop_mass == 150 ) { xsec = 	249.409 ; xsec_unc =  0.147477; return; }
-      else if (mStop_mass == 155 ) { xsec = 	214.221 ; xsec_unc =  0.145928; return; }
-      else if (mStop_mass == 160 ) { xsec = 	184.623 ; xsec_unc =  0.145821; return; }
-      else if (mStop_mass == 165 ) { xsec = 	159.614 ; xsec_unc =  0.147859; return; }
-      else if (mStop_mass == 170 ) { xsec = 	139.252 ; xsec_unc =  0.14547 ; return; }
-      else if (mStop_mass == 175 ) { xsec = 	121.416 ; xsec_unc =  0.146341; return; }
-      else if (mStop_mass == 180 ) { xsec = 	106.194 ; xsec_unc =  0.142033; return; }
-      else if (mStop_mass == 185 ) { xsec = 	93.3347 ; xsec_unc =  0.144893; return; }
-      else if (mStop_mass == 190 ) { xsec = 	82.2541 ; xsec_unc =  0.144677; return; }
-      else if (mStop_mass == 195 ) { xsec = 	72.7397 ; xsec_unc =  0.144452; return; }
-      else if (mStop_mass == 200 ) { xsec = 	64.5085 ; xsec_unc =  0.144098; return; }
-      else if (mStop_mass == 205 ) { xsec = 	57.2279 ; xsec_unc =  0.144191; return; }
-      else if (mStop_mass == 210 ) { xsec = 	50.9226 ; xsec_unc =  0.142457; return; }
-      else if (mStop_mass == 215 ) { xsec = 	45.3761 ; xsec_unc =  0.14344 ; return; }
-      else if (mStop_mass == 220 ) { xsec = 	40.5941 ; xsec_unc =  0.142634; return; }
-      else if (mStop_mass == 225 ) { xsec = 	36.3818 ; xsec_unc =  0.142189; return; }
-      else if (mStop_mass == 230 ) { xsec = 	32.6679 ; xsec_unc =  0.141592; return; }
-      else if (mStop_mass == 235 ) { xsec = 	29.3155 ; xsec_unc =  0.142233; return; }
-      else if (mStop_mass == 240 ) { xsec = 	26.4761 ; xsec_unc =  0.141723; return; }
-      else if (mStop_mass == 245 ) { xsec = 	23.8853 ; xsec_unc =  0.139482; return; }
-      else if (mStop_mass == 250 ) { xsec = 	21.5949 ; xsec_unc =  0.140595; return; }
-      else if (mStop_mass == 255 ) { xsec = 	19.5614 ; xsec_unc =  0.138755; return; }
-      else if (mStop_mass == 260 ) { xsec = 	17.6836 ; xsec_unc =  0.139505; return; }
-      else if (mStop_mass == 265 ) { xsec = 	16.112  ; xsec_unc =  0.139531; return; }
-      else if (mStop_mass == 270 ) { xsec = 	14.6459 ; xsec_unc = 0.139278; return; }
-      else if (mStop_mass == 275 ) { xsec = 	13.3231 ; xsec_unc =  0.142549; return; }
-      else if (mStop_mass == 280 ) { xsec = 	12.1575 ; xsec_unc =  0.141584; return; }
-      else if (mStop_mass == 285 ) { xsec = 	11.0925 ; xsec_unc =  0.140904; return; }
-      else if (mStop_mass == 290 ) { xsec = 	10.1363 ; xsec_unc =  0.138967; return; }
-      else if (mStop_mass == 295 ) { xsec = 	9.29002 ; xsec_unc =  0.139107; return; } 
-      else if (mStop_mass == 300 ) { xsec =  	8.51615 ; xsec_unc =  0.139223; return; }
-      else if (mStop_mass == 305 ) { xsec =  	7.81428 ; xsec_unc =  0.138996; return; }
-      else if (mStop_mass == 310 ) { xsec =  	7.17876 ; xsec_unc =  0.139357; return; }
-      else if (mStop_mass == 315 ) { xsec =  	6.60266 ; xsec_unc =  0.139256; return; }
-      else if (mStop_mass == 320 ) { xsec =  	6.08444 ; xsec_unc =  0.137957; return; }
-      else if (mStop_mass == 325 ) { xsec =  	5.60471 ; xsec_unc =  0.138144; return; }
-      else if (mStop_mass == 330 ) { xsec =  	5.17188 ; xsec_unc =  0.136954; return; }
-      else if (mStop_mass == 335 ) { xsec =  	4.77871 ; xsec_unc =  0.137554; return; }
-      else if (mStop_mass == 340 ) { xsec =  	4.41629 ; xsec_unc =  0.137945; return; }
-      else if (mStop_mass == 345 ) { xsec =  	4.08881 ; xsec_unc =  0.137075; return; }
-      else if (mStop_mass == 350 ) { xsec =  	3.78661 ; xsec_unc =  0.136877; return; }
-      else if (mStop_mass == 355 ) { xsec =  	3.50911 ; xsec_unc =  0.138089; return; }
-      else if (mStop_mass == 360 ) { xsec =  	3.25619 ; xsec_unc =  0.138002; return; }
-      else if (mStop_mass == 365 ) { xsec =  	3.02472 ; xsec_unc =  0.137093; return; }
-      else if (mStop_mass == 370 ) { xsec =  	2.8077 ; xsec_unc =  0.138064; return; }
-      else if (mStop_mass == 375 ) { xsec =  	2.61162 ; xsec_unc =  0.138477; return; }
-      else if (mStop_mass == 380 ) { xsec =  	2.43031 ; xsec_unc =  0.136999; return; }
-      else if (mStop_mass == 385 ) { xsec =  	2.26365 ; xsec_unc =  0.13728; return; }
-      else if (mStop_mass == 390 ) { xsec =  	2.10786 ; xsec_unc =  0.13732; return; }
-      else if (mStop_mass == 395 ) { xsec =  	1.9665 ; xsec_unc =  0.134737; return; }
-      else if (mStop_mass == 400 ) { xsec =  	1.83537 ; xsec_unc =  0.136985; return; }
-      else if (mStop_mass == 405 ) { xsec =  	1.70927 ; xsec_unc =  0.137114; return; }
-      else if (mStop_mass == 410 ) { xsec =  	1.60378 ; xsec_unc =  0.135468; return; }
-      else if (mStop_mass == 415 ) { xsec =  	1.49798 ; xsec_unc =  0.134453; return; }
-      else if (mStop_mass == 420 ) { xsec =  	1.39688 ; xsec_unc =  0.136719; return; }
-      else if (mStop_mass == 425 ) { xsec =  	1.31169 ; xsec_unc =  0.135013; return; }
-      else if (mStop_mass == 430 ) { xsec =  	1.22589 ; xsec_unc =  0.133237; return; }
-      else if (mStop_mass == 435 ) { xsec =  	1.14553 ; xsec_unc =  0.135478; return; }
-      else if (mStop_mass == 440 ) { xsec =  	1.07484 ; xsec_unc =  0.137238; return; }
-      else if (mStop_mass == 445 ) { xsec =  	1.01019 ; xsec_unc =  0.134187; return; }
-      else if (mStop_mass == 450 ) { xsec =  	0.948333 ; xsec_unc =  0.134559; return; }
-      else if (mStop_mass == 455 ) { xsec =  	0.890847 ; xsec_unc =  0.134587; return; }
-      else if (mStop_mass == 460 ) { xsec =  	0.836762 ; xsec_unc =  0.134468; return; }
-      else if (mStop_mass == 465 ) { xsec =  	0.787221 ; xsec_unc =  0.134149; return; }
-      else if (mStop_mass == 470 ) { xsec =  	0.740549 ; xsec_unc =  0.134127; return; }
-      else if (mStop_mass == 475 ) { xsec =  	0.697075 ; xsec_unc =  0.133926; return; }
-      else if (mStop_mass == 480 ) { xsec =  	0.655954 ; xsec_unc =  0.134392; return; }
-      else if (mStop_mass == 485 ) { xsec =  	0.618562 ; xsec_unc =  0.133705; return; }
-      else if (mStop_mass == 490 ) { xsec =  	0.582467 ; xsec_unc =  0.133914; return; }
-      else if (mStop_mass == 495 ) { xsec =  	0.549524 ; xsec_unc =  0.133691; return; }
-      else if (mStop_mass == 500 ) { xsec =  	0.51848 ; xsec_unc =  0.133797; return; }
-      else if (mStop_mass == 505 ) { xsec =  	0.489324 ; xsec_unc =  0.133608; return; }
-      else if (mStop_mass == 510 ) { xsec =  	0.462439 ; xsec_unc =  0.133046; return; }
-      else if (mStop_mass == 515 ) { xsec =  	0.436832 ; xsec_unc =  0.133703; return; }
-      else if (mStop_mass == 520 ) { xsec =  	0.412828 ; xsec_unc =  0.13272; return; }
-      else if (mStop_mass == 525 ) { xsec =  	0.390303 ; xsec_unc =  0.133443; return; }
-      else if (mStop_mass == 530 ) { xsec =  	0.368755 ; xsec_unc =  0.133769; return; }
-      else if (mStop_mass == 535 ) { xsec =  	0.348705 ; xsec_unc =  0.132706; return; }
-      else if (mStop_mass == 540 ) { xsec =  	0.330157 ; xsec_unc =  0.132981; return; }
-      else if (mStop_mass == 545 ) { xsec =  	0.312672 ; xsec_unc =  0.13277; return; }
-      else if (mStop_mass == 550 ) { xsec =  	0.296128 ; xsec_unc =  0.132687; return; }
-      else if (mStop_mass == 555 ) { xsec =  	0.280734 ; xsec_unc =  0.132363; return; }
-      else if (mStop_mass == 560 ) { xsec =  	0.266138 ; xsec_unc =  0.13193; return; }
-      else if (mStop_mass == 565 ) { xsec =  	0.251557 ; xsec_unc =  0.131731; return; }
-      else if (mStop_mass == 570 ) { xsec =  	0.238537 ; xsec_unc =  0.133409; return; }
-      else if (mStop_mass == 575 ) { xsec =  	0.226118 ; xsec_unc =  0.132741; return; }
-      else if (mStop_mass == 580 ) { xsec =  	0.214557 ; xsec_unc =  0.131697; return; }
-      else if (mStop_mass == 585 ) { xsec =  	0.203566 ; xsec_unc =  0.133257; return; }
-      else if (mStop_mass == 590 ) { xsec =  	0.193079 ; xsec_unc =  0.132037; return; }
-      else if (mStop_mass == 595 ) { xsec =  	0.183604 ; xsec_unc =  0.130973; return; }
-      else if (mStop_mass == 600 ) { xsec =  	0.174599 ; xsec_unc =  0.132074; return; }
-      else if (mStop_mass == 605 ) { xsec =  	0.166131 ; xsec_unc =  0.130154; return; }
-      else if (mStop_mass == 610 ) { xsec =  	0.158242 ; xsec_unc =  0.13142; return; }
-      else if (mStop_mass == 615 ) { xsec =  	0.150275 ; xsec_unc =  0.13285; return; }
-      else if (mStop_mass == 620 ) { xsec =  	0.142787 ; xsec_unc =  0.130642; return; }
-      else if (mStop_mass == 625 ) { xsec =  	0.136372 ; xsec_unc =  0.127962; return; }
-      else if (mStop_mass == 630 ) { xsec =  	0.129886 ; xsec_unc =  0.132957; return; }
-      else if (mStop_mass == 635 ) { xsec =  	0.123402 ; xsec_unc =  0.13016; return; }
-      else if (mStop_mass == 640 ) { xsec =  	0.11795 ; xsec_unc =  0.127132; return; }
-      else if (mStop_mass == 645 ) { xsec =  	0.112008 ; xsec_unc =  0.12808; return; }
-      else if (mStop_mass == 650 ) { xsec =  	0.107045 ; xsec_unc =  0.129232; return; }
-      else if (mStop_mass == 655 ) { xsec =  	0.102081 ; xsec_unc =  0.130012; return; }
-      else if (mStop_mass == 660 ) { xsec =  	0.09725 ; xsec_unc =  0.129038; return; }
-      else if (mStop_mass == 665 ) { xsec =  	0.0927515 ; xsec_unc =  0.129548; return; }
-      else if (mStop_mass == 670 ) { xsec =  	0.0885084 ; xsec_unc =  0.130218; return; }
-      else if (mStop_mass == 675 ) { xsec =  	0.0844877 ; xsec_unc =  0.130703; return; }
-      else if (mStop_mass == 680 ) { xsec =  	0.0806192 ; xsec_unc =  0.131131; return; }
-      else if (mStop_mass == 685 ) { xsec =  	0.0769099 ; xsec_unc =  0.131517; return; }
-      else if (mStop_mass == 690 ) { xsec =  	0.0734901 ; xsec_unc =  0.132344; return; }
-      else if (mStop_mass == 695 ) { xsec =  	0.0701805 ; xsec_unc =  0.132716; return; }
-      else if (mStop_mass == 700 ) { xsec =  	0.0670476 ; xsec_unc =  0.133429; return; }
-      else if (mStop_mass == 705 ) { xsec =  	0.0641426 ; xsec_unc =  0.13363; return; }
-      else if (mStop_mass == 710 ) { xsec =  	0.0612942 ; xsec_unc =  0.133941; return; }
-      else if (mStop_mass == 715 ) { xsec =  	0.0585678 ; xsec_unc =  0.134663; return; }
-      else if (mStop_mass == 720 ) { xsec =  	0.0560753 ; xsec_unc =  0.134984; return; }
-      else if (mStop_mass == 725 ) { xsec =  	0.0536438 ; xsec_unc =  0.135804; return; }
-      else if (mStop_mass == 730 ) { xsec =  	0.0513219 ; xsec_unc =  0.135682; return; }
-      else if (mStop_mass == 735 ) { xsec =  	0.0491001 ; xsec_unc =  0.136268; return; }
-      else if (mStop_mass == 740 ) { xsec =  	0.0470801 ; xsec_unc =  0.136895; return; }
-      else if (mStop_mass == 745 ) { xsec =  	0.045061 ; xsec_unc =  0.136816; return; }
-      else if (mStop_mass == 750 ) { xsec =  	0.0431418 ; xsec_unc =  0.137455; return; }
-      else if (mStop_mass == 755 ) { xsec =  	0.0413447 ; xsec_unc =  0.137833; return; }
-      else if (mStop_mass == 760 ) { xsec =  	0.0396264 ; xsec_unc =  0.138518; return; }
-      else if (mStop_mass == 765 ) { xsec =  	0.0379036 ; xsec_unc =  0.138537; return; }
-      else if (mStop_mass == 770 ) { xsec =  	0.0363856 ; xsec_unc =  0.139334; return; }
-      else if (mStop_mass == 775 ) { xsec =  	0.0348796 ; xsec_unc =  0.139597; return; }
-      else if (mStop_mass == 780 ) { xsec =  	0.0334669 ; xsec_unc =  0.140267; return; }
-      else if (mStop_mass == 785 ) { xsec =  	0.0320548 ; xsec_unc =  0.140406; return; }
-      else if (mStop_mass == 790 ) { xsec =  	0.0307373 ; xsec_unc =  0.14115; return; }
-      else if (mStop_mass == 795 ) { xsec =  	0.0295348 ; xsec_unc =  0.141397; return; }
-      else if (mStop_mass == 800 ) { xsec =  	0.0283338 ; xsec_unc =  0.14171; return; }
-      else if (mStop_mass == 805 ) { xsec =  	0.0272206 ; xsec_unc =  0.14241; return; }
-      else if (mStop_mass == 810 ) { xsec =  	0.0261233 ; xsec_unc =  0.142891; return; }
-      else if (mStop_mass == 815 ) { xsec =  	0.0251107 ; xsec_unc =  0.143632; return; }
-      else if (mStop_mass == 820 ) { xsec =  	0.0241099 ; xsec_unc =  0.143805; return; }
-      else if (mStop_mass == 825 ) { xsec =  	0.0230866 ; xsec_unc =  0.144428; return; }
-      else if (mStop_mass == 830 ) { xsec =  	0.0221834 ; xsec_unc =  0.144791; return; }
-      else if (mStop_mass == 835 ) { xsec =  	0.0213766 ; xsec_unc =  0.145511; return; }
-      else if (mStop_mass == 840 ) { xsec =  	0.0204715 ; xsec_unc =  0.146131; return; }
-      else if (mStop_mass == 845 ) { xsec =  	0.0197653 ; xsec_unc =  0.146602; return; }
-      else if (mStop_mass == 850 ) { xsec =  	0.0189612 ; xsec_unc =  0.14702; return; }
-      else if (mStop_mass == 855 ) { xsec =  	0.0182516 ; xsec_unc =  0.147648; return; }
-      else if (mStop_mass == 860 ) { xsec =  	0.0175509 ; xsec_unc =  0.147944; return; }
-      else if (mStop_mass == 865 ) { xsec =  	0.0168336 ; xsec_unc =  0.148528; return; }
-      else if (mStop_mass == 870 ) { xsec =  	0.0162314 ; xsec_unc =  0.148772; return; }
-      else if (mStop_mass == 875 ) { xsec =  	0.015625 ; xsec_unc =  0.149567; return; }
-      else if (mStop_mass == 880 ) { xsec =  	0.0150143 ; xsec_unc =  0.150389; return; }
-      else if (mStop_mass == 885 ) { xsec =  	0.0144112 ; xsec_unc =  0.150614; return; }
-      else if (mStop_mass == 890 ) { xsec =  	0.0138979 ; xsec_unc =  0.151; return; }
-      else if (mStop_mass == 895 ) { xsec =  	0.0133962 ; xsec_unc =  0.151325; return; }
-      else if (mStop_mass == 900 ) { xsec =  	0.0128895 ; xsec_unc =  0.152026; return; }
-      else if (mStop_mass == 905 ) { xsec =  	0.0123843 ; xsec_unc =  0.152968; return; }
-      else if (mStop_mass == 910 ) { xsec =  	0.0119837 ; xsec_unc =  0.153089; return; }
-      else if (mStop_mass == 915 ) { xsec =  	0.0114713 ; xsec_unc =  0.153678; return; }
-      else if (mStop_mass == 920 ) { xsec =  	0.0110688 ; xsec_unc =  0.154082; return; }
-      else if (mStop_mass == 925 ) { xsec =  	0.0106631 ; xsec_unc =  0.154806; return; }
-      else if (mStop_mass == 930 ) { xsec =  	0.0102629 ; xsec_unc =  0.155313; return; }
-      else if (mStop_mass == 935 ) { xsec =  	0.0098874 ; xsec_unc =  0.156066; return; }
-      else if (mStop_mass == 940 ) { xsec =  	0.00952142 ; xsec_unc =  0.156055; return; }
-      else if (mStop_mass == 945 ) { xsec =  	0.00916636 ; xsec_unc =  0.156849; return; }
-      else if (mStop_mass == 950 ) { xsec =  	0.00883465 ; xsec_unc =  0.157177; return; }
-      else if (mStop_mass == 955 ) { xsec =  	0.00851073 ; xsec_unc =  0.158094; return; }
-      else if (mStop_mass == 960 ) { xsec =  	0.00820884 ; xsec_unc =  0.15844; return; }
-      else if (mStop_mass == 965 ) { xsec =  	0.00791403 ; xsec_unc =  0.159216; return; }
-      else if (mStop_mass == 970 ) { xsec =  	0.00763112 ; xsec_unc =  0.159742; return; }
-      else if (mStop_mass == 975 ) { xsec =  	0.00735655 ; xsec_unc =  0.160548; return; }
-      else if (mStop_mass == 980 ) { xsec =  	0.00710317 ; xsec_unc =  0.160626; return; }
-      else if (mStop_mass == 985 ) { xsec =  	0.00684867 ; xsec_unc =  0.16144; return; }
-      else if (mStop_mass == 990 ) { xsec =  	0.00660695 ; xsec_unc =  0.161813; return; }
-      else if (mStop_mass == 995 ) { xsec =  	0.00637546 ; xsec_unc =  0.162158; return; }
-      else if (mStop_mass == 1000 ) { xsec =  	0.00615134 ; xsec_unc =  0.162953; return; }
-      else if (mStop_mass == 1005 ) { xsec =  	0.00593765 ; xsec_unc =  0.163716; return; }
-      else if (mStop_mass == 1010 ) { xsec =  	0.00572452 ; xsec_unc =  0.163857; return; }
-      else if (mStop_mass == 1015 ) { xsec =  	0.00553094 ; xsec_unc =  0.164628; return; }
-      else if (mStop_mass == 1020 ) { xsec =  	0.00533968 ; xsec_unc =  0.164963; return; }
-      else if (mStop_mass == 1025 ) { xsec =  	0.00514619 ; xsec_unc =  0.165762; return; }
-      else if (mStop_mass == 1030 ) { xsec =  	0.00497235 ; xsec_unc =  0.165838; return; }
-      else if (mStop_mass == 1035 ) { xsec =  	0.00479906 ; xsec_unc =  0.166646; return; }
-      else if (mStop_mass == 1040 ) { xsec =  	0.00463806 ; xsec_unc =  0.166947; return; }
-      else if (mStop_mass == 1045 ) { xsec =  	0.00447537 ; xsec_unc =  0.167071; return; }
-      else if (mStop_mass == 1050 ) { xsec =  	0.00432261 ; xsec_unc =  0.167859; return; }
-      else if (mStop_mass == 1055 ) { xsec =  	0.00417983 ; xsec_unc =  0.168637; return; }
-      else if (mStop_mass == 1060 ) { xsec =  	0.00403886 ; xsec_unc =  0.168981; return; }
-      else if (mStop_mass == 1065 ) { xsec =  	0.0038962 ; xsec_unc =  0.169794; return; }
-      else if (mStop_mass == 1070 ) { xsec =  	0.00376343 ; xsec_unc =  0.169764; return; }
-      else if (mStop_mass == 1075 ) { xsec =  	0.00364174 ; xsec_unc =  0.170634; return; }
-      else if (mStop_mass == 1080 ) { xsec =  	0.00352093 ; xsec_unc =  0.170908; return; }
-      else if (mStop_mass == 1085 ) { xsec =  	0.00339813 ; xsec_unc =  0.171929; return; }
-      else if (mStop_mass == 1090 ) { xsec =  	0.00328695 ; xsec_unc =  0.172274; return; }
-      else if (mStop_mass == 1095 ) { xsec =  	0.00317628 ; xsec_unc =  0.172617; return; }
-      else if (mStop_mass == 1100 ) { xsec =  	0.00307413 ; xsec_unc =  0.173377; return; }
-      else if (mStop_mass == 1105 ) { xsec =  	0.00297377 ; xsec_unc =  0.173822; return; }
-      else if (mStop_mass == 1110 ) { xsec =  	0.00287148 ; xsec_unc =  0.174725; return; }
-      else if (mStop_mass == 1115 ) { xsec =  	0.00278078 ; xsec_unc =  0.175091; return; }
-      else if (mStop_mass == 1120 ) { xsec =  	0.00268873 ; xsec_unc =  0.175883; return; }
-      else if (mStop_mass == 1125 ) { xsec =  	0.00260821 ; xsec_unc =  0.176126; return; }
-      else if (mStop_mass == 1130 ) { xsec =  	0.00251529 ; xsec_unc =  0.176836; return; }
-      else if (mStop_mass == 1135 ) { xsec =  	0.00243484 ; xsec_unc =  0.177128; return; }
-      else if (mStop_mass == 1140 ) { xsec =  	0.00236295 ; xsec_unc =  0.177977; return; }
-      else if (mStop_mass == 1145 ) { xsec =  	0.00228192 ; xsec_unc =  0.178507; return; }
-      else if (mStop_mass == 1150 ) { xsec =  	0.00221047 ; xsec_unc =  0.179259; return; }
-      else if (mStop_mass == 1155 ) { xsec =  	0.00213907 ; xsec_unc =  0.180255; return; }
-      else if (mStop_mass == 1160 ) { xsec =  	0.00206845 ; xsec_unc =  0.180518; return; }
-      else if (mStop_mass == 1165 ) { xsec =  	0.0020063 ; xsec_unc =  0.180954; return; }
-      else if (mStop_mass == 1170 ) { xsec =  	0.00194569 ; xsec_unc =  0.181194; return; }
-      else if (mStop_mass == 1175 ) { xsec =  	0.0018741 ; xsec_unc =  0.182145; return; }
-      else if (mStop_mass == 1180 ) { xsec =  	0.00182266 ; xsec_unc =  0.183074; return; }
-      else if (mStop_mass == 1185 ) { xsec =  	0.00176211 ; xsec_unc =  0.183375; return; }
-      else if (mStop_mass == 1190 ) { xsec =  	0.00170006 ; xsec_unc =  0.184075; return; }
-      else if (mStop_mass == 1195 ) { xsec =  	0.00164968 ; xsec_unc =  0.184438; return; }
-      else if (mStop_mass == 1200 ) { xsec =  	0.00159844 ; xsec_unc =  0.185209; return; }
-      else if (mStop_mass == 1205 ) { xsec =  	0.0015472 ; xsec_unc =  0.185977; return; }
-      else if (mStop_mass == 1210 ) { xsec =  	0.00149657 ; xsec_unc =  0.186485; return; }
-      else if (mStop_mass == 1215 ) { xsec =  	0.00145544 ; xsec_unc =  0.187347; return; }
-      else if (mStop_mass == 1220 ) { xsec =  	0.00140288 ; xsec_unc =  0.188774; return; }
-      else if (mStop_mass == 1225 ) { xsec =  	0.00136155 ; xsec_unc =  0.18989; return; }
-      else if (mStop_mass == 1230 ) { xsec =  	0.00131271 ; xsec_unc =  0.188763; return; }
-      else if (mStop_mass == 1235 ) { xsec =  	0.0012717 ; xsec_unc =  0.189588; return; }
-      else if (mStop_mass == 1240 ) { xsec =  	0.00123066 ; xsec_unc =  0.19049; return; }
-      else if (mStop_mass == 1245 ) { xsec =  	0.00119994 ; xsec_unc =  0.191442; return; }
-      else if (mStop_mass == 1250 ) { xsec =  	0.0011583 ; xsec_unc =  0.193006; return; }
-      else if (mStop_mass == 1255 ) { xsec =  	0.00112694 ; xsec_unc =  0.194441; return; }
-      else if (mStop_mass == 1260 ) { xsec =  	0.00108716 ; xsec_unc =  0.194141; return; }
-      else if (mStop_mass == 1265 ) { xsec =  	0.00105517 ; xsec_unc =  0.196361; return; }
-      else if (mStop_mass == 1270 ) { xsec =  	0.00102241 ; xsec_unc =  0.196297; return; }
-      else if (mStop_mass == 1275 ) { xsec =  	0.000991293 ; xsec_unc =  0.19762; return; }
-      else if (mStop_mass == 1280 ) { xsec =  	0.000961012 ; xsec_unc =  0.197926; return; }
-      else if (mStop_mass == 1285 ) { xsec =  	0.000932394 ; xsec_unc =  0.198682; return; }
-      else if (mStop_mass == 1290 ) { xsec =  	0.000903404 ; xsec_unc =  0.199924; return; }
-      else if (mStop_mass == 1295 ) { xsec =  	0.000876957 ; xsec_unc =  0.200777; return; }
-      else if (mStop_mass == 1300 ) { xsec =  	0.000850345 ; xsec_unc =  0.201604; return; }
-      else if (mStop_mass == 1305 ) { xsec =  	0.00082443 ; xsec_unc =  0.202883; return; }
-      else if (mStop_mass == 1310 ) { xsec =  	0.00079983 ; xsec_unc =  0.20373; return; }
-      else if (mStop_mass == 1315 ) { xsec =  	0.000775222 ; xsec_unc =  0.204622; return; }
-      else if (mStop_mass == 1320 ) { xsec =  	0.000751372 ; xsec_unc =  0.205919; return; }
-      else if (mStop_mass == 1325 ) { xsec =  	0.000728912 ; xsec_unc =  0.206884; return; }
-      else if (mStop_mass == 1330 ) { xsec =  	0.000706867 ; xsec_unc =  0.207763; return; }
-      else if (mStop_mass == 1335 ) { xsec =  	0.000685372 ; xsec_unc =  0.208587; return; }
-      else if (mStop_mass == 1340 ) { xsec =  	0.000664649 ; xsec_unc =  0.209879; return; }
-      else if (mStop_mass == 1345 ) { xsec =  	0.000644804 ; xsec_unc =  0.211487; return; }
-      else if (mStop_mass == 1350 ) { xsec =  	0.000625155 ; xsec_unc =  0.212761; return; }
-      else if (mStop_mass == 1355 ) { xsec =  	0.000606802 ; xsec_unc =  0.213529; return; }
-      else if (mStop_mass == 1360 ) { xsec =  	0.000588512 ; xsec_unc =  0.214428; return; }
-      else if (mStop_mass == 1365 ) { xsec =  	0.000570506 ; xsec_unc =  0.216584; return; }
-      else if (mStop_mass == 1370 ) { xsec =  	0.000553379 ; xsec_unc =  0.216036; return; }
-      else if (mStop_mass == 1375 ) { xsec =  	0.000536646 ; xsec_unc =  0.21775; return; }
-      else if (mStop_mass == 1380 ) { xsec =  	0.000521404 ; xsec_unc =  0.218383; return; }
-      else if (mStop_mass == 1385 ) { xsec =  	0.000505008 ; xsec_unc =  0.219675; return; }
-      else if (mStop_mass == 1390 ) { xsec =  	0.000490353 ; xsec_unc =  0.221444; return; }
-      else if (mStop_mass == 1395 ) { xsec =  	0.000476164 ; xsec_unc =  0.222016; return; }
-      else if (mStop_mass == 1400 ) { xsec =  	0.000461944 ; xsec_unc =  0.222704; return; }
+    if (mStop_mass == 100) {xsec = 	0.177E+04 ; xsec_unc = 6.77E-02; return; }
+      else if (mStop_mass == 105) {xsec = 	0.145E+04 ; xsec_unc = 6.74E-02; return; }
+      else if (mStop_mass == 110) {xsec = 	0.120E+04 ; xsec_unc = 6.71E-02; return; }
+      else if (mStop_mass == 115) {xsec = 	0.998E+03 ; xsec_unc = 6.69E-02; return; }
+      else if (mStop_mass == 120) {xsec = 	0.832E+03 ; xsec_unc = 6.67E-02; return; }
+      else if (mStop_mass == 125) {xsec = 	0.697E+03 ; xsec_unc = 6.65E-02; return; }
+      else if (mStop_mass == 130) {xsec = 	0.586E+03 ; xsec_unc = 6.63E-02; return; }
+      else if (mStop_mass == 135) {xsec = 	0.495E+03 ; xsec_unc = 6.61E-02; return; }
+      else if (mStop_mass == 140) {xsec = 	0.419E+03 ; xsec_unc = 6.59E-02; return; }
+      else if (mStop_mass == 145) {xsec = 	0.357E+03 ; xsec_unc = 6.58E-02; return; }
+      else if (mStop_mass == 150) {xsec = 	0.304E+03 ; xsec_unc = 6.57E-02; return; }
+      else if (mStop_mass == 155) {xsec = 	0.261E+03 ; xsec_unc = 6.55E-02; return; }
+      else if (mStop_mass == 160) {xsec = 	0.224E+03 ; xsec_unc = 6.54E-02; return; }
+      else if (mStop_mass == 165) {xsec = 	0.194E+03 ; xsec_unc = 6.53E-02; return; }
+      else if (mStop_mass == 170) {xsec = 	0.168E+03 ; xsec_unc = 6.52E-02; return; }
+      else if (mStop_mass == 175) {xsec = 	0.146E+03 ; xsec_unc = 6.52E-02; return; }
+      else if (mStop_mass == 180) {xsec = 	0.127E+03 ; xsec_unc = 6.51E-02; return; }
+      else if (mStop_mass == 185) {xsec = 	0.111E+03 ; xsec_unc = 6.51E-02; return; }
+      else if (mStop_mass == 190) {xsec = 	0.973E+02 ; xsec_unc = 6.5E-02; return; }
+      else if (mStop_mass == 195) {xsec = 	0.856E+02 ; xsec_unc = 6.5E-02; return; }
+      else if (mStop_mass == 200) {xsec = 	0.755E+02 ; xsec_unc = 6.5E-02; return; }
+      else if (mStop_mass == 205) {xsec = 	0.668E+02 ; xsec_unc = 6.5E-02; return; }
+      else if (mStop_mass == 210) {xsec = 	0.593E+02 ; xsec_unc = 6.5E-02; return; }
+      else if (mStop_mass == 215) {xsec = 	0.527E+02 ; xsec_unc = 6.5E-02; return; }
+      else if (mStop_mass == 220) {xsec = 	0.470E+02 ; xsec_unc = 6.5E-02; return; }
+      else if (mStop_mass == 225) {xsec = 	0.420E+02 ; xsec_unc = 6.51E-02; return; }
+      else if (mStop_mass == 230) {xsec = 	0.377E+02 ; xsec_unc = 6.51E-02; return; }
+      else if (mStop_mass == 235) {xsec = 	0.338E+02 ; xsec_unc = 6.52E-02; return; }
+      else if (mStop_mass == 240) {xsec = 	0.305E+02 ; xsec_unc = 6.52E-02; return; }
+      else if (mStop_mass == 245) {xsec = 	0.275E+02 ; xsec_unc = 6.53E-02; return; }
+      else if (mStop_mass == 250) {xsec = 	0.248E+02 ; xsec_unc = 6.54E-02; return; }
+      else if (mStop_mass == 255) {xsec = 	0.225E+02 ; xsec_unc = 6.54E-02; return; }
+      else if (mStop_mass == 260) {xsec = 	0.204E+02 ; xsec_unc = 6.55E-02; return; }
+      else if (mStop_mass == 265) {xsec = 	0.186E+02 ; xsec_unc = 6.56E-02; return; }
+      else if (mStop_mass == 270) {xsec = 	0.169E+02 ; xsec_unc = 6.57E-02; return; }
+      else if (mStop_mass == 275) {xsec = 	0.155E+02 ; xsec_unc = 6.58E-02; return; }
+      else if (mStop_mass == 280) {xsec = 	0.141E+02 ; xsec_unc = 6.6E-02; return; }
+      else if (mStop_mass == 285) {xsec = 	0.129E+02 ; xsec_unc = 6.61E-02; return; }
+      else if (mStop_mass == 290) {xsec = 	0.119E+02 ; xsec_unc = 6.62E-02; return; }
+      else if (mStop_mass == 295) {xsec = 	0.109E+02 ; xsec_unc = 6.63E-02; return; }
+      else if (mStop_mass == 300) {xsec = 	0.100E+02 ; xsec_unc = 6.65E-02; return; }
+      else if (mStop_mass == 305) {xsec = 	0.918E+01 ; xsec_unc = 6.66E-02; return; }
+      else if (mStop_mass == 310) {xsec = 	0.843E+01 ; xsec_unc = 6.67E-02; return; }
+      else if (mStop_mass == 315) {xsec = 	0.775E+01 ; xsec_unc = 6.69E-02; return; }
+      else if (mStop_mass == 320) {xsec = 	0.713E+01 ; xsec_unc = 6.7E-02; return; }
+      else if (mStop_mass == 325) {xsec = 	0.657E+01 ; xsec_unc = 6.71E-02; return; }
+      else if (mStop_mass == 330) {xsec = 	0.606E+01 ; xsec_unc = 6.73E-02; return; }
+      else if (mStop_mass == 335) {xsec = 	0.559E+01 ; xsec_unc = 6.74E-02; return; }
+      else if (mStop_mass == 340) {xsec = 	0.517E+01 ; xsec_unc = 6.76E-02; return; }
+      else if (mStop_mass == 345) {xsec = 	0.478E+01 ; xsec_unc = 6.78E-02; return; }
+      else if (mStop_mass == 350) {xsec = 	0.443E+01 ; xsec_unc = 6.79E-02; return; }
+      else if (mStop_mass == 355) {xsec = 	0.410E+01 ; xsec_unc = 6.81E-02; return; }
+      else if (mStop_mass == 360) {xsec = 	0.381E+01 ; xsec_unc = 6.83E-02; return; }
+      else if (mStop_mass == 365) {xsec = 	0.354E+01 ; xsec_unc = 6.85E-02; return; }
+      else if (mStop_mass == 370) {xsec = 	0.329E+01 ; xsec_unc = 6.87E-02; return; }
+      else if (mStop_mass == 375) {xsec = 	0.306E+01 ; xsec_unc = 6.89E-02; return; }
+      else if (mStop_mass == 380) {xsec = 	0.285E+01 ; xsec_unc = 6.91E-02; return; }
+      else if (mStop_mass == 385) {xsec = 	0.265E+01 ; xsec_unc = 6.93E-02; return; }
+      else if (mStop_mass == 390) {xsec = 	0.247E+01 ; xsec_unc = 6.95E-02; return; }
+      else if (mStop_mass == 395) {xsec = 	0.231E+01 ; xsec_unc = 6.97E-02; return; }
+      else if (mStop_mass == 400) {xsec = 	0.215E+01 ; xsec_unc = 6.99E-02; return; }
+      else if (mStop_mass == 405) {xsec = 	0.201E+01 ; xsec_unc = 7.01E-02; return; }
+      else if (mStop_mass == 410) {xsec = 	0.188E+01 ; xsec_unc = 7.04E-02; return; }
+      else if (mStop_mass == 415) {xsec = 	0.176E+01 ; xsec_unc = 7.06E-02; return; }
+      else if (mStop_mass == 420) {xsec = 	0.164E+01 ; xsec_unc = 7.09E-02; return; }
+      else if (mStop_mass == 425) {xsec = 	0.154E+01 ; xsec_unc = 7.11E-02; return; }
+      else if (mStop_mass == 430) {xsec = 	0.144E+01 ; xsec_unc = 7.14E-02; return; }
+      else if (mStop_mass == 435) {xsec = 	0.135E+01 ; xsec_unc = 7.16E-02; return; }
+      else if (mStop_mass == 440) {xsec = 	0.126E+01 ; xsec_unc = 7.19E-02; return; }
+      else if (mStop_mass == 445) {xsec = 	0.119E+01 ; xsec_unc = 7.22E-02; return; }
+      else if (mStop_mass == 450) {xsec = 	0.111E+01 ; xsec_unc = 7.25E-02; return; }
+      else if (mStop_mass == 455) {xsec = 	0.105E+01 ; xsec_unc = 7.27E-02; return; }
+      else if (mStop_mass == 460) {xsec = 	0.983E+00 ; xsec_unc = 7.3E-02; return; }
+      else if (mStop_mass == 465) {xsec = 	0.925E+00 ; xsec_unc = 7.33E-02; return; }
+      else if (mStop_mass == 470) {xsec = 	0.870E+00 ; xsec_unc = 7.36E-02; return; }
+      else if (mStop_mass == 475) {xsec = 	0.819E+00 ; xsec_unc = 7.38E-02; return; }
+      else if (mStop_mass == 480) {xsec = 	0.771E+00 ; xsec_unc = 7.41E-02; return; }
+      else if (mStop_mass == 485) {xsec = 	0.727E+00 ; xsec_unc = 7.44E-02; return; }
+      else if (mStop_mass == 490) {xsec = 	0.685E+00 ; xsec_unc = 7.47E-02; return; }
+      else if (mStop_mass == 495) {xsec = 	0.646E+00 ; xsec_unc = 7.5E-02; return; }
+      else if (mStop_mass == 500) {xsec = 	0.609E+00 ; xsec_unc = 7.53E-02; return; }
+      else if (mStop_mass == 505) {xsec = 	0.575E+00 ; xsec_unc = 7.56E-02; return; }
+      else if (mStop_mass == 510) {xsec = 	0.543E+00 ; xsec_unc = 7.58E-02; return; }
+      else if (mStop_mass == 515) {xsec = 	0.513E+00 ; xsec_unc = 7.61E-02; return; }
+      else if (mStop_mass == 520) {xsec = 	0.484E+00 ; xsec_unc = 7.64E-02; return; }
+      else if (mStop_mass == 525) {xsec = 	0.458E+00 ; xsec_unc = 7.67E-02; return; }
+      else if (mStop_mass == 530) {xsec = 	0.433E+00 ; xsec_unc = 7.7E-02; return; }
+      else if (mStop_mass == 535) {xsec = 	0.409E+00 ; xsec_unc = 7.73E-02; return; }
+      else if (mStop_mass == 540) {xsec = 	0.387E+00 ; xsec_unc = 7.75E-02; return; }
+      else if (mStop_mass == 545) {xsec = 	0.367E+00 ; xsec_unc = 7.78E-02; return; }
+      else if (mStop_mass == 550) {xsec = 	0.347E+00 ; xsec_unc = 7.81E-02; return; }
+      else if (mStop_mass == 555) {xsec = 	0.329E+00 ; xsec_unc = 7.84E-02; return; }
+      else if (mStop_mass == 560) {xsec = 	0.312E+00 ; xsec_unc = 7.87E-02; return; }
+      else if (mStop_mass == 565) {xsec = 	0.296E+00 ; xsec_unc = 7.9E-02; return; }
+      else if (mStop_mass == 570) {xsec = 	0.280E+00 ; xsec_unc = 7.93E-02; return; }
+      else if (mStop_mass == 575) {xsec = 	0.266E+00 ; xsec_unc = 7.96E-02; return; }
+      else if (mStop_mass == 580) {xsec = 	0.252E+00 ; xsec_unc = 7.99E-02; return; }
+      else if (mStop_mass == 585) {xsec = 	0.240E+00 ; xsec_unc = 8.02E-02; return; }
+      else if (mStop_mass == 590) {xsec = 	0.228E+00 ; xsec_unc = 8.05E-02; return; }
+      else if (mStop_mass == 595) {xsec = 	0.216E+00 ; xsec_unc = 8.08E-02; return; }
+      else if (mStop_mass == 600) {xsec = 	0.205E+00 ; xsec_unc = 8.12E-02; return; }
+      else if (mStop_mass == 605) {xsec = 	0.195E+00 ; xsec_unc = 8.15E-02; return; }
+      else if (mStop_mass == 610) {xsec = 	0.186E+00 ; xsec_unc = 8.18E-02; return; }
+      else if (mStop_mass == 615) {xsec = 	0.177E+00 ; xsec_unc = 8.21E-02; return; }
+      else if (mStop_mass == 620) {xsec = 	0.168E+00 ; xsec_unc = 8.25E-02; return; }
+      else if (mStop_mass == 625) {xsec = 	0.160E+00 ; xsec_unc = 8.28E-02; return; }
+      else if (mStop_mass == 630) {xsec = 	0.152E+00 ; xsec_unc = 8.31E-02; return; }
+      else if (mStop_mass == 635) {xsec = 	0.145E+00 ; xsec_unc = 8.35E-02; return; }
+      else if (mStop_mass == 640) {xsec = 	0.138E+00 ; xsec_unc = 8.38E-02; return; }
+      else if (mStop_mass == 645) {xsec = 	0.131E+00 ; xsec_unc = 8.42E-02; return; }
+      else if (mStop_mass == 650) {xsec = 	0.125E+00 ; xsec_unc = 8.45E-02; return; }
+      else if (mStop_mass == 655) {xsec = 	0.119E+00 ; xsec_unc = 8.49E-02; return; }
+      else if (mStop_mass == 660) {xsec = 	0.114E+00 ; xsec_unc = 8.52E-02; return; }
+      else if (mStop_mass == 665) {xsec = 	0.108E+00 ; xsec_unc = 8.56E-02; return; }
+      else if (mStop_mass == 670) {xsec = 	0.103E+00 ; xsec_unc = 8.59E-02; return; }
+      else if (mStop_mass == 675) {xsec = 	0.987E-01 ; xsec_unc = 8.63E-02; return; }
+      else if (mStop_mass == 680) {xsec = 	0.942E-01 ; xsec_unc = 8.66E-02; return; }
+      else if (mStop_mass == 685) {xsec = 	0.899E-01 ; xsec_unc = 8.7E-02; return; }
+      else if (mStop_mass == 690) {xsec = 	0.858E-01 ; xsec_unc = 8.73E-02; return; }
+      else if (mStop_mass == 695) {xsec = 	0.820E-01 ; xsec_unc = 8.77E-02; return; }
+      else if (mStop_mass == 700) {xsec = 	0.783E-01 ; xsec_unc = 8.8E-02; return; }
+      else if (mStop_mass == 705) {xsec = 	0.748E-01 ; xsec_unc = 8.84E-02; return; }
+      else if (mStop_mass == 710) {xsec = 	0.715E-01 ; xsec_unc = 8.88E-02; return; }
+      else if (mStop_mass == 715) {xsec = 	0.683E-01 ; xsec_unc = 8.91E-02; return; }
+      else if (mStop_mass == 720) {xsec = 	0.653E-01 ; xsec_unc = 8.95E-02; return; }
+      else if (mStop_mass == 725) {xsec = 	0.624E-01 ; xsec_unc = 8.98E-02; return; }
+      else if (mStop_mass == 730) {xsec = 	0.597E-01 ; xsec_unc = 9.02E-02; return; }
+      else if (mStop_mass == 735) {xsec = 	0.571E-01 ; xsec_unc = 9.05E-02; return; }
+      else if (mStop_mass == 740) {xsec = 	0.546E-01 ; xsec_unc = 9.09E-02; return; }
+      else if (mStop_mass == 745) {xsec = 	0.523E-01 ; xsec_unc = 9.13E-02; return; }
+      else if (mStop_mass == 750) {xsec = 	0.500E-01 ; xsec_unc = 9.16E-02; return; }
+      else if (mStop_mass == 755) {xsec = 	0.479E-01 ; xsec_unc = 9.2E-02; return; }
+      else if (mStop_mass == 760) {xsec = 	0.459E-01 ; xsec_unc = 9.24E-02; return; }
+      else if (mStop_mass == 765) {xsec = 	0.439E-01 ; xsec_unc = 9.27E-02; return; }
+      else if (mStop_mass == 770) {xsec = 	0.421E-01 ; xsec_unc = 9.31E-02; return; }
+      else if (mStop_mass == 775) {xsec = 	0.403E-01 ; xsec_unc = 9.35E-02; return; }
+      else if (mStop_mass == 780) {xsec = 	0.386E-01 ; xsec_unc = 9.38E-02; return; }
+      else if (mStop_mass == 785) {xsec = 	0.370E-01 ; xsec_unc = 9.42E-02; return; }
+      else if (mStop_mass == 790) {xsec = 	0.355E-01 ; xsec_unc = 9.46E-02; return; }
+      else if (mStop_mass == 795) {xsec = 	0.340E-01 ; xsec_unc = 9.5E-02; return; }
+      else if (mStop_mass == 800) {xsec = 	0.326E-01 ; xsec_unc = 9.53E-02; return; }
+      else if (mStop_mass == 805) {xsec = 	0.313E-01 ; xsec_unc = 9.57E-02; return; }
+      else if (mStop_mass == 810) {xsec = 	0.300E-01 ; xsec_unc = 9.61E-02; return; }
+      else if (mStop_mass == 815) {xsec = 	0.288E-01 ; xsec_unc = 9.65E-02; return; }
+      else if (mStop_mass == 820) {xsec = 	0.276E-01 ; xsec_unc = 9.69E-02; return; }
+      else if (mStop_mass == 825) {xsec = 	0.265E-01 ; xsec_unc = 9.73E-02; return; }
+      else if (mStop_mass == 830) {xsec = 	0.254E-01 ; xsec_unc = 9.77E-02; return; }
+      else if (mStop_mass == 835) {xsec = 	0.244E-01 ; xsec_unc = 9.81E-02; return; }
+      else if (mStop_mass == 840) {xsec = 	0.234E-01 ; xsec_unc = 9.85E-02; return; }
+      else if (mStop_mass == 845) {xsec = 	0.225E-01 ; xsec_unc = 9.89E-02; return; }
+      else if (mStop_mass == 850) {xsec = 	0.216E-01 ; xsec_unc = 9.93E-02; return; }
+      else if (mStop_mass == 855) {xsec = 	0.208E-01 ; xsec_unc = 9.97E-02; return; }
+      else if (mStop_mass == 860) {xsec = 	0.199E-01 ; xsec_unc = 10.01E-02; return; }
+      else if (mStop_mass == 865) {xsec = 	0.192E-01 ; xsec_unc = 10.05E-02; return; }
+      else if (mStop_mass == 870) {xsec = 	0.184E-01 ; xsec_unc = 10.09E-02; return; }
+      else if (mStop_mass == 875) {xsec = 	0.177E-01 ; xsec_unc = 10.13E-02; return; }
+      else if (mStop_mass == 880) {xsec = 	0.170E-01 ; xsec_unc = 10.17E-02; return; }
+      else if (mStop_mass == 885) {xsec = 	0.164E-01 ; xsec_unc = 10.21E-02; return; }
+      else if (mStop_mass == 890) {xsec = 	0.157E-01 ; xsec_unc = 10.25E-02; return; }
+      else if (mStop_mass == 895) {xsec = 	0.151E-01 ; xsec_unc = 10.29E-02; return; }
+      else if (mStop_mass == 900) {xsec = 	0.145E-01 ; xsec_unc = 10.33E-02; return; }
+      else if (mStop_mass == 905) {xsec = 	0.140E-01 ; xsec_unc = 10.38E-02; return; }
+      else if (mStop_mass == 910) {xsec = 	0.135E-01 ; xsec_unc = 10.42E-02; return; }
+      else if (mStop_mass == 915) {xsec = 	0.129E-01 ; xsec_unc = 10.46E-02; return; }
+      else if (mStop_mass == 920) {xsec = 	0.125E-01 ; xsec_unc = 10.5E-02; return; }
+      else if (mStop_mass == 925) {xsec = 	0.120E-01 ; xsec_unc = 10.54E-02; return; }
+      else if (mStop_mass == 930) {xsec = 	0.115E-01 ; xsec_unc = 10.59E-02; return; }
+      else if (mStop_mass == 935) {xsec = 	0.111E-01 ; xsec_unc = 10.63E-02; return; }
+      else if (mStop_mass == 940) {xsec = 	0.107E-01 ; xsec_unc = 10.67E-02; return; }
+      else if (mStop_mass == 945) {xsec = 	0.103E-01 ; xsec_unc = 10.71E-02; return; }
+      else if (mStop_mass == 950) {xsec = 	0.991E-02 ; xsec_unc = 10.76E-02; return; }
+      else if (mStop_mass == 955) {xsec = 	0.954E-02 ; xsec_unc = 10.8E-02; return; }
+      else if (mStop_mass == 960) {xsec = 	0.919E-02 ; xsec_unc = 10.84E-02; return; }
+      else if (mStop_mass == 965) {xsec = 	0.885E-02 ; xsec_unc = 10.89E-02; return; }
+      else if (mStop_mass == 970) {xsec = 	0.853E-02 ; xsec_unc = 10.93E-02; return; }
+      else if (mStop_mass == 975) {xsec = 	0.822E-02 ; xsec_unc = 10.97E-02; return; }
+      else if (mStop_mass == 980) {xsec = 	0.792E-02 ; xsec_unc = 11.02E-02; return; }
+      else if (mStop_mass == 985) {xsec = 	0.763E-02 ; xsec_unc = 11.06E-02; return; }
+      else if (mStop_mass == 990) {xsec = 	0.735E-02 ; xsec_unc = 11.11E-02; return; }
+      else if (mStop_mass == 995) {xsec = 	0.709E-02 ; xsec_unc = 11.15E-02; return; }
+      else if (mStop_mass == 1000) {xsec = 	0.683E-02 ; xsec_unc = 11.2E-02; return; }
+      else if (mStop_mass == 1005) {xsec = 	0.659E-02 ; xsec_unc = 11.24E-02; return; }
+      else if (mStop_mass == 1010) {xsec = 	0.635E-02 ; xsec_unc = 11.29E-02; return; }
+      else if (mStop_mass == 1015) {xsec = 	0.613E-02 ; xsec_unc = 11.33E-02; return; }
+      else if (mStop_mass == 1020) {xsec = 	0.591E-02 ; xsec_unc = 11.38E-02; return; }
+      else if (mStop_mass == 1025) {xsec = 	0.570E-02 ; xsec_unc = 11.42E-02; return; }
+      else if (mStop_mass == 1030) {xsec = 	0.550E-02 ; xsec_unc = 11.47E-02; return; }
+      else if (mStop_mass == 1035) {xsec = 	0.530E-02 ; xsec_unc = 11.51E-02; return; }
+      else if (mStop_mass == 1040) {xsec = 	0.511E-02 ; xsec_unc = 11.56E-02; return; }
+      else if (mStop_mass == 1045) {xsec = 	0.493E-02 ; xsec_unc = 11.6E-02; return; }
+      else if (mStop_mass == 1050) {xsec = 	0.476E-02 ; xsec_unc = 11.65E-02; return; }
+      else if (mStop_mass == 1055) {xsec = 	0.460E-02 ; xsec_unc = 11.7E-02; return; }
+      else if (mStop_mass == 1060) {xsec = 	0.444E-02 ; xsec_unc = 11.74E-02; return; }
+      else if (mStop_mass == 1065) {xsec = 	0.428E-02 ; xsec_unc = 11.79E-02; return; }
+      else if (mStop_mass == 1070) {xsec = 	0.413E-02 ; xsec_unc = 11.84E-02; return; }
+      else if (mStop_mass == 1075) {xsec = 	0.399E-02 ; xsec_unc = 11.88E-02; return; }
+      else if (mStop_mass == 1080) {xsec = 	0.385E-02 ; xsec_unc = 11.93E-02; return; }
+      else if (mStop_mass == 1085) {xsec = 	0.372E-02 ; xsec_unc = 11.98E-02; return; }
+      else if (mStop_mass == 1090) {xsec = 	0.359E-02 ; xsec_unc = 12.03E-02; return; }
+      else if (mStop_mass == 1095) {xsec = 	0.347E-02 ; xsec_unc = 12.07E-02; return; }
+      else if (mStop_mass == 1100) {xsec = 	0.335E-02 ; xsec_unc = 12.12E-02; return; }
+      else if (mStop_mass == 1105) {xsec = 	0.324E-02 ; xsec_unc = 12.17E-02; return; }
+      else if (mStop_mass == 1110) {xsec = 	0.313E-02 ; xsec_unc = 12.22E-02; return; }
+      else if (mStop_mass == 1115) {xsec = 	0.302E-02 ; xsec_unc = 12.27E-02; return; }
+      else if (mStop_mass == 1120) {xsec = 	0.292E-02 ; xsec_unc = 12.32E-02; return; }
+      else if (mStop_mass == 1125) {xsec = 	0.282E-02 ; xsec_unc = 12.37E-02; return; }
+      else if (mStop_mass == 1130) {xsec = 	0.272E-02 ; xsec_unc = 12.42E-02; return; }
+      else if (mStop_mass == 1135) {xsec = 	0.263E-02 ; xsec_unc = 12.47E-02; return; }
+      else if (mStop_mass == 1140) {xsec = 	0.254E-02 ; xsec_unc = 12.52E-02; return; }
+      else if (mStop_mass == 1145) {xsec = 	0.246E-02 ; xsec_unc = 12.57E-02; return; }
+      else if (mStop_mass == 1150) {xsec = 	0.238E-02 ; xsec_unc = 12.62E-02; return; }
+      else if (mStop_mass == 1155) {xsec = 	0.230E-02 ; xsec_unc = 12.67E-02; return; }
+      else if (mStop_mass == 1160) {xsec = 	0.222E-02 ; xsec_unc = 12.72E-02; return; }
+      else if (mStop_mass == 1165) {xsec = 	0.215E-02 ; xsec_unc = 12.77E-02; return; }
+      else if (mStop_mass == 1170) {xsec = 	0.208E-02 ; xsec_unc = 12.82E-02; return; }
+      else if (mStop_mass == 1175) {xsec = 	0.201E-02 ; xsec_unc = 12.87E-02; return; }
+      else if (mStop_mass == 1180) {xsec = 	0.194E-02 ; xsec_unc = 12.93E-02; return; }
+      else if (mStop_mass == 1185) {xsec = 	0.188E-02 ; xsec_unc = 12.98E-02; return; }
+      else if (mStop_mass == 1190) {xsec = 	0.182E-02 ; xsec_unc = 13.03E-02; return; }
+      else if (mStop_mass == 1195) {xsec = 	0.176E-02 ; xsec_unc = 13.08E-02; return; }
+      else if (mStop_mass == 1200) {xsec = 	0.170E-02 ; xsec_unc = 13.13E-02; return; }
+      else if (mStop_mass == 1205) {xsec = 	0.164E-02 ; xsec_unc = 13.19E-02; return; }
+      else if (mStop_mass == 1210) {xsec = 	0.159E-02 ; xsec_unc = 13.24E-02; return; }
+      else if (mStop_mass == 1215) {xsec = 	0.154E-02 ; xsec_unc = 13.29E-02; return; }
+      else if (mStop_mass == 1220) {xsec = 	0.149E-02 ; xsec_unc = 13.34E-02; return; }
+      else if (mStop_mass == 1225) {xsec = 	0.144E-02 ; xsec_unc = 13.4E-02; return; }
+      else if (mStop_mass == 1230) {xsec = 	0.139E-02 ; xsec_unc = 13.45E-02; return; }
+      else if (mStop_mass == 1235) {xsec = 	0.135E-02 ; xsec_unc = 13.5E-02; return; }
+      else if (mStop_mass == 1240) {xsec = 	0.131E-02 ; xsec_unc = 13.55E-02; return; }
+      else if (mStop_mass == 1245) {xsec = 	0.126E-02 ; xsec_unc = 13.61E-02; return; }
+      else if (mStop_mass == 1250) {xsec = 	0.122E-02 ; xsec_unc = 13.66E-02; return; }
+      else if (mStop_mass == 1255) {xsec = 	0.118E-02 ; xsec_unc = 13.72E-02; return; }
+      else if (mStop_mass == 1260) {xsec = 	0.115E-02 ; xsec_unc = 13.77E-02; return; }
+      else if (mStop_mass == 1265) {xsec = 	0.111E-02 ; xsec_unc = 13.82E-02; return; }
+      else if (mStop_mass == 1270) {xsec = 	0.107E-02 ; xsec_unc = 13.88E-02; return; }
+      else if (mStop_mass == 1275) {xsec = 	0.104E-02 ; xsec_unc = 13.93E-02; return; }
+      else if (mStop_mass == 1280) {xsec = 	0.101E-02 ; xsec_unc = 13.99E-02; return; }
+      else if (mStop_mass == 1285) {xsec = 	0.976E-03 ; xsec_unc = 14.04E-02; return; }
+      else if (mStop_mass == 1290) {xsec = 	0.945E-03 ; xsec_unc = 14.1E-02; return; }
+      else if (mStop_mass == 1295) {xsec = 	0.915E-03 ; xsec_unc = 14.15E-02; return; }
+      else if (mStop_mass == 1300) {xsec = 	0.887E-03 ; xsec_unc = 14.21E-02; return; }
+      else if (mStop_mass == 1305) {xsec = 	0.859E-03 ; xsec_unc = 14.26E-02; return; }
+      else if (mStop_mass == 1310) {xsec = 	0.832E-03 ; xsec_unc = 14.32E-02; return; }
+      else if (mStop_mass == 1315) {xsec = 	0.806E-03 ; xsec_unc = 14.38E-02; return; }
+      else if (mStop_mass == 1320) {xsec = 	0.781E-03 ; xsec_unc = 14.43E-02; return; }
+      else if (mStop_mass == 1325) {xsec = 	0.756E-03 ; xsec_unc = 14.49E-02; return; }
+      else if (mStop_mass == 1330) {xsec = 	0.733E-03 ; xsec_unc = 14.55E-02; return; }
+      else if (mStop_mass == 1335) {xsec = 	0.710E-03 ; xsec_unc = 14.61E-02; return; }
+      else if (mStop_mass == 1340) {xsec = 	0.688E-03 ; xsec_unc = 14.66E-02; return; }
+      else if (mStop_mass == 1345) {xsec = 	0.667E-03 ; xsec_unc = 14.72E-02; return; }
+      else if (mStop_mass == 1350) {xsec = 	0.646E-03 ; xsec_unc = 14.78E-02; return; }
+      else if (mStop_mass == 1355) {xsec = 	0.626E-03 ; xsec_unc = 14.84E-02; return; }
+      else if (mStop_mass == 1360) {xsec = 	0.607E-03 ; xsec_unc = 14.9E-02; return; }
+      else if (mStop_mass == 1365) {xsec = 	0.588E-03 ; xsec_unc = 14.95E-02; return; }
+      else if (mStop_mass == 1370) {xsec = 	0.570E-03 ; xsec_unc = 15.01E-02; return; }
+      else if (mStop_mass == 1375) {xsec = 	0.553E-03 ; xsec_unc = 15.07E-02; return; }
+      else if (mStop_mass == 1380) {xsec = 	0.536E-03 ; xsec_unc = 15.13E-02; return; }
+      else if (mStop_mass == 1385) {xsec = 	0.519E-03 ; xsec_unc = 15.19E-02; return; }
+      else if (mStop_mass == 1390) {xsec = 	0.503E-03 ; xsec_unc = 15.25E-02; return; }
+      else if (mStop_mass == 1395) {xsec = 	0.488E-03 ; xsec_unc = 15.31E-02; return; }
+      else if (mStop_mass == 1400) {xsec = 	0.473E-03 ; xsec_unc = 15.37E-02; return; }
+      else if (mStop_mass == 1400) {xsec = 	0.473E-03 ; xsec_unc = 15.37E-02; return; }
       else {xsec = 0.; xsec_unc = 0.;}
   }

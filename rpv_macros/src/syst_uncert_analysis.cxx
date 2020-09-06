@@ -120,7 +120,13 @@ void make_fit_mconly( TFile *fhist, TFile *kappa, TFile *f_out, int ibin){
   float binsz  = (mjmax-mjmin)/3;
 
   vector<TString> proc = {"qcd","ttbar","wjets","other",
-                          "signal_M1100","signal_M1200","signal_M1300","signal_M1400","signal_M1500","signal_M1600","signal_M1700","signal_M1800","signal_M1900","signal_M2000","signal_M2100","signal_M2200"};
+
+                          "signal_M1000","signal_M1100","signal_M1200","signal_M1300","signal_M1400","signal_M1500","signal_M1600","signal_M1700","signal_M1800","signal_M1900","signal_M2000","signal_M2100","signal_M2200"// */
+			};
+
+			/*"Stop_M300","Stop_M350","Stop_M400","Stop_M450","Stop_M500","Stop_M550","Stop_M600","Stop_M650","Stop_M700","Stop_M750","Stop_M800","Stop_M850","Stop_M900","Stop_M950","Stop_M1000","Stop_M1050","Stop_M1100","Stop_M1150","Stop_M1200","Stop_M1250","Stop_M1300","Stop_M1350","Stop_M1400"
+			};// */
+
   vector<TString> updo = {"Up","Down"};
   
   f_out->cd();

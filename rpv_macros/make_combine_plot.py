@@ -9,7 +9,7 @@ mjmin = sys.argv[2]
 mjlist = [500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000]
 
 if __name__=="__main__":
-	ccpath = '/cms/scratch/yjeong/CMSSW_10_2_13/src/RPV/rpv_macros'
+	ccpath = '/cms/scratch/yjeong/CMSSW_10_2_13/src/RPV/rpv_macros/'
 	g = TFile.Open("result.root","read")
 	hist = g.Get("hist")
 	if not os.path.isfile(ccpath+'comb_comp.C'):

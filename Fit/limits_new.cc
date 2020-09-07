@@ -188,8 +188,8 @@ void limits_new()
   leg->Draw();
 
   drawHeader();
-  c->Print("limits.pdf");
-  c->Print("limits.png");
+  c->Print("limits_new.pdf");
+  c->Print("limits_new.png");
 }
 
 TGraphErrors * theoryGraph()

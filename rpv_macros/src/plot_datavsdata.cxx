@@ -17,8 +17,8 @@
 #include "utilities_macros_rpv.hpp"
 
 namespace {
-  TString luminosity="35.9";
-  //TString luminosity="41.5";
+  //TString luminosity="35.9";
+  TString luminosity="41.5";
   //TString luminosity="59.7";
   //TString luminosity="1.";// when drawing data
   TString plot_type=".png";
@@ -42,7 +42,7 @@ int main(){
    TString folder_dat_16 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm/";
    vector<TString> s_data_2016 = getRPVProcess(folder_dat_16,"data");
 
-   TString folder_dat_17 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
+   TString folder_dat_17 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";//FIXME
    vector<TString> s_data_2017 = getRPVProcess(folder_dat_17,"data");
 
    TString folder_dat_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
@@ -140,10 +140,8 @@ int main(){
    Samples.push_back(sfeats(s_2016, "Dilepton events", kBlack,1,"nonblind&&((nleps==2&&nbm>=0&&nbm<=2&&njets>=5)||(nleps==1&&nveto==1&&nbm>=1&&nbm<=2&&njets>=6&&mt>140))&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass")); Samples.back().isData=true;
    Samples.push_back(sfeats(s_2016, "Single lepton events, m_{T} < 140", kBlue,1,"nonblind&&nleps==1&&nveto==0&&nbm>=1&&njets>=6&&mt<=140&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass"));   Samples.back().doBand = true;*/
   
-
-
   vector<hfeats> vars;
-  std::vector<TString> cuts = {"nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5"};
+  std::vector<TString> cuts = {"nbm>=0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5"};
   //std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==0&&mj12>500&&nleps==1&&ht>1200&&8<=njets","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5","nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7","nbm==1&&mj12>500&&nleps==1&&ht>1200&&8<=njets"};
 
   for(auto icut : cuts){
@@ -154,7 +152,7 @@ int main(){
     vars.back().normalize = true; // */
     //vars.push_back(hfeats("nbm", 6, 0, 6, ttbar, "N_{b}", icut,-1,"ttbar"));
     //vars.push_back(hfeats("njets", 10, 0, 20, ttbar, "NJets", icut,-1,"ttbar"));
-    /*vars.push_back(hfeats("mj12", 3, 500, 1400, ttbar, "mj12", icut,-1,"ttbar"));
+    vars.push_back(hfeats("mj12", 3, 500, 1400, ttbar, "mj12", icut,-1,"ttbar"));
     //vars.push_back(hfeats("ht", 20, 1200, 2600, ttbar, "H_{t}", icut,-1,"ttbar"));//
     vars.back().normalize = true;// */
     //vars.push_back(hfeats("nbm", 6, 0, 6, qcd, "N_{b}", icut,-1,"qcd"));
@@ -179,7 +177,7 @@ int main(){
     vars.back().normalize = true;// */
     //vars.push_back(hfeats("nbm", 6, 0, 6, mStop_400, "N_{b}", icut,-1,"mStop_400"));
     //vars.push_back(hfeats("njets", 6, 0, 12, mStop_400, "NJets", icut,-1,"mStop_400"));
-    vars.push_back(hfeats("mj12", 3, 500, 1400, mStop_400, "mj12", icut,-1,"mStop_400"));
+    /*vars.push_back(hfeats("mj12", 3, 500, 1400, mStop_400, "mj12", icut,-1,"mStop_400"));
     //vars.push_back(hfeats("ht", 20, 1200, 2600, mStop_400, "H_{t}", icut,-1,"mStop_400"));// */
     vars.back().normalize = true;// 
   }

@@ -27,7 +27,7 @@ for mjmin in 500 550 600 650 700 750 800 850 900 950 1000
 			mv result.pdf results_${mass}_16/result_${mjmin}.pdf
 			mv result.root results_${mass}_16/result_${mjmin}.root
 		done
-		mv plots/kappa/kappa_summary_nominalX_2016_mconly.root plots_kappa/kappa_summary_${mjmin}.pdf
+		mv plots/kappa/kappa_summary_nominalX_2016_mconly.root plots/kappa/kappa_summary_${mjmin}.pdf
 	done
 
 root -l comb_comp.C

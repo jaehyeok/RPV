@@ -79,7 +79,7 @@ void pulls()
 
 }
 
-void limits_new()
+void limits()
 {
   std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;

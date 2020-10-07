@@ -554,7 +554,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         // 
         // Central weights
         // 
-        float nominalweight = lumi*tree.weight();    
+        float nominalweight = lumi*tree.weight()*tree.stitch_ht();    
         //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
 	
 
@@ -563,6 +563,13 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
         //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
         else if (procname=="signal") nominalweight = nominalweight * 1; 
+	nb_csv=0;
+	for(unsigned int j=0; j<tree.jets_hflavor().size();j++){
+                if(tree.jets_islep().at(j)) continue;
+                if(tree.jets_pt().at(j)<30) continue;
+                if(abs(tree.jets_eta().at(j))>2.4) continue;
+		if(tree.jets_csv().at(j)>0.8484) nb_csv++;
+	}
        
         // qcd jet flavor central weights
        /* if(procname=="qcd") 

@@ -481,6 +481,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
     // nominal, up and down histrograms  
     int MjBin=2;
+    int NbBin=4;
     TH1F * h1nominal[nbins];
     TH1F * h1up[nbins];     
     TH1F * h1down[nbins];   
@@ -508,13 +509,16 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 	  kappa_syst[ibin][ihb] = 0;
         }
       }
-
-        //h1nominal[ibin]    = new TH1F(nominalname.Data(),  nominalname.Data(), MjBin+1, 0, MjBin+1);
-        //h1up[ibin]         = new TH1F(upname.Data(),       upname.Data(),      MjBin+1, 0, MjBin+1);
-        //h1down[ibin]       = new TH1F(downname.Data(),     downname.Data(),    MjBin+1, 0, MjBin+1);
-        h1nominal[ibin]    = new TH1F(Form("%s_bin%i",nominalname.Data(),ibin),    Form("%s_bin%i",nominalname.Data(),ibin), MjBin+1, mjmin, mjmax);
-        h1up[ibin]         = new TH1F(Form("%s_bin%i",upname.Data(),ibin),         Form("%s_bin%i",upname.Data(),ibin), MjBin+1, mjmin, mjmax);
-        h1down[ibin]       = new TH1F(Form("%s_bin%i",downname.Data(),ibin),       Form("%s_bin%i",downname.Data(),ibin), MjBin+1, mjmin, mjmax);
+	if(ibin<22){
+            h1nominal[ibin]    = new TH1F(nominalname.Data(),  nominalname.Data(), NbBin, 1, NbBin+1);
+            h1up[ibin]         = new TH1F(upname.Data(),       upname.Data(),      NbBin, 1, NbBin+1);
+            h1down[ibin]       = new TH1F(downname.Data(),     downname.Data(),    NbBin, 1, NbBin+1);
+	}
+	else{
+            h1nominal[ibin]    = new TH1F(Form("%s_bin%i",nominalname.Data(),ibin),    Form("%s_bin%i",nominalname.Data(),ibin), MjBin+1, mjmin, mjmax);
+            h1up[ibin]         = new TH1F(Form("%s_bin%i",upname.Data(),ibin),         Form("%s_bin%i",upname.Data(),ibin), MjBin+1, mjmin, mjmax);
+            h1down[ibin]       = new TH1F(Form("%s_bin%i",downname.Data(),ibin),       Form("%s_bin%i",downname.Data(),ibin), MjBin+1, mjmin, mjmax);
+	}
     }
 
     // loop over tree 
@@ -550,7 +554,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         // 
         // Central weights
         // 
-        float nominalweight = lumi*tree.weight();    
+        float nominalweight = lumi*tree.weight()*tree.stitch_ht();    
         //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
 	
 
@@ -559,6 +563,13 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
         //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
         else if (procname=="signal") nominalweight = nominalweight * 1; 
+	nb_csv=0;
+	for(unsigned int j=0; j<tree.jets_hflavor().size();j++){
+                if(tree.jets_islep().at(j)) continue;
+                if(tree.jets_pt().at(j)<30) continue;
+                if(abs(tree.jets_eta().at(j))>2.4) continue;
+		if(tree.jets_csv().at(j)>0.8484) nb_csv++;
+	}
        
         // qcd jet flavor central weights
        /* if(procname=="qcd") 
@@ -840,66 +851,102 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         //
         for(int ibin=0; ibin<nbins; ibin++)  
         {
-           if(variations=="kappa")
-           {
-	      upweight   = nominalweight;
-	      downweight = nominalweight;
-              float sys_kappaup(1),sys_kappadown(1);
-              int ihb(0);
-
-              if(tree.mj12()>mjmin && tree.mj12()<mjmin+300) ihb = 0;
-              else if(tree.mj12()>mjmin+300 && tree.mj12()<mjmin+600) ihb = 1;
-              else if(tree.mj12()>mjmin+600) ihb = 2;
-
-              sys_kappaup   = 1+kappa_syst[ibin][ihb];
-              sys_kappadown = 1-kappa_syst[ibin][ihb];
-	      //cout<<sys_kappaup<<"::"<<sys_kappadown<<endl;
- 
-              upweight    = upweight*sys_kappaup;
-              downweight  = downweight*sys_kappadown;
-	      //cout<<upweight<<"::"<<downweight<<endl;
-            }
-            if(variations=="jer")//jet energy resolution
-            {  
-		    float hmjmax = mjmax-0.001;
-		    if(tree.nleps()==0 && !nl0shape){
-			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
-		   	 //cout<<hmjmax<<endl;
-		    }
-                if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
-                    h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
-                if(tree.sys_mj12()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2], tree.sys_nbm()[2])) 
-                    h1up[ibin]->Fill(tree.sys_mj12()[2]>hmjmax?hmjmax:tree.sys_mj12()[2], upweight);          // up
-                if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
-                    h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);                    // down  
+	   if(ibin<22)
+	   {
+		int hnbmax = 5-0.0001;
+	        if(tree.nleps()==0 && !nl0shape){
+		   	hnbmax = 2-0.001;
+		}
+                if(variations=="jer")//jet energy resolution
+                {  
+                    if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                        h1nominal[ibin]->Fill(tree.nbm()>hnbmax?hnbmax:tree.nbm(), nominalweight);              // nominal  
+                    if(tree.sys_nbm()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2], tree.sys_nbm()[2])) 
+                        h1up[ibin]->Fill(tree.sys_nbm()[2]>hnbmax?hnbmax:tree.sys_nbm()[2], upweight);          // up
+                    if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                        h1down[ibin]->Fill(tree.nbm()>hnbmax?hnbmax:tree.nbm(), downweight);                    // down  
                
-            } 
-            else if(variations=="JES") //jet energy scale
-            { 
-		    float hmjmax = mjmax-0.001;
-		    if(tree.nleps()==0 && !nl0shape){
-			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
-		   	 //cout<<hmjmax<<endl;
-		    }
-                if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
-                    h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
-                if(tree.sys_mj12()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0], tree.sys_nbm()[0]))  
-                    h1up[ibin]->Fill(tree.sys_mj12()[0]>hmjmax?hmjmax:tree.sys_mj12()[0], upweight);          // up 
-                if(tree.sys_mj12()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.sys_mj12()[1], tree.sys_nbm()[1]))  
-                    h1down[ibin]->Fill(tree.sys_mj12()[1]>hmjmax?hmjmax:tree.sys_mj12()[1], downweight);      // down
-            }
-            else 
-            {
-                if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                } 
+                else if(variations=="JES") //jet energy scale
+                { 
+                    if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                        h1nominal[ibin]->Fill(tree.nbm()>hnbmax?hnbmax:tree.nbm(), nominalweight);              // nominal  
+                    if(tree.sys_nbm()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0], tree.sys_nbm()[0]))  
+                        h1up[ibin]->Fill(tree.sys_nbm()[0]>hnbmax?hnbmax:tree.sys_nbm()[0], upweight);          // up 
+                    if(tree.sys_nbm()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.sys_mj12()[1], tree.sys_nbm()[1]))  
+                        h1down[ibin]->Fill(tree.sys_nbm()[1]>hnbmax?hnbmax:tree.sys_nbm()[1], downweight);      // down
+                }
+                else 
                 {
-		    float hmjmax = mjmax-0.001;
-		    if(tree.nleps()==0 && !nl0shape){
-			 hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
+                    if(tree.nbm()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                    {
+                        h1nominal[ibin]->Fill(tree.nbm()>hnbmax?hnbmax:tree.nbm(), nominalweight);  // nominal  
+                        h1up[ibin]->Fill(tree.nbm()>hnbmax?hnbmax:tree.nbm(), upweight);            // up  
+                        h1down[ibin]->Fill(tree.nbm()>hnbmax?hnbmax:tree.nbm(), downweight);        // down 
+                    }
+                }
+	     
+
+           }
+	   else{
+               if(variations=="kappa")
+               {
+	          upweight   = nominalweight;
+	          downweight = nominalweight;
+                  float sys_kappaup(1),sys_kappadown(1);
+                  int ihb(0);
+
+                  if(tree.mj12()>mjmin && tree.mj12()<mjmin+300) ihb = 0;
+                  else if(tree.mj12()>mjmin+300 && tree.mj12()<mjmin+600) ihb = 1;
+                  else if(tree.mj12()>mjmin+600) ihb = 2;
+
+                  sys_kappaup   = 1+kappa_syst[ibin][ihb];
+                  sys_kappadown = 1-kappa_syst[ibin][ihb];
+	          //cout<<sys_kappaup<<"::"<<sys_kappadown<<endl;
+ 
+                  upweight    = upweight*sys_kappaup;
+                  downweight  = downweight*sys_kappadown;
+                }
+                if(variations=="jer")//jet energy resolution
+                {  
+	 	        float hmjmax = mjmax-0.001;
+		        if(tree.nleps()==0 && !nl0shape){
+		   	     hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
+		        }
+                    if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                        h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
+                    if(tree.sys_mj12()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2], tree.sys_nbm()[2])) 
+                        h1up[ibin]->Fill(tree.sys_mj12()[2]>hmjmax?hmjmax:tree.sys_mj12()[2], upweight);          // up
+                    if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                        h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);                    // down  
+               
+                } 
+                else if(variations=="JES") //jet energy scale
+                { 
+		        float hmjmax = mjmax-0.001;
+		        if(tree.nleps()==0 && !nl0shape){
+		   	     hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
+	     	        }
+                    if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                        h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
+                    if(tree.sys_mj12()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0], tree.sys_nbm()[0]))  
+                        h1up[ibin]->Fill(tree.sys_mj12()[0]>hmjmax?hmjmax:tree.sys_mj12()[0], upweight);          // up 
+                    if(tree.sys_mj12()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.sys_mj12()[1], tree.sys_nbm()[1]))  
+                        h1down[ibin]->Fill(tree.sys_mj12()[1]>hmjmax?hmjmax:tree.sys_mj12()[1], downweight);      // down
+                }
+                else 
+                {
+                    if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                    {
+		        float hmjmax = mjmax-0.001;
+		        if(tree.nleps()==0 && !nl0shape){
+			     hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
 		   	 //cout<<hmjmax<<endl;
-		   }
-                    h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);  // nominal  
-                    h1up[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), upweight);            // up  
-                    h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);        // down 
+                        }
+                        h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);  // nominal  
+                        h1up[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), upweight);            // up  
+                        h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);        // down 
+                    }
                 }
             }
         }

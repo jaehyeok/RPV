@@ -100,18 +100,6 @@ int main(int argc, char *argv[])
   std::vector<std::string> bins_sr_highnj_highmj = {"bin13", "bin15"};
   std::vector<std::string> bins_sr_highnj_vhighmj = {"bin19", "bin21"};
   
-  std::vector<std::string> bins_cr_nb1_lownjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb2_lownjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb3_lownjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb4_lownjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb1_mednjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb2_mednjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb3_mednjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb4_mednjets    = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb1_highnjets   = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb2_highnjets   = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb3_highnjets   = {"bin40","bin25"}; 
-  std::vector<std::string> bins_cr_nb4_highnjets   = {"bin40","bin25"}; 
   std::vector<std::string> bins_all = {"bin0", "bin1", "bin2", "bin3", "bin4", "bin5"};
   //std::vector<std::string> bins_all = {"bin2", "bin5"};
 

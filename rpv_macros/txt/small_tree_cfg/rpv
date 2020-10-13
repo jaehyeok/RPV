@@ -25,6 +25,7 @@ float mt
 
 std::vector<bool> trig;
 bool stitch
+bool stitch_ht
 bool pass
 bool json7p65
 bool json12p9

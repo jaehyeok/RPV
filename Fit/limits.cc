@@ -35,7 +35,7 @@ void drawHeader()
   lat->SetTextSize(0.038);
   lat->DrawLatexNDC(0.12, 0.93, "CMS #font[52]{Preliminary}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.66, 0.93, "137 fb^{-1} (13 TeV)");
+  lat->DrawLatexNDC(0.66, 0.93, "35.9 fb^{-1} (13 TeV)");
 }
 
 void pulls()
@@ -188,8 +188,8 @@ void limits()
   leg->Draw();
 
   drawHeader();
-  c->Print("limits_new.pdf");
-  c->Print("limits_new.png");
+  c->Print("limits.pdf");
+  c->Print("limits.png");
 }
 
 TGraphErrors * theoryGraph()

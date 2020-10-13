@@ -33,7 +33,8 @@ int main(int argc, char *argv[]){
 
   TString year;
 
-  TString lumi = "35.9";
+  //TString lumi = "35.9";
+  TString lumi = "137";
   TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
 
   /*TString lumi = "41.5";
@@ -80,7 +81,7 @@ int main(int argc, char *argv[]){
   vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");
   vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900");
   vector<TString> s_mStop_650 = getRPVProcess(folder_sig,"mStop_650");
-  vector<TString> s_mStop_1200 = getRPVProcess(folder_sig,"mStop_1200");
+  vector<TString> s_mStop_900 = getRPVProcess(folder_sig,"mStop_900");
 
   vector<TString> s_ttbar = getRPVProcess(folder_bkg,"ttbar");
   vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
@@ -104,14 +105,14 @@ int main(int argc, char *argv[]){
 
   string extraweight = "1";
   //Samples.push_back(sfeats(s_rpv_m1600, "m1600", kRed, 1, cutandweight("pass",extraweight)));
-  Samples.push_back(sfeats(s_rpv_m1900, "m1900", kNeon, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
+  //Samples.push_back(sfeats(s_rpv_m1900, "m1900", kNeon, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
   //Samples.back().isSig = true;
   
   Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_mStop_650, "mStop_650", kRed, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
-  Samples.push_back(sfeats(s_mStop_1200, "mStop_1200", kRed-1, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;// */
+  //Samples.push_back(sfeats(s_mStop_900, "mStop_900", kRed-1, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;// */
   Samples.push_back(sfeats(s_other, "Others", rpv::c_other, 1, cutandweight("pass",extraweight)));// */
 
   // Loop over samples
@@ -124,7 +125,7 @@ int main(int argc, char *argv[]){
   if(makeNm1==true){
     // Set cuts
     TString basecut = "mj12>=500";
-    TString lepcuts = "nleps==1&&ht>1200";
+    TString lepcuts = "nleps==1&&ht>900";
     //vector<TString> nbcuts = {"nbm==0"};
     vector<TString> nbcuts = {"nbm>=4"};
     //vector<TString> njetcuts = {"4<=njets && njets<=5"};
@@ -142,7 +143,7 @@ int main(int argc, char *argv[]){
 	      else if(inb == "mj12>1000") continue;
 	    }
 	  }
-	  else if(ilep == "nleps==1&&ht>1200"){
+	  else if(ilep == "nleps==1&&ht>900"){
 	    if(injet == "njets>=4&&njets<=5"){
 	      if(inb == "mj12>800&&mj12<=1000") inb.ReplaceAll("mj12>800&&mj12<=1000","mj12>800");
 	      else if(inb == "mj12>1000") continue;
@@ -150,7 +151,7 @@ int main(int argc, char *argv[]){
 	  }
 	  
 	    // Handle different njet binning in 1 lep selection
-	  i5(ilep == "nleps==1&&ht>1200"){
+	  i5(ilep == "nleps==1&&ht>900"){
 	    if(injet == "njets>=8&&njets<=9") injet.ReplaceAll("njets>=8&&njets<=9","njets>=8");
 	    else if(injet == "njets>=10") continue;
 	  }
@@ -160,7 +161,7 @@ int main(int argc, char *argv[]){
 	  
 	  // Define histograms
 	  hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cut));
-	  //hists.push_back(hfeats("ht", 20, 1200, 3000, rpv_sam, "H_{T}", cut));
+	  //hists.push_back(hfeats("ht", 20, 900, 3000, rpv_sam, "H_{T}", cut));
 	  //hists.push_back(hfeats("nbm", 6, 0, 6, rpv_sam, "nbm", cut));
 	  //hists.push_back(hfeats("njets", 10, 0, 20, rpv_sam, "njets", cut));
 	  if(showData) hists.back().normalize = true;	
@@ -177,7 +178,7 @@ int main(int argc, char *argv[]){
   else{
     // Set baseline cuts
     TString lepcutsNm1 = "nleps==1";
-    TString htcutsNm1 =  "ht>1200";
+    TString htcutsNm1 =  "ht>900";
     TString mjcutNm1 = "mj12>500";
     TString njetcutNm1 = "njets>=4&&njets<=5";
     TString nbcutNm1 = "nbm==0";
@@ -185,7 +186,7 @@ int main(int argc, char *argv[]){
     TString cutNm1 = "";
       // Choose what ht cut to use based on nleps
       cutNm1 = lepcutsNm1 + "&&" + mjcutNm1 + "&&" + njetcutNm1 + "&&" + nbcutNm1;
-      hists.push_back(hfeats("ht", 40, 1200, 3600, rpv_sam, "H_{T}", cutNm1));
+      hists.push_back(hfeats("ht", 40, 900, 3600, rpv_sam, "H_{T}", cutNm1));
 
       cutNm1 = lepcutsNm1 + "&&" + htcutsNm1 + "&&" + njetcutNm1 + "&&" + nbcutNm1;
       hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cutNm1));

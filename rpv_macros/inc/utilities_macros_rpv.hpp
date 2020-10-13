@@ -34,7 +34,7 @@ std::string cutandweight(std::string cut, std::string weight)
 std::vector<TString> getRPVProcess(TString folder, TString process){
 	std::vector<TString> files;
 	if(process=="data"){
-		files.push_back(folder+"JetHT*");
+		files.push_back(folder+"*JetHTRun*");
 	}
 	else if(process=="data_te"){
 		files.push_back(folder+"SingleMuon*");
@@ -54,7 +54,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		else if(process=="rpv_m2100") files.push_back(folder+"*mGluino*2100*");
 		else if(process=="rpv_m2200") files.push_back(folder+"*mGluino*2200*");
 	}
-	else if(process.Contains("mStop")){
+	/*else if(process.Contains("mStop")){
 		if(process=="mStop_300") files.push_back(folder+"*mStop-300*");
 		else if(process=="mStop_350") files.push_back(folder+"*mStop-350*");
 		else if(process=="mStop_400") files.push_back(folder+"*mStop-400*");
@@ -78,7 +78,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		else if(process=="mStop_1300") files.push_back(folder+"*mStop-1300*");
 		else if(process=="mStop_1350") files.push_back(folder+"*mStop-1350*");
 		else if(process=="mStop_1400") files.push_back(folder+"*mStop-1400*");
-	}
+	}*/
 	// For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
 	else if(process=="ttbar"){
 		//files.push_back(folder+"TTJets_*"); //

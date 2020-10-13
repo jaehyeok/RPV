@@ -367,7 +367,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
     if(jbin=="bin0"){
       tmpLine.Replace(5*(bindex[jbin]*nprocesses+1),1,"5");
       tmpLine.Replace(5*(bindex["bin3"]*nprocesses+1),1,"5");
-      tmpLine.Prepend("normqcd_vlownjets         lnU  ");
+      tmpLine.Prepend("normqcd_vlownjets         lnU  ");//log Uniform
       file << tmpLine.Data() << endl;
     }
     else if(jbin=="bin1"){
@@ -564,7 +564,7 @@ void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string>
     tmpLine = line;
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+2),1,"5");
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+2),1,"5");
-    tmpLine.Prepend(Form("normttbar_bin%d_bin%d     lnN  ",numbin,numbin+15));
+    tmpLine.Prepend(Form("normttbar_bin%d_bin%d     lnN  ",numbin,numbin+15));// log normal
     file << tmpLine.Data() << endl;
   }
 }

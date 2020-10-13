@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
   vector<TString> s_rpv_m2200 = getRPVProcess(folder_sig,"rpv_m2200");// */
 
   //StealthSHH
-  vector<TString> s_mStop_300 = getRPVProcess(folder_sig,"mStop_300");  
+  /*vector<TString> s_mStop_300 = getRPVProcess(folder_sig,"mStop_300");  
   vector<TString> s_mStop_350 = getRPVProcess(folder_sig,"mStop_350");  
   vector<TString> s_mStop_400 = getRPVProcess(folder_sig,"mStop_400");  
   vector<TString> s_mStop_450 = getRPVProcess(folder_sig,"mStop_450");  
@@ -313,7 +313,7 @@ int main(int argc, char *argv[])
   small_tree_rpv rpv_m2200((static_cast<std::string>(s_rpv_m2200.at(0))));// */
 
   // Stealth SUSY Signal
-  small_tree_rpv mStop_300((static_cast<std::string>(s_mStop_300.at(0))));
+  /*small_tree_rpv mStop_300((static_cast<std::string>(s_mStop_300.at(0))));
   small_tree_rpv mStop_350((static_cast<std::string>(s_mStop_350.at(0))));
   small_tree_rpv mStop_400((static_cast<std::string>(s_mStop_400.at(0))));
   small_tree_rpv mStop_450((static_cast<std::string>(s_mStop_450.at(0))));
@@ -372,7 +372,7 @@ int main(int argc, char *argv[])
   getSyst(rpv_m2200, variations, year, f, "signal_M2200");// */
 
   //StealthSHH
-  getSyst(mStop_300, variations, year, f, "Stop_M300");
+  /*getSyst(mStop_300, variations, year, f, "Stop_M300");
   getSyst(mStop_350, variations, year, f, "Stop_M350");
   getSyst(mStop_400, variations, year, f, "Stop_M400");
   getSyst(mStop_450, variations, year, f, "Stop_M450");

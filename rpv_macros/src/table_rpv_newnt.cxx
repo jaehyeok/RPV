@@ -545,7 +545,7 @@ int main(int argc, char* argv[])
                     ttbar[tablebin][inb],
                     wjets[tablebin][inb],
                     other[tablebin][inb],
-                    sig1900[tablebin][inb],
+                    sig1600[tablebin][inb],
                     //sig650[tablebin][inb],
                     err[0][tablebin][inb],//*qcd[tablebin][inb],
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],

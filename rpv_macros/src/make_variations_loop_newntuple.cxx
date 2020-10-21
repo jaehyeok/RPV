@@ -569,7 +569,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         // 
         // Central weights
         // 
-        float nominalweight = lumi*tree.weight()*tree.stitch_ht();    
+        float nominalweight = lumi*tree.weight();    
         //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
 	
 
@@ -874,18 +874,18 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             }
             if(variations=="jer")//jet energy resolution
             {  
-              if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), nb_csv)) 
-                h1nominal[ibin]->Fill(nb_csv>hnbmax?hnbmax:nb_csv, nominalweight);              // nominal  
+              if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                h1nominal[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), nominalweight);              // nominal  
               if(tree.sys_nbm()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2], tree.sys_nbm()[2])) 
                 h1up[ibin]->Fill(tree.sys_nbm()[2]>hnbmax?hnbmax:tree.sys_nbm()[2], upweight);          // up
-              if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), nb_csv)) 
-                h1down[ibin]->Fill(nb_csv>hnbmax?hnbmax:nb_csv, downweight);                    // down  
+              if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                h1down[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), downweight);                    // down  
 
             } 
             else if(variations=="JES") //jet energy scale
             { 
-              if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), nb_csv)) 
-                h1nominal[ibin]->Fill(nb_csv>hnbmax?hnbmax:nb_csv, nominalweight);              // nominal  
+              if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+                h1nominal[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), nominalweight);              // nominal  
               if(tree.sys_nbm()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0], tree.sys_nbm()[0]))  
                 h1up[ibin]->Fill(tree.sys_nbm()[0]>hnbmax?hnbmax:tree.sys_nbm()[0], upweight);          // up 
               if(tree.sys_nbm()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.sys_mj12()[1], tree.sys_nbm()[1]))  
@@ -893,11 +893,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             }
             else 
             {
-              if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), nb_csv)) 
+              if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
               {
-                h1nominal[ibin]->Fill(nb_csv>hnbmax?hnbmax:nb_csv, nominalweight);  // nominal  
-                h1up[ibin]->Fill(nb_csv>hnbmax?hnbmax:nb_csv, upweight);            // up  
-                h1down[ibin]->Fill(nb_csv>hnbmax?hnbmax:nb_csv, downweight);        // down 
+                h1nominal[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), nominalweight);  // nominal  
+                h1up[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), upweight);            // up  
+                h1down[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), downweight);        // down 
               }
             }
 

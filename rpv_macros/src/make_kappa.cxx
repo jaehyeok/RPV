@@ -458,8 +458,12 @@ void genKappaFactors(TFile *f){
     }
   }
   hist_kappa1->SetStats(0);
+  hist_kappa1->SetMaximum(2);
+  hist_kappa1->SetMinimum(0);
   hist_kappa1->SetTitle("kappa1");
   hist_kappa2->SetStats(0);
+  hist_kappa2->SetMaximum(2);
+  hist_kappa2->SetMinimum(0);
   hist_kappa2->SetTitle("kappa2");
   TFile *g = new TFile("data/kappa_result.root","recreate");
   g->cd();

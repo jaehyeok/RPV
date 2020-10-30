@@ -963,88 +963,86 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
   }
   for(uint ibin=22; ibin<52; ibin++){
     if(bindex.find(Form("bin%d",ibin))==bindex.end()){
-       bindex[Form("bin%d",ibin)]=99999;
+      bindex[Form("bin%d",ibin)]=99999;
     }
     else{
-       continue;
+      continue;
     }
   }
- 
+
   if(filename.find("lownjets")!=std::string::npos){
-    file << "kappa_njets45" << "             shape     ";
-    //file << "kappa" << "                     shape     ";
-    for(unsigned int index=0; index<nbins*nprocesses; index++){
-      if(index%nprocesses==0) file << "-    ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",28)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",31)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",34)])file << "1.00" << " ";
-      else file << "-    ";
-      //std::cout<<(bindex["bin28"])<<std::endl;
+    for(int i_kap=1; i_kap<3; i_kap++){
+      file << Form("kappa%d_njets45",i_kap) << "             shape     ";
+      for(unsigned int index=0; index<nbins*nprocesses; index++){
+        if(index%nprocesses==0) file << "-    ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",28)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",31)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",34)])file << "1.00" << " ";
+        else file << "-    ";
+      }
+      file << "\n";
     }
-    file << "\n";
   }
   else if(filename.find("mednjets")!=std::string::npos){
-    file << "kappa_njets67" << "             shape     ";
-    //file << "kappa" << "                     shape     ";
-    for(unsigned int index=0; index<nbins*nprocesses; index++){
-      if(index%nprocesses==0) file << "-    ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",29)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",32)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",35)])file << "1.00" << " ";
-      else file << "-    ";
-    //  std::cout<<(int(index/nprocesses)-bindex["bin29"])<<std::endl;
+    for(int i_kap=1; i_kap<3; i_kap++){
+      file << Form("kappa%d_njets67", i_kap) << "             shape     ";
+      for(unsigned int index=0; index<nbins*nprocesses; index++){
+        if(index%nprocesses==0) file << "-    ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",29)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",32)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",35)])file << "1.00" << " ";
+        else file << "-    ";
+      }
+      file << "\n";
     }
-    file << "\n";
   }
   else if(filename.find("highnjets")!=std::string::npos){
-    file << "kappa_njets8" << "              shape     ";
-    //file << "kappa" << "                     shape     ";
-    for(unsigned int index=0; index<nbins*nprocesses; index++){
-      if(index%nprocesses==0) file << "-    ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",27)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",30)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",33)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",36)])file << "1.00" << " ";
-      else file << "-    ";
+    for(int i_kap=1; i_kap<3; i_kap++){
+      file << Form("kappa%d_njets8", i_kap) << "              shape     ";
+      for(unsigned int index=0; index<nbins*nprocesses; index++){
+        if(index%nprocesses==0) file << "-    ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",27)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",30)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",33)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",36)])file << "1.00" << " ";
+        else file << "-    ";
+      }
+      file << "\n";
     }
-    file << "\n";
   }
   else{  
-    file << "kappa_njets45" << "             shape     ";
-    //file << "kappa" << "                     shape     ";
-    for(unsigned int index=0; index<nbins*nprocesses; index++){
-      if(index%nprocesses==0) file << "-    ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",28)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",31)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",34)])file << "1.00" << " ";
-      else file << "-    ";
-    //  std::cout<<(int(index/nprocesses)-bindex["bin28"])<<std::endl;
-    }
-    file << "\n";
-  
-    file << "kappa_njets67" << "             shape     ";
-    //file << "kappa" << "                     shape     ";
-    for(unsigned int index=0; index<nbins*nprocesses; index++){
-      if(index%nprocesses==0) file << "-    ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",29)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",32)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",35)])file << "1.00" << " ";
-      else file << "-    ";
-    //  std::cout<<(int(index/nprocesses)-bindex["bin29"])<<std::endl;
-    }
-    file << "\n";
+    for(int i_kap=1; i_kap<3; i_kap++){
+      file << Form("kappa%d_njets45", i_kap) << "             shape     ";
+      for(unsigned int index=0; index<nbins*nprocesses; index++){
+        if(index%nprocesses==0) file << "-    ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",28)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",31)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",34)])file << "1.00" << " ";
+        else file << "-    ";
+      }
+      file << "\n";
 
-    file << "kappa_njets8" << "              shape     ";
-    //file << "kappa" << "                     shape     ";
-    for(unsigned int index=0; index<nbins*nprocesses; index++){
-      if(index%nprocesses==0) file << "-    ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",27)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",30)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",33)])file << "1.00" << " ";
-      else if(int(index/nprocesses)==bindex[Form("bin%d",36)])file << "1.00" << " ";
-      else file << "-    ";
+      file << Form("kappa%d_njets67", i_kap) << "             shape     ";
+      for(unsigned int index=0; index<nbins*nprocesses; index++){
+        if(index%nprocesses==0) file << "-    ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",29)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",32)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",35)])file << "1.00" << " ";
+        else file << "-    ";
+      }
+      file << "\n";
+
+      file << Form("kappa%d_njets8", i_kap) << "              shape     ";
+      for(unsigned int index=0; index<nbins*nprocesses; index++){
+        if(index%nprocesses==0) file << "-    ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",27)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",30)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",33)])file << "1.00" << " ";
+        else if(int(index/nprocesses)==bindex[Form("bin%d",36)])file << "1.00" << " ";
+        else file << "-    ";
+      }
+      file << "\n";
     }
-    file << "\n";
   }
 }
 

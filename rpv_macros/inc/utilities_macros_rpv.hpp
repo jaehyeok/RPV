@@ -125,6 +125,22 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"ZZZ_*"); 
 		files.push_back(folder+"WWW_*"); // */
 	}
+  else if(process=="DY"){
+    files.push_back(folder+"DYJetsToLL_M-50_HT*");
+  }
+  else if(process=="other_DY"){
+		files.push_back(folder+"WJetsToLNu_*"); 
+		files.push_back(folder+"TTTT*");
+		files.push_back(folder+"TTW*");
+		files.push_back(folder+"TTZ*"); 
+		files.push_back(folder+"WZ_*");
+		files.push_back(folder+"ZZ_*"); 
+		files.push_back(folder+"WW_*");   
+		files.push_back(folder+"WZZ_*"); 
+		files.push_back(folder+"WWZ_*"); 
+		files.push_back(folder+"ZZZ_*"); 
+		files.push_back(folder+"WWW_*"); // */
+  }
 	//Contains all processes except for QCD, ttbar, and wjets. Typically used for public plots. Recursive so only need to change samples in one place
 	else if(process=="other_public"){
 		std::vector<TString> tmp_other;
@@ -703,3 +719,238 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
 	return pass;
 }
 
+bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_, float mll_){
+	bool pass = false;
+
+	//
+	int     nleps     = 99;
+	float   ht        = 999999;
+	int     njetsLow  = 99;
+	int     njetsHigh = 99;
+	float   mjLow     = 999999;
+	float   mjHigh    = 999999;
+	int     nbLow     = 99;
+	int     nbHigh    = 99;
+  float   mllLow    = -999999;
+  float   mllHigh   = 999999;
+
+	// cut values
+	const float ht0lepCut    = 1500;
+	const float ht1lepCut    = 1200;
+
+	const float mjVLowCut    = 300;
+	const float mjLowCut     = 500;
+	const float mjMedCut     = 800;
+	const float mjHighCut    = 1000;
+	const float mjInfCut     = 9999999;
+
+	const float njetsVLowCut = 4;
+	const float njetsLowCut  = 6;
+	const float njetsMedCut  = 8;
+	const float njetsHighCut = 10; 
+	const float njetsInfCut  = 999; 
+
+	const float nbVLowCut  = 0;
+	const float nbLowCut   = 1;
+	const float nbMedCut   = 2;
+	const float nbHighCut  = 3;
+	const float nbVHighCut = 4;
+	const float nbInfCut   = 999;
+
+  const float mllLowCut  = 80;
+  const float mllHighCut = 105;
+
+  // Region Binning For QCD Kappa Factors //
+  if(bin==0){
+		nleps       = 0;
+		ht          = ht1lepCut;
+		njetsLow    = njetsLowCut+2;
+		njetsHigh   = njetsLowCut+3;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }
+  else if(bin==1){
+		nleps       = 0;
+		ht          = ht1lepCut;
+		njetsLow    = njetsMedCut+2;
+		njetsHigh   = njetsMedCut+3;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }
+  else if(bin==2){
+		nleps       = 0;
+		ht          = ht1lepCut;
+		njetsLow    = njetsHighCut+2;
+		njetsHigh   = njetsInfCut;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }
+  else if(bin==3){
+		nleps       = 0;
+		ht          = ht1lepCut;
+		njetsLow    = njetsLowCut+2;
+		njetsHigh   = njetsLowCut+3;
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }
+  else if(bin==4){
+		nleps       = 0;
+		ht          = ht1lepCut;
+		njetsLow    = njetsMedCut+2;
+		njetsHigh   = njetsMedCut+3;
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }
+  else if(bin==5){
+		nleps       = 0;
+		ht          = ht1lepCut;
+		njetsLow    = njetsHighCut+2;
+		njetsHigh   = njetsInfCut;
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }
+  // Region Binning For Wjets Kappa Factors //
+  else if(bin==6){
+		nleps       = 2;
+		ht          = ht1lepCut;
+		njetsLow    = njetsLowCut-1;
+		njetsHigh   = njetsLowCut;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbInfCut;
+    mllLow      = mllLowCut;
+    mllHigh     = mllHighCut;
+  }
+  else if(bin==7){
+		nleps       = 2;
+		ht          = ht1lepCut;
+		njetsLow    = njetsMedCut-1;
+		njetsHigh   = njetsMedCut;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbInfCut;
+    mllLow      = mllLowCut;
+    mllHigh     = mllHighCut;
+  }
+  else if(bin==8){
+		nleps       = 2;
+		ht          = ht1lepCut;
+		njetsLow    = njetsHighCut-1;
+		njetsHigh   = njetsInfCut;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbInfCut;
+    mllLow      = mllLowCut;
+    mllHigh     = mllHighCut;
+  }
+  else if(bin==9){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsLowCut;
+		njetsHigh   = njetsLowCut+1;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }
+  else if(bin==10){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsMedCut;
+		njetsHigh   = njetsMedCut+1;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }
+  else if(bin==11){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsHighCut;
+		njetsHigh   = njetsInfCut;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }
+  // Region Binning For ttbar Kappa Factors //
+  else if(bin==12){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsLowCut+2;
+		njetsHigh   = njetsLowCut+3;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbMedCut;
+  }
+  else if(bin==13){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsMedCut+2;
+		njetsHigh   = njetsMedCut+3;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbMedCut;
+  }
+  else if(bin==14){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsHighCut+2;
+		njetsHigh   = njetsInfCut;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }
+  else if(bin==15){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsLowCut;
+		njetsHigh   = njetsLowCut+1;
+		nbLow       = nbMedCut;
+		nbHigh      = nbHighCut;
+  }
+  else if(bin==16){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsMedCut;
+		njetsHigh   = njetsMedCut+1;
+		nbLow       = nbMedCut;
+		nbHigh      = nbHighCut;
+  }
+  else if(bin==17){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsHighCut;
+		njetsHigh   = njetsInfCut;
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }
+	else  // in case of wrong bin number
+	{ 
+		std::cout << "[Error] I don't like your bin number: " << bin << " !!" << std::endl; 
+		nleps       = 99;
+		ht          = 9999999;
+		njetsLow    = njetsInfCut;
+		njetsHigh   = njetsInfCut;
+		mjLow       = mjInfCut;
+		mjHigh      = mjInfCut;
+	}
+
+	if(0)  // debugging 
+	{ 
+		std::cout << "[Debug] bin " << bin << " :: " 
+			<< "htCut    : " << ht << ", "  
+			<< "njetsCut : " << njetsLow << "-" << njetsHigh << ", " 
+			<< "mjCut    : " << mjLow << "-" << mjHigh << " " 
+			<< std::endl;
+	}
+
+	//
+	// Apply cuts
+	//
+	bool nbormj;
+	if(mjLow==999999&&mjHigh==999999){
+		nbormj = nb_>=nbLow && nb_<nbHigh;
+	}
+	if(nbLow==99&&nbHigh==99){
+		nbormj = mj_>mjLow && mj_<=mjHigh;
+	}
+	mj_ = mj_/1;
+	if(nleps_==nleps 
+			&& ht_>ht
+			&& njets_>=njetsLow
+			&& njets_<=njetsHigh
+      && mll_>=mllLow
+      && mll_<=mllHigh
+			&& nbormj
+	  ) pass = true;
+	return pass;
+}

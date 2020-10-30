@@ -171,8 +171,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       if(vars[var].PU_reweight && !Samples[isam].isData) totCut = Samples[isam].factor+"*"+luminosity+"*weight*wpu*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
       //cout<<totCut<<endl;
       //histo[0][var][sam]->Sumw2();
-      histo[0][var][sam]->SetBinErrorOption(TH1::kPoisson);//FIXME
-      //histo[0][var][sam]->SetBinErrorOption(TH1::kNormal);//FIXME
+      histo[0][var][sam]->SetBinErrorOption(TH1::kPoisson);
       if(samVariable=="noPlot") chain[isam]->Project(histo[0][var][sam]->GetName(), variable, totCut);
       else chain[isam]->Project(histo[0][var][sam]->GetName(), samVariable, totCut);
       if(vars[var].addOverflow) 
@@ -285,7 +284,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	int isam = vars[var].samples[sam];
 	//bool noStack = Samples[isam].isSig || Samples[isam].isData;
 	if(sam>=last_hist && vars[var].normalize && !Samples[isam].isSig){ 
-	  histo[0][var][sam]->Scale(normalization_ratio); //FIXME
+	  //histo[0][var][sam]->Scale(normalization_ratio); //FIXME
 	  nentries[sam]*= normalization_ratio;
 	}
 	
@@ -371,7 +370,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       histo[0][var][firstplotted]->SetMaximum(maxpadLog);
       for(int bin(0); bin<=histo[0][var][firstplotted]->GetNbinsX()+1; bin++){
 	histo[0][var][firstplotted]->SetBinError(bin,0);//FIXME//command out this line when the testing pre-firing issue
-      }
+      }// */
       if (!doRatio) style.moveYAxisLabel(histo[0][var][firstplotted], maxpadLog, true);
       histo[0][var][firstplotted]->Draw("axis same");
       if(vars[var].cut>0) line.DrawLine(vars[var].cut, 0, vars[var].cut, maxhisto*1.05);
@@ -398,7 +397,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           hratio_data->SetTitle("");
           hratio_data->Divide(histo[0][var][firstplotted]);
           //hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
-          hratio_data->GetYaxis()->SetRangeUser(0.88,1.12);//FIXME
+          hratio_data->GetYaxis()->SetRangeUser(0.5,1.5);//FIXME
           hratio_data->GetXaxis()->SetLabelOffset(0.025);
           hratio_data->GetXaxis()->SetLabelSize(style.LabelSize*2.2);
           hratio_data->GetYaxis()->SetLabelSize(style.LabelSize*2.1);

@@ -30,9 +30,9 @@ using namespace std;
 struct winsize w;
 
 void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj, TString procname);
-void genKappaFactors(TFile *f);
+void genKappaFactors(TFile *f, TString year);
 vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]);
-int genMConly(TFile *f, bool mconly_eval, bool mconly_vali);
+int genMConly(TFile *f, bool mconly);
 TString color(TString procname);
 
 
@@ -41,24 +41,14 @@ float mjmin = 500;
 float mjmax = 1400;
 
 bool debug = true;
-bool mconly_eval_(true), mconly_vali_(true);
+bool mconly = true;
 
 float lumi = 35.9;
 
-vector<int> bins_tot = {0, 1, 2, 
-                        3, 4, 5,  
-                        6, 7, 8,
-                        9, 10, 11, 
-                        12, 13, 14, 
-                        15, 16, 17};
+vector<int> bins = {0, 1, 2, 
+                    3, 4, 5,  
+                    6, 7, 8};
 
-vector<int> bins_eval = {0, 1, 2,     //QCD
-                         6, 7, 8,     //Wjets
-                         12, 13, 14}; //ttbar
-
-vector<int> bins_vali = {3, 4, 5,     //QCD
-                         9, 10, 11,   //Wjets
-                         15, 16, 17}; //ttbar
 TString red = "\033[0;31m";
 TString green = "\033[1;32m";
 TString blue = "\033[1;34m";
@@ -76,22 +66,18 @@ int main(int argc, char *argv[]){
 
   TString year="2016";
 
-  TString temp_eval_(argv[2]), temp_vali_(argv[3]), temp_help_(argv[1]);
+  TString temp_eval_(argv[2]), temp_help_(argv[1]);
 
-  if(argc==5){
+  if(argc==4){
     year = argv[1];
-    if(temp_eval_=="on") mconly_eval_=true;
-    else if(temp_eval_=="off") mconly_eval_=false;
-    if(temp_vali_=="on") mconly_vali_=true;
-    else if(temp_vali_=="off") mconly_vali_=false;
-    lumi = atof(argv[4]);
+    if(temp_eval_=="on") mconly=true;
+    else if(temp_eval_=="off") mconly=false;
+    lumi = atof(argv[3]);
   }
-  else if(argc==4){
+  else if(argc==3){
     year = argv[1];
-    if(temp_eval_=="on") mconly_eval_=true;
-    else if(temp_eval_=="off") mconly_eval_=false;
-    if(temp_vali_=="on") mconly_vali_=true;
-    else if(temp_vali_=="off") mconly_vali_=false;
+    if(temp_eval_=="on") mconly=true;
+    else if(temp_eval_=="off") mconly=false;
   }
   else if(argc==2&&(temp_help_=="--help"||temp_help_=="-h")){
     cout<<"How to run this program : "<<endl;
@@ -108,16 +94,12 @@ int main(int argc, char *argv[]){
     if(year=="2017") lumi = 41.5;
     if(year=="2018") lumi = 59.7;
   }
-
-  cout<<mconly_eval_<<endl;
   cout<<argc<<endl;
 
   cout<<"year                         : "<< year    <<endl;
   cout<<"luminosity                   : "<< lumi    <<endl;
-  TString temp_=mconly_eval_==true?"on":"off";
-  cout<<"MConly for evaluation region : "<< temp_   <<endl;
-  temp_=mconly_vali_==true?"on":"off";
-  cout<<"MConly for validation region : "<< temp_   <<endl;
+  TString temp_=mconly==true?"on":"off";
+  cout<<"MConly                       : "<< temp_   <<endl;
 
   cout<<argc<<endl;
 
@@ -164,28 +146,28 @@ int main(int argc, char *argv[]){
   small_tree_rpv other_kwj((static_cast<std::string>(s_other_kwj.at(0))));
   for(auto iother_kwj : s_other_kwj) other_kwj.Add((static_cast<std::string>(iother_kwj)));
   //getKappa(data, year, f, "data_obs");
-  TFile *f = new TFile("variations/output_kappa_regions.root", "recreate");
+  TFile *f = new TFile("variations/output_kappa_regions_"+year+".root", "recreate");
 
-  if(!(mconly_eval_&&mconly_vali_)) genKappaRegions( data, year, f, false, "data_obs");
+  if(!(mconly)) genKappaRegions( data, year, f, false, "data_obs");
 
   genKappaRegions(  qcd, year, f, false,   "qcd");
   genKappaRegions(ttbar, year, f, false, "ttbar");
   genKappaRegions(wjets, year, f, false, "wjets");  
   genKappaRegions(other, year, f, false, "other");
 
-  if(!(mconly_eval_&&mconly_vali_)) genKappaRegions( data_kwj, year, f, true, "data_obs");
+  if(!(mconly)) genKappaRegions( data_kwj, year, f, true, "data_obs");
 
   genKappaRegions(  qcd_kwj, year, f, true,   "qcd");
   genKappaRegions(ttbar_kwj, year, f, true, "ttbar");
   genKappaRegions(   DY_kwj, year, f, true,    "DY");  
   genKappaRegions(other_kwj, year, f, true, "other");
   
-  genMConly(f, mconly_eval_, mconly_vali_);
+  genMConly(f, mconly);
   
   f->Close();
 
-  TFile *f_ = new TFile("variations/output_kappa_regions.root", "read");
-  genKappaFactors(f_); 
+  TFile *f_ = new TFile("variations/output_kappa_regions_"+year+".root", "read");
+  genKappaFactors(f_,year); 
 
   f_->Close();
 }
@@ -195,8 +177,8 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
   int cols = w.ws_col;
 
 
-  vector<int> bins = {0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17};
-  if(flag_kwj) bins = {6, 7, 8};
+  vector<int> bins = {0, 1, 2, 6, 7, 8};
+  if(flag_kwj) bins = {3, 4, 5};
 
   // Get QCD flavor weights/systematics
   TFile *csv_weight_file = TFile::Open("data/csvfit_low_njet.root");
@@ -337,14 +319,11 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
   cout<<endl;
 }
 
-int genMConly(TFile *f, bool mconly_eval, bool mconly_vali){
-  vector<int> bins;
-  if(mconly_eval&&!mconly_vali) bins = bins_eval;
-  if(!mconly_eval&&mconly_vali) bins = bins_vali;
-  if(mconly_eval&&mconly_vali) bins = bins_tot;
-  if(!mconly_eval&&!mconly_vali) return 0;
+int genMConly(TFile *f, bool mconly){
+  vector<int> bins_;
+  if(!mconly) return 0;
 
-  cout<<bins.at(0)<<","<<bins.at(3)<<endl;
+  if(debug)cout<<bins.at(0)<<","<<bins.at(3)<<endl;
 
   int MjBin=2;
   int NbBin=4;
@@ -359,7 +338,7 @@ int genMConly(TFile *f, bool mconly_eval, bool mconly_vali){
     TH1F *ttbar = static_cast<TH1F*>(f->Get(Form("/bin%d/ttbar",ibin)));
     TH1F *other = static_cast<TH1F*>(f->Get(Form("/bin%d/other",ibin)));
     TH1F *wjets; 
-    if(ibin==6||ibin==7||ibin==8){
+    if(ibin==3||ibin==4||ibin==5){
       wjets = static_cast<TH1F*>(f->Get(Form("/bin%d/DY",ibin)));
     }
     else wjets = static_cast<TH1F*>(f->Get(Form("/bin%d/wjets",ibin)));
@@ -374,65 +353,62 @@ int genMConly(TFile *f, bool mconly_eval, bool mconly_vali){
   return 0;
 }
 
-void genKappaFactors(TFile *f){
+void genKappaFactors(TFile *f, TString year){
+  vector<TString> process  = {"qcd", "wjets", "ttbar"};
+  vector<TString> njRegion = {"Low Njets ", "Med Njets ", "High Njets "};
 
   float kappa[2][3][3], kappa_unc[2][3][3];
   for(int i=0 ; i<3 ; i++ ){
     for(int j=0 ; j<3 ; j++ ){
       for(int k=0 ; k<2 ; k++ ){
         kappa[k][i][j] = 1;
+        kappa_unc[k][i][j] = 0;
       }
     }
   }
 
   f->cd();
 
-  for(auto ibin : bins_eval){
+  for(auto ibin : bins){
     int ind_ibin    = ibin%3;        // ind_ibin = 0 : Low Njets, ind_ibin = 1 : Med Njets, ind_ibin = 2 : High Njets
-    int ind_proc    = int(ibin/6);   // ind_proc = 0 : qcd, ind_proc = 1 : wjets, ind_proc = 2 : ttbar
+    int ind_proc    = int(ibin/3);   // ind_proc = 0 : qcd, ind_proc = 1 : wjets, ind_proc = 2 : ttbar
     float ratio[3];
     vector<TH1F*> ret;
-    TH1F *mc_tot, *ratio_dmc, *data_obs;
+    TH1F *mc_kap, *ratio_dmc, *data_obs;
     ret = ApplyKappaFactor(f, ibin, kappa);
     data_obs = ret.at(0);
-    mc_tot   = ret.at(1);
+    mc_kap   = ret.at(1);
 
     ratio_dmc = static_cast<TH1F*>(data_obs->Clone("ratio_dmc"));
-    ratio_dmc->Divide(mc_tot);
+    ratio_dmc->Divide(mc_kap);
     for(int i=0 ; i<3 ; i++){
       ratio[i] = ratio_dmc->GetBinContent(i+1);
+      cout<<"ratio "<<i<<" : "<<ratio[i]<<endl;
     }
     kappa[0][ind_ibin][ind_proc] = ratio[1]/ratio[0];
     kappa[1][ind_ibin][ind_proc] = ratio[2]/ratio[0];
+    cout<<"ind_bin : "<<ind_ibin<<endl;
+    cout<<"ind_iproc : "<<ind_ibin<<endl;
+    for(int i=1 ; i<3 ; i++){
+      float unc_diff(0), unc_stat(0), unc_mc(0), temp_data_(0);
+      temp_data_ = data_obs->GetBinContent(i+1);
+      unc_diff = abs(data_obs->GetBinContent(i+1)-mc_kap->GetBinContent(i+1));
+      if(debug){
+        cout<<"Data's " << i+1 << "th Bin : " <<data_obs->GetBinContent(i+1)<<endl;
+        cout<<"MC's " << i+1 << "th Bin   : " << mc_kap->GetBinContent(i+1)<<endl;
+        cout<<"kappa uncertainty : "<<unc_diff/temp_data_<<endl;
+      }
+      unc_stat = data_obs->GetBinError(i+1);
+      unc_mc   = mc_kap->GetBinError(i+1);
+      kappa_unc[i-1][ind_ibin][ind_proc] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc)/temp_data_; 
+    }
   }
   if(debug){
     for(int ibin=0 ; ibin<3 ; ibin++){
       for(int jproc=0 ; jproc<3 ; jproc++){
-        cout << "kappa 1 in NJets " << ibin<<" process : " <<jproc << " : " << kappa[0][ibin][jproc] << endl;
-        cout << "kappa 2 in NJets " << ibin<<" process : " <<jproc << " : " << kappa[1][ibin][jproc] << endl;
+        cout << "kappa 1 in NJets " << ibin<<" process " <<jproc << " : " << kappa[0][ibin][jproc] << endl;
+        cout << "kappa 2 in NJets " << ibin<<" process " <<jproc << " : " << kappa[1][ibin][jproc] << endl;
       }
-    }
-  }
-  for(auto ibin : bins_vali){
-    int ind_ibin    = ibin%3;        // ind_ibin = 0 : Low Njets, ind_ibin = 1 : Med Njets, ind_ibin = 2 : High Njets
-    int ind_proc    = int(ibin/6);   // ind_proc = 0 : qcd, ind_proc = 1 : wjets, ind_proc = 2 : ttbar
-    TH1F *mc_tot, *ratio_dmc, *data_obs;
-    vector<TH1F*> ret;
-    ret = ApplyKappaFactor(f, ibin, kappa);
-    data_obs = ret.at(0);
-    mc_tot   = ret.at(1);
-    for(int i=1 ; i<3 ; i++){
-      float unc_diff(0), unc_stat(0), unc_mc(0), temp_data_(0);
-      unc_diff = abs(data_obs->GetBinContent(i+1)-mc_tot->GetBinContent(i+1));
-      temp_data_ = data_obs->GetBinContent(i+1);
-      if(debug){
-      cout<<"Data's " << i+1 << "th Bin : " <<data_obs->GetBinContent(i+1)<<endl;
-      cout<<"MC's " << i+1 << "th Bin   : " << mc_tot->GetBinContent(i+1)<<endl;
-      cout<<"kappa uncertainty : "<<unc_diff/temp_data_<<endl;
-      }
-      unc_stat = data_obs->GetBinError(i+1);
-      unc_mc   = mc_tot->GetBinError(i+1);
-      kappa_unc[i-1][ind_ibin][ind_proc] = unc_diff/temp_data_; 
     }
   }
   if(debug){
@@ -443,8 +419,6 @@ void genKappaFactors(TFile *f){
       }
     }
   }
-  vector<TString> process  = {"qcd", "wjets", "ttbar"};
-  vector<TString> njRegion = {"Low Njets ", "Med Njets ", "High Njets "};
   TH1F *hist_kappa1 = new TH1F("hist_kappa1", "hist_kappa1", 9, 0, 9);
   TH1F *hist_kappa2 = new TH1F("hist_kappa2", "hist_kappa2", 9, 0, 9);
   for(int ibin=0 ; ibin<3 ; ibin++){
@@ -465,7 +439,7 @@ void genKappaFactors(TFile *f){
   hist_kappa2->SetMaximum(2);
   hist_kappa2->SetMinimum(0);
   hist_kappa2->SetTitle("kappa2");
-  TFile *g = new TFile("data/kappa_result.root","recreate");
+  TFile *g = new TFile("data/kappa_result_"+year+".root","recreate");
   g->cd();
   hist_kappa1->Write();
   hist_kappa2->Write();
@@ -476,43 +450,52 @@ void genKappaFactors(TFile *f){
   c->cd(2);
   hist_kappa2->Draw("e");
   
-  c->Print("kappa_result.pdf");
+  c->Print("kappa_result_"+year+".pdf");
 }
 
 vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]){
-  int index       = find(bins_eval.begin(), bins_eval.end(), ibin) - bins_eval.begin();
+  int index       = find(bins.begin(), bins.end(), ibin) - bins.begin();
   int ind_ibin    = ibin%3;        // ind_ibin = 0 : Low Njets, ind_ibin = 1 : Med Njets, ind_ibin = 2 : High Njets
-  int ind_proc    = int(ibin/6);   // ind_proc = 0 : qcd, ind_proc = 1 : wjets, ind_proc = 2 : ttbar
-  float SF(1);
-  gDirectory->cd("/");
-  TH1F* data_obs  = static_cast<TH1F*>(f->Get(Form("/bin%d/data_obs",ibin)));
-  if(debug) cout<<"bin : "<<ibin<<endl;
-  TH1F* mc_qcd    = static_cast<TH1F*>(f->Get(Form("/bin%d/qcd",ibin)));
-  TH1F* mc_wjets; 
-  if(ibin==6||ibin==7||ibin==8) mc_wjets = static_cast<TH1F*>(f->Get(Form("/bin%d/DY",ibin)));
-  else mc_wjets   = static_cast<TH1F*>(f->Get(Form("/bin%d/wjets",ibin)));
-  TH1F* mc_ttbar  = static_cast<TH1F*>(f->Get(Form("/bin%d/ttbar",ibin)));
-  TH1F* mc_other  = static_cast<TH1F*>(f->Get(Form("/bin%d/other",ibin)));
+  int ind_proc    = int(ibin/3);   // ind_proc = 0 : qcd, ind_proc = 1 : wjets, ind_proc = 2 : ttbar
+  TString procname;
 
-  TH1F* kap_qcd    = static_cast<TH1F*>(mc_qcd->Clone(Form("kap_qcd_bin%d",ibin)));
-  TH1F* kap_wjets  = static_cast<TH1F*>(mc_wjets->Clone(Form("kap_wjets_bin%d",ibin)));
-  TH1F* kap_ttbar  = static_cast<TH1F*>(mc_ttbar->Clone(Form("kap_ttbar_bin%d",ibin)));
-  TH1F* kap_other  = static_cast<TH1F*>(mc_other->Clone(Form("kap_other_bin%d",ibin)));
+  if(ind_proc==0) procname = "qcd";
+  if(ind_proc==1) procname = "DY";
+  if(ind_proc==2) procname = "ttbar";
 
-  for(int bin=2 ; bin<4; bin++){
-    if(debug)cout<<bin<<endl;
-    float temp_kap_ = kappa[bin-2][ind_ibin][0];
-    kap_qcd->SetBinContent(bin, mc_qcd->GetBinContent(bin)*temp_kap_);
-    temp_kap_ = kappa[bin-2][ind_ibin][1];
-    kap_wjets->SetBinContent(bin, mc_wjets->GetBinContent(bin)*temp_kap_);
-    temp_kap_ = kappa[bin-2][ind_ibin][2];
-    kap_ttbar->SetBinContent(bin, mc_ttbar->GetBinContent(bin)*temp_kap_);
+  vector<TString> process = {"qcd","wjets","ttbar","other"};
+  vector<TString> proc_other ={};
+
+  for(auto iproc : process){
+    if(iproc==procname) continue;
+    else if(procname=="DY"&&iproc=="wjets") continue;
+    else proc_other.push_back(iproc);
   }
 
-  TH1F* mc_tot    = static_cast<TH1F*>(kap_qcd->Clone(Form("mc_tot_bin%d",ibin)));
-  mc_tot->Add(kap_wjets);
-  mc_tot->Add(kap_ttbar);
-  mc_tot->Add(kap_other);
+  float SF(1);
+  gDirectory->cd("/");
+  TH1F *data_obs  = static_cast<TH1F*>(f->Get(Form("/bin%d/data_obs", ibin)));
+  TH1F *mc_kap    = static_cast<TH1F*>(f->Get(Form("/bin%d/%s", ibin, procname.Data())));
+
+  TH1F *mc_tot    = static_cast<TH1F*>(mc_kap->Clone("mc_tot"));
+  TH1F *mc_other[3], *mc_other_kap[3];
+  int temp_ind;
+  for(int i=0 ; i<3 ; i++){
+    TString iproc = proc_other.at(i);
+    mc_other[i] = static_cast<TH1F*>(f->Get(Form("/bin%d/%s", ibin, iproc.Data())));
+    mc_other_kap[i] = static_cast<TH1F*>(f->Get(Form("/bin%d/%s", ibin, iproc.Data())));
+    mc_tot->Add(mc_other[i]);
+    if(iproc=="qcd") temp_ind = 0;
+    if(iproc=="wjets") temp_ind = 1;
+    if(iproc=="ttbar") temp_ind = 2;
+    if(iproc=="other") continue;
+    if(procname == "ttbar"){
+      for(int j=1 ; j<3 ; j++){
+        float BinCont = mc_other[i]->GetBinContent(j+1);
+        mc_other_kap[i]->SetBinContent(j+1, BinCont*kappa[j-1][ind_ibin][temp_ind]);
+      }
+    }
+  }
 
   float num = data_obs->GetBinContent(1);
   float den = mc_tot->GetBinContent(1);
@@ -521,10 +504,13 @@ vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]){
     cout<<SF<<endl;
     cout<<"data_obs : " << data_obs->GetBinContent(1)<<" mc_tot : "<<mc_tot->GetBinContent(1)<<endl;
   }
-  mc_tot->Scale(SF);
+  for(int i=0 ; i<3 ; i++){
+    mc_other_kap[i]->Scale(SF);
+    data_obs->Add(mc_other_kap[i],-1);
+  }
   vector<TH1F*> ret;
   ret.push_back(data_obs);
-  ret.push_back(mc_tot);
+  ret.push_back(mc_kap);
   return ret;
 }
 

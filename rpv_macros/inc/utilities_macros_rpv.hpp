@@ -764,53 +764,39 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
   if(bin==0){
 		nleps       = 0;
 		ht          = ht1lepCut;
-		njetsLow    = njetsLowCut+2;
-		njetsHigh   = njetsLowCut+3;
+		njetsLow    = njetsLowCut;
+		njetsHigh   = njetsLowCut+1;
 		nbLow       = nbVLowCut;
 		nbHigh      = nbLowCut;
-  }
+  }                   
   else if(bin==1){
 		nleps       = 0;
 		ht          = ht1lepCut;
-		njetsLow    = njetsMedCut+2;
-		njetsHigh   = njetsMedCut+3;
+		njetsLow    = njetsMedCut;
+		njetsHigh   = njetsMedCut+1;
 		nbLow       = nbVLowCut;
 		nbHigh      = nbLowCut;
-  }
-  else if(bin==2){
+  }                     
+  else if(bin==2){  
 		nleps       = 0;
 		ht          = ht1lepCut;
-		njetsLow    = njetsHighCut+2;
+		njetsLow    = njetsHighCut;
 		njetsHigh   = njetsInfCut;
 		nbLow       = nbVLowCut;
 		nbHigh      = nbLowCut;
-  }
-  else if(bin==3){
-		nleps       = 0;
-		ht          = ht1lepCut;
-		njetsLow    = njetsLowCut+2;
-		njetsHigh   = njetsLowCut+3;
-		nbLow       = nbLowCut;
-		nbHigh      = nbMedCut;
-  }
-  else if(bin==4){
-		nleps       = 0;
-		ht          = ht1lepCut;
-		njetsLow    = njetsMedCut+2;
-		njetsHigh   = njetsMedCut+3;
-		nbLow       = nbLowCut;
-		nbHigh      = nbMedCut;
-  }
-  else if(bin==5){
-		nleps       = 0;
-		ht          = ht1lepCut;
-		njetsLow    = njetsHighCut+2;
-		njetsHigh   = njetsInfCut;
-		nbLow       = nbLowCut;
-		nbHigh      = nbMedCut;
-  }
+  }                     
   // Region Binning For Wjets Kappa Factors //
-  else if(bin==6){
+  else if(bin==3){
+		nleps       = 2;
+		ht          = ht1lepCut;
+		njetsLow    = njetsVLowCut-1;
+		njetsHigh   = njetsVLowCut;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbInfCut;
+    mllLow      = mllLowCut;
+    mllHigh     = mllHighCut;
+  }              
+  else if(bin==4){
 		nleps       = 2;
 		ht          = ht1lepCut;
 		njetsLow    = njetsLowCut-1;
@@ -819,99 +805,41 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
 		nbHigh      = nbInfCut;
     mllLow      = mllLowCut;
     mllHigh     = mllHighCut;
-  }
-  else if(bin==7){
+  }             
+  else if(bin==5){
 		nleps       = 2;
 		ht          = ht1lepCut;
 		njetsLow    = njetsMedCut-1;
-		njetsHigh   = njetsMedCut;
-		nbLow       = nbVLowCut;
-		nbHigh      = nbInfCut;
-    mllLow      = mllLowCut;
-    mllHigh     = mllHighCut;
-  }
-  else if(bin==8){
-		nleps       = 2;
-		ht          = ht1lepCut;
-		njetsLow    = njetsHighCut-1;
 		njetsHigh   = njetsInfCut;
 		nbLow       = nbVLowCut;
 		nbHigh      = nbInfCut;
     mllLow      = mllLowCut;
     mllHigh     = mllHighCut;
-  }
-  else if(bin==9){
-		nleps       = 1;
-		ht          = ht1lepCut;
-		njetsLow    = njetsLowCut;
-		njetsHigh   = njetsLowCut+1;
-		nbLow       = nbVLowCut;
-		nbHigh      = nbLowCut;
-  }
-  else if(bin==10){
-		nleps       = 1;
-		ht          = ht1lepCut;
-		njetsLow    = njetsMedCut;
-		njetsHigh   = njetsMedCut+1;
-		nbLow       = nbVLowCut;
-		nbHigh      = nbLowCut;
-  }
-  else if(bin==11){
-		nleps       = 1;
-		ht          = ht1lepCut;
-		njetsLow    = njetsHighCut;
-		njetsHigh   = njetsInfCut;
-		nbLow       = nbVLowCut;
-		nbHigh      = nbLowCut;
-  }
+  }              
   // Region Binning For ttbar Kappa Factors //
-  else if(bin==12){
-		nleps       = 1;
-		ht          = ht1lepCut;
-		njetsLow    = njetsLowCut+2;
-		njetsHigh   = njetsLowCut+3;
-		nbLow       = nbVLowCut;
-		nbHigh      = nbMedCut;
-  }
-  else if(bin==13){
-		nleps       = 1;
-		ht          = ht1lepCut;
-		njetsLow    = njetsMedCut+2;
-		njetsHigh   = njetsMedCut+3;
-		nbLow       = nbVLowCut;
-		nbHigh      = nbMedCut;
-  }
-  else if(bin==14){
-		nleps       = 1;
-		ht          = ht1lepCut;
-		njetsLow    = njetsHighCut+2;
-		njetsHigh   = njetsInfCut;
-		nbLow       = nbVLowCut;
-		nbHigh      = nbLowCut;
-  }
-  else if(bin==15){
-		nleps       = 1;
+  else if(bin==6){
+		nleps       = 0;
 		ht          = ht1lepCut;
 		njetsLow    = njetsLowCut;
 		njetsHigh   = njetsLowCut+1;
 		nbLow       = nbMedCut;
 		nbHigh      = nbHighCut;
-  }
-  else if(bin==16){
-		nleps       = 1;
+  }             
+  else if(bin==7){
+		nleps       = 0;
 		ht          = ht1lepCut;
 		njetsLow    = njetsMedCut;
 		njetsHigh   = njetsMedCut+1;
 		nbLow       = nbMedCut;
 		nbHigh      = nbHighCut;
-  }
-  else if(bin==17){
-		nleps       = 1;
+  }                
+  else if(bin==8){
+		nleps       = 0;
 		ht          = ht1lepCut;
 		njetsLow    = njetsHighCut;
 		njetsHigh   = njetsInfCut;
-		nbLow       = nbLowCut;
-		nbHigh      = nbMedCut;
+		nbLow       = nbMedCut;
+		nbHigh      = nbHighCut;
   }
 	else  // in case of wrong bin number
 	{ 

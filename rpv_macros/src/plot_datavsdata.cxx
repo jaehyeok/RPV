@@ -82,8 +82,6 @@ int main(){
 
    //2017 MC weight
   std::string extraWeight = "L1Prefiring_Nom";
-  //std::string extraWeight = "L1Prefiring_Dn";
-  //std::string extraWeight = "L1Prefiring_Up";
 
   vector<sfeats> Samples;
 
@@ -95,8 +93,8 @@ int main(){
   data.push_back(0);
   data.push_back(1);
   
-  Samples.push_back(sfeats(s_qcd_2017, "2017 QCD_prefired", kRed,1,cutandweight("pass",extraWeight))); Samples.back().mcerr=true; Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_qcd_2017, "2017 QCD", kBlue,1,cutandweight("pass","1."))); 
+  Samples.push_back(sfeats(s_qcd_2017, "2017 QCD MJ 500~600", kRed,1,cutandweight("pass","mj12>500&&mj12<600"))); Samples.back().mcerr=true; Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_qcd_2017, "2017 QCD MJ 1100~1200", kBlue,1,cutandweight("pass","mj12>1100&&mj12<1200"))); 
   Samples.back().doBand = true;
   vector<int> qcd;
   qcd.push_back(2);
@@ -135,7 +133,7 @@ int main(){
    Samples.push_back(sfeats(s_2016, "Single lepton events, m_{T} < 140", kBlue,1,"nonblind&&nleps==1&&nveto==0&&nbm>=1&&njets>=6&&mt<=140&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass"));   Samples.back().doBand = true;*/
   
   vector<hfeats> vars;
-  std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==0&&ht>1200&&fabs(jets_eta)>2.2&&fabs(jets_eta)<2.4"};// */
+  std::vector<TString> cuts = {"nbm==0&&nleps==0&&ht>1200"};// */
   /*std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
 				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
 				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&8<=njets",
@@ -161,7 +159,8 @@ int main(){
     //vars.push_back(hfeats("nbm", 6, 0, 6, qcd, "N_{b}", icut,-1,"qcd"));
     //vars.push_back(hfeats("njets", 6, 0, 12, qcd, "NJets", icut,-1,"qcd"));
     //vars.push_back(hfeats("mj12", 3, 500, 1400, qcd, "mj12", icut,-1,"qcd"));
-    vars.push_back(hfeats("jets_pt", 20, 30, 1300, qcd, "P_{t}", icut,-1,"qcd"));//
+    //vars.push_back(hfeats("jets_pt", 20, 30, 1300, qcd, "P_{t}", icut,-1,"qcd"));//
+    vars.push_back(hfeats("jets_eta[0]", 12, -3, 3, qcd, "#eta", icut,-1,"qcd"));//
     //vars.push_back(hfeats("ht", 20, 1200, 2600, qcd, "H_{t}", icut,-1,"qcd"));// 
     vars.back().normalize = true;// */
     //vars.push_back(hfeats("nbm", 6, 0, 6, other, "N_{b}", icut,-1,"other"));

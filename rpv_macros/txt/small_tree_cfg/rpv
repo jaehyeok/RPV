@@ -43,6 +43,10 @@ int ntrutausl
 
 ##################   Leptons   ################
 int nleps
+std::vector<float> leps_pt
+std::vector<float> leps_eta
+std::vector<float> leps_phi
+std::vector<int> leps_pdgid
 
 int nmus
 int nvmus

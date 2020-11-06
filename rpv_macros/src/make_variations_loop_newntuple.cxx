@@ -961,8 +961,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             }
             //cout<<hmjmax<<endl;
             if(ihb!=999){
-              int ihb_  = (ihb+1)%2;
-              int ihb__ = (ihb)%2;
+              int ihb_  = (ihb)%2;
+              int ihb__ = (ihb+1)%2;
               h1nominal_[ibin][ihb_]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);  // nominal  
               h1up_[ibin][ihb_]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), upweight);            // up  
               h1down_[ibin][ihb_]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);        // down 

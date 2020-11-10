@@ -951,6 +951,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
             upweight    = upweight*sys_kappaup;
             downweight  = downweight*sys_kappadown;
+            if(downweight<0) downweight=0;
             //cout<<upweight<<"::"<<downweight<<endl;
           }
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 

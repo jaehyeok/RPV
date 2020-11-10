@@ -41,6 +41,7 @@ float mjmin = 500;
 float mjmax = 1400;
 
 bool debug = true;
+bool debug_unc = true;
 bool mconly = true;
 
 float lumi = 35.9;
@@ -91,8 +92,8 @@ int main(int argc, char *argv[]){
 
   if(argc==4||argc==1){
     if(year=="2016") lumi = 35.9;
-    if(year=="2017") lumi = 41.5;
-    if(year=="2018") lumi = 59.7;
+    else if(year=="2017") lumi = 41.5;
+    else if(year=="2018") lumi = 59.7;
   }
   cout<<argc<<endl;
 
@@ -389,17 +390,26 @@ void genKappaFactors(TFile *f, TString year){
     kappa[1][ind_ibin][ind_proc] = ratio[2]/ratio[0];
     cout<<"ind_bin : "<<ind_ibin<<endl;
     cout<<"ind_iproc : "<<ind_ibin<<endl;
+
+    TH1F *mc_kap_ = static_cast<TH1F*>(mc_kap->Clone("mc_kap_"));
+    for(int j=1 ; j<3 ; j++){
+      float BinCont = mc_kap_->GetBinContent(j+1);
+      mc_kap_->SetBinContent(j+1, BinCont*kappa[j-1][ind_ibin][ind_proc]);
+    }
     for(int i=1 ; i<3 ; i++){
       float unc_diff(0), unc_stat(0), unc_mc(0), temp_data_(0);
       temp_data_ = data_obs->GetBinContent(i+1);
-      unc_diff = abs(data_obs->GetBinContent(i+1)-mc_kap->GetBinContent(i+1));
-      if(debug){
-        cout<<"Data's " << i+1 << "th Bin : " <<data_obs->GetBinContent(i+1)<<endl;
-        cout<<"MC's " << i+1 << "th Bin   : " << mc_kap->GetBinContent(i+1)<<endl;
-        cout<<"kappa uncertainty : "<<unc_diff/temp_data_<<endl;
+      unc_diff = abs(data_obs->GetBinContent(i+1)-mc_kap_->GetBinContent(i+1));
+      if(debug_unc){
+        cout<<"Data's " << i+1 << "th Bin      : " <<data_obs->GetBinError(i+1)/temp_data_<<endl;
+        cout<<"MC's " << i+1 << "th Bin        : " << mc_kap_->GetBinError(i+1)/temp_data_<<endl;
+        cout<<"Data's " << i+1 << "th Bin      : " <<data_obs->GetBinContent(i+1)<<endl;
+        cout<<"MC's " << i+1 << "th Bin        : " << mc_kap_->GetBinContent(i+1)<<endl;
+        cout<<"kappa uncertainty   : "<<unc_diff<<endl;
+        cout<<"temp_data_          : "<<temp_data_<<endl;
       }
       unc_stat = data_obs->GetBinError(i+1);
-      unc_mc   = mc_kap->GetBinError(i+1);
+      unc_mc   = mc_kap_->GetBinError(i+1);
       kappa_unc[i-1][ind_ibin][ind_proc] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc)/temp_data_; 
     }
   }
@@ -439,7 +449,7 @@ void genKappaFactors(TFile *f, TString year){
   hist_kappa2->SetMaximum(2);
   hist_kappa2->SetMinimum(0);
   hist_kappa2->SetTitle("kappa2");
-  TFile *g = new TFile("data/kappa_result_"+year+".root","recreate");
+  TFile *g = new TFile("data/result_kappa_"+year+".root","recreate");
   g->cd();
   hist_kappa1->Write();
   hist_kappa2->Write();
@@ -508,6 +518,7 @@ vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]){
     mc_other_kap[i]->Scale(SF);
     data_obs->Add(mc_other_kap[i],-1);
   }
+  mc_kap->Scale(SF);
   vector<TH1F*> ret;
   ret.push_back(data_obs);
   ret.push_back(mc_kap);

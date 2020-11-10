@@ -34,7 +34,7 @@ std::string cutandweight(std::string cut, std::string weight)
 std::vector<TString> getRPVProcess(TString folder, TString process){
 	std::vector<TString> files;
 	if(process=="data"){
-		files.push_back(folder+"JetHT*");
+		files.push_back(folder+"*JetHT*");
 	}
 	else if(process=="data_te"){
 		files.push_back(folder+"SingleMuon*");

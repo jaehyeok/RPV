@@ -980,7 +980,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         }
         else 
         {
-          if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
+          if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm()))
           {
             float hmjmax = mjmax-0.001;
             if(tree.nleps()==0 && !nl0shape){

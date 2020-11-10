@@ -5,6 +5,8 @@ done
 
 mkdir -p datacards/nopdfoutput_$1/
 
+cp datacards/*mconly_nopdfoutput_2018.dat datacards/nopdfoutput_2018/.
+
 for mass in {1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200}
 do echo ${mass}
 combine -M AsymptoticLimits datacards/nopdfoutput_$1/datacard_M${mass}_mconly_nopdfoutput_$1.dat -n M${mass}

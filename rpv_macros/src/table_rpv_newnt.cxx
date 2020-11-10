@@ -17,9 +17,9 @@ bool formatLatex=false;
 float addInQuad(float a, float b);
 void printOneLine(int nb, 
                   float data, float qcd, float ttbar, float wjets, float other, 
-                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900, float sig650,
+                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900,
                   float data_err, float qcd_err, float ttbar_err, float wjets_err, float other_err, 
-                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, float sig650_err, bool doLatex);
+                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, bool doLatex);
 //void printOneLine(int nb, 
 //                  float qcd, float ttbar, float wjets, float other, 
 //                  float sig1500, 
@@ -172,9 +172,9 @@ int main(int argc, char* argv[])
     TFile* infile  = TFile::Open(inputName, "READ"); 
  
     float data[52][3], qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3],
-          sig1500[52][3], sig1600[52][3], sig1700[52][3], sig1800[52][3], sig1900[52][3], sig650[52][3],
+          sig1500[52][3], sig1600[52][3], sig1700[52][3], sig1800[52][3], sig1900[52][3],
           data_err[52][3], qcd_err[52][3], ttbar_err[52][3], wjets_err[52][3], other_err[52][3],
-          sig1500_err[52][3], sig1600_err[52][3], sig1700_err[52][3], sig1800_err[52][3], sig1900_err[52][3], sig650_err[52][3];
+          sig1500_err[52][3], sig1600_err[52][3], sig1700_err[52][3], sig1800_err[52][3], sig1900_err[52][3];
     for(int ibin=0; ibin<52; ibin++)  
     { 
         //if(ibin>=6 && ibin<=9) continue;
@@ -190,7 +190,6 @@ int main(int argc, char* argv[])
             sig1700[ibin][inb] = 0;
             sig1800[ibin][inb] = 0;
             sig1900[ibin][inb] = 0;   
-            sig650[ibin][inb] = 0;   
             data_err[ibin][inb] = 0;
             qcd_err[ibin][inb] = 0;
             ttbar_err[ibin][inb] = 0;
@@ -201,7 +200,6 @@ int main(int argc, char* argv[])
             sig1700_err[ibin][inb] = 0;
             sig1800_err[ibin][inb] = 0;
             sig1900_err[ibin][inb] = 0;
-            sig650_err[ibin][inb] = 0;
 
         }
     }
@@ -224,7 +222,6 @@ int main(int argc, char* argv[])
             sig1700[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinContent(inb+1);
             sig1800[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinContent(inb+1);
             sig1900[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinContent(inb+1);// */
-            sig650[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/Stop_M650", ibin)))->GetBinContent(inb+1);
             
             data_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin)))->GetBinError(inb+1);
             qcd_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinError(inb+1);
@@ -237,12 +234,11 @@ int main(int argc, char* argv[])
             sig1700_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinError(inb+1);
             sig1800_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinError(inb+1);
             sig1900_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinError(inb+1);
-            sig650_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/Stop_M650", ibin)))->GetBinError(inb+1);//FIXME
 
         }  
     }
         
-    float sig1500sum(0), sig1600sum(0), sig1700sum(0), sig1800sum(0), sig1900sum(0), sig650sum(0);
+    float sig1500sum(0), sig1600sum(0), sig1700sum(0), sig1800sum(0), sig1900sum(0);
     for(int ibin=22; ibin<52; ibin++) 
     {
       //if(ibin>5 && ibin<10) continue; // skip low MJ bins 
@@ -253,7 +249,6 @@ int main(int argc, char* argv[])
           sig1700sum = sig1700sum + sig1700[ibin][inb]; 
           sig1800sum = sig1800sum + sig1800[ibin][inb]; 
           sig1900sum = sig1900sum + sig1900[ibin][inb]; 
-          sig650sum = sig650sum + sig650[ibin][inb]; 
       }
     }
 
@@ -289,8 +284,7 @@ int main(int argc, char* argv[])
             setw(16) << "other" << " |" << 
             setw(20) << "M=1000(S/B)"<< " |" << 
             setw(20) << "M=1700(S/B)" << " |" << 
-            setw(20) << "M=1900(S/B)" << " |" <<
-            setw(20) << "M=650(S/B)" << " |" << endl;
+            setw(20) << "M=1900(S/B)" << " |" << endl;
         } 
 
 
@@ -522,7 +516,6 @@ int main(int argc, char* argv[])
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
     cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1900\\textrm{GeV}$\\\\"  << endl;
-    //cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{t}}=650\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
     for(int ibin=22; ibin<52; ibin++)
@@ -546,7 +539,6 @@ int main(int argc, char* argv[])
                     wjets[tablebin][inb],
                     other[tablebin][inb],
                     sig1600[tablebin][inb],
-                    //sig650[tablebin][inb],
                     err[0][tablebin][inb],//*qcd[tablebin][inb],
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],
                     err[2][tablebin][inb],//*wjets[tablebin][inb],
@@ -566,9 +558,9 @@ int main(int argc, char* argv[])
 //
 void printOneLine(int nb, 
                   float data, float qcd, float ttbar, float wjets, float other, 
-                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900, float sig650,
+                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900,
                   float data_err, float qcd_err, float ttbar_err, float wjets_err, float other_err, 
-                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, float sig650_err, float doLatex)
+                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, float doLatex)
 {
 
     float how_to_deal_with_unused_vars;
@@ -592,8 +584,7 @@ void printOneLine(int nb,
             //<< Form("$%.0f$",data) << " & " 
             << Form("$%.2f\\pm%.2f$",sig1500,sig1500_err) << " & " 
             << Form("$%.2f\\pm%.2f$",sig1700,sig1700_err) << " & " 
-            << Form("$%.2f\\pm%.2f$",sig1900,sig1900_err) << " & "
-            << Form("$%.2f\\pm%.2f$",sig650,sig650_err) << " \\\\" << endl;
+            << Form("$%.2f\\pm%.2f$",sig1900,sig1900_err) << " & " << endl;
     } 
     else 
     { 
@@ -606,8 +597,7 @@ void printOneLine(int nb,
             //setw(16) << Form("%.2f+-%.2f",data) << " |" << 
             setw(20) << Form("%.2f+-%.2f(%.2f)",sig1500,sig1500_err,sig1500/totbkg ) << " |" << 
             setw(20) << Form("%.2f+-%.2f(%.2f)",sig1700,sig1700_err,sig1700/totbkg) << " |" << 
-            setw(20) << Form("%.2f+-%.2f(%.2f)",sig1900,sig1900_err,sig1900/totbkg) << " |" <<
-            setw(20) << Form("%.2f+-%.2f(%.2f)",sig650,sig650_err,sig650/totbkg) << " |" << endl;
+            setw(20) << Form("%.2f+-%.2f(%.2f)",sig1900,sig1900_err,sig1900/totbkg) << " |" << endl;
     }
 } 
 /*

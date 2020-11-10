@@ -35,7 +35,7 @@ void drawHeader()
   lat->SetTextSize(0.038);
   lat->DrawLatexNDC(0.12, 0.93, "CMS #font[52]{Preliminary}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.66, 0.93, "137 fb^{-1} (13 TeV)");
+  lat->DrawLatexNDC(0.66, 0.93, "59.7 fb^{-1} (13 TeV)");
 }
 
 void pulls()
@@ -87,7 +87,7 @@ void limits()
   std::vector<float> dummy;
 
   for(unsigned int i=0; i<gluinoMasses.size(); i++) {
-    TString filename(Form("../rpv_macros/datacards/nopdfoutput_2016/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
+    TString filename(Form("../rpv_macros/datacards_2018/nopdfoutput_2018/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
     TFile *f = TFile::Open(filename);
     if(!f->IsOpen()) {
       std::cout << "Could not open file " << filename << std::endl;
@@ -188,8 +188,8 @@ void limits()
   leg->Draw();
 
   drawHeader();
-  c->Print("limits_new.pdf");
-  c->Print("limits_new.png");
+  c->Print("limits.pdf");
+  c->Print("limits.png");
 }
 
 TGraphErrors * theoryGraph()

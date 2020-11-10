@@ -41,7 +41,9 @@ int main()
 	inputdir = "variations/";
 	gSystem->mkdir(outputdir);
 
-	TFile* infile  = TFile::Open(inputdir+"output_2016.root", "READ");
+	//TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_2016_36.root", "READ");
+	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_2017_42.root", "READ");
+	//TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_2018_60.root", "READ");
 
 	float qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3], sig1600[52][3];
 

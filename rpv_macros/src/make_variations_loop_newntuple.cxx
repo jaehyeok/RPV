@@ -487,6 +487,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   TH1F * h1down[nbins];   
   float kappa1_err(0),kappa1_cont(0),kappa2_err(0),kappa2_cont(0);
   float kappa_syst[2][nbins][3][3];    
+  float kappa_wgt[2][3][3];
   TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root");
 
   // to make kappa_1, kapp_2 histograms which act independently
@@ -516,7 +517,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
           kappa2_cont = h_kap2->GetBinContent(njbin+3*iproc+1);
           kappa_syst[0][ibin][njbin][iproc] = kappa1_err/kappa1_cont;
           kappa_syst[1][ibin][njbin][iproc] = kappa2_err/kappa2_cont;
-
+          kappa_wgt[0][njbin][iproc] = kappa1_cont;
+          kappa_wgt[1][njbin][iproc] = kappa2_cont;
       }
     }
     else if(variations.Contains("kappa")&&ibin<27){
@@ -920,8 +922,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       else{
         if(variations=="kappa")
         {
-          upweight   = nominalweight;
-          downweight = nominalweight;
           float sys_kappaup,sys_kappadown;
           int ihb(0);
           int njbin(0), iproc(0);
@@ -934,8 +934,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
           else if(procname=="wjets") iproc=1;
           else if(procname=="ttbar") iproc=2;
 
-
-
           if(tree.mj12()>mjmin && tree.mj12()<mjmin+300) ihb = 999;
           else if(tree.mj12()>mjmin+300 && tree.mj12()<mjmin+600) ihb = 0;
           else if(tree.mj12()>mjmin+600) ihb = 1;
@@ -945,6 +943,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             downweight  = nominalweight;
           }
           else{
+            nominalweight = kappa_wgt[ihb][njbin][iproc];
+            upweight   = nominalweight;
+            downweight = nominalweight;
             sys_kappaup   = 1+kappa_syst[ihb][ibin][njbin][iproc];
             sys_kappadown = 1-kappa_syst[ihb][ibin][njbin][iproc];
             //cout<<sys_kappaup<<"::"<<sys_kappadown<<endl;
@@ -1064,7 +1065,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         else if(ibin%3==2) temp_ = Form("kappa%d_njets67_%s",kap, procname.Data());
         else if(ibin%3==0) temp_ = Form("kappa%d_njets8_%s",kap, procname.Data());
 
-        if(procname=="others"||procname.Contains("signal")) continue;
+        if(procname=="others"||procname.Contains("signal")||procname.Contains("Stop")) continue;
 
         upname = procname+"_"+temp_+"Up";
         downname = procname+"_"+temp_+"Down";

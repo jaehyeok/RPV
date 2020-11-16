@@ -488,7 +488,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   float kappa1_err(0),kappa1_cont(0),kappa2_err(0),kappa2_cont(0);
   float kappa_syst[2][nbins][3][3];    
   float kappa_wgt[2][3][3];
-  TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root");
+  TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root","read");
 
   // to make kappa_1, kapp_2 histograms which act independently
   TH1F * h1nominal_[nbins][2];

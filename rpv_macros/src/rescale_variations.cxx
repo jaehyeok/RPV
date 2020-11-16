@@ -5,6 +5,8 @@
 #include "TH1.h"
 #include <iostream>
 
+std::vector<float> morphBins = {1.00, 0.800, 0.600};
+
 bool isBlinded(const std::string &binName, const std::vector<std::string>& blindBins);
 
 int main(int argc, char* argv[])
@@ -20,6 +22,7 @@ int main(int argc, char* argv[])
     TString rootfile(temp.ReplaceAll(".root","_rescaled.root"));
     if(cardType=="mconly") rootfile = rootfile.ReplaceAll("_rescaled","_mconly");
     else if(cardType=="mconlyold") rootfile = rootfile.ReplaceAll("_rescaled","_mconlyold");
+    else if(cardType=="mconlymorph") rootfile = rootfile.ReplaceAll("_rescaled","_mconlymorph");
     else if(cardType=="control") rootfile = rootfile.ReplaceAll("_rescaled","_control");
     TFile *f = TFile::Open(rootfile_org.Data(), "read");
     TFile *g = TFile::Open(rootfile.Data(), "recreate");
@@ -101,6 +104,7 @@ int main(int argc, char* argv[])
 	blindedBins=binNames_old;
     }
     else if (cardType=="mconly") blindedBins=binNames; 
+    else if (cardType=="mconlymorph") blindedBins=binNames; 
     
     unsigned int nbins=binNames.size();
     
@@ -199,11 +203,18 @@ int main(int argc, char* argv[])
             TH1F *wjets = static_cast<TH1F*>(f->Get(Form("%s/wjets", binNames.at(ibin).c_str())));
             TH1F *other = static_cast<TH1F*>(f->Get(Form("%s/other", binNames.at(ibin).c_str())));
             for(int i=1; i<=data_obs->GetNbinsX(); i++) {
-                data_obs->SetBinContent(i, (qcd->GetBinContent(i)
+                if(cardType=="mconlymorph"){
+                   data_obs->SetBinContent(i, (qcd->GetBinContent(i)
+                            + ttbar->GetBinContent(i)
+                            + wjets->GetBinContent(i)
+                            + other->GetBinContent(i))*morphBins.at(i-1));
+                }
+                else data_obs->SetBinContent(i, (qcd->GetBinContent(i)
                             + ttbar->GetBinContent(i)
                             + wjets->GetBinContent(i)
                             + other->GetBinContent(i)));
-		data_obs->SetBinError(i, TMath::Sqrt(data_obs->GetBinContent(i)));
+		            data_obs->SetBinError(i, TMath::Sqrt(data_obs->GetBinContent(i)));
+                
             }
             data_obs->Write("",TObject::kOverwrite);
             //data_obs->Write();

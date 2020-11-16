@@ -35,6 +35,8 @@ vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]);
 int genMConly(TFile *f, bool mconly);
 TString color(TString procname);
 
+std::vector<float> morphBin={1.00,0.80,0.60};
+TString temp_eval_, temp_help_;
 
 int nbins = 18;
 float mjmin = 500;
@@ -67,30 +69,44 @@ int main(int argc, char *argv[]){
 
   TString year="2016";
 
-  TString temp_eval_(argv[2]), temp_help_(argv[1]);
+  temp_eval_=argv[1];
+  temp_help_=argv[1];
 
-  if(argc==4){
-    year = argv[1];
-    if(temp_eval_=="on") mconly=true;
+  if(argc==6){
+    if(temp_eval_=="on"||temp_eval_=="morph") mconly=true;
     else if(temp_eval_=="off") mconly=false;
-    lumi = atof(argv[3]);
+    mjmin = atof(argv[2]);
+    mjmax = atof(argv[3]);
+    year = argv[4];
+    lumi = atof(argv[5]);
   }
-  else if(argc==3){
-    year = argv[1];
-    if(temp_eval_=="on") mconly=true;
+  else if(argc==5){
+    if(temp_eval_=="on"||temp_eval_=="morph") mconly=true;
     else if(temp_eval_=="off") mconly=false;
+    mjmin = atof(argv[2]);
+    mjmax = atof(argv[3]);
+    year = argv[4];
   }
   else if(argc==2&&(temp_help_=="--help"||temp_help_=="-h")){
     cout<<"How to run this program : "<<endl;
-    cout<<"./run/make_kappa [year] [MC only mode for evaluation region] [MC only mode for validation region] [luminosity]" << endl;
+    cout<<"./run/make_kappa [MC only mode] [MJ minimum] [MJ maximum] [year] [luminosity]" << endl;
     cout<<"Chang Whan Jung, changhwanjung95@gmail.com"<<endl;
     return 0;
   }
   else if(argc==1){
     year = argv[1];
   }
+  else{
+    cout<<"[ERROR] Invalid Number of Arguments!"<<endl;
+    cout<<"How to run this program : "<<endl;
+    cout<<"./run/make_kappa [MC only mode] [MJ minimum] [MJ maximum] [year] [luminosity]" << endl;
+    cout<<"Chang Whan Jung, changhwanjung95@gmail.com"<<endl;
+    return 0;
+  }
 
-  if(argc==4||argc==1){
+  if(!(year=="2016"||year=="2017"||year=="2018")) return 0;
+
+  if(argc==5||argc==1){
     if(year=="2016") lumi = 35.9;
     else if(year=="2017") lumi = 41.5;
     else if(year=="2018") lumi = 59.7;
@@ -101,7 +117,10 @@ int main(int argc, char *argv[]){
   cout<<"luminosity                   : "<< lumi    <<endl;
   TString temp_=mconly==true?"on":"off";
   cout<<"MConly                       : "<< temp_   <<endl;
+  cout<<"MJ minimum                   : "<< mjmin   <<endl;
+  cout<<"MJ maximum                   : "<< mjmax   <<endl;
 
+  if(temp_eval_=="morph") cout<<"data_obs is morphed : { "<<morphBin.at(0)<<", "<<morphBin.at(1)<<", "<<morphBin.at(2)<<" }"<<endl;
   cout<<argc<<endl;
 
   TString folder_bkg = folder_year(year,false).at(0);
@@ -344,7 +363,8 @@ int genMConly(TFile *f, bool mconly){
     }
     else wjets = static_cast<TH1F*>(f->Get(Form("/bin%d/wjets",ibin)));
     for(int i=1; i<=data_obs->GetNbinsX(); i++){
-      data_obs->SetBinContent(i, (qcd->GetBinContent(i) + ttbar->GetBinContent(i) + wjets->GetBinContent(i) + other->GetBinContent(i)));
+      if(temp_eval_=="morph") data_obs->SetBinContent(i, (qcd->GetBinContent(i) + ttbar->GetBinContent(i) + wjets->GetBinContent(i) + other->GetBinContent(i))*morphBin.at(i-1));
+      else data_obs->SetBinContent(i, (qcd->GetBinContent(i) + ttbar->GetBinContent(i) + wjets->GetBinContent(i) + other->GetBinContent(i)));
       if(debug) cout<<"bin : " << ibin << "|| Content : " <<(qcd->GetBinContent(i) + ttbar->GetBinContent(i) + wjets->GetBinContent(i) + other->GetBinContent(i)) << "\n qcd :" << qcd->GetBinContent(i) << "\n ttbar : " << ttbar->GetBinContent(i) << "\n wjets : " << wjets->GetBinContent(i) << "\n other : " << other->GetBinContent(i) << endl;
       data_obs->SetBinError(i, TMath::Sqrt(data_obs->GetBinContent(i)));
     }

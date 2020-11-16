@@ -87,7 +87,7 @@ void limits()
   std::vector<float> dummy;
 
   for(unsigned int i=0; i<gluinoMasses.size(); i++) {
-    TString filename(Form("../rpv_macros/datacards_2018/nopdfoutput_2018/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
+    TString filename(Form("../rpv_macros/datacards/nopdfoutput_2018/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
     TFile *f = TFile::Open(filename);
     if(!f->IsOpen()) {
       std::cout << "Could not open file " << filename << std::endl;

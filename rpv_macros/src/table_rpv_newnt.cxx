@@ -538,7 +538,7 @@ int main(int argc, char* argv[])
                     ttbar[tablebin][inb],
                     wjets[tablebin][inb],
                     other[tablebin][inb],
-                    sig1600[tablebin][inb],
+                    sig1900[tablebin][inb],
                     err[0][tablebin][inb],//*qcd[tablebin][inb],
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],
                     err[2][tablebin][inb],//*wjets[tablebin][inb],
@@ -568,8 +568,8 @@ void printOneLine(int nb,
     how_to_deal_with_unused_vars=data_err;
     how_to_deal_with_unused_vars=sig1600;
     how_to_deal_with_unused_vars=sig1600_err;
-    how_to_deal_with_unused_vars=sig1800;
-    how_to_deal_with_unused_vars=sig1800_err;
+    how_to_deal_with_unused_vars=sig1900;
+    how_to_deal_with_unused_vars=sig1900_err;
     how_to_deal_with_unused_vars=4;
 
     float totbkg=qcd+ttbar+wjets+other;

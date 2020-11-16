@@ -4,10 +4,11 @@
 #include "TMath.h"
 #include "TH1.h"
 #include <iostream>
+#include "small_tree_rpv.hpp"
 
 bool isBlinded(const std::string &binName, const std::vector<std::string>& blindBins);
 
-int main(int argc, char* argv[])
+int main(int argc, char* argv[], small_tree_rpv &tree)
 {
     // Choose the type of cards to produce: mconly, control, and default
     //    For signal injection studies(mconly), only want to use MC as nuisance parameters
@@ -199,10 +200,10 @@ int main(int argc, char* argv[])
             TH1F *wjets = static_cast<TH1F*>(f->Get(Form("%s/wjets", binNames.at(ibin).c_str())));
             TH1F *other = static_cast<TH1F*>(f->Get(Form("%s/other", binNames.at(ibin).c_str())));
             for(int i=1; i<=data_obs->GetNbinsX(); i++) {
-                data_obs->SetBinContent(i, (qcd->GetBinContent(i)
-                            + ttbar->GetBinContent(i)
-                            + wjets->GetBinContent(i)
-                            + other->GetBinContent(i)));
+		data_obs->SetBinContent(i, (qcd->GetBinContent(i)
+	                + ttbar->GetBinContent(i)
+        	        + wjets->GetBinContent(i)
+                	+ other->GetBinContent(i)));
 		data_obs->SetBinError(i, TMath::Sqrt(data_obs->GetBinContent(i)));
             }
             data_obs->Write("",TObject::kOverwrite);

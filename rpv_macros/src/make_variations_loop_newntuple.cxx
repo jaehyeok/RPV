@@ -410,7 +410,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   TString nominalname = procname+"_"+variations;
   TString upname      = nominalname+"Up";
   TString downname    = nominalname+"Down";
-
   // Get QCD flavor weights/systematics
   TFile *csv_weight_file = TFile::Open("data/csvfit_low_njet.root");
   TH1F *csv_weight = static_cast<TH1F*>(csv_weight_file->Get("csv_weight"));
@@ -424,7 +423,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   float cflavorValError = csv_weight->GetBinError(2);
   float lflavorValCentral = csv_weight->GetBinContent(3);
   float lflavorValError = csv_weight->GetBinError(3);
-
 
   if(procname=="qcd")  
   {
@@ -460,7 +458,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     std::cout << "Reweight c jets by " << cflavorValCentral << " +/ " << cflavorValError << std::endl;
     std::cout << "Reweight l jets by " << lflavorValCentral << " +/ " << lflavorValError << std::endl;
   }
-
   // Get GS weights 
   std::vector<double> gs_dmc={1,1,1,1};
   std::vector<double> gs_dmc_err={0,0,0,0};
@@ -586,12 +583,12 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     float nominalweight = lumi*tree.weight();    
     //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
 
-
     //if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig_jet450()||tree.trig_ht900()); // rereco FIXME
     if (procname=="data_obs" && year=="2016") nominalweight = tree.pass() * (tree.trig_ht900()||tree.trig_jet450());
     else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
     //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
-    else if (procname=="signal") nominalweight = nominalweight * 1; 
+    else if (procname=="signal") nominalweight = nominalweight * 1;
+    //else if ((tree.nbm()==0||tree.nbm()==1) && tree.mj12()>1100 && tree.njets()>=4 && tree.njets()<=5) nominalweight=lumi*tree.weight()*0.4;//FIXME HEM issue
     int nb_csv=0;
     for(unsigned int j=0; j<tree.jets_hflavor().size();j++){
       if(tree.jets_islep().at(j)) continue;

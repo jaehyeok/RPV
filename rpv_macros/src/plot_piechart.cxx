@@ -38,11 +38,12 @@ int main(int argc, char *argv[])
 {
 	TString inputdir, outputdir, year;
 	year = argv[1];
+	TString test = argv[1];
 	inputdir = "variations/";
 	outputdir = "plots/pie_"+year+"/";
 	gSystem->mkdir(outputdir);
 
-	if(argc<1){
+	if(test == "--help" || argc<1){
 		cout<<"./run/plot_piechart.exe [year]"<<endl;
 	}
 

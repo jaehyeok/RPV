@@ -28,7 +28,7 @@ void comb_comp(){
 	h_2000->Draw("same hist");
 
 	TLegend *legend = new TLegend(0.25, 0.80, 0.8, 0.88);
-	TLegend->SetNColumns(2);
+	legend->SetNColumns(2);
 	legend->AddEntry(h_1600, "m_{#tilde{g}}=1600 GeV","l");
 //	TlegendEntry *l2 = legend->AddEntry(h_1700, "m_{#tilde{g}}=1700 GeV","l");
 	legend->AddEntry(h_1800, "m_{#tilde{g}}=1800 GeV","l");

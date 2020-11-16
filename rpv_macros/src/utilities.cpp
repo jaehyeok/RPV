@@ -312,7 +312,10 @@ vector<TString> folder_year(TString year, bool te){
   else{
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+<<<<<<< HEAD
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+=======
+>>>>>>> 2a641e8b58dcb623e3f036b73495ab5ad28db1ac
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_njets3nleps2/");
     //ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
   }

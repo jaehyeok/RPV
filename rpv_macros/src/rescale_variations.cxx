@@ -204,13 +204,6 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
             TH1F *wjets = static_cast<TH1F*>(f->Get(Form("%s/wjets", binNames.at(ibin).c_str())));
             TH1F *other = static_cast<TH1F*>(f->Get(Form("%s/other", binNames.at(ibin).c_str())));
             for(int i=1; i<=data_obs->GetNbinsX(); i++) {
-<<<<<<< HEAD
-		data_obs->SetBinContent(i, (qcd->GetBinContent(i)
-	                + ttbar->GetBinContent(i)
-        	        + wjets->GetBinContent(i)
-                	+ other->GetBinContent(i)));
-		data_obs->SetBinError(i, TMath::Sqrt(data_obs->GetBinContent(i)));
-=======
                 if(cardType=="mconlymorph"){
                    data_obs->SetBinContent(i, (qcd->GetBinContent(i)
                             + ttbar->GetBinContent(i)
@@ -222,8 +215,6 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
                             + wjets->GetBinContent(i)
                             + other->GetBinContent(i)));
 		            data_obs->SetBinError(i, TMath::Sqrt(data_obs->GetBinContent(i)));
-                
->>>>>>> 2a641e8b58dcb623e3f036b73495ab5ad28db1ac
             }
             data_obs->Write("",TObject::kOverwrite);
             //data_obs->Write();

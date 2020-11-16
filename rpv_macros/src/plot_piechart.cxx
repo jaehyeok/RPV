@@ -34,16 +34,19 @@ void set_piechart(TPie *p_opt){
 	p_opt->SetLabelFormat("#splitline{%val (%perc)}{%txt}");
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	TString inputdir, outputdir;
-	outputdir = "plots/pie/";
+	TString inputdir, outputdir, year;
+	year = argv[1];
 	inputdir = "variations/";
+	outputdir = "plots/pie_"+year+"/";
 	gSystem->mkdir(outputdir);
 
-	//TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_2016.root", "READ");
-	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_2016.root", "READ");
-	//TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_2018.root", "READ");
+	if(argc<1){
+		cout<<"./run/plot_piechart.exe [year]"<<endl;
+	}
+
+	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_"+year+".root", "READ");
 
 	float qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3], sig1700[52][3];
 

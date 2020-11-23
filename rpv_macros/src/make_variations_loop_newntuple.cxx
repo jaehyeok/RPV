@@ -407,7 +407,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
   cout << "Running syst      : " << variations << endl;  
   //TString procname = "qcd";
-  TString nominalname = procname+"_"+variations;
+  TString nominalname = procname+"_"+variations+"_"+year;
   TString upname      = nominalname+"Up";
   TString downname    = nominalname+"Down";
 
@@ -943,7 +943,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             downweight  = nominalweight;
           }
           else{
-            nominalweight = kappa_wgt[ihb][njbin][iproc];
+            nominalweight = lumi*tree.weight()*kappa_wgt[ihb][njbin][iproc];
             upweight   = nominalweight;
             downweight = nominalweight;
             sys_kappaup   = 1+kappa_syst[ihb][ibin][njbin][iproc];
@@ -958,7 +958,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
           {
             float hmjmax = mjmax-0.001;
-            if(tree.nleps()==0 && !nl0shape){
+            if(tree.nbm()<3 && tree.nleps()==0 && !nl0shape){
               hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
             }
             //cout<<hmjmax<<endl;
@@ -986,7 +986,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         else if(variations=="jer")//jet energy resolution
         {  
           float hmjmax = mjmax-0.001;
-          if(tree.nleps()==0 && !nl0shape){
+          if(tree.nbm()<3 && tree.nleps()==0 && !nl0shape){
             hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
           }
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
@@ -1000,7 +1000,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         else if(variations=="JES") //jet energy scale
         { 
           float hmjmax = mjmax-0.001;
-          if(tree.nleps()==0 && !nl0shape){
+          if(tree.nbm()<3 && tree.nleps()==0 && !nl0shape){
             hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
           }
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
@@ -1015,7 +1015,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm()))
           {
             float hmjmax = mjmax-0.001;
-            if(tree.nleps()==0 && !nl0shape){
+            if(tree.nbm()<3 && tree.nleps()==0 && !nl0shape){
               hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
               //cout<<hmjmax<<endl;
             }
@@ -1067,8 +1067,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
         if(procname=="others"||procname.Contains("signal")||procname.Contains("Stop")) continue;
 
-        upname = procname+"_"+temp_+"Up";
-        downname = procname+"_"+temp_+"Down";
+        upname = procname+"_"+temp_+"_"+year+"Up";
+        downname = procname+"_"+temp_+"_"+year+"Down";
+
 
         h1up_[ibin][kap-1]->SetTitle(upname.Data());
         h1up_[ibin][kap-1]->SetName(upname.Data());
@@ -1091,8 +1092,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   //f->Print();
   cout<<"\n"; 
   cout<<"\n"; 
-  for(int al=0 ; al<cols ; al++) cout << "=";
-  cout<<endl;
   for(int al=0 ; al<cols ; al++) cout << "=";
   cout<<endl;
 }

@@ -19,6 +19,8 @@
 #include "TStyle.h"
 #include "TMath.h"
 #include "TLorentzVector.h"
+#include "TBox.h"
+#include "TGaxis.h"
 
 #include "small_tree_rpv.hpp"
 #include "utilities.hpp"
@@ -35,14 +37,14 @@ vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]);
 int genMConly(TFile *f, bool mconly);
 TString color(TString procname);
 
-std::vector<float> morphBin={1.00,0.80,0.60};
+std::vector<float> morphBin={1.00,0.90,0.80};
 TString temp_eval_, temp_help_;
 
 int nbins = 18;
 float mjmin = 500;
 float mjmax = 1400;
 
-bool debug = true;
+bool debug = false;
 bool debug_unc = true;
 bool mconly = true;
 
@@ -378,12 +380,13 @@ void genKappaFactors(TFile *f, TString year){
   vector<TString> process  = {"qcd", "wjets", "ttbar"};
   vector<TString> njRegion = {"Low Njets ", "Med Njets ", "High Njets "};
 
-  float kappa[2][3][3], kappa_unc[2][3][3];
+  float kappa[2][3][3], kappa_unc[2][3][3], mc_unc[2][3][3];
   for(int i=0 ; i<3 ; i++ ){
     for(int j=0 ; j<3 ; j++ ){
       for(int k=0 ; k<2 ; k++ ){
         kappa[k][i][j] = 1;
         kappa_unc[k][i][j] = 0;
+        mc_unc[k][i][j] = 0;
       }
     }
   }
@@ -417,20 +420,21 @@ void genKappaFactors(TFile *f, TString year){
       mc_kap_->SetBinContent(j+1, BinCont*kappa[j-1][ind_ibin][ind_proc]);
     }
     for(int i=1 ; i<3 ; i++){
-      float unc_diff(0), unc_stat(0), unc_mc(0), temp_data_(0);
-      temp_data_ = data_obs->GetBinContent(i+1);
+      float unc_diff(0), unc_stat(0), unc_mc(0), temp_mc_(0);
+      temp_mc_ = mc_kap_->GetBinContent(i+1);
       unc_diff = abs(data_obs->GetBinContent(i+1)-mc_kap_->GetBinContent(i+1));
       if(debug_unc){
-        cout<<"Data's " << i+1 << "th Bin      : " <<data_obs->GetBinError(i+1)/temp_data_<<endl;
-        cout<<"MC's " << i+1 << "th Bin        : " << mc_kap_->GetBinError(i+1)/temp_data_<<endl;
+        cout<<"Data's " << i+1 << "th Bin      : " <<data_obs->GetBinError(i+1)/temp_mc_<<endl;
+        cout<<"MC's " << i+1 << "th Bin        : " << mc_kap_->GetBinError(i+1)/temp_mc_<<endl;
         cout<<"Data's " << i+1 << "th Bin      : " <<data_obs->GetBinContent(i+1)<<endl;
         cout<<"MC's " << i+1 << "th Bin        : " << mc_kap_->GetBinContent(i+1)<<endl;
         cout<<"kappa uncertainty   : "<<unc_diff<<endl;
-        cout<<"temp_data_          : "<<temp_data_<<endl;
+        cout<<"temp_mc_          : "<<temp_mc_<<endl;
       }
       unc_stat = data_obs->GetBinError(i+1);
       unc_mc   = mc_kap_->GetBinError(i+1);
-      kappa_unc[i-1][ind_ibin][ind_proc] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc)/temp_data_; 
+      kappa_unc[i-1][ind_ibin][ind_proc] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc)/temp_mc_; 
+      mc_unc[i-1][ind_ibin][ind_proc] = unc_mc/temp_mc_;
     }
   }
   if(debug){
@@ -450,15 +454,21 @@ void genKappaFactors(TFile *f, TString year){
     }
   }
   TH1F *hist_kappa1 = new TH1F("hist_kappa1", "hist_kappa1", 9, 0, 9);
+  TH1F *hist_kappa1_mc = new TH1F("hist_kappa1_mc", "hist_kappa1_mc", 9, 0, 9);
   TH1F *hist_kappa2 = new TH1F("hist_kappa2", "hist_kappa2", 9, 0, 9);
+  TH1F *hist_kappa2_mc = new TH1F("hist_kappa2_mc", "hist_kappa2_mc", 9, 0, 9);
   for(int ibin=0 ; ibin<3 ; ibin++){
     for(int jproc=0 ; jproc<3 ; jproc++){
       hist_kappa1->SetBinContent((ibin+1)+jproc*3,kappa[0][ibin][jproc]);
       hist_kappa1->SetBinError((ibin+1)+jproc*3,kappa_unc[0][ibin][jproc]);
       hist_kappa1->GetXaxis()->SetBinLabel((ibin+1)+jproc*3,njRegion.at(ibin)+process.at(jproc));
+      hist_kappa1_mc->SetBinContent((ibin+1)+jproc*3,kappa[0][ibin][jproc]);
+      hist_kappa1_mc->SetBinError((ibin+1)+jproc*3,mc_unc[0][ibin][jproc]);
       hist_kappa2->SetBinContent((ibin+1)+jproc*3,kappa[1][ibin][jproc]);
       hist_kappa2->SetBinError((ibin+1)+jproc*3,kappa_unc[1][ibin][jproc]);
       hist_kappa2->GetXaxis()->SetBinLabel((ibin+1)+jproc*3,njRegion.at(ibin)+process.at(jproc));
+      hist_kappa2_mc->SetBinContent((ibin+1)+jproc*3,kappa[1][ibin][jproc]);
+      hist_kappa2_mc->SetBinError((ibin+1)+jproc*3,mc_unc[1][ibin][jproc]);
     }
   }
   hist_kappa1->SetStats(0);
@@ -476,10 +486,65 @@ void genKappaFactors(TFile *f, TString year){
   TCanvas *c = new TCanvas("c","c",1600,1600);
   c->Divide(1,2);
   c->cd(1);
-  hist_kappa1->Draw("e");
+  TBox *b1 = new TBox(0.,1.01*c->GetUymin(), 3., 1.99*c->GetUymax());
+  b1->SetFillColor(kYellow-9);
+  TBox *b2 = new TBox(3.,1.01*c->GetUymin(), 6., 1.99*c->GetUymax());
+  b2->SetFillColor(kGreen-6);
+  TBox *b3 = new TBox(6.,1.01*c->GetUymin(), 8.99, 1.99*c->GetUymax());
+  b3->SetFillColor(kBlue-7);
+  hist_kappa1->Draw("e0 x0");
+  TGaxis *ax1 = static_cast<TGaxis*>(hist_kappa1->GetXaxis()->Clone());
+  TGaxis *ay1 = static_cast<TGaxis*>(hist_kappa1->GetYaxis()->Clone());
+  //b1->SetFillStyle(3254);
+  //b2->SetFillStyle(3254);
+  //b3->SetFillStyle(3254);
+  b1->Draw("same");
+  b2->Draw("same");
+  b3->Draw("same");
+  hist_kappa1->SetFillStyle(4000);
+  hist_kappa1->Draw("same e0 x0");
+  hist_kappa1_mc->SetFillStyle(3254);
+  hist_kappa1_mc->SetFillColor(kRed);
+  hist_kappa1_mc->SetLineWidth(2);
+  hist_kappa1_mc->SetLineColor(kRed);
+  hist_kappa1_mc->SetMarkerStyle(40);
+  hist_kappa1_mc->SetMarkerSize(1.2);
+  hist_kappa1_mc->Draw("same x0 e0");
+  ax1->Draw("same");
+  ay1->Draw("same");
+  c->cd(1)->RedrawAxis("F");
+  c->cd(1)->Modified();
+  c->cd(1)->Update();
   c->cd(2);
-  hist_kappa2->Draw("e");
-  
+  TBox *b4 = new TBox(0.,1.01*c->GetUymin(), 3., 1.99*c->GetUymax());
+  b4->SetFillColor(kYellow-9);
+  TBox *b5 = new TBox(3.,1.01*c->GetUymin(), 6., 1.99*c->GetUymax());
+  b5->SetFillColor(kGreen-6);
+  TBox *b6 = new TBox(6.,1.01*c->GetUymin(), 8.99, 1.99*c->GetUymax());
+  b6->SetFillColor(kBlue-7);
+  hist_kappa2->Draw("e0 x0");
+  TGaxis *ax2 = static_cast<TGaxis*>(hist_kappa2->GetXaxis()->Clone());
+  TGaxis *ay2 = static_cast<TGaxis*>(hist_kappa2->GetYaxis()->Clone());
+  //b4->SetFillStyle(3254);
+  //b5->SetFillStyle(3254);
+  //b6->SetFillStyle(3254);
+  b4->Draw("same");
+  b5->Draw("same");
+  b6->Draw("same");
+  hist_kappa1->SetFillStyle(4000);
+  hist_kappa2->Draw("same e0 x0");
+  hist_kappa2_mc->SetFillStyle(3254);
+  hist_kappa2_mc->SetFillColor(kRed);
+  hist_kappa2_mc->SetLineWidth(2);
+  hist_kappa2_mc->SetLineColor(kRed);
+  hist_kappa2_mc->SetMarkerStyle(40);
+  hist_kappa2_mc->SetMarkerSize(1.2);
+  hist_kappa2_mc->Draw("same x0 e0");
+  ax2->Draw("same"); 
+  ay2->Draw("same"); 
+  c->cd(2)->RedrawAxis("F");
+  c->cd(2)->Modified();
+  c->cd(2)->Update();
   c->Print("kappa_result_"+year+".pdf");
 }
 

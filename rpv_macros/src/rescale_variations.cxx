@@ -5,7 +5,7 @@
 #include "TH1.h"
 #include <iostream>
 
-std::vector<float> morphBins = {1.00, 0.800, 0.600};
+std::vector<float> morphBins = {1.00, 0.900, 0.800};
 
 bool isBlinded(const std::string &binName, const std::vector<std::string>& blindBins);
 

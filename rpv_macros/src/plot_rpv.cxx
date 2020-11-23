@@ -33,10 +33,10 @@ int main(int argc, char *argv[]){
 
   TString year;
 
-  TString lumi = "59.7";
-  //TString lumi = "137";
-  //TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
-  TString trigger = " trig_ht1050 "; // PFHT800 OR PFHT900 OR PFJet450 */
+  //TString lumi = "59.7";
+  TString lumi = "137";
+  TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
+  //TString trigger = " trig_ht1050 "; // PFHT800 OR PFHT900 OR PFJet450 */
 
   /*TString lumi = "41.5";
   TString trigger = "trig_ht1050";// */

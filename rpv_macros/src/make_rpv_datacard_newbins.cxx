@@ -340,7 +340,7 @@ int main(int argc, char *argv[])
   outputWjets(file, bins.at(ipair), cardType, year);
 
   // output kappa systematics
-  outputkappaSystematics(file, bins.at(ipair), filename, year);
+  //outputkappaSystematics(file, bins.at(ipair), filename, year);//FIXME
 
   // output shape systematics
 //  outputShapeSystematics(file, shapeSysts,year);

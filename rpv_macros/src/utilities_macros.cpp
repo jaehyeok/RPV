@@ -396,8 +396,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           hratio_data = static_cast<TH1D*>(hdata->Clone());
           hratio_data->SetTitle("");
           hratio_data->Divide(histo[0][var][firstplotted]);
-          hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
-          //hratio_data->GetYaxis()->SetRangeUser(0.5,1.5);//FIXME
+          //hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
+          hratio_data->GetYaxis()->SetRangeUser(0.5,1.5);//FIXME
           hratio_data->GetXaxis()->SetLabelOffset(0.025);
           hratio_data->GetXaxis()->SetLabelSize(style.LabelSize*2.2);
           hratio_data->GetYaxis()->SetLabelSize(style.LabelSize*2.1);
@@ -564,11 +564,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     float minhisto(0), maxpad(minhisto + (maxhisto-minhisto)/(1-fracLeg));
     histo[1][var][0]->SetMinimum(minhisto);
     histo[1][var][0]->SetMaximum(maxpad);
-    histo[1][var][0]->Draw("axis same");//FIXME
-    /*histo[1][var][0]->Draw("e same");//FIXME
-    histo[1][var][1]->Draw("same");//FIXME
-    histo[1][var][2]->Draw("same");//FIXME
-    histo[1][var][3]->Draw("same");//FIXME*/
+    histo[1][var][0]->Draw("axis same");
     style.moveYAxisLabel(histo[1][var][0], maxpad, false);
     can.SetLogy(0);
     if(vars[var].cuts.Contains("abs(isr_tru_pt)")){

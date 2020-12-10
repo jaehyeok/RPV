@@ -22,7 +22,7 @@ void setStyle()
   gStyle->SetPadLeftMargin(0.12);
   gStyle->SetPadBottomMargin(0.12);
   gStyle->SetPadTopMargin(0.08);
-  
+
   gStyle->SetLabelFont(42);
   gStyle->SetLabelSize(0.05);
   gStyle->SetTitleFont(42);
@@ -35,12 +35,12 @@ void drawHeader()
   lat->SetTextSize(0.038);
   lat->DrawLatexNDC(0.12, 0.93, "CMS #font[52]{Preliminary}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.66, 0.93, "59.7 fb^{-1} (13 TeV)");
+  lat->DrawLatexNDC(0.66, 0.93, "137 fb^{-1} (13 TeV)");
 }
 
 void pulls()
 {
-  std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000};
+  std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200};
   std::vector<float> mean;
   std::vector<float> meanError;
   std::vector<float> dummy;
@@ -81,13 +81,13 @@ void pulls()
 
 void limits()
 {
-  std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000};
+  std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
   std::vector<float> observed;
   std::vector<float> dummy;
 
   for(unsigned int i=0; i<gluinoMasses.size(); i++) {
-    TString filename(Form("../rpv_macros/datacards/nopdfoutput_2018/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
+    TString filename(Form("/cms/scratch/yjeong/CMSSW_10_5_0/src/RPV/rpv_macros/datacards/nopdfoutput_2016/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
     TFile *f = TFile::Open(filename);
     if(!f->IsOpen()) {
       std::cout << "Could not open file " << filename << std::endl;
@@ -139,9 +139,10 @@ void limits()
   gr->GetYaxis()->SetTitleSize(0.04);
   gr->GetXaxis()->SetTitleSize(0.04);
   gr->GetXaxis()->SetNdivisions(505);
+  gr->SetMinimum(0.1);
   gr->SetLineWidth(3);
   gr->SetLineStyle(2);
-  gr->SetMinimum(1);
+  gr->SetMinimum(0.5);// Set Yaxis
   gr->SetMaximum(10000);
 
   // expected limit +/- 1 sigma
@@ -211,7 +212,7 @@ TGraphErrors * theoryGraph()
     xsecError.push_back(xsecTemp*xsecErrTemp);
     dummy.push_back(0.);
     glu_mass+=5;
-  } while(glu_mass < 2000);
+  } while(glu_mass < 2200);
 
   TGraphErrors *grTheory = new TGraphErrors(mass.size(), &mass.at(0), &xsec.at(0), &dummy.at(0), &xsecError.at(0)); 
   grTheory->SetMarkerStyle(kFullSquare);

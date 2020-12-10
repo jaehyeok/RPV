@@ -27,7 +27,7 @@ void set_piechart(TPie *p_opt){
 	p_opt->GetSlice(1)->SetTitle("t#bar{t}");
 	p_opt->GetSlice(2)->SetTitle("W+jets");
 	p_opt->GetSlice(3)->SetTitle("Other");
-	p_opt->GetSlice(4)->SetTitle("m_{gluino} = 1700 GeV");
+	p_opt->GetSlice(4)->SetTitle("m_{gluino} = 1600 GeV");
 	p_opt->SetTextSize(0.038);
 	p_opt->SetRadius(.40);
 	p_opt->SetLabelsOffset(-.26);
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
 	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_"+year+".root", "READ");
 
-	float qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3], sig1700[52][3];
+	float qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3], sig1600[52][3];
 
 	for(int ibin=0; ibin<52; ibin++){
 		for(int iMj=0; iMj<3; iMj++){
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 			ttbar[ibin][iMj] = 0;
 			wjets[ibin][iMj] = 0;
 			other[ibin][iMj] = 0;
-			sig1700[ibin][iMj] = 0;
+			sig1600[ibin][iMj] = 0;
 		}
 	}
 
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 			ttbar[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(iMj+1);
 			wjets[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinContent(iMj+1);
 			other[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinContent(iMj+1);
-			sig1700[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinContent(iMj+1);
+			sig1600[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1600", ibin)))->GetBinContent(iMj+1);
 		}
 	}
 
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 
 	for(int ibin=22; ibin<52; ibin++){
 		for (int iMj=0; iMj<3; iMj++){
-			Float_t vals[] = {qcd[ibin][iMj],ttbar[ibin][iMj],wjets[ibin][iMj],other[ibin][iMj],sig1700[ibin][iMj]};
+			Float_t vals[] = {qcd[ibin][iMj],ttbar[ibin][iMj],wjets[ibin][iMj],other[ibin][iMj],sig1600[ibin][iMj]};
 			Int_t colors[] = {kYellow-7,kAzure+7,kGreen+2,kGray+1,kRed+1};
 			Int_t nvals = sizeof(vals)/sizeof(vals[0]);
 			cpie[ibin][iMj] = new TCanvas(Form("cpie_%i_%i",ibin,iMj),Form("TPie test_%i_%i",ibin,iMj),700,700);

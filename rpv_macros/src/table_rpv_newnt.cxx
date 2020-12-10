@@ -515,7 +515,7 @@ int main(int argc, char* argv[])
     cout << "\\centering" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
-    cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1900\\textrm{GeV}$\\\\"  << endl;
+    cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1800\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
     for(int ibin=22; ibin<52; ibin++)
@@ -538,7 +538,7 @@ int main(int argc, char* argv[])
                     ttbar[tablebin][inb],
                     wjets[tablebin][inb],
                     other[tablebin][inb],
-                    sig1900[tablebin][inb],
+                    sig1800[tablebin][inb],
                     err[0][tablebin][inb],//*qcd[tablebin][inb],
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],
                     err[2][tablebin][inb],//*wjets[tablebin][inb],
@@ -568,6 +568,8 @@ void printOneLine(int nb,
     how_to_deal_with_unused_vars=data_err;
     how_to_deal_with_unused_vars=sig1600;
     how_to_deal_with_unused_vars=sig1600_err;
+    how_to_deal_with_unused_vars=sig1700;
+    how_to_deal_with_unused_vars=sig1700_err;
     how_to_deal_with_unused_vars=sig1900;
     how_to_deal_with_unused_vars=sig1900_err;
     how_to_deal_with_unused_vars=4;

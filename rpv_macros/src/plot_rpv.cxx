@@ -18,7 +18,7 @@
 namespace {
 
   bool showData = true; // Draw with/wihout data
-  bool unblindSRs = true; // Draw data in (unblind) SRs
+  bool unblindSRs = false; // Draw data in (unblind) SRs
   TString json = "1";
 
   bool makeNm1 = true; // Make only N=1 plots. Does not draw data
@@ -33,10 +33,10 @@ int main(int argc, char *argv[]){
 
   TString year;
 
-  //TString lumi = "59.7";
-  TString lumi = "137";
-  TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
-  //TString trigger = " trig_ht1050 "; // PFHT800 OR PFHT900 OR PFJet450 */
+  TString lumi = "59.7";
+  //TString lumi = "35.9";
+  //TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
+  TString trigger = " trig_ht1050 "; // PFHT800 OR PFHT900 OR PFJet450 */
 
   /*TString lumi = "41.5";
   TString trigger = "trig_ht1050";// */
@@ -98,6 +98,7 @@ int main(int argc, char *argv[]){
     else{
       // Only use events with njets<=7 (for 0-lepton) and njets<=5 (for 1-lepton)
       Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nbm==0)||(nbm==1)||(nbm>=2 && njets>=4 && njets<=5))"));
+      //Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass","1.")));
       Samples.back().isData = true;
     }
   }
@@ -121,10 +122,10 @@ int main(int argc, char *argv[]){
   // Make analysis regions plots
   if(makeNm1==true){
     // Set cuts
-    TString basecut = "mj12>=500";
-    TString lepcuts = "nleps==1&&ht>1200";
-    vector<TString> nbcuts = {"nbm==0"};
-    vector<TString> njetcuts = {"4<=njets&&njets<=5"};
+    TString basecut = "mj12>=500&&ht>1200";
+    TString lepcuts = "nleps==1";
+    vector<TString> nbcuts = {"nbm==0","nbm==1"};
+    vector<TString> njetcuts = {"8<=njets"};
 
     // Loop over cuts to make histograms
     TString cut = "";
@@ -173,7 +174,7 @@ int main(int argc, char *argv[]){
   else{
     // Set baseline cuts
     TString lepcutsNm1 = "nleps==1";
-    TString htcutsNm1 =  "ht>900";
+    TString htcutsNm1 =  "ht>1200";
     TString mjcutNm1 = "mj12>500";
     TString njetcutNm1 = "njets>=4&&njets<=5";
     TString nbcutNm1 = "nbm==0";

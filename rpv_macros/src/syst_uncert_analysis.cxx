@@ -41,7 +41,7 @@ int main(int argc, char* argv[]){
   if(argc==2){
     n_kappa = argv[1];
   }
-  else if(argc==3){
+  else if(argc==2){
     n_kappa = argv[1];
     n_input = argv[2];
   }

@@ -18,11 +18,11 @@
 
 namespace {
   //TString luminosity="137";
-  //TString luminosity="35.9";
+  TString luminosity="35.9";
   //TString luminosity="41.5";
-  TString luminosity="59.7";
+  //TString luminosity="59.7";
   //TString luminosity="1.";// when drawing data
-  TString plot_type=".png";
+  TString plot_type=".pdf";
   TString plot_style="CMSPaper_Preliminary";
 }
 
@@ -85,7 +85,7 @@ int main(){
 
 
    //2017 MC weight
-  std::string extraWeight = "L1Prefiring_Nom";
+  std::string extraWeight = "1/l1pre_nom";
 
   vector<sfeats> Samples;
 
@@ -98,22 +98,22 @@ int main(){
   data.push_back(0);
   data.push_back(1);
   
-  Samples.push_back(sfeats(s_ttbar_2018_HEM, "2018 ttbar HEM", kRed,1,cutandweight("pass","1."))); Samples.back().mcerr=true; Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_ttbar_2018, "2018 ttbar", kBlue,1,cutandweight("pass","1."))); 
+  Samples.push_back(sfeats(s_qcd_2016, "2016 qcd", kRed,1,cutandweight("pass","1."))); Samples.back().mcerr=true; Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_qcd_2016, "2016 qcd", kBlue,1,cutandweight("pass","1."))); 
   Samples.back().doBand = true;
   vector<int> qcd;
   qcd.push_back(2);
   qcd.push_back(3);// */
 
-  Samples.push_back(sfeats(s_other_2016, "2016 other", kRed,1,cutandweight("pass","1."))); Samples.back().mcerr=true; Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_other_2016, "2016 other", kBlue,1,cutandweight("pass","1."))); 
+  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar prefired", kRed,1,cutandweight("pass","1."))); Samples.back().mcerr=true; Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_ttbar_2016, "2016 ttbar", kBlue,1,cutandweight("pass",extraWeight))); 
   Samples.back().doBand = true;
   vector<int> ttbar;
   ttbar.push_back(4);
   ttbar.push_back(5);
   
-  Samples.push_back(sfeats(s_qcd_2016, "2016 qcd", kRed,1,cutandweight("pass","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_qcd_2016, "2016 qcd", kBlue,1,cutandweight("pass","1."))); 
+  Samples.push_back(sfeats(s_other_2016, "2016 other", kRed,1,cutandweight("pass","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_other_2016, "2016 other", kBlue,1,cutandweight("pass","1."))); 
   Samples.back().doBand = true;
   vector<int> other;
   other.push_back(6);
@@ -138,7 +138,7 @@ int main(){
    Samples.push_back(sfeats(s_2016, "Single lepton events, m_{T} < 140", kBlue,1,"nonblind&&nleps==1&&nveto==0&&nbm>=1&&njets>=6&&mt<=140&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass"));   Samples.back().doBand = true;*/
   
   vector<hfeats> vars;
-  std::vector<TString> cuts = {"nbm>=4&&mj12>500&&nleps==1&&ht>1200&&njets>=8"};// */
+  std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=8"};// */
   /*std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
 				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
 				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&8<=njets",

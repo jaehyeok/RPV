@@ -18,6 +18,7 @@ void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> 
 void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
 void outputLognormalSystematics(std::ofstream &file, TString year);
 void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> &bins, const std::string & signalBinName, TString year);
+void outputautoMCStats(std::ofstream &file, const std::vector<std::string> &bins);
 // determine if a histogram has an entry for a given nB
 bool hasEntry(const std::string &sample, const std::string &bin, const int nB);
 
@@ -340,7 +341,7 @@ int main(int argc, char *argv[])
   outputWjets(file, bins.at(ipair), cardType, year);
 
   // output kappa systematics
-  //outputkappaSystematics(file, bins.at(ipair), filename, year);//FIXME
+  outputkappaSystematics(file, bins.at(ipair), filename, year);
 
   // output shape systematics
 //  outputShapeSystematics(file, shapeSysts,year);
@@ -354,6 +355,8 @@ int main(int argc, char *argv[])
   //        this should be done by checking the bins in the nominal shape 
 //  outputMCStatisticsSyst(file, bins.at(ipair), signalBinName);
 
+//  file << "\n------------------------------------" << std::endl;
+//  outputautoMCStats(file, bins.at(ipair));
   file.close();
   }
 }
@@ -574,7 +577,7 @@ void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string>
     tmpLine = line;
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+1),1,"5");
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+1),1,"5");
-    tmpLine.Prepend(Form("normqcd_bin%d_bin%d_%s       lnU  ",numbin,numbin+15,year.Data()));
+    tmpLine.Prepend(Form("normqcd_bin%d_bin%d_%s                   lnU  ",numbin,numbin+15,year.Data()));
     file << tmpLine.Data() << endl;
   }
   for(auto jbin:bins){ // QCD 
@@ -582,11 +585,31 @@ void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string>
     tmpbin.Replace(0,3,"");
     numbin = atoi(tmpbin);
     if(numbin > 36) continue;
+    else if(numbin > 21 &&numbin < 25){
     tmpLine = line;
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+2),1,"5");
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+2),1,"5");
-    tmpLine.Prepend(Form("normttbar_bin%d_bin%d_%s     lnU  ",numbin,numbin+15,year.Data()));
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin+3)]*nprocesses+2),1,"5");
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin+18)]*nprocesses+2),1,"5");
+    tmpLine.Prepend(Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s     lnU  ",numbin,numbin+15,numbin+3,numbin+18,year.Data()));
     file << tmpLine.Data() << endl;
+    }
+    else if(numbin > 24 && numbin < 28){
+    tmpLine = line;
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin-3)]*nprocesses+2),1,"5");
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin+12)]*nprocesses+2),1,"5");
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+2),1,"5");
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+2),1,"5");
+    tmpLine.Prepend(Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s     lnU  ",numbin-3,numbin+12,numbin,numbin+15,year.Data()));
+    file << tmpLine.Data() << endl;
+  }
+    else{
+    tmpLine = line;
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+2),1,"5");
+    tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+2),1,"5");
+    tmpLine.Prepend(Form("normttbar_bin%d_bin%d_%s                 lnU  ",numbin,numbin+15,year.Data()));
+    file << tmpLine.Data() << endl;
+    }
   }
 }
 
@@ -900,8 +923,12 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
     //create map between bin name and bin index
     map<string, int> bindex;
-    for(uint ibin=0; ibin<nbins; ibin++)
+    for(uint ibin=22; ibin<52; ibin++){
+      bindex[Form("bin%d",ibin)]=9999;
+    }
+    for(uint ibin=0; ibin<nbins; ibin++){
       bindex[bins[ibin]]=ibin;
+    }
 
     // overall normalization   
     TString line_norm;
@@ -918,43 +945,27 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         line+="-    ";
 
       TString tmpLine;
+      TString tmpbin;
+      int numbin;
+      vector<TString> lownj_bins, mednj_bins, highnj_bins;
+      for(uint nbc=0 ; nbc<5 ; nbc++){
+        lownj_bins.push_back(Form("bin%d",22+nbc*3));
+        mednj_bins.push_back(Form("bin%d",22+nbc*3+1));
+        highnj_bins.push_back(Form("bin%d",22+nbc*3+2));
+        lownj_bins.push_back(Form("bin%d",37+nbc*3));
+        mednj_bins.push_back(Form("bin%d",37+nbc*3+1));
+        highnj_bins.push_back(Form("bin%d",37+nbc*3+2));
+      }
+      bool flag_brk(true);
       for(auto jbin:bins){
-        tmpLine = line;
-        /*
-           if(jbin=="bin0"){
-           tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),4,"1.50");
-           tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),4,"1.50");
-           tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),4,"1.50");
-           tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),4,"1.50");
-           tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),4,"1.50");
-           tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),4,"1.50");
-           tmpLine.Replace(5*(bindex["bin5"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin4"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin3"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin2"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin1"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin0"]*nprocesses+3),4,"1.01");
-           tmpLine.Prepend("normwjets_mednjets        lnN  ");
-           file << tmpLine.Data() << endl;
-           }
-           if(jbin=="bin11"){
-           tmpLine.Replace(5*(bindex["bin21"]*nprocesses+3),4,"1.35");
-           tmpLine.Replace(5*(bindex["bin20"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin19"]*nprocesses+3),4,"1.35");
-           tmpLine.Replace(5*(bindex["bin18"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin17"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin16"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin15"]*nprocesses+3),4,"1.35");
-           tmpLine.Replace(5*(bindex["bin14"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin13"]*nprocesses+3),4,"1.35");
-           tmpLine.Replace(5*(bindex["bin12"]*nprocesses+3),4,"1.35");
-           tmpLine.Replace(5*(bindex["bin11"]*nprocesses+3),4,"1.01");
-           tmpLine.Replace(5*(bindex["bin10"]*nprocesses+3),4,"1.35");
-           tmpLine.Prepend("normwjets_highnjets       lnN  ");
-           file << tmpLine.Data() << endl;
-           }
-           */
-        if(jbin=="bin37"){
+        tmpLine = line;        
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+        
+
+        if((numbin%3==1||numbin%3==2)&&flag_brk){
+          /*
           tmpLine.Replace(5*(bindex["bin38"]*nprocesses+3),4,"1.50");
           tmpLine.Replace(5*(bindex["bin41"]*nprocesses+3),4,"1.50");
           tmpLine.Replace(5*(bindex["bin44"]*nprocesses+3),4,"1.50");
@@ -975,10 +986,30 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
           tmpLine.Replace(5*(bindex["bin28"]*nprocesses+3),4,"1.01");
           tmpLine.Replace(5*(bindex["bin31"]*nprocesses+3),4,"1.01");
           tmpLine.Replace(5*(bindex["bin34"]*nprocesses+3),4,"1.01");
+          */
+          for(auto njb:lownj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,"1.01");
+          }
+          for(auto njb:mednj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,"1.50");
+          }
           tmpLine.Prepend(Form("normwjets_mednjets_%s        lnN  ",year.Data()));
           file << tmpLine.Data() << endl;
+          flag_brk=false;
         }
-        else if(jbin=="bin38"){
+      }
+      flag_brk=true;
+      for(auto jbin:bins){
+        tmpLine = line;        
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+
+ 
+        if((numbin%3==2||numbin%3==0)&&flag_brk){
+          /*
           tmpLine.Replace(5*(bindex["bin39"]*nprocesses+3),4,"1.35");
           tmpLine.Replace(5*(bindex["bin42"]*nprocesses+3),4,"1.35");
           tmpLine.Replace(5*(bindex["bin45"]*nprocesses+3),4,"1.35");
@@ -994,15 +1025,25 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
           tmpLine.Replace(5*(bindex["bin44"]*nprocesses+3),4,"1.01");
           tmpLine.Replace(5*(bindex["bin47"]*nprocesses+3),4,"1.01");
           tmpLine.Replace(5*(bindex["bin50"]*nprocesses+3),4,"1.01");
-          tmpLine.Replace(5*(bindex["bin23"]*nprocesses+3),4,"1.35");
+          tmpLine.Replace(5*(bindex["bin23"]*nprocesses+3),4,"1.01");
           tmpLine.Replace(5*(bindex["bin26"]*nprocesses+3),4,"1.01");
           tmpLine.Replace(5*(bindex["bin29"]*nprocesses+3),4,"1.01");
           tmpLine.Replace(5*(bindex["bin32"]*nprocesses+3),4,"1.01");
           tmpLine.Replace(5*(bindex["bin35"]*nprocesses+3),4,"1.01");
+          */
+          for(auto njb:mednj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,"1.01");
+          }
+          for(auto njb:highnj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,"1.35");
+          }
           tmpLine.Prepend(Form("normwjets_highnjets_%s       lnN  ",year.Data()));
           file << tmpLine.Data() << endl;
+          flag_brk=false;
         }
-      } 
+      }
     }
   }
 
@@ -1167,6 +1208,13 @@ void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> 
           }
       }
   }
+}
+
+void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins){
+ int threshold = 5;
+ for(auto ibin : bins){
+   file << ibin << " autoMCStats " << threshold << "\n";
+ }
 }
 
 // exclude by hand following bins that have no entries:

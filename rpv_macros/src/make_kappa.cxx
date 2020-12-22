@@ -44,7 +44,7 @@ int nbins = 18;
 float mjmin = 500;
 float mjmax = 1400;
 
-bool debug = false;
+bool debug = true;
 bool debug_unc = true;
 bool mconly = true;
 

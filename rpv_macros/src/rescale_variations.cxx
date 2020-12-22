@@ -6,6 +6,8 @@
 #include <iostream>
 #include "small_tree_rpv.hpp"
 
+TString msig = "1900";
+
 std::vector<float> morphBins = {1.00, 0.900, 0.800};
 
 bool isBlinded(const std::string &binName, const std::vector<std::string>& blindBins);
@@ -19,11 +21,13 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
   //    std::string cardType="control";
 
     TString rootfile_org = argv[2];
+    if(argc==4) msig = argv[3];
     TString temp = rootfile_org;
     TString rootfile(temp.ReplaceAll(".root","_rescaled.root"));
     if(cardType=="mconly") rootfile = rootfile.ReplaceAll("_rescaled","_mconly");
     else if(cardType=="mconlyold") rootfile = rootfile.ReplaceAll("_rescaled","_mconlyold");
     else if(cardType=="mconlymorph") rootfile = rootfile.ReplaceAll("_rescaled","_mconlymorph");
+    else if(cardType=="mconlySplusB") rootfile = rootfile.ReplaceAll("_rescaled","_mconlySplusB");
     else if(cardType=="control") rootfile = rootfile.ReplaceAll("_rescaled","_control");
     TFile *f = TFile::Open(rootfile_org.Data(), "read");
     TFile *g = TFile::Open(rootfile.Data(), "recreate");
@@ -106,6 +110,7 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     }
     else if (cardType=="mconly") blindedBins=binNames; 
     else if (cardType=="mconlymorph") blindedBins=binNames; 
+    else if (cardType=="mconlySplusB") blindedBins=binNames; 
     
     unsigned int nbins=binNames.size();
     
@@ -198,17 +203,37 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
         if(isBlinded(binNames.at(ibin), blindedBins)) {
             // add fake data_obs histogram for blinded bins
             std::cout << "Getting histogram " << Form("%s/data_obs", binNames.at(ibin).c_str()) << std::endl;
+            std::cout<<"HI"<<std::endl;
             TH1F *data_obs = static_cast<TH1F*>(f->Get(Form("%s/data_obs", binNames.at(ibin).c_str())));
             TH1F *qcd = static_cast<TH1F*>(f->Get(Form("%s/qcd", binNames.at(ibin).c_str())));
             TH1F *ttbar = static_cast<TH1F*>(f->Get(Form("%s/ttbar", binNames.at(ibin).c_str())));
             TH1F *wjets = static_cast<TH1F*>(f->Get(Form("%s/wjets", binNames.at(ibin).c_str())));
             TH1F *other = static_cast<TH1F*>(f->Get(Form("%s/other", binNames.at(ibin).c_str())));
+            std::cout<<"HI"<<std::endl;
+            TH1F *signal = new TH1F("signal","signal",3,500,1400);
+            signal->Print("all");
+            int binnumber = atoi(binname.ReplaceAll("bin","").Data());
+            if(cardType=="mconlySplusB"&&binnumber>21){
+              signal = static_cast<TH1F*>(f->Get(Form("%s/signal_M%s", binNames.at(ibin).c_str(), msig.Data())));
+              std::cout<<binNames.at(ibin).c_str()<<std::endl;
+              std::cout<<Form("%s/signal_M%s", binNames.at(ibin).c_str(), msig.Data())<<std::endl;
+            }
+            
             for(int i=1; i<=data_obs->GetNbinsX(); i++) {
                 if(cardType=="mconlymorph"){
                    data_obs->SetBinContent(i, (qcd->GetBinContent(i)
                             + ttbar->GetBinContent(i)
                             + wjets->GetBinContent(i)
                             + other->GetBinContent(i))*morphBins.at(i-1));
+                }
+                else if(cardType=="mconlySplusB"&&binnumber>21){
+            std::cout<<"HI"<<std::endl;
+            std::cout<<signal->GetBinContent(i)<<std::endl;
+                   data_obs->SetBinContent(i, (qcd->GetBinContent(i)
+                            + ttbar->GetBinContent(i)
+                            + wjets->GetBinContent(i)
+                            + other->GetBinContent(i)
+                            + signal->GetBinContent(i)));
                 }
                 else data_obs->SetBinContent(i, (qcd->GetBinContent(i)
                             + ttbar->GetBinContent(i)

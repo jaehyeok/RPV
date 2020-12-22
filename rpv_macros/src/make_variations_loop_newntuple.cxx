@@ -494,7 +494,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
   for(int ibin=0; ibin<nbins; ibin++)
   {
-    if(ibin>26){
+    if(ibin>21){
       int njbin(0), iproc(0);
 
       if(ibin%3==0) njbin=0;
@@ -507,18 +507,20 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
       TH1F *h_kap1  = static_cast<TH1F*>(f_kappa_syst->Get("hist_kappa1"));
       TH1F *h_kap2  = static_cast<TH1F*>(f_kappa_syst->Get("hist_kappa2"));
-      if(variations.Contains("kappa")){
-          kappa1_err  = h_kap1->GetBinError(njbin+3*iproc+1); 
-          kappa1_cont = h_kap1->GetBinContent(njbin+3*iproc+1);
-          kappa2_err  = h_kap2->GetBinError(njbin+3*iproc+1); 
-          kappa2_cont = h_kap2->GetBinContent(njbin+3*iproc+1);
-          kappa_syst[0][ibin][njbin][iproc] = kappa1_err/kappa1_cont;
-          kappa_syst[1][ibin][njbin][iproc] = kappa2_err/kappa2_cont;
-          kappa_wgt[0][njbin][iproc] = kappa1_cont;
-          kappa_wgt[1][njbin][iproc] = kappa2_cont;
-      }
+      kappa1_err  = h_kap1->GetBinError(njbin+3*iproc+1); 
+      kappa1_cont = h_kap1->GetBinContent(njbin+3*iproc+1);
+      kappa2_err  = h_kap2->GetBinError(njbin+3*iproc+1); 
+      kappa2_cont = h_kap2->GetBinContent(njbin+3*iproc+1);
+      kappa_syst[0][ibin][njbin][iproc] = kappa1_err/kappa1_cont;
+      kappa_syst[1][ibin][njbin][iproc] = kappa2_err/kappa2_cont;
+      kappa_wgt[0][njbin][iproc] = kappa1_cont;
+      kappa_wgt[1][njbin][iproc] = kappa2_cont;
+      /*if(variations=="nominal"){
+        kappa_wgt[0][njbin][iproc] = 1;
+        kappa_wgt[1][njbin][iproc] = 1;
+      }*/
     }
-    else if(variations.Contains("kappa")&&ibin<27){
+    else if(variations.Contains("kappa")&&ibin<22){
       for(int i=0; i<2; i++){
         for(int j=0; j<3; j++){
           for(int k=0; k<3; k++){
@@ -583,6 +585,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     // Central weights
     // 
     float nominalweight = lumi*tree.weight();    
+    //cout<<nominalweight<<endl;
     //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
 
     //if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig_jet450()||tree.trig_ht900()); // rereco FIXME
@@ -877,8 +880,42 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     //
     // fill Nb histograms   
     //
+    float temp_nominal = nominalweight;
+    float temp_up = upweight;
+    float temp_down = downweight;
+    //if(procname!="data_obs") cout<<nominalweight<<endl;
     for(int ibin=0; ibin<nbins; ibin++)  
     {
+      int ihb(0);
+      int njbin(0), iproc(0);
+
+      if(ibin%3==0) njbin=0;
+      else if(ibin%3==1) njbin=1;
+      else if(ibin%3==2) njbin=2;
+
+      if(procname=="qcd") iproc=0;
+      else if(procname=="wjets") iproc=1;
+      else if(procname=="ttbar") iproc=2;
+
+      if(tree.mj12()>mjmin && tree.mj12()<mjmin+300) ihb = 999;
+      else if(tree.mj12()>mjmin+300 && tree.mj12()<mjmin+600) ihb = 0;
+      else if(tree.mj12()>mjmin+600) ihb = 1;
+
+
+      if(procname!="data_obs"&&ibin>22){
+        if(ihb!=999){
+          float kappa_w = kappa_wgt[ihb][njbin][iproc];
+          nominalweight = temp_nominal*kappa_w;
+          upweight = temp_up*kappa_w;          
+          downweight = temp_down*kappa_w;
+        }
+      }
+      else{
+        nominalweight = temp_nominal;
+        upweight = temp_up;
+        downweight = temp_down;
+      }
+      //if(procname!="data_obs") cout<<nominalweight<<endl;
       if(ibin<22)
       {
         int hnbmax = 5-0.0001;
@@ -920,27 +957,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         if(variations=="kappa")
         {
           float sys_kappaup,sys_kappadown;
-          int ihb(0);
-          int njbin(0), iproc(0);
-
-          if(ibin%3==0) njbin=0;
-          else if(ibin%3==1) njbin=1;
-          else if(ibin%3==2) njbin=2;
-
-          if(procname=="qcd") iproc=0;
-          else if(procname=="wjets") iproc=1;
-          else if(procname=="ttbar") iproc=2;
-
-          if(tree.mj12()>mjmin && tree.mj12()<mjmin+300) ihb = 999;
-          else if(tree.mj12()>mjmin+300 && tree.mj12()<mjmin+600) ihb = 0;
-          else if(tree.mj12()>mjmin+600) ihb = 1;
-
-          if(ihb==999){
+          if(ihb==999||procname=="data_obs"){
             upweight    = nominalweight;
             downweight  = nominalweight;
           }
           else{
-            nominalweight = lumi*tree.weight()*kappa_wgt[ihb][njbin][iproc];
             upweight   = nominalweight;
             downweight = nominalweight;
             sys_kappaup   = 1+kappa_syst[ihb][ibin][njbin][iproc];
@@ -949,6 +970,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
             upweight    = upweight*sys_kappaup;
             downweight  = downweight*sys_kappadown;
+            //cout<<downweight<<endl;
+            //cout<<sys_kappaup<<endl;
             if(downweight<0) downweight=0;
             //cout<<upweight<<"::"<<downweight<<endl;
           }
@@ -1087,7 +1110,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     }
   }
   //f->Print();
-  cout<<"\n"; 
   cout<<"\n"; 
   for(int al=0 ; al<cols ; al++) cout << "=";
   cout<<endl;

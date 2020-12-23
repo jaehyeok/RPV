@@ -29,9 +29,7 @@ namespace {
 
 using namespace std;
 
-int main(int argc, char *argv[]){
-
-  TString year;
+int main(int argc, char *argv[], TString year){
 
   TString lumi = "59.7";
   //TString lumi = "35.9";

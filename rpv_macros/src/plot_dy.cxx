@@ -9,6 +9,7 @@
 #include "TLine.h"
 #include "TString.h"
 #include "TColor.h"
+#include "TLorentzVector.h"
 
 #include "styles.hpp"
 #include "utilities.hpp"
@@ -16,7 +17,7 @@
 #include "utilities_macros_rpv.hpp"
 
 namespace {
-  TString lumi = "35.9";//"19.7"; //"16.2";//"35.9";
+  TString lumi = "59.7";
   TString plot_type=".pdf";
   TString plot_style="CMSPaper";//"CMSPaper_Preliminary";
 }
@@ -26,50 +27,51 @@ using std::cout;
 using std::endl;
 
 
-int main(){
-    
+int main(int argc, char *argv[], small_tree_rpv &tree, TString year, TFile *f){
     // don't want to include RA4 trigger efficiency
     //std::string extraWeight("w_btag_bf/w_btag");
     std::string extraWeight("1");
+    TString trigger = "(trig_ht900 || trig_jet450)";
+    //TString trigger = "trig_ht1050";//2017 and 2018
+
+    year = argv[1];
 
     // Reading ntuples
     vector<sfeats> Samples; 
     
-    //TString folder_bkg_dy = "/net/cms27/cms27r0/babymaker/babies/2017_01_27/mc/skim_st1000/";
-    //TString folder_data_dy = "/net/cms27/cms27r0/babymaker/babies/2017_02_14/data/skim_st1000/";
-    TString folder_bkg_dy = "/net/cms2/cms2r0/babymaker/babies/2017_01_27/mc/skim_st1000/";
-    TString folder_data_dy = "/net/cms27/cms27r0/babymaker/babies/2017_02_14_ra4_rpv_keep/data/unskimmed/";
-    
-    vector<TString> s_data_dy    = getRPVProcess(folder_data_dy, "data");
-    vector<TString> s_zjets_dy;    
-    s_zjets_dy.push_back(folder_bkg_dy+"*DYJetsToLL_M-50_*.root");
-    vector<TString> s_ttlep_dy   = getRPVProcess(folder_bkg_dy,  "ttbar");
-    vector<TString> s_wjets_dy   = getRPVProcess(folder_bkg_dy,  "wjets");
-    vector<TString> s_vv_dy; 
-    s_vv_dy.push_back(folder_bkg_dy+"*_WWTo2L2Nu_13TeV_*.root");
-    s_vv_dy.push_back(folder_bkg_dy+"*_WZTo3LNu_TuneCUETP8M1_13TeV_*.root");
-    s_vv_dy.push_back(folder_bkg_dy+"*_WZTo2L2Q_13TeV_*.root");
-    s_vv_dy.push_back(folder_bkg_dy+"*_ZZTo2L2Q_13TeV_*.root");
-    vector<TString> s_other_dy;
-    s_other_dy.push_back(folder_bkg_dy+"*_ST_*");
-    s_other_dy.push_back(folder_bkg_dy+"*_ttHJetTobb_*");
-    s_other_dy.push_back(folder_bkg_dy+"*_TTTT_*");
-    s_other_dy.push_back(folder_bkg_dy+"*_TTWJetsToLNu_*");
-    s_other_dy.push_back(folder_bkg_dy+"*_TTWJetsToQQ_*");
-    s_other_dy.push_back(folder_bkg_dy+"*_TTZToQQ_*");
-    s_other_dy.push_back(folder_bkg_dy+"*_TTZToLLNuNu_*");
+    //TString folder_bkg_dy = "/net/cms2/cms2r0/babymaker/babies/2017_01_27/mc/skim_st1000/";
+    //TString folder_data_dy = "/net/cms27/cms27r0/babymaker/babies/2017_02_14_ra4_rpv_keep/data/unskimmed/";
 
+    TString folder_bkg = folder_year(year,false).at(0);
+    TString folder_dat = folder_year(year,false).at(1);
+
+    vector<TString> s_data_dy    = getRPVProcess(folder_dat, "data");
+    vector<TString> s_zjets_dy;    
+    s_zjets_dy.push_back(folder_bkg+"*DYJetsToLL_M-50_*.root");
+    vector<TString> s_ttlep_dy   = getRPVProcess(folder_bkg,  "ttbar");
+    vector<TString> s_wjets_dy   = getRPVProcess(folder_bkg,  "wjets");
+    vector<TString> s_vv_dy; 
+    s_vv_dy.push_back(folder_bkg+"*_WW_*.root");
+    s_vv_dy.push_back(folder_bkg+"*_WZ_*.root");
+    s_vv_dy.push_back(folder_bkg+"*_ZZ_*.root");
+    vector<TString> s_other_dy;
+    s_other_dy.push_back(folder_bkg+"*_ST_*");
+    s_other_dy.push_back(folder_bkg+"*_TTTT_*");
+    s_other_dy.push_back(folder_bkg+"*_TTWJetsToLNu_*");
+    s_other_dy.push_back(folder_bkg+"*_TTWJetsToQQ_*");
+    s_other_dy.push_back(folder_bkg+"*_TTZToQQ_*");
+    s_other_dy.push_back(folder_bkg+"*_TTZToLLNuNu_*");
 
     //Samples.push_back(sfeats(s_data_dy, "Data",kBlack,1,"(trig[19] || trig[20] || trig[40] || trig[21] || trig[24] || trig[41]) && json12p9 && pass"));
     //Samples.push_back(sfeats(s_data_dy, "Data",kBlack,1,"(trig[19] || trig[20] || trig[40] || trig[21] || trig[24] || trig[41]) && pass && run<278820"));//(run>=278820&&run<=284044)"));
-    Samples.push_back(sfeats(s_data_dy, " Data",kBlack,1,"(trig[19] || trig[20] || trig[40] || trig[21] || trig[24] || trig[41]) && pass"));
+    Samples.push_back(sfeats(s_data_dy, " Data",kBlack,1,trigger+" && pass"));
     Samples.back().isData = true;
     Samples.back().doStack = false;
-    Samples.push_back(sfeats(s_zjets_dy,   " Z+jets",    rpv::c_qcd,   1, cutandweight("stitch_ht&&pass",extraWeight)));
-    Samples.push_back(sfeats(s_ttlep_dy,   " t#bar{t}",  rpv::c_tt,    1, cutandweight("stitch_ht&&pass&&ntruleps>=1", extraWeight)));
-    Samples.push_back(sfeats(s_wjets_dy,   " W+jets",    rpv::c_wjets, 1, cutandweight("stitch_ht&&pass&&ntruleps>=1",extraWeight)));
-    Samples.push_back(sfeats(s_vv_dy,      " WW/WZ/ZZ",  ra4::c_ttv,   1, cutandweight("stitch_ht&&pass",extraWeight)));
-    Samples.push_back(sfeats(s_other_dy,   " Other",     rpv::c_other, 1, cutandweight("stitch_ht&&pass",extraWeight))); 
+    Samples.push_back(sfeats(s_zjets_dy,   " Z+jets",    rpv::c_qcd,   1, cutandweight("pass",extraWeight)));
+    Samples.push_back(sfeats(s_ttlep_dy,   " t#bar{t}",  rpv::c_tt,    1, cutandweight("pass&&nleps>=1", extraWeight)));
+    Samples.push_back(sfeats(s_wjets_dy,   " W+jets",    rpv::c_wjets, 1, cutandweight("pass&&nleps>=1",extraWeight)));
+    Samples.push_back(sfeats(s_vv_dy,      " WW/WZ/ZZ",  ra4::c_ttv,   1, cutandweight("pass",extraWeight)));
+    Samples.push_back(sfeats(s_other_dy,   " Other",     rpv::c_other, 1, cutandweight("pass",extraWeight))); 
 
     vector<int> dy_sam;
     unsigned nsam_dy(Samples.size());
@@ -86,8 +88,10 @@ int main(){
 
     vector<hfeats> vars;
     
-    string mll="(mumu_m*(mumu_m>0&&mumu_pt1>30)+elel_m*(elel_m>0&&elel_pt1>30))";
-    string mllcut="(mumu_m*(mumu_m>0&&mumu_pt1>30)+elel_m*(elel_m>0&&elel_pt1>30))>80&&(mumu_m*(mumu_m>0&&mumu_pt1>30)+elel_m*(elel_m>0&&elel_pt1>30))<100";
+    //string mll="(mumu_m*(mumu_m>0&&mumu_pt1>30)+elel_m*(elel_m>0&&elel_pt1>30))";
+    string mll="(leps_m*(leps_m>0&&leps_pt[0]>30) && leps_m*(leps_m>0&&leps_pt[1]>30))";
+    //string mllcut="(mumu_m*(mumu_m>0&&mumu_pt1>30)+elel_m*(elel_m>0&&elel_pt1>30))>80&&(mumu_m*(mumu_m>0&&mumu_pt1>30)+elel_m*(elel_m>0&&elel_pt1>30))<100";
+    string mllcut="(leps_m*(leps_m>0&&leps_pt[0]>30)>80&&(leps_m*(leps_m>0&&leps_pt[0]>30)<100) && leps_m*(leps_m>0&&leps_pt[1]>30)>80&&(leps_m*(leps_m>0&&leps_pt[1]>30)<100))";
 /*    
     vars.push_back(hfeats(mll, 40, 80, 100, dy_sam, "m_{ll} [GeV]", mllcut)); 
     vars.back().normalize = true; vars.back().whichPlots = "12";
@@ -114,6 +118,7 @@ int main(){
 */
     vars.push_back(hfeats("njets", 3, 4, 10, dy_sam, "", mllcut+"&&mj12>500&&ht>1200&&njets>=4&&nbm>=1"));
     vars.back().normalize = true; vars.back().whichPlots = "12";
+cout<<"4"<<endl;
 /*
     vars.push_back(hfeats("njets", 3, 3.5, 9.5, dy_sam, "N_{jets}", mllcut+"&&mj12>500&&ht>1200&&njets>=4&&nbm==0"));
     vars.back().normalize = true; vars.back().whichPlots = "12";

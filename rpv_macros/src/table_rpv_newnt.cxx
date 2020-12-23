@@ -670,7 +670,7 @@ void printYieldBin(int nb, float data,
         << Form("$%.1f \\pm %.1f$",other,other_err) << " & "
         << Form("$%.1f \\pm %.1f$",qcd+ttbar+wjets+other,tot_err) << " & "
         << Form("$%.0f$",data) << " & "
-        << Form("$%.1f$",sig) << " \\\\ " << endl;
+        << Form("$%.1f$",sig) << " \\\\ " << endl;//FIXME
     }
     else 
     { 

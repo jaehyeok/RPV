@@ -303,6 +303,7 @@ std::vector<int> genfjets_nconst
 
 ####################   Weights   ###################
 float weight
+float l1pre_nom
 float w_lumi
 float w_pu
 float w_btag

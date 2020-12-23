@@ -5,6 +5,7 @@ int event
 
 ####################   Global   ###################
 float weight
+float l1pre_nom
 int npv
 int ntrupv
 float ntrupv_mean

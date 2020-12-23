@@ -594,6 +594,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
     else if (procname=="signal") nominalweight = nominalweight * 1;
     //else if ((tree.nbm()==0||tree.nbm()==1) && tree.mj12()>1100 && tree.njets()>=4 && tree.njets()<=5) nominalweight=lumi*tree.weight()*0.4;//FIXME HEM issue
+/*
     int nb_csv=0;
     for(unsigned int j=0; j<tree.jets_hflavor().size();j++){
       if(tree.jets_islep().at(j)) continue;
@@ -601,7 +602,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       if(abs(tree.jets_eta().at(j))>2.4) continue;
       if(tree.jets_csv().at(j)>0.8484) nb_csv++;
     }
-
+*/
     // qcd jet flavor central weights
     /* if(procname=="qcd") 
        { 
@@ -919,6 +920,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       if(ibin<22)
       {
         int hnbmax = 5-0.0001;
+        int nb_csv = tree.nbm();
         if(tree.nleps()==0 && !nl0shape){
           hnbmax = 2-0.001;
         }
@@ -978,7 +980,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
           {
             float hmjmax = mjmax-0.001;
-            if(tree.nbm()<3 && tree.nleps()==0 && !nl0shape){
+            if(tree.nleps()==0 && !nl0shape){
               hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
             }
             //cout<<hmjmax<<endl;
@@ -1006,7 +1008,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         else if(variations=="jer")//jet energy resolution
         {  
           float hmjmax = mjmax-0.001;
-          if(tree.nbm()<3 && tree.nleps()==0 && !nl0shape){
+          if(tree.nleps()==0 && !nl0shape){
             hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
           }
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
@@ -1020,7 +1022,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         else if(variations=="JES") //jet energy scale
         { 
           float hmjmax = mjmax-0.001;
-          if(tree.nbm()<3 && tree.nleps()==0 && !nl0shape){
+          if(tree.nleps()==0 && !nl0shape){
             hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;
           }
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 

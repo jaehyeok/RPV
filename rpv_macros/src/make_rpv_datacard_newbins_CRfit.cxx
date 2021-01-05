@@ -178,6 +178,7 @@ int main(int argc, char *argv[])
       bins.push_back(bins_sr_highnj_vhighmj); 
   }
   */
+  /*
   bins.push_back(bins_cr_nb0_lownjets);
   bins.push_back(bins_cr_nb1_lownjets);
   bins.push_back(bins_cr_nb2_lownjets);
@@ -198,7 +199,10 @@ int main(int argc, char *argv[])
   }
 
   bins.push_back(bins_all);
- 
+ */
+  cout<<"HI"<<endl;
+  std::vector <std::string> bins_CRFit = {"bin6","bin7","bin8","bin9","bin10","bin11"}; 
+  bins.push_back(bins_CRFit);
   // include pdf syst to the shapeSysts
   if(includePDFUncert) {
     for(unsigned int i=0; i<100; i++) {
@@ -239,7 +243,7 @@ int main(int argc, char *argv[])
       if(ipair==7) filename+="_sr_highnj_vhighmj";
   }
   */
-
+  /*
   if(ipair==0) filename+="_cr_nb0_lownjets";
   if(ipair==1) filename+="_cr_nb1_lownjets";
   if(ipair==2) filename+="_cr_nb2_lownjets";
@@ -259,8 +263,11 @@ int main(int argc, char *argv[])
       if(ipair==13) filename+="_sr_nb3_highnjets";
       if(ipair==14) filename+="_sr_nb4_highnjets";
   }
+  */
 
-  if(!includePDFUncert) filename+="_nopdf";
+  if(ipair==0) filename+="_CRFit";
+  //if(!includePDFUncert) filename+="_nopdf";
+  cout<<"HI"<<endl;
 
   if(argc>3){
     TString tmpname = inputname;
@@ -270,6 +277,7 @@ int main(int argc, char *argv[])
 
   filename+=".dat";
   file.open(filename);
+  cout<<"HI"<<endl;
 
   // output header
   file << "imax " << nbins << " number of bins" << std::endl;
@@ -291,18 +299,21 @@ int main(int argc, char *argv[])
   file << "------------------------------------" << std::endl;  
   file << "bin          ";
 
+  cout<<"HI"<<endl;
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     variations->cd(bins.at(ipair).at(ibin).c_str());
     file << bins.at(ipair).at(ibin) << " ";
   }
   file << "\n";
   file << "observation  ";
+  cout<<"HI"<<endl;
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     TString binName(bins.at(ipair).at(ibin));
     TH1F *hist = static_cast<TH1F*>(variations->Get(Form("%s/data_obs",binName.Data())));
     file << hist->Integral() << " ";
     hist->Delete();
   }
+  cout<<"HI"<<endl;
   file << "\n";
   file << "------------------------------------" << std::endl;
   file << "bin  ";
@@ -321,9 +332,11 @@ int main(int argc, char *argv[])
   file << "rate  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     for(unsigned int iprocess=0; iprocess<nprocesses; iprocess++) {
+  cout<<"HI"<<processes.at(iprocess)<<endl;
       TString histName(Form("%s/%s", bins.at(ipair).at(ibin).c_str(), processes.at(iprocess).c_str()));
       TH1F *hist = static_cast<TH1F*>(variations->Get(histName));
       file << hist->Integral() << "  ";
+  cout<<"HI"<<endl;
     }
   }
   file << "\n------------------------------------" << std::endl;
@@ -334,12 +347,15 @@ int main(int argc, char *argv[])
   //output the MJ connection
 //  outputMJConnection(file, bins.at(ipair)),year;
   
+  cout<<"HI"<<endl;
   //output if you want to see only normalizations between nleps
   outputOnlyNormalization(file, bins.at(ipair), year);
 
+  cout<<"HI"<<endl;
   //output the W+jet normalization and Njets connection
   outputWjets(file, bins.at(ipair), cardType, year);
 
+  cout<<"HI"<<endl;
   // output kappa systematics
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
@@ -1090,7 +1106,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   {
     map<string, int> bindex;
     map<TString, int> procind;
-    vector<TString> process = {"qcd","ttbar","wjets"};
+    vector<TString> process = {"qcd","wjets"};
     for(uint ibin=0; ibin<nbins; ibin++){
       bindex[bins[ibin]]=ibin;
     }

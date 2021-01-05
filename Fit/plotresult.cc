@@ -202,6 +202,40 @@ void plotresult(TString year="2016",int gluinoMass=1700)
   }
 */  
 
+// FIXME: these lines can be removed
+/*  
+  std::string workspaceFilename;
+  std::string resultsFilename;
+  if(doControl) 
+  { 
+    workspaceFilename=Form("workspace_M%d_control_nopdf.root", gluinoMass);
+    resultsFilename=Form("mlfitM%d_control.root", gluinoMass);
+  }
+  else 
+  { 
+    workspaceFilename=Form("workspace_M%d.root", gluinoMass);
+    resultsFilename=Form("mlfitM%d.root", gluinoMass); 
+  }
+
+  TFile *f = TFile::Open(workspaceFilename.c_str());
+  TFile *fResults = TFile::Open(resultsFilename.c_str());
+
+  RooWorkspace *work = static_cast<RooWorkspace*>(f->Get("w"));
+  RooFitResult *result_b = static_cast<RooFitResult*>(fResults->Get("fit_b"));
+  RooFitResult *result_s = static_cast<RooFitResult*>(fResults->Get("fit_s"));
+
+  RooSimultaneous * model_b = static_cast<RooSimultaneous*>(work->pdf("model_b"));
+  RooSimultaneous * model_s = static_cast<RooSimultaneous*>(work->pdf("model_s"));
+
+  RooDataHist *histData = static_cast<RooDataHist*>(work->data("data_obs"));
+  // get RooFitResults
+  setValues(work, result_b);
+  if(plotSPlusB) setValues(work, result_s);
+
+  std::cout << "Setting category" << std::endl;
+  RooCategory *cat = work->cat("CMS_channel");
+  //cat->Print();
+*/ 
   std::string resultsFilename=Form("mlfit_cr_%s.root",year.Data());
   TFile *fResults = TFile::Open(resultsFilename.c_str());
   RooFitResult *result_b = static_cast<RooFitResult*>(fResults->Get("fit_b"));

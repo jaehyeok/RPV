@@ -37,7 +37,7 @@ int main()
         "wjets_mur", "wjets_muf", "wjets_murf",
         "other_mur", "other_muf", "other_murf"};
 // */
-    vector<TString> variations={"mur","muf","jec","isr","lep_eff","btag_bc","btag_udsg","GS"};
+    vector<TString> variations={"GS","ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
   

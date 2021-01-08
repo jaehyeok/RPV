@@ -37,12 +37,7 @@ int main()
         "wjets_mur", "wjets_muf", "wjets_murf",
         "other_mur", "other_muf", "other_murf"};
 // */
-  
-    vector<TString> variations={
-        //"GS",
-        "kappa",
-        //"btag_bc", "btag_udsg"
-    };
+    vector<TString> variations={"GS","ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
   
@@ -82,26 +77,27 @@ void h1cosmetic(TH1F* &h1, const char* title, int linecolor, int linewidth, int 
 void drawUpDown(int bin, vector<TString> variations)
 {
 
+	TString year = "2016";
+
 	// style
 	gStyle->SetPaintTextFormat(".1f");
 	gStyle->SetMarkerSize(2.5);
 
 //    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
 
-    TFile* infile = TFile::Open("variations/output_2016_mconly.root");
+    TFile* infile = TFile::Open("variations/output_"+year+".root");
     TCanvas *c1;
     TPad *pad1;
     TPad *pad2;
 
-    for(unsigned int iprocess=0; iprocess<6; iprocess++) 
+    for(unsigned int iprocess=0; iprocess<1; iprocess++) 
     {
-        TString hname = "ttbar";
+        TString hname = "signal_M1700";
         if(iprocess==1) hname = "qcd";
         if(iprocess==2) hname = "wjets";
         if(iprocess==3) hname = "other";
         if(iprocess==4) hname = "signal_M1600";
         if(iprocess==5) hname = "signal_M1900";
-
         for(unsigned int ivariation=0; ivariation<variations.size(); ivariation++) 
         { 
             if(iprocess==4 && variations.at(ivariation).Contains("mu")) continue;
@@ -110,11 +106,11 @@ void drawUpDown(int bin, vector<TString> variations)
             const char* haltername = variations.at(ivariation).Data();
             cout << "Drawing " << haltername << " for " << hname << endl;  
             TH1F *h1_central  = static_cast<TH1F*>(infile->Get(Form("bin%i/%s", bin, hname.Data())));
-            TH1F *h1_up       = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%sUp", bin, hname.Data(), haltername))); 
-            TH1F *h1_down     = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%sDown", bin, hname.Data(), haltername))); 
+            TH1F *h1_up       = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%s_"+year+"Up", bin, hname.Data(), haltername))); 
+            TH1F *h1_down     = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%s_"+year+"Down", bin, hname.Data(), haltername))); 
 
-	    TH1F *h1_ratio    = new TH1F(Form("bin%i/h1_ratio_%s",bin,hname.Data()),"h1_ratio",60,1,60);
-	    TH1F *h1_ratio2    = new TH1F(Form("bin%i/h1_ratio2_%s",bin,hname.Data()),"h1_ratio2",40,1,40);
+	    TH1F *h1_ratio    = new TH1F(Form("bin%i/h1_ratio_%s_%s",bin,hname.Data(), haltername),"h1_ratio",60,1,60);
+	    TH1F *h1_ratio2    = new TH1F(Form("bin%i/h1_ratio2_%s_%s",bin,hname.Data(), haltername),"h1_ratio2",40,1,40);
 
             float bc_cent(0), bc_up(0), bc_down(0);
 	    float err(0);
@@ -298,14 +294,14 @@ void drawUpDown(int bin, vector<TString> variations)
             l0p9->Draw("same");
             //cout << hname  << h1_central->GetBinError(5) << " " <<  h1_central->GetBinContent(5) << " = " <<  h1_central->GetBinError(5) / h1_central->GetBinContent(5)<< endl; 
 
-            gSystem->mkdir(Form("plots/variations/bin%i",bin), kTRUE); 
-            c->Print(Form("plots/variations/bin%i/bin%i_%s_%s_mconly.pdf", bin, bin, hname.Data(), haltername));
-            c->SaveAs(Form("plots/variations/bin%i/bin%i_%s_%s_mconly.png", bin, bin, hname.Data(), haltername));
+            gSystem->mkdir(Form("plots/plots_variations/bin%i",bin), kTRUE); 
+            c->Print(Form("plots/plots_variations/bin%i/bin%i_%s_%s_mconly.pdf", bin, bin, hname.Data(), haltername));
+            c->SaveAs(Form("plots/plots_variations/bin%i/bin%i_%s_%s_mconly.png", bin, bin, hname.Data(), haltername));
 
 	    //TCanvas *c1 = new TCanvas("c1","c1",2000,1000);
-	    c1 = new TCanvas(Form("c1_%i_%s",bin,hname.Data()),Form("c1_%i_%s",bin,hname.Data()),2000,1000);
-            pad1 = new TPad(Form("ratio_%i_%s",bin,hname.Data()),Form("ratio_%i_%s",bin,hname.Data()),0.0,0.0,0.6,1.0);
-            pad2 = new TPad(Form("ratio_%i_%s",bin,hname.Data()),Form("ratio_%i_%s",bin,hname.Data()),0.6,0.0,1.0,1.0);
+	    c1 = new TCanvas(Form("c1_%i_%s_%s",bin,hname.Data(),haltername),Form("c1_%i_%s_%s",bin,hname.Data(),haltername),2000,1000);
+            pad1 = new TPad(Form("ratio_%i_%s_%s",bin,hname.Data(),haltername),Form("ratio_%i_%s_%s",bin,hname.Data(),haltername),0.0,0.0,0.6,1.0);
+            pad2 = new TPad(Form("ratio_%i_%s_%s",bin,hname.Data(),haltername),Form("ratio_%i_%s_%s",bin,hname.Data(),haltername),0.6,0.0,1.0,1.0);
 	    pad1->Draw();
 	    pad2->Draw();
 	    pad1->cd();
@@ -315,8 +311,8 @@ void drawUpDown(int bin, vector<TString> variations)
 	    pad2->cd();
 	    h1_ratio2->SetStats(0);
 	    h1_ratio2->Draw("hist");
-            c1->Print(Form("plots/variations/bin%i/bin%i_%s_%s_ratio.pdf", bin, bin, hname.Data(), haltername));
-            c1->SaveAs(Form("plots/variations/bin%i/bin%i_%s_%s_ratio.png", bin, bin, hname.Data(), haltername));
+            c1->Print(Form("plots/plots_variations/bin%i/bin%i_%s_%s_ratio.pdf", bin, bin, hname.Data(), haltername));
+            c1->SaveAs(Form("plots/plots_variations/bin%i/bin%i_%s_%s_ratio.png", bin, bin, hname.Data(), haltername));
 
             delete h1_central; 
             delete h1_up; 

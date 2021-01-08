@@ -13,3 +13,11 @@ combine -M AsymptoticLimits datacards/nopdfoutput_$1/datacard_M${mass}_mconly_no
 done
 
 mv higgsCombineM*.AsymptoticLimits.mH120.root datacards/nopdfoutput_$1/.
+
+### total limits
+'''
+for mass in {1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200}
+do echo ${mass}
+combine -M AsymptoticLimits datacards_tot/nopdfoutput_16~18/total_M${mass}.dat -n M${mass}
+done
+'''

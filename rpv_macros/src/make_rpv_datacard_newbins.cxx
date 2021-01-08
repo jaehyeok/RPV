@@ -29,6 +29,8 @@ namespace {
 
 using namespace std;
 
+TString str_year;
+
 int main(int argc, char *argv[])
 {
   bool includePDFUncert = false;
@@ -77,6 +79,7 @@ int main(int argc, char *argv[])
     }
     if(argc>3)
       inputname = argv[3];
+      str_year  = argv[5];
 
 //    else {
 //      if(cardType=="control") includeSignalRegion=false;
@@ -930,7 +933,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       mednjcon_ = "1.35";
       highnjcon_ = "1.33";
     }
-    if(year=="2016"){
+    if(year=="2018"){
       mednjcon_ = "1.26";
       highnjcon_ = "1.30";
     }
@@ -1106,6 +1109,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
     }
 
+    if(str_year=="") cout << "2017-2018 not merged" <<endl; 
+    else{
+      year = str_year;
+      cout<< "2017-2018 merged : " << str_year << endl;
+    }
     for(auto iproc : process){
       if(filename.find("lownjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){

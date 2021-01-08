@@ -29,6 +29,7 @@ double divideErrors(double x, double y, double dx, double dy);
 TString color(TString procname);
 //void fillTH1F(TH1F* &h1, double var, double weight);
 
+TString str_year("");
 
 float mjmin = 500;
 float mjmax = 1400;
@@ -197,12 +198,31 @@ int main(int argc, char *argv[])
     cout << argv[0] << endl;
     cout << argv[1] << endl;
     variations = argv[1];  
+    TString temp = argv[6];
     if(variations=="w_pdf")
     {
       w_pdf_index = atoi(argv[2]);  
       cout << "Running variation : " << variations << endl;
       cout << " with w_pdf index " << w_pdf_index; 
       cout << endl; 
+    }
+    else if(temp=="20178"){
+      onoff=argv[2];
+      mjmin=atof(argv[3]);
+      mjmax=atof(argv[4]);
+      year = argv[5];
+      str_year = argv[6];
+      if(year=="2016") lumi = 35.9;
+      else if(year=="2017") lumi = 41.5;
+      else if(year=="2018") lumi = 59.7;
+      cout << "Luminosity        : " << lumi << "fb-1" << endl;
+      if(onoff=="off") nl0shape = false; 
+      cout << "Running variation : " << variations << endl;
+      cout << "0 Lepton shape    : " << (nl0shape?"on":"off") << endl;
+      //	cout << "MJ minimum        : " << mjmin << endl;
+      //	cout << "MJ maximum        : " << mjmax << endl;
+      binsize = (mjmax-mjmin)/3;
+      cout << "Bins distribution : [ " << mjmin << ", " << mjmin + binsize << ", " << mjmin + 2*binsize << " ]" << endl;
     }
     else
     {
@@ -342,7 +362,9 @@ int main(int argc, char *argv[])
   TString temp = argv[2];
   if(nl0shape == false) shape = "";
   TString output_filename = Form("variations/output_%s_newnt%s_%s.root", variations.Data(), shape.Data(), year.Data());
-  if(argc==7) output_filename = Form("variations/output_%s_newnt%s_%s_%.0f.root",variations.Data(), shape.Data(), year.Data(), lumi);
+  cout<<str_year<<endl;
+  if(argc==7&&str_year!="") output_filename = Form("variations/output_%s_newnt%s_%s_%s.root",variations.Data(), shape.Data(), year.Data(), str_year.Data());
+  else if(argc==7) output_filename = Form("variations/output_%s_newnt%s_%s_%.0f.root",variations.Data(), shape.Data(), year.Data(), lumi);
   TFile *f = new TFile(output_filename, "recreate");
 
   // Depending on the process, turn on/off variation
@@ -486,6 +508,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   float kappa_syst[2][nbins][3][3];    
   float kappa_wgt[2][3][3];
   TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root","read");
+  if(str_year=="20178"){
+    f_kappa_syst->Close();
+    f_kappa_syst = TFile::Open("data/result_kappa_20178.root","read");
+    cout<<"20178 opened"<<endl;
+  }
 
   // to make kappa_1, kapp_2 histograms which act independently
   TH1F * h1nominal_[nbins][2];
@@ -1089,9 +1116,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
         if(procname=="others"||procname.Contains("signal")||procname.Contains("Stop")) continue;
 
-        upname = procname+"_"+temp_+"_"+year+"Up";
-        downname = procname+"_"+temp_+"_"+year+"Down";
-
+	if(str_year==""){
+          upname = procname+"_"+temp_+"_"+year+"Up";
+          downname = procname+"_"+temp_+"_"+year+"Down";
+	}
+	else{
+          upname = procname+"_"+temp_+"_"+str_year+"Up";
+          downname = procname+"_"+temp_+"_"+str_year+"Down";
+	}
 
         h1up_[ibin][kap-1]->SetTitle(upname.Data());
         h1up_[ibin][kap-1]->SetName(upname.Data());

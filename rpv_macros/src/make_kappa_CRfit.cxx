@@ -17,6 +17,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TGraphErrors.h"
+#include "TGraphAsymmErrors.h"
 #include "TStyle.h"
 #include "TMath.h"
 #include "TLorentzVector.h"
@@ -34,8 +35,7 @@ struct winsize w;
 
 void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj, TString procname);
 void genKappaFactors(TFile *f, TString year);
-void genKappaFactorstt(TFile *f, TString year);
-void genKappaShapedOutput(TFile *f, TString year, float kappa[2][3][3], float unc_kappa[2][3][3]);
+void genKappaForTTJets(TFile *f_CRFit, float kappa[2][3][3], float kappa_unc[2][3][3], float mc_unc[2][3][3]);
 vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]);
 int genMConly(TFile *f, bool mconly);
 TString color(TString procname);
@@ -222,7 +222,7 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
   int cols = w.ws_col;
 
 
-  vector<int> bins = {0, 1, 2, 6, 7, 8, 9, 10, 11};
+  vector<int> bins = {0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
   if(flag_kwj) bins = {3, 4, 5};
 
   // Get QCD flavor weights/systematics
@@ -284,11 +284,8 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
   {
     int index;
     index = find(bins.begin(), bins.end(), ibin) - bins.begin();
-  cout<<"HI "<<ibin<<endl;
     if(f->Get(Form("/bin%d/%s", ibin, procname.Data()))){
-      cout<<"HI"<<endl;
       h1nominal[index] = static_cast<TH1F*>(f->Get(Form("bin%d/%s", ibin, procname.Data())));
-      cout<<"HI"<<endl;
     }
     else h1nominal[index]    = new TH1F(Form("%s_bin%i",procname.Data(),ibin),    Form("%s_bin%i",procname.Data(),ibin), MjBin+1, mjmin, mjmax);
   }
@@ -346,6 +343,7 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
         int index;
         index = find(bins.begin(), bins.end(), ibin) - bins.begin();
         float hmjmax = mjmax-0.001;
+	if(ibin>11) hmjmax = mjmin+(mjmax-mjmin)/3-0.001;
         h1nominal[index]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), weight);  // nominal  
       }
     }
@@ -467,24 +465,7 @@ void genKappaFactors(TFile *f, TString year){
       mc_unc[i-1][ind_ibin][ind_proc] = unc_mc/temp_mc_;
     }
   }
-  if(debug){
-    for(int ibin=0 ; ibin<3 ; ibin++){
-      for(int jproc=0 ; jproc<3 ; jproc++){
-        cout << "kappa 1 in NJets " << ibin<<" process " <<jproc << " : " << kappa[0][ibin][jproc] << endl;
-        cout << "kappa 2 in NJets " << ibin<<" process " <<jproc << " : " << kappa[1][ibin][jproc] << endl;
-      }
-    }
-  }
-  if(debug){
-    for(int ibin=0 ; ibin<3 ; ibin++){
-      for(int jproc=0 ; jproc<3 ; jproc++){
-        cout << "kappa 1 uncertainty in NJets " << ibin<<" process : " <<jproc << " : " << kappa_unc[0][ibin][jproc] << endl;
-        cout << "kappa 2 uncertainty in NJets " << ibin<<" process : " <<jproc << " : " << kappa_unc[1][ibin][jproc] << endl;
-      }
-    }
-  }
-  genKappaShapedOutput(f,year,kappa,kappa_unc);
-  TH1F *hist_kappa1 = new TH1F("hist_kappa1", "hist_kappa1", 9, 0, 9);
+ TH1F *hist_kappa1 = new TH1F("hist_kappa1", "hist_kappa1", 9, 0, 9);
   TH1F *hist_kappa1_mc = new TH1F("hist_kappa1_mc", "hist_kappa1_mc", 9, 0, 9);
   TH1F *hist_kappa2 = new TH1F("hist_kappa2", "hist_kappa2", 9, 0, 9);
   TH1F *hist_kappa2_mc = new TH1F("hist_kappa2_mc", "hist_kappa2_mc", 9, 0, 9);
@@ -510,10 +491,72 @@ void genKappaFactors(TFile *f, TString year){
   hist_kappa2->SetMaximum(2);
   hist_kappa2->SetMinimum(-2);
   hist_kappa2->SetTitle("kappa2");
+
   TFile *g = new TFile("data/result_kappa_"+year+".root","recreate");
   g->cd();
   hist_kappa1->Write();
   hist_kappa2->Write();
+  g->Close();
+
+  TString str_mconly("off");
+  if(mconly) str_mconly="on";
+
+  system("cp scripts/make_CRFit.sh .");
+  system("cp scripts/repack.C .");
+  system(Form("./make_CRFit.sh %s %s",year.Data(),str_mconly.Data()));
+  system("rm make_CRFit.sh");
+  system("rm repack.C");
+
+  TFile *f_CRFit = new TFile("mlfit_cr_CRFit_"+year+".root","read");
+  genKappaForTTJets(f_CRFit, kappa, kappa_unc, mc_unc);
+  for(int ibin=0 ; ibin<3 ; ibin++){
+    for(int jproc=0 ; jproc<3 ; jproc++){
+      cout<<kappa_unc[0][ibin][jproc]<<endl;
+      hist_kappa1->SetBinContent((ibin+1)+jproc*3,kappa[0][ibin][jproc]);
+      hist_kappa1->SetBinError((ibin+1)+jproc*3,kappa_unc[0][ibin][jproc]);
+      hist_kappa1->GetXaxis()->SetBinLabel((ibin+1)+jproc*3,njRegion.at(ibin)+process.at(jproc));
+      hist_kappa1_mc->SetBinContent((ibin+1)+jproc*3,kappa[0][ibin][jproc]);
+      hist_kappa1_mc->SetBinError((ibin+1)+jproc*3,mc_unc[0][ibin][jproc]);
+      hist_kappa2->SetBinContent((ibin+1)+jproc*3,kappa[1][ibin][jproc]);
+      hist_kappa2->SetBinError((ibin+1)+jproc*3,kappa_unc[1][ibin][jproc]);
+      hist_kappa2->GetXaxis()->SetBinLabel((ibin+1)+jproc*3,njRegion.at(ibin)+process.at(jproc));
+      hist_kappa2_mc->SetBinContent((ibin+1)+jproc*3,kappa[1][ibin][jproc]);
+      hist_kappa2_mc->SetBinError((ibin+1)+jproc*3,mc_unc[1][ibin][jproc]);
+    }
+  }
+  hist_kappa1->SetStats(0);
+  hist_kappa1->SetMaximum(2);
+  hist_kappa1->SetMinimum(-2);
+  hist_kappa1->SetTitle("kappa1");
+  hist_kappa2->SetStats(0);
+  hist_kappa2->SetMaximum(2);
+  hist_kappa2->SetMinimum(-2);
+  hist_kappa2->SetTitle("kappa2");
+
+  TFile *g_ = new TFile("data/result_kappa_"+year+".root","recreate");
+  g_->cd();
+  hist_kappa1->Write();
+  hist_kappa2->Write();
+  g_->Close();
+
+  if(debug){
+    for(int ibin=0 ; ibin<3 ; ibin++){
+      for(int jproc=0 ; jproc<3 ; jproc++){
+        cout << "kappa 1 in NJets " << ibin<<" process " <<jproc << " : " << kappa[0][ibin][jproc] << endl;
+        cout << "kappa 2 in NJets " << ibin<<" process " <<jproc << " : " << kappa[1][ibin][jproc] << endl;
+      }
+    }
+  }
+  if(debug){
+    for(int ibin=0 ; ibin<3 ; ibin++){
+      for(int jproc=0 ; jproc<3 ; jproc++){
+        cout << "kappa 1 uncertainty in NJets " << ibin<<" process : " <<jproc << " : " << kappa_unc[0][ibin][jproc] << endl;
+        cout << "kappa 2 uncertainty in NJets " << ibin<<" process : " <<jproc << " : " << kappa_unc[1][ibin][jproc] << endl;
+      }
+    }
+  }
+ 
+
   TCanvas *c = new TCanvas("c","c",1600,1600);
   c->Divide(1,2);
   c->cd(1);
@@ -579,64 +622,49 @@ void genKappaFactors(TFile *f, TString year){
   c->Print("kappa_result_"+year+".pdf");
 }
 
-void genKappaShapedOutput(TFile *f, TString year, float kappa[2][3][3], float unc_kappa[2][3][3]){
-  f->cd(); 
-  bins = {6,7,8,9,10,11};
-  vector<TString> procs = {"qcd", "wjets"};
-  vector<TString> njets = {"njets45", "njets67", "njets8"};
-  int nbins = bins.size();
-  TH1F *mc[2][nbins], *mc_nom[2][nbins], *mc_up[2][2][nbins], *mc_down[2][2][nbins];
-  int ind_;
+void genKappaForTTJets(TFile *f_CRFit, float kappa[2][3][3], float kappa_unc[2][3][3], float mc_unc[2][3][3]){
+  TH1F *qcd, *wjets, *ttbar, *other, *bkg;
+  TGraphAsymmErrors *data;
+  vector<int> bins = {25, 26, 27};
   for(auto ibin : bins){
-    int ind_ibin    = ibin%3;        // ind_ibin = 0 : Low Njets, ind_ibin = 1 : Med Njets, ind_ibin = 2 : High Njets
+    data = static_cast<TGraphAsymmErrors*>(f_CRFit->Get(Form("shapes_fit_b/bin%d/data",ibin)));
+    auto nPoints = data->GetN();
+    TH1F *dat = new TH1F("data","data",3,mjmin,mjmax);
+    for(int i=0 ; i < nPoints ; ++i){
+      double x,y;
+      data->GetPoint(i,x,y);
+      dat->SetBinContent(i+1,y);
+      dat->SetBinError(i+1,TMath::Sqrt(y));
+    }
+    qcd = static_cast<TH1F*>(f_CRFit->Get(Form("shapes_fit_b/bin%d/qcd",ibin)));
+    wjets = static_cast<TH1F*>(f_CRFit->Get(Form("shapes_fit_b/bin%d/wjets",ibin)));
+    ttbar = static_cast<TH1F*>(f_CRFit->Get(Form("shapes_fit_b/bin%d/ttbar",ibin)));
+    other = static_cast<TH1F*>(f_CRFit->Get(Form("shapes_fit_b/bin%d/other",ibin)));
+    bkg = static_cast<TH1F*>(f_CRFit->Get(Form("shapes_fit_b/bin%d/total_background",ibin)));
+    float datbc = dat->GetBinContent(1);
+    float bkgbc = bkg->GetBinContent(1);
+    float SF = datbc/bkgbc;
+    qcd->Scale(SF);
+    wjets->Scale(SF);
+    other->Scale(SF);
+    dat->Add(qcd,-1);
+    dat->Add(wjets,-1);
+    dat->Add(other,-1);
     float ratio[3];
-    for(auto iproc : procs){
-      if(iproc == "qcd") ind_ = 0;
-      if(iproc == "wjets") ind_ = 1; 
-      mc[ind_][ibin-6] = static_cast<TH1F*>(f->Get(Form("bin%d/%s",ibin,iproc.Data())));
-      mc_nom[ind_][ibin-6] = static_cast<TH1F*>(mc[ind_][ibin-6]->Clone(Form("%s",iproc.Data())));
-      for(int i=0; i<3; i++){
-        float bincont = mc[ind_][ibin-6]->GetBinContent(i+1);
-	if(i==0) continue;
-	mc_nom[ind_][ibin-6]->SetBinContent(i+1,bincont*kappa[i-1][ind_ibin][ind_]);
-      }
-      mc_up[0][ind_][ibin-6] = static_cast<TH1F*>(mc_nom[ind_][ibin-6]->Clone(Form("%s_kappa1_%s_%s_%sUp",iproc.Data(),njets.at(ind_ibin).Data(),iproc.Data(),year.Data())));
-      mc_down[0][ind_][ibin-6] = static_cast<TH1F*>(mc_nom[ind_][ibin-6]->Clone(Form("%s_kappa1_%s_%s_%sDown",iproc.Data(),njets.at(ind_ibin).Data(),iproc.Data(),year.Data())));
-      mc_up[1][ind_][ibin-6] = static_cast<TH1F*>(mc_nom[ind_][ibin-6]->Clone(Form("%s_kappa2_%s_%s_%sUp",iproc.Data(),njets.at(ind_ibin).Data(),iproc.Data(),year.Data())));
-      mc_down[1][ind_][ibin-6] = static_cast<TH1F*>(mc_nom[ind_][ibin-6]->Clone(Form("%s_kappa2_%s_%s_%sDown",iproc.Data(),njets.at(ind_ibin).Data(),iproc.Data(),year.Data())));
-      for(int i=1; i<3 ; i++){
-	float bincont = mc_nom[ind_][ibin-6]->GetBinContent(i+1);
-	float kap_rat = unc_kappa[i-1][ind_ibin][ind_]/kappa[i-1][ind_ibin][ind_];
-	
-	mc_up[i-1][ind_][ibin-6]->SetBinContent(i+1,bincont*(1+kap_rat));
-	if(1-kap_rat<0) mc_down[i-1][ind_][ibin-6]->SetBinContent(i+1,0);
-	else mc_down[i-1][ind_][ibin-6]->SetBinContent(i+1,bincont*(1-kap_rat));
-      }
+    for(int j=0 ; j<3 ; j++) ratio[j] = dat->GetBinContent(j+1)/ttbar->GetBinContent(j+1);
+    int ind_ibin = (ibin+2)%3;
+    kappa[0][ind_ibin][2] = ratio[1]/ratio[0];
+    kappa[1][ind_ibin][2] = ratio[2]/ratio[0];
+    for(int i=1 ; i<3 ; i++){
+      float unc_diff(0), unc_stat(0), unc_mc(0), temp_mc_(0);
+      temp_mc_ = ttbar->GetBinContent(i+1);
+      unc_diff = abs(dat->GetBinContent(i+1)-ttbar->GetBinContent(i+1));
+      unc_stat = dat->GetBinError(i+1);
+      unc_mc   = ttbar->GetBinError(i+1);
+      kappa_unc[i-1][ind_ibin][2] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc)/temp_mc_; 
+      mc_unc[i-1][ind_ibin][2] = unc_mc/temp_mc_;
     }
   }
-  TFile *g = new TFile("variations/output_CRFit.root","recreate");
-  g->cd();
-  for(auto ibin : bins){
-    gDirectory->cd("/");
-    TString directory(Form("bin%d", ibin));
-    if(!gDirectory->GetDirectory(directory)) gDirectory->mkdir(directory);
-    gDirectory->cd(directory);
-    for(auto iproc : procs){
-      if(iproc == "qcd") ind_=0;
-      else if(iproc == "wjets") ind_=1;
-      mc_nom[ind_][ibin-6]->Write();
-      for(int j=0; j<2; j++){
-        mc_up[j][ind_][ibin-6]->Write();
-        mc_down[j][ind_][ibin-6]->Write();
-      }
-    }
-    vector<TString> procs_other={"data_obs","ttbar","other","signal_M1900"};
-    for(auto iproc : procs_other){
-      TH1F *mc_ = static_cast<TH1F*>(f->Get(Form("bin%d/%s",ibin,iproc.Data())));
-      mc_->Write();
-    }
-  }
-  g->Close();
 }
 
 vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]){

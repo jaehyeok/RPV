@@ -818,28 +818,103 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
   }              
   // Region Binning For ttbar Kappa Factors //
   else if(bin==6){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsVLowCut;
+		njetsHigh   = njetsVLowCut+1;
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }             
+  else if(bin==7){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsLowCut;
+		njetsHigh   = njetsLowCut+1;
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }                
+  else if(bin==8){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsMedCut;
+		njetsHigh   = njetsInfCut;
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }
+  //Generate regions to fit the CR
+  else if(bin==9){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsVLowCut;
+		njetsHigh   = njetsVLowCut+1;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }               
+  else if(bin==10){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsLowCut;
+		njetsHigh   = njetsLowCut+1;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }              
+  else if(bin==11){
+		nleps       = 1;
+		ht          = ht1lepCut;
+		njetsLow    = njetsMedCut;
+		njetsHigh   = njetsInfCut;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }
+  // Region Binning For ttbar Kappa Factors //
+  else if(bin==12){
 		nleps       = 0;
 		ht          = ht1lepCut;
 		njetsLow    = njetsLowCut;
 		njetsHigh   = njetsLowCut+1;
-		nbLow       = nbMedCut;
-		nbHigh      = nbHighCut;
-  }             
-  else if(bin==7){
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }                            
+  else if(bin==13){            
 		nleps       = 0;
 		ht          = ht1lepCut;
 		njetsLow    = njetsMedCut;
 		njetsHigh   = njetsMedCut+1;
-		nbLow       = nbMedCut;
-		nbHigh      = nbHighCut;
-  }                
-  else if(bin==8){
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }                            
+  else if(bin==14){            
 		nleps       = 0;
 		ht          = ht1lepCut;
 		njetsLow    = njetsHighCut;
 		njetsHigh   = njetsInfCut;
-		nbLow       = nbMedCut;
-		nbHigh      = nbHighCut;
+		nbLow       = nbLowCut;
+		nbHigh      = nbMedCut;
+  }
+  //Generate regions to fit the CR
+  else if(bin==15){
+		nleps       = 0;
+		ht          = ht1lepCut;
+		njetsLow    = njetsLowCut;
+		njetsHigh   = njetsLowCut+1;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }               
+  else if(bin==16){
+		nleps       = 0;
+		ht          = ht1lepCut;
+		njetsLow    = njetsMedCut;
+		njetsHigh   = njetsMedCut+1;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
+  }              
+  else if(bin==17){
+		nleps       = 0;
+		ht          = ht1lepCut;
+		njetsLow    = njetsHighCut;
+		njetsHigh   = njetsInfCut;
+		nbLow       = nbVLowCut;
+		nbHigh      = nbLowCut;
   }
 	else  // in case of wrong bin number
 	{ 

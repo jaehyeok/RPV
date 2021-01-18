@@ -418,7 +418,7 @@ int main(int argc, char *argv[])
   getSyst(mStop_1350, variations, year, f, "Stop_M1350");
   getSyst(mStop_1400, variations, year, f, "Stop_M1400");// */
 
-  // close output root file
+  // close output root file 
   f->Close();
 } 
 
@@ -524,9 +524,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if(ibin>21){
       int njbin(0), iproc(0);
 
-      if(ibin%3==0) njbin=0;
-      else if(ibin%3==1) njbin=1;
-      else if(ibin%3==2) njbin=2;
+      if(ibin%3==1) njbin=0;
+      else if(ibin%3==2) njbin=1;
+      else if(ibin%3==0) njbin=2;
 
       if(procname=="qcd") iproc=0;
       else if(procname=="wjets") iproc=1;
@@ -538,10 +538,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       kappa1_cont = h_kap1->GetBinContent(njbin+3*iproc+1);
       kappa2_err  = h_kap2->GetBinError(njbin+3*iproc+1); 
       kappa2_cont = h_kap2->GetBinContent(njbin+3*iproc+1);
-      kappa_syst[0][ibin][njbin][iproc] = kappa1_err/kappa1_cont;
-      kappa_syst[1][ibin][njbin][iproc] = kappa2_err/kappa2_cont;
-      kappa_wgt[0][njbin][iproc] = kappa1_cont;
-      kappa_wgt[1][njbin][iproc] = kappa2_cont;
+      kappa_syst[0][ibin][njbin][iproc] = TMath::Sqrt(kappa1_err*kappa1_err + (1-kappa1_cont)*(1-kappa1_cont));
+      kappa_syst[1][ibin][njbin][iproc] = TMath::Sqrt(kappa2_err*kappa2_err + (1-kappa2_cont)*(1-kappa2_cont));
+      kappa_wgt[0][njbin][iproc] = 1;//kappa1_cont;
+      kappa_wgt[1][njbin][iproc] = 1;//kappa2_cont;
       /*if(variations=="nominal"){
         kappa_wgt[0][njbin][iproc] = 1;
         kappa_wgt[1][njbin][iproc] = 1;
@@ -929,7 +929,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       else if(tree.mj12()>mjmin+300 && tree.mj12()<mjmin+600) ihb = 0;
       else if(tree.mj12()>mjmin+600) ihb = 1;
 
-
       if(procname!="data_obs"&&ibin>22){
         if(ihb!=999){
           float kappa_w = kappa_wgt[ihb][njbin][iproc];
@@ -995,6 +994,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             downweight = nominalweight;
             sys_kappaup   = 1+kappa_syst[ihb][ibin][njbin][iproc];
             sys_kappadown = 1-kappa_syst[ihb][ibin][njbin][iproc];
+            if(sys_kappadown<0)  sys_kappadown = 0; 
             //cout<<sys_kappaup<<"::"<<sys_kappadown<<endl;
 
             upweight    = upweight*sys_kappaup;

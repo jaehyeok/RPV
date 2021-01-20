@@ -37,12 +37,11 @@ int main()
         "wjets_mur", "wjets_muf", "wjets_murf",
         "other_mur", "other_muf", "other_murf"};
 // */
-    vector<TString> variations={"GS","ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
+    //vector<TString> variations={"GS","ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
+    vector<TString> variations={"kappa1", "kappa2"};
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
-  
-    vector<int> bins = {22, 23, 24, 25, 26, 27, 28, 31, 34, 
-			29, 30, 32, 33, 35, 36};
+    vector<int> bins = {22, 23, 24, 25, 26, 27, 28, 31, 34, 29, 30, 32, 33, 35, 36};
     //for(int i=0; i<100; i++) variations.push_back(Form("w_pdf%i",i)); 
     
     for(auto ibin : bins){ 
@@ -77,7 +76,7 @@ void h1cosmetic(TH1F* &h1, const char* title, int linecolor, int linewidth, int 
 void drawUpDown(int bin, vector<TString> variations)
 {
 
-	TString year = "2016";
+	TString year = "2018";
 
 	// style
 	gStyle->SetPaintTextFormat(".1f");
@@ -90,41 +89,45 @@ void drawUpDown(int bin, vector<TString> variations)
     TPad *pad1;
     TPad *pad2;
 
-    for(unsigned int iprocess=0; iprocess<1; iprocess++) 
+    for(unsigned int iprocess=0; iprocess<4; iprocess++) 
     {
-        TString hname = "signal_M1700";
+        TString hname = "ttbar";
         if(iprocess==1) hname = "qcd";
         if(iprocess==2) hname = "wjets";
         if(iprocess==3) hname = "other";
         if(iprocess==4) hname = "signal_M1600";
-        if(iprocess==5) hname = "signal_M1900";
+        if(iprocess==5) hname = "signal_M1900"; 
         for(unsigned int ivariation=0; ivariation<variations.size(); ivariation++) 
         { 
-            if(iprocess==4 && variations.at(ivariation).Contains("mu")) continue;
-            if(iprocess==4 && variations.at(ivariation).Contains("pdf")) continue;
+          if(iprocess>=3 && variations.at(ivariation).Contains("kappa")) continue; // kappa other
 
-            const char* haltername = variations.at(ivariation).Data();
-            cout << "Drawing " << haltername << " for " << hname << endl;  
-            TH1F *h1_central  = static_cast<TH1F*>(infile->Get(Form("bin%i/%s", bin, hname.Data())));
-            TH1F *h1_up       = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%s_"+year+"Up", bin, hname.Data(), haltername))); 
-            TH1F *h1_down     = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%s_"+year+"Down", bin, hname.Data(), haltername))); 
+          const char* haltername = variations.at(ivariation).Data();
+          TString njets="njets45"; 
+          if(bin%3==2) njets="njets67"; 
+          if(bin%3==0) njets="njets8"; 
+          if(variations.at(ivariation)=="kappa1") haltername = Form("kappa1_%s_%s", njets.Data(),hname.Data());
+          if(variations.at(ivariation)=="kappa2") haltername = Form("kappa2_%s_%s", njets.Data(),hname.Data());
+          cout << "Drawing " << haltername << " for " << hname << endl; 
+          TH1F *h1_central  = static_cast<TH1F*>(infile->Get(Form("bin%i/%s", bin, hname.Data()))); 
+          TH1F *h1_up       = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%s_"+year+"Up", bin, hname.Data(), haltername))); 
+          TH1F *h1_down     = static_cast<TH1F*>(infile->Get(Form("bin%i/%s_%s_"+year+"Down", bin, hname.Data(), haltername))); 
 
-	    TH1F *h1_ratio    = new TH1F(Form("bin%i/h1_ratio_%s_%s",bin,hname.Data(), haltername),"h1_ratio",60,1,60);
-	    TH1F *h1_ratio2    = new TH1F(Form("bin%i/h1_ratio2_%s_%s",bin,hname.Data(), haltername),"h1_ratio2",40,1,40);
+          TH1F *h1_ratio    = new TH1F(Form("bin%i/h1_ratio_%s_%s",bin,hname.Data(), haltername),"h1_ratio",60,1,60);
+          TH1F *h1_ratio2    = new TH1F(Form("bin%i/h1_ratio2_%s_%s",bin,hname.Data(), haltername),"h1_ratio2",40,1,40);
 
-            float bc_cent(0), bc_up(0), bc_down(0);
-	    float err(0);
+          float bc_cent(0), bc_up(0), bc_down(0);
+          float err(0);
 
 
-            float stat_cent   = h1_central->GetBinContent(1);
-            float stat_up     = h1_up->GetBinContent(1);
-            float stat_down   = h1_down->GetBinContent(1);
+          float stat_cent   = h1_central->GetBinContent(1);
+          float stat_up     = h1_up->GetBinContent(1);
+          float stat_down   = h1_down->GetBinContent(1);
 
-            float SF_up       = stat_cent/stat_up;
-            float SF_down     = stat_cent/stat_down;
+          float SF_up       = stat_cent/stat_up;
+          float SF_down     = stat_cent/stat_down;
 
-            h1_up->Scale(SF_up);
-            h1_down->Scale(SF_down);
+          h1_up->Scale(SF_up);
+          h1_down->Scale(SF_down);
 
             for(int ibin = 0 ; ibin<3 ; ibin++){
              bc_cent = h1_central->GetBinContent(ibin+1); 
@@ -269,8 +272,8 @@ void drawUpDown(int bin, vector<TString> variations)
             h1_up_ratio->SetTitleOffset(1.0);
             h1_up_ratio->GetYaxis()->SetNdivisions(/*3,false*/706);
             h1_up_ratio->GetXaxis()->SetNdivisions(5,true);
-            h1_up_ratio->SetMinimum(0.7);
-            h1_up_ratio->SetMaximum(1.3);
+            h1_up_ratio->SetMinimum(-.5);
+            h1_up_ratio->SetMaximum(2.5);
             h1_up_ratio->GetYaxis()->SetTitle("#frac{up/down}{central}");
             h1_up_ratio->GetYaxis()->SetTitleOffset(0.5);
             h1_cent_rat->SetMarkerSize(0);

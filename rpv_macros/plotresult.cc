@@ -25,9 +25,10 @@
 #include "TLine.h"
 #include "TMath.h"
 
-#include "inc/tdrstyle.C"
+#include "tdrstyle.C"
 
 using namespace RooFit;
+
 
 float AddInQuad(float a, float b);
 void setValues(RooWorkspace *work, RooFitResult *result);
@@ -81,8 +82,14 @@ TH1D* changeHistogram(TH1D* h){
     return hist;
 }
 
-void plotresult(int gluinoMass=1500)
+void plotresult(TString year="2016",int gluinoMass=1700)
 {
+  float lumi = 35.9;
+  if(year=="2017") lumi = 41.5;
+  if(year=="2017_20178") lumi = 41.5;
+  if(year=="2018") lumi = 59.7;
+  if(year=="2018_20178") lumi = 59.7;
+  if(year=="20178") lumi = 101.2;
   bool doPrefit=false;
   bool plotSPlusB=false;
   bool doControl=true;
@@ -95,11 +102,12 @@ void plotresult(int gluinoMass=1500)
   if(doControl) 
   {
     binname = {"nlep1_nj45_nb0",   "nlep1_nj67_nb0",     "nlep1_nj8_nb0",
-   			   "nlep1_nj45_nb1",  "nlep1_nj67_nb1",    "nlep1_nj8_nb1", 
-   			   "nlep1_nj45_nb2",  "nlep1_nj67_nb2",    "nlep1_nj8_nb2", 
-   			   "nlep1_nj45_nb3",  "nlep1_nj67_nb3",    "nlep1_nj8_nb3", 
-   			   "nlep1_nj45_nb4",  "nlep1_nj67_nb4",    "nlep1_nj8_nb4"}; 
-    binnumber = {22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
+   			       "nlep1_nj45_nb1",   "nlep1_nj67_nb1",     "nlep1_nj8_nb1"}; 
+   //			   "nlep1_nj45_nb2",  "nlep1_nj67_nb2",    "nlep1_nj8_nb2", 
+   //			   "nlep1_nj45_nb3",  "nlep1_nj67_nb3",    "nlep1_nj8_nb3", 
+  // 			   "nlep1_nj45_nb4",  "nlep1_nj67_nb4",    "nlep1_nj8_nb4"}; 
+    binnumber = {22,23,24,25,26,27};
+    //binnumber = {22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
    // binname = {"nlep1_nj45_lowmj", "nlep1_nj45_highmj", "nlep1_nj67_lowmj"}; 
    // binnumber = {2,5,11};
   } 
@@ -146,8 +154,11 @@ void plotresult(int gluinoMass=1500)
   TH1D* h1_prefit_sig1700[31]; 
   TH1D* h1_prefit_sig1900[31]; 
   TH1D* h1_prefit_data[31]; 
-  TFile* infile  = TFile::Open("variations/output_tdatcard10_M1700.root", "READ");
-  for(int i=22; i<22+binname.size(); i++) {   
+  //TFile* infile  = TFile::Open("variations/output_tdatcard10_M1700.root", "READ");
+//  TFile* infile  = TFile::Open(Form("output_tdatcard11_%s.root", year.Data()), "READ");
+  TFile* infile  = TFile::Open(Form("variations/output_%s.root", year.Data()), "READ");
+//  TFile* infile = TFile::Open(Form("output_CRFit_20178.root"),"read");
+  for(unsigned int i=22; i<22+binname.size(); i++) {   
     int ibin = binnumber.at(i-22);
     if(ibin>=6 && ibin<=9) continue;
     h1_prefit_sig1700[i] = new TH1D(Form("h1_prefit_sig1700_bin%i",ibin), 
@@ -160,7 +171,7 @@ void plotresult(int gluinoMass=1500)
                                    Form("h1_prefit_data_bin%i",ibin), 
                                    3, 500, 1400); 
     //
-    for(int inb=1; inb<4; inb++)
+    for(unsigned int inb=1; inb<4; inb++)
     {
         sig1700[i][inb-1]= (static_cast<TH1D*>(infile->Get(Form("bin%i/signal_M1700", ibin))))->GetBinContent(inb);  
         h1_prefit_sig1700[i]->SetBinContent(inb, sig1700[i][inb-1]);
@@ -234,15 +245,13 @@ void plotresult(int gluinoMass=1500)
   RooCategory *cat = work->cat("CMS_channel");
   //cat->Print();
 */ 
-  std::string resultsFilename="mlfit.root";
+  std::string resultsFilename=Form("mlfit_%s.root",year.Data());
   TFile *fResults = TFile::Open(resultsFilename.c_str());
   RooFitResult *result_b = static_cast<RooFitResult*>(fResults->Get("fit_b"));
   RooFitResult *result_s = static_cast<RooFitResult*>(fResults->Get("fit_s"));
 
-    cout<<"HI"<<endl;
-  for(int i=22; i<22+binname.size(); i++) { 
+  for(unsigned int i=22; i<22+binname.size(); i++) { 
    
-    cout<<"HI"<<endl;
     TCanvas *c;
     TPad *pad_stack;
     TPad *pad_ratio;
@@ -252,7 +261,6 @@ void plotresult(int gluinoMass=1500)
     std::cout << "Drawing frame" << std::endl;
     c = new TCanvas("c","c",300,300);
     c->cd();
-cout << __LINE__ << " " << __FILE__ << endl; 
     pad_stack = new TPad(Form("p_main_%i",i), Form("p_main_%i",i), 0.0, 0.28, 1.0, 1.0);
     pad_stack->SetTopMargin(0.1);
     pad_stack->SetBottomMargin(0.04);
@@ -261,7 +269,6 @@ cout << __LINE__ << " " << __FILE__ << endl;
     pad_stack->Draw();
     pad_stack->cd();
     pad_stack->cd()->SetLogy(1);
-cout << __LINE__ << " " << __FILE__ << endl; 
     
     TH1D *h1_data = h1_prefit_data[i];     
     TH1D *h1_qcd;     
@@ -271,7 +278,6 @@ cout << __LINE__ << " " << __FILE__ << endl;
     TH1D *h1_signal; 
     if(doPrefit)  
     {
-      cout<<"HI"<<endl;
         h1_qcd =  changeHistogram((static_cast<TH1D*>(infile->Get(Form("bin%i/qcd", ibin)))));
         h1_ttbar =  changeHistogram((static_cast<TH1D*>(infile->Get(Form("bin%i/ttbar", ibin)))));
         h1_wjets =  changeHistogram((static_cast<TH1D*>(infile->Get(Form("bin%i/wjets", ibin)))));
@@ -284,29 +290,27 @@ cout << __LINE__ << " " << __FILE__ << endl;
         h1_other->Scale(sf);
         if(plotSPlusB) h1_signal =  h1_prefit_sig1900[i]; 
     }
+    /*
     else if(plotSPlusB)
     {
         h1_qcd =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/qcd", ibin)));
         h1_ttbar =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/ttbar", ibin)));
         h1_wjets =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/wjets", ibin)));
         h1_other =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/other", ibin)));
-        if(plotSPlusB) h1_signal =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/signal_M1700", ibin)));
+        if(plotSPlusB) h1_signal =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/signal_M1900", ibin)));
     }
+    */
     else 
-    {cout << __LINE__ << " " << __FILE__ << endl; 
+    {
         h1_qcd =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/qcd", ibin)));
-cout << __LINE__ << " " << __FILE__ << endl; 
         h1_ttbar =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/ttbar", ibin)));
-cout << __LINE__ << " " << __FILE__ << endl; 
         h1_wjets =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/wjets", ibin)));
-cout << __LINE__ << " " << __FILE__ << endl; 
         h1_other =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/other", ibin)));
-        if(plotSPlusB) h1_signal =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/signal_M1700", ibin)));
+        if(plotSPlusB) h1_signal =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/signal_M1900", ibin)));
     }
-cout << __LINE__ << " " << __FILE__ << endl; 
 
     //fill yields 
-    for(int inb=1; inb<4; inb++)
+    for(unsigned int inb=1; inb<4; inb++)
     {
         data[ibin][inb-1]  = h1_data->GetBinContent(inb);
         qcd[ibin][inb-1]   = h1_qcd->GetBinContent(inb);
@@ -314,40 +318,29 @@ cout << __LINE__ << " " << __FILE__ << endl;
         wjets[ibin][inb-1] = h1_wjets->GetBinContent(inb);
         other[ibin][inb-1] = h1_other->GetBinContent(inb); 
     }
-cout << __LINE__ << " " << __FILE__ << endl; 
 
     // cosmetics
     h1cosmetic(h1_data,          Form("Data bin%i", ibin),               kBlack, 2, 1,           "M_{J}");
-cout << __LINE__ << " " << __FILE__ << endl; 
     h1cosmetic(h1_qcd,           Form("QCD bin%i", ibin),                kBlack, 2, kYellow-7,     "M_{J}");
-cout << __LINE__ << " " << __FILE__ << endl; 
     h1cosmetic(h1_ttbar,         Form("ttbar bin%i", ibin),              kBlack, 2, kAzure+7,        "M_{J}");
-cout << __LINE__ << " " << __FILE__ << endl; 
     h1cosmetic(h1_wjets,         Form("Wjets bin%i", ibin),              kBlack, 2, kGreen+2,        "M_{J}");
-cout << __LINE__ << " " << __FILE__ << endl; 
     h1cosmetic(h1_other,         Form("other bin%i", ibin),              kBlack, 2, kGray+1,     "M_{J}");
-cout << __LINE__ << " " << __FILE__ << endl; 
     if(plotSPlusB) h1cosmetic(h1_signal,        Form("signal bin%i", ibin),             kBlack,   3, kRed,           "M_{J}");
-cout << __LINE__ << " " << __FILE__ << endl; 
     h1cosmetic(h1_prefit_sig1700[i],        Form("prefit signal 1700 bin%i", ibin),             kRed,   3, 0,           "M_{J}");
-cout << __LINE__ << " " << __FILE__ << endl; 
     h1cosmetic(h1_prefit_sig1900[i],        Form("prefit signal 1500 bin%i", ibin),             kRed,   3, 0,           "M_{J}");
-cout << __LINE__ << " " << __FILE__ << endl; 
     h1_prefit_sig1900[i]->SetLineStyle(2); 
 
-cout << __LINE__ << " " << __FILE__ << endl; 
     // uncertainty band 
     TH1D *h1_mc = (TH1D*)h1_qcd->Clone("h1_qcd");
     h1_mc->Add(h1_ttbar);
     h1_mc->Add(h1_wjets);
     h1_mc->Add(h1_other);
-    if(plotSPlusB) h1_mc->Add(h1_signal);
-    for(int inb=1; inb<4; inb++)  h1_mc->SetBinError(inb,err[4][i][inb-1]*h1_mc->GetBinContent(inb));
+    //if(plotSPlusB) h1_mc->Add(h1_signal);
+    for(unsigned int inb=1; inb<4; inb++)  h1_mc->SetBinError(inb,err[4][i][inb-1]*h1_mc->GetBinContent(inb));
     h1_mc->SetMarkerSize(0);
     h1_mc->SetFillColor(kBlack);
     h1_mc->SetLineColor(kBlack);
     h1_mc->SetFillStyle(3354);
-cout << __LINE__ << " " << __FILE__ << endl; 
 
     // stack
     THStack *st = new THStack(Form("Bin %i", ibin), Form("Bin %i", ibin));
@@ -355,7 +348,7 @@ cout << __LINE__ << " " << __FILE__ << endl;
     st->Add(h1_wjets); 
     st->Add(h1_ttbar); 
     st->Add(h1_qcd);  // can change order of ttbat and qcd in 1-lepton bins  
-    if(plotSPlusB) st->Add(h1_signal); 
+    //if(plotSPlusB) st->Add(h1_signal); 
 
     st->SetMaximum(h1_data->GetMaximum()*2000);
     st->SetMinimum(0.1);
@@ -369,12 +362,19 @@ cout << __LINE__ << " " << __FILE__ << endl;
     st->GetYaxis()->SetLabelSize(0.06);
     
     if(!doPrefit) h1_prefit_sig1900[i]->Draw("hist same"); 
-cout << __LINE__ << " " << __FILE__ << endl; 
     
     // legend
-    TLegend *leg = new TLegend(0.55, 0.45, 0.85, 0.87);
+    TLegend *leg = new TLegend(0.55, 0.55, 0.85, 0.87);
+    leg->SetNColumns(1);
     leg->SetBorderSize(0);
+    leg->SetFillColor(0);
     leg->SetFillStyle(0);
+    leg->SetTextFont(42);
+    leg->SetTextAlign(12);
+    leg->SetTextSize(0.06);
+    leg->SetFillColor(kWhite);
+    leg->SetLineColor(kWhite);
+    leg->SetShadowColor(kWhite);
     leg->AddEntry(h1_data,  "Data",     "ELP");
     leg->AddEntry(h1_qcd,   "QCD",      "F");
     leg->AddEntry(h1_ttbar, "t#bar{t}", "F");
@@ -389,26 +389,28 @@ cout << __LINE__ << " " << __FILE__ << endl;
     }
     //leg->AddEntry(h1_mc,    "Post-fit uncertainty",    "F");
     leg->Draw();
-cout << __LINE__ << " " << __FILE__ << endl; 
 
     // CMS and lumi labels
     float textSize = 0.05;
-    TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", 35.9));
+    float lumi = 35.9;
+    if(year=="2017") lumi = 41.5;
+    if(year=="2017_20178") lumi = 41.5;
+    if(year=="2018") lumi = 59.7;
+    if(year=="2018_20178") lumi = 59.7;
+    if(year=="20178") lumi = 101.2;
+    TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", lumi));
     TexEnergyLumi->SetNDC();
     TexEnergyLumi->SetTextSize(textSize);
     TexEnergyLumi->SetTextAlign (31);
     TexEnergyLumi->SetLineWidth(2);
 
-    TLatex *TexCMS = new TLatex(0.2,0.92,"CMS #font[18]{Preliminary}");
+    TLatex *TexCMS = new TLatex(0.2,0.92,"CMS #font[52]{Preliminary}");
     TexCMS->SetNDC();
     TexCMS->SetTextSize(textSize);
     TexCMS->SetLineWidth(2);
     TexEnergyLumi->Draw("same");
     TexCMS->Draw("same");
    
-cout << __LINE__ << " " << __FILE__ << endl; 
-
-    
     // display cuts
     //textSize=textSize-0.01;
     TLatex *TexNlep, *TexNjets, *TexNb;
@@ -456,7 +458,7 @@ cout << __LINE__ << " " << __FILE__ << endl;
     h1_ratio->SetTitleSize(0.16,"XY");
     h1_ratio->SetTitleOffset(1.0);
     h1_ratio->GetYaxis()->SetNdivisions(/*3,false*/706);
-    h1_ratio->GetXaxis()->SetNdivisions(4,true);
+    h1_ratio->GetXaxis()->SetNdivisions(6,true);
     h1_ratio->SetMinimum(0.1);
     h1_ratio->SetMaximum(1.9);
     h1_ratio->GetYaxis()->SetTitle("Data/Fit");
@@ -464,7 +466,7 @@ cout << __LINE__ << " " << __FILE__ << endl;
     h1_ratio->Draw("e");  
     
     TH1D *h1_ratio_err = (TH1D*)h1_ratio->Clone("h1_ratio_err");  
-    for(int inb=1; inb<4; inb++)  
+    for(unsigned int inb=1; inb<4; inb++)  
     { 
         h1_ratio_err->SetBinContent(inb, 1);
         h1_ratio_err->SetBinError(inb, err[4][i][inb-1]);
@@ -475,15 +477,15 @@ cout << __LINE__ << " " << __FILE__ << endl;
     h1_ratio_err->SetFillStyle(3354);
     //h1_ratio_err->Draw("e2 same");
 
-    TLine *l = new TLine(1,1,5,1);
+    TLine *l = new TLine(500,1,1400,1);
     l->SetLineStyle(2);
     l->Draw("same");
 
-    c->Print(Form("plots/%s_%s.pdf", doPrefit?"pre":"fit", binname[i-22].c_str()));
-    c->Print(Form("plots/%s_%s.png", doPrefit?"pre":"fit", binname[i-22].c_str()));
+    c->Print(Form("plots/%s/%s_%s.pdf", year.Data(), doPrefit?"pre":"fit", binname[i-22].c_str()));
+    c->Print(Form("plots/%s/%s_%s.png", year.Data(), doPrefit?"pre":"fit", binname[i-22].c_str()));
     
     //debug
-    for(int inb=1; inb<4; inb++)
+    for(unsigned int inb=1; inb<4; inb++)
     {   
         cout << inb << " ratio " <<h1_ratio_err->GetBinContent(inb) << endl;;
         cout << inb << " ratio " <<h1_ratio_err->GetBinError(inb) << endl;;

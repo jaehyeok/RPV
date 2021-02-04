@@ -86,7 +86,7 @@ void repack(TString year="2016"){
   std::vector<TString> norms = {"norm_prefit","norm_fit_b","norm_fit_s"};
   std::vector<TString> fits = {"fit_b","fit_s"};
 
-  TFile *output = new TFile("mlfit_cr_"+year+".root","recreate");
+  TFile *output = new TFile("mlfit_"+year+".root","recreate");
   output->cd();
 
   for(auto shape : shapes){

@@ -21,7 +21,11 @@ for year in ${years[@]}
 	if [ ${mconly} = "on" ]
 		then
 		echo "MConly mode on"
+<<<<<<< HEAD
 		./run/rescale_variations.exe mconly variations/output_nominal_newnt_${year}.root
+=======
+		./run/rescale_variation.exe mconly variations/output_nominal_newnt_${year}.root
+>>>>>>> 1b81c9cc52832047f6c9f5fd4afde19e2ea0627e
 		hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}_mconly.root variations/output_kappa_newnt_${year}.root
 	else
 		echo "Using Real Data"

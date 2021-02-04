@@ -38,7 +38,8 @@ int main()
         "other_mur", "other_muf", "other_murf"};
 // */
     //vector<TString> variations={"GS","ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
-    vector<TString> variations={"kappa1", "kappa2"};
+    //vector<TString> variations={"kappa1", "kappa2"};
+    vector<TString> variations={"ISR"};
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
     vector<int> bins = {22, 23, 24, 25, 26, 27, 28, 31, 34, 29, 30, 32, 33, 35, 36};
@@ -76,7 +77,7 @@ void h1cosmetic(TH1F* &h1, const char* title, int linecolor, int linewidth, int 
 void drawUpDown(int bin, vector<TString> variations)
 {
 
-	TString year = "2018";
+	TString year = "2016";
 
 	// style
 	gStyle->SetPaintTextFormat(".1f");

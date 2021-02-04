@@ -347,19 +347,19 @@ int main(int argc, char *argv[])
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
   // output shape systematics
-//  outputShapeSystematics(file, shapeSysts,year);
+  outputShapeSystematics(file, shapeSysts, year);
   
   // output lognormal lumi uncertainties for signal, wjets and other
-//  outputLognormalSystematics(file);
+  outputLognormalSystematics(file, year);
 
   // output MC statistics nuisance parameters
   // FIXME: the treatment of emtpy bins should be updated
   //        right now this is done by hand basically using "hasEntry" function at the end of this code
   //        this should be done by checking the bins in the nominal shape 
-//  outputMCStatisticsSyst(file, bins.at(ipair), signalBinName);
+  //outputMCStatisticsSyst(file, bins.at(ipair), signalBinName, year);
 
 //  file << "\n------------------------------------" << std::endl;
-//  outputautoMCStats(file, bins.at(ipair));
+  outputautoMCStats(file, bins.at(ipair));
   file.close();
   }
 }
@@ -1063,18 +1063,22 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     }
   }
 
-  void outputLognormalSystematics(std::ofstream &file)
+  void outputLognormalSystematics(std::ofstream &file, TString year)
   {
     // luminosity uncertainty is 2.6% for 2016 data
+    // luminosity uncertainty is 2.3% for 2017 data
+    // luminosity uncertainty is 2.5% for 2018 data
     file << "lumi  lnN  ";
     for(unsigned int ibin=0; ibin<nbins; ibin++) {
-      file << "1.106 - - - 1.106 ";
+      if(year == "2016") file << "1.026 - - - 1.026 ";
+      if(year == "2017") file << "1.023 - - - 1.023 ";
+      if(year == "2018") file << "1.025 - - - 1.025 ";
     }
     file << std::endl;
 
   }
 
-  void outputshapesystematics(std::ofstream &file, const std::vector<std::string> shapesysts, TString year)
+  void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, TString year)
   {
     for(unsigned int isyst=0; isyst<shapesysts.size(); isyst++) {
       file << shapesysts.at(isyst) << "_" << year << "     shape     ";
@@ -1109,11 +1113,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
     }
 
-    if(str_year=="") cout << "2017-2018 not merged" <<endl; 
+    /*if(str_year=="") cout << "2017-2018 not merged" <<endl; 
     else{
       year = str_year;
       cout<< "2017-2018 merged : " << str_year << endl;
-    }
+    }*/
     for(auto iproc : process){
       if(filename.find("lownjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){
@@ -1232,7 +1236,7 @@ void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> 
 }
 
 void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins){
- int threshold = 5;
+ int threshold = 5;// Gaussian approximation threshold
  for(auto ibin : bins){
    file << ibin << " autoMCStats " << threshold << "\n";
  }

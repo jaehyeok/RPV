@@ -495,8 +495,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
 		njetsLow    = njetsVLowCut;
 		njetsHigh   = njetsVLowCut+1;
 		nbLow       = nbHighCut;
-		nbHigh      = nbVHighCut;
-	}
+		nbHigh      = nbInfCut;
+	}// 31's bin definition = nb = 3 to infinite
 	else if(bin==32)
 	{
 		nleps       = 1;
@@ -523,7 +523,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
 		njetsHigh   = njetsVLowCut+1;
 		nbLow       = nbVHighCut;
 		nbHigh      = nbInfCut;
-	}
+	}// this bin will be ignored
 	else if(bin==35)
 	{
 		nleps       = 1;
@@ -631,8 +631,8 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
 		njetsLow    = njetsVLowCut+2;
 		njetsHigh   = njetsVLowCut+3;
 		nbLow       = nbHighCut;
-		nbHigh      = nbVHighCut;
-	}
+		nbHigh      = nbInfCut;
+	}// bin 46's definition = nb 3+
 	else if(bin==47)
 	{
 		nleps       = 0;
@@ -659,7 +659,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
 		njetsHigh   = njetsVLowCut+3;
 		nbLow       = nbVHighCut;
 		nbHigh      = nbInfCut;
-	}
+	}// this bin will be ignored
 	else if(bin==50)
 	{
 		nleps       = 0;
@@ -716,6 +716,7 @@ bool passBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb_)
 			&& njets_<=njetsHigh
 			&& nbormj
 	  ) pass = true;
+	if(bin==34||bin==49) pass = false;
 	return pass;
 }
 

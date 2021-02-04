@@ -36,8 +36,9 @@ float SF_kap_err(TFile *kappa, int ikap, int ibin);
 
 
 int main(int argc, char* argv[]){
-  TString n_input = "variations/output_2016.root";
-  TString n_kappa = "plots/kappa/kappa_summary_nominalX_2016.root";
+  TString year = "2018";
+  TString n_input = "variations/output_"+year+".root";
+  TString n_kappa = "plots/kappa/kappa_summary_nominalX_"+year+".root";
   if(argc==2){
     n_kappa = argv[1];
   }

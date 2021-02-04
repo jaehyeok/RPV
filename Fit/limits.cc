@@ -89,7 +89,7 @@ void limits()
 
   for(unsigned int i=0; i<gluinoMasses.size(); i++) {
     //TString filename(Form("../rpv_macros/datacards_"+year+"_137/nopdfoutput_"+year+"/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
-    TString filename(Form("../rpv_macros/datacards_tot/nopdfoutput_16~18/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
+    TString filename(Form("../rpv_macros/datacards/nopdfoutput_tot/higgsCombineM%d.AsymptoticLimits.mH120.root", static_cast<int>(gluinoMasses.at(i))));
     TFile *f = TFile::Open(filename);
     if(!f->IsOpen()) {
       std::cout << "Could not open file " << filename << std::endl;

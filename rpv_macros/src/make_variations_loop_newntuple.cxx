@@ -740,24 +740,38 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       upweight    = upweight*tree.sys_pu()[0];
       downweight  = downweight*tree.sys_pu()[1];
     }
-    if(variations=="muf") 
+    if(variations=="muf")
     { 
-      upweight    = upweight*tree.sys_muf()[0];
-      downweight  = downweight*tree.sys_muf()[1];
-      /*	    if(procname=="ttbar"){
-              upweight   = nominalweight;
-              downweight = nominalweight;
-              } */
+      if((year == 2016 && procname=="other") || ((year == 2017 || year == 2018) && procname == "ttbar")){
+	upweight   = lumi*tree.weight();
+	downweight   = lumi*tree.weight();
+      }
+      else if(procname!="other" && procname!="ttbar"){// procname!="other" //-->2016
+        upweight    = upweight*tree.sys_muf()[0];
+        downweight  = downweight*tree.sys_muf()[1];
+      }
     }
-    if(variations=="mur") 
-    { 
-      upweight    = upweight*tree.sys_mur()[0];
-      downweight  = downweight*tree.sys_mur()[1];
+    if(variations=="mur")
+    {
+      if(procname=="ttbar"){
+	upweight   = lumi*tree.weight();
+        downweight   = lumi*tree.weight();
+      }
+      else if(procname!="ttbar"){
+        upweight = upweight*tree.sys_mur()[0];
+        downweight = downweight*tree.sys_mur()[1];
+      }
     }
-    if(variations=="murf") 
+    if(variations=="murf")
     { 
-      upweight    = upweight*tree.sys_murf()[0];
-      downweight  = downweight*tree.sys_murf()[1];
+      if(procname == "ttbar"){
+	upweight   = lumi*tree.weight();
+        downweight   = lumi*tree.weight();
+      }
+      if(procname != "ttbar"){
+        upweight    = upweight*tree.sys_murf()[0];
+        downweight  = downweight*tree.sys_murf()[1];
+      }
     }
     if(variations=="w_pdf")  // PDF 
     { 
@@ -779,8 +793,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       }
       if(variations=="ISR") 
       { 
-        upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-        downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+	if(year == 2016){
+          upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+          downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+        }
+	else if(year != 2016){
+          upweight    = lumi*tree.weight();
+          downweight  = lumi*tree.weight();
+	}
       }
       if(variations=="ttbar_muf") 
       { 
@@ -802,8 +822,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     { 
       if(variations=="ISR") 
       { 
-        upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-        downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+	if(year == 2016){
+          upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+          downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+	}
+	else if(year != 2016){
+          upweight    = lumi*tree.weight();
+          downweight  = lumi*tree.weight();
+	}
       }
       if(variations=="signal_muf") 
       { 
@@ -893,8 +919,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     { 
       if(variations=="other_muf") 
       { 
-        upweight    = upweight*tree.sys_muf()[0];
-        downweight  = downweight*tree.sys_muf()[1];
+	 upweight    = upweight*tree.sys_muf()[0];
+         downweight  = downweight*tree.sys_muf()[1];
       }
       if(variations=="other_mur") 
       { 
@@ -964,7 +990,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
         } 
         else if(variations=="JES") //jet energy scale
-        { 
+        {
           if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
             h1nominal[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), nominalweight);              // nominal  
           if(tree.sys_nbm()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0], tree.sys_nbm()[0]))  
@@ -1059,9 +1085,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
             h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
           if(tree.sys_mj12()[0]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[0], tree.sys_njets()[0], tree.sys_mj12()[0], tree.sys_nbm()[0]))  
-            h1up[ibin]->Fill(tree.sys_mj12()[0]>hmjmax?hmjmax:tree.sys_mj12()[0], upweight);          // up 
+            h1up[ibin]->Fill(tree.sys_mj12()[0]>hmjmax?hmjmax:tree.sys_mj12()[0], upweight);          // up FIXME
           if(tree.sys_mj12()[1]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[1], tree.sys_njets()[1], tree.sys_mj12()[1], tree.sys_nbm()[1]))  
-            h1down[ibin]->Fill(tree.sys_mj12()[1]>hmjmax?hmjmax:tree.sys_mj12()[1], downweight);      // down
+            h1down[ibin]->Fill(tree.sys_mj12()[1]>hmjmax?hmjmax:tree.sys_mj12()[1], downweight);      // down FIXME
         }
         else 
         {

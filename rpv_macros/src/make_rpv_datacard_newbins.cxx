@@ -40,19 +40,18 @@ int main(int argc, char *argv[])
   TString year;
   // signal is added later
   std::vector<std::string> processes = { "qcd", "ttbar", "wjets", "other"};
-  std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg", //"kappa"
+  /*std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg", //"kappa"
 					                     "gs45", "gs67", "gs89", "gs10Inf",
 					                     //"jes", "jer",
-					                     /*"pileup",*/"lep_eff", "ttbar_pt",
+					                     "pileup", "lep_eff", "ttbar_pt",
 					                     "qcd_flavor",
 					                     "qcd_muf", "qcd_mur", "qcd_murf", 
 					                     //"isr",
 					                     "ttbar_muf", "ttbar_mur", "ttbar_murf",
 					                     "wjets_muf", "wjets_mur", "wjets_murf",
 					                     "other_muf", "other_mur", "other_murf",
-					                     /*"fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"*/}; // temporarily removed
-
-  shapeSysts={}; 
+					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
+  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
 
   std::string gluinoMass;
   std::string signalBinName;
@@ -359,7 +358,7 @@ int main(int argc, char *argv[])
   //outputMCStatisticsSyst(file, bins.at(ipair), signalBinName, year);
 
 //  file << "\n------------------------------------" << std::endl;
-  outputautoMCStats(file, bins.at(ipair));
+  //outputautoMCStats(file, bins.at(ipair));
   file.close();
   }
 }
@@ -1084,10 +1083,12 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       file << shapesysts.at(isyst) << "_" << year << "     shape     ";
       if(shapesysts.at(isyst).find("pdf")!=std::string::npos) {
         // there are 100 nnpdf variations and so each needs to be scaled down by a factor 1/sqrt(100)
-        for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
+        //for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
+        for(unsigned int index=0; index<nbins; index++) file << " 0.1 - - - 0.1 ";//accept systematics to signal and other
       }
       else {
-        for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";
+        //for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";// one sigma
+        for(unsigned int index=0; index<nbins; index++) file << " 1 - - - 1 ";//accept systematics to signal and other
       }
       file << "\n";
     }

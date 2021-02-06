@@ -347,7 +347,7 @@ int main(int argc, char *argv[])
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
   // output shape systematics
-  outputShapeSystematics(file, shapeSysts, year);
+  //outputShapeSystematics(file, shapeSysts, year);
   
   // output lognormal lumi uncertainties for signal, wjets and other
   outputLognormalSystematics(file, year);
@@ -359,7 +359,7 @@ int main(int argc, char *argv[])
   //outputMCStatisticsSyst(file, bins.at(ipair), signalBinName, year);
 
 //  file << "\n------------------------------------" << std::endl;
-  outputautoMCStats(file, bins.at(ipair));
+  //outputautoMCStats(file, bins.at(ipair));
   file.close();
   }
 }
@@ -1113,11 +1113,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
     }
 
-    /*if(str_year=="") cout << "2017-2018 not merged" <<endl; 
+    if(str_year=="") cout << "2017-2018 not merged" <<endl; 
     else{
       year = str_year;
       cout<< "2017-2018 merged : " << str_year << endl;
-    }*/
+    }
     for(auto iproc : process){
       if(filename.find("lownjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){

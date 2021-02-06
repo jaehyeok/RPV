@@ -503,6 +503,7 @@ void genKappaFactors(TFile *f, TString year){
 
   system("cp scripts/make_CRFit.sh .");
   system("cp scripts/repack.C .");
+  cout<<"running    : "<<Form("./make_CRFit.sh %s %s",year.Data(),str_mconly.Data())<<endl;
   system(Form("./make_CRFit.sh %s %s",year.Data(),str_mconly.Data()));
   system("rm make_CRFit.sh");
   system("rm repack.C");

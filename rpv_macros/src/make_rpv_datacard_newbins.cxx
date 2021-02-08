@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
   std::vector<std::string> bins_cr_nb1_lownjets    = {"bin40","bin25"}; 
   std::vector<std::string> bins_cr_nb2_lownjets    = {"bin43","bin28"}; 
   std::vector<std::string> bins_cr_nb3_lownjets    = {"bin46","bin31"}; 
-  std::vector<std::string> bins_cr_nb4_lownjets    = {"bin49","bin34"}; 
+  //std::vector<std::string> bins_cr_nb4_lownjets    = {"bin49","bin34"}; 
   std::vector<std::string> bins_cr_nb0_mednjets    = {"bin38","bin23"}; 
   std::vector<std::string> bins_cr_nb1_mednjets    = {"bin41","bin26"}; 
   std::vector<std::string> bins_sr_nb2_mednjets    = {"bin44","bin29"}; 
@@ -131,8 +131,8 @@ int main(int argc, char *argv[])
   if(cardType=="default" || cardType=="mconly"){
     bins_all.push_back("bin46");
     bins_all.push_back("bin31");
-    bins_all.push_back("bin49");
-    bins_all.push_back("bin34");
+   // bins_all.push_back("bin49");
+   // bins_all.push_back("bin34");
     bins_all.push_back("bin47");
     bins_all.push_back("bin32");
     bins_all.push_back("bin50");

@@ -509,7 +509,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   float kappa_wgt[2][3][3];
   TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root","read");
   if(str_year=="20178"){
-    f_kappa_syst->Close();
+    //f_kappa_syst->Close();
+    //cout<<"20178 opened"<<endl;
     f_kappa_syst = TFile::Open("data/result_kappa_20178.root","read");
     cout<<"20178 opened"<<endl;
   }

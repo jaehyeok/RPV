@@ -241,6 +241,22 @@ int main(int argc, char *argv[])
   if(ipair==1) filename+="_cr_nb1_lownjets";
   if(ipair==2) filename+="_cr_nb2_lownjets";
   if(ipair==3) filename+="_cr_nb3_lownjets";
+  if(ipair==4) filename+="_cr_nb0_mednjets";
+  if(ipair==5) filename+="_cr_nb1_mednjets";
+  if(ipair==6) filename+="_cr_nb0_highnjets";
+  if(ipair==7) filename+="_cr_nb1_highnjets";
+
+  if(cardType!="control")
+  {
+      if(ipair==8) filename+="_sr_nb2_mednjets";
+      if(ipair==9) filename+="_sr_nb3_mednjets";
+      if(ipair==10) filename+="_sr_nb4_mednjets";
+      if(ipair==11) filename+="_sr_nb2_highnjets";
+      if(ipair==12) filename+="_sr_nb3_highnjets";
+      if(ipair==13) filename+="_sr_nb4_highnjets";
+  }
+/*
+  if(ipair==3) filename+="_cr_nb3_lownjets";
   if(ipair==4) filename+="_cr_nb4_lownjets";
   if(ipair==5) filename+="_cr_nb0_mednjets";
   if(ipair==6) filename+="_cr_nb1_mednjets";
@@ -256,7 +272,7 @@ int main(int argc, char *argv[])
       if(ipair==13) filename+="_sr_nb3_highnjets";
       if(ipair==14) filename+="_sr_nb4_highnjets";
   }
-
+*/
   if(!includePDFUncert) filename+="_nopdf";
 
   if(argc>3){
@@ -352,7 +368,7 @@ int main(int argc, char *argv[])
   // FIXME: the treatment of emtpy bins should be updated
   //        right now this is done by hand basically using "hasEntry" function at the end of this code
   //        this should be done by checking the bins in the nominal shape 
-    outputMCStatisticsSyst(file, bins.at(ipair), signalBinName, year);
+    //outputMCStatisticsSyst(file, bins.at(ipair), signalBinName, year);
   
     outputautoMCStats(file, bins.at(ipair));
   

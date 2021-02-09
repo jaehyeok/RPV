@@ -29,7 +29,7 @@ namespace {
 
 using namespace std;
 
-TString str_year;
+TString merge_78;
 
 int main(int argc, char *argv[])
 {
@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
   bool nocrvr = false;
 //  bool includeSignalRegion = true;
   TString year;
+  TString sig_onoff;
   // signal is added later
   std::vector<std::string> processes = { "qcd", "ttbar", "wjets", "other"};
   /*std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg", //"kappa"
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
   std::string cardType;
   TString inputname;
   if(argc<3) {
-    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename] [year]" << std::endl;
+    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename] [year] [20178 on/off] [signal Systematics on/off]" << std::endl;
     return 1;
   }
   else {
@@ -76,15 +77,9 @@ int main(int argc, char *argv[])
       std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly]" << std::endl;
       return 1;
     }
-    if(argc>3)
-      inputname = argv[3];
-      str_year  = argv[5];
-
-//    else {
-//      if(cardType=="control") includeSignalRegion=false;
-//      if(cardType=="default") includeSignalRegion=true;
-//      if(cardType=="mconly")  includeSignalRegion=true;
-//    }
+    inputname = argv[3];
+    merge_78  = argv[5];
+    sig_onoff = argv[6];
   }
 
   nprocesses=processes.size();
@@ -184,7 +179,7 @@ int main(int argc, char *argv[])
   bins.push_back(bins_cr_nb1_lownjets);
   bins.push_back(bins_cr_nb2_lownjets);
   bins.push_back(bins_cr_nb3_lownjets);
-  bins.push_back(bins_cr_nb4_lownjets);
+  //bins.push_back(bins_cr_nb4_lownjets);
   bins.push_back(bins_cr_nb0_mednjets);
   bins.push_back(bins_cr_nb1_mednjets);
   bins.push_back(bins_cr_nb0_highnjets);
@@ -345,20 +340,24 @@ int main(int argc, char *argv[])
   // output kappa systematics
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
+
+  if(sig_onoff=="on"){
   // output shape systematics
-  //outputShapeSystematics(file, shapeSysts, year);
+    outputShapeSystematics(file, shapeSysts, year);
   
   // output lognormal lumi uncertainties for signal, wjets and other
-  outputLognormalSystematics(file, year);
+    outputLognormalSystematics(file, year);
 
   // output MC statistics nuisance parameters
   // FIXME: the treatment of emtpy bins should be updated
   //        right now this is done by hand basically using "hasEntry" function at the end of this code
   //        this should be done by checking the bins in the nominal shape 
-  //outputMCStatisticsSyst(file, bins.at(ipair), signalBinName, year);
-
-//  file << "\n------------------------------------" << std::endl;
-  //outputautoMCStats(file, bins.at(ipair));
+    outputMCStatisticsSyst(file, bins.at(ipair), signalBinName, year);
+  
+    outputautoMCStats(file, bins.at(ipair));
+  
+    file << "\n------------------------------------" << std::endl;
+  }
   file.close();
   }
 }
@@ -1114,10 +1113,10 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
     }
 
-    if(str_year=="") cout << "2017-2018 not merged" <<endl; 
-    else{
-      year = str_year;
-      cout<< "2017-2018 merged : " << str_year << endl;
+    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
+    else if(merge_78=="on"){
+      year = "20178";
+      cout<< "2017-2018 merged : 20178"  << endl;
     }
     for(auto iproc : process){
       if(filename.find("lownjets")!=std::string::npos){

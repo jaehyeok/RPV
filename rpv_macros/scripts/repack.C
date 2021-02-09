@@ -8,7 +8,7 @@ void CopyDir(TDirectory *source){
   TString dirname = source->GetName();
   if(dirname.Contains("ch")) dirname.Replace(dirname.First("ch"),dirname.First("_")+1,"");
   if(dirname.Contains("ch")) dirname.Replace(dirname.First("ch"),dirname.First("_")+1,"");
-  cout<<dirname<<endl;
+  //cout<<dirname<<endl;
   TDirectory *adir;
   if(!savdir->GetDirectory(dirname)) adir = savdir->mkdir(dirname);
   else adir = savdir->GetDirectory(dirname);
@@ -22,7 +22,7 @@ void CopyDir(TDirectory *source){
     if (!cl) continue;
     if (cl->InheritsFrom("TDirectory")) {
       source->cd(key->GetName());
-      cout<<dirname<<endl;
+      //cout<<dirname<<endl;
       TDirectory *subdir = gDirectory;
       adir->cd();
       CopyDir(subdir);
@@ -38,7 +38,7 @@ void CopyDir(TDirectory *source){
       TH1F *h  = (TH1F*)source->Get(key->GetName());
       TH1F *h1 = (TH1F*)source->Get(key->GetName());
       adir->cd();
-      cout<<adir->GetPath()<<endl;
+      //cout<<adir->GetPath()<<endl;
       if(adir->GetListOfKeys()->Contains(key->GetName())){
 	TH1F *h2 = (TH1F*)adir->Get(key->GetName());
 	h->Add(h1,h2);
@@ -48,19 +48,20 @@ void CopyDir(TDirectory *source){
       adir->cd();
       h->Write();
     }
-    else if (cl->InheritsFrom("TGraphAsymmErrors")){
+    else if (cl->InheritsFrom("TGraph")){
       TGraphAsymmErrors *h1 = (TGraphAsymmErrors*)source->Get(key->GetName());
       TGraphAsymmErrors *h = (TGraphAsymmErrors*)source->Get(key->GetName());
       adir->cd();
-      if(adir->FindObject(key->GetName())){
+      if((adir->FindObjectAny(key->GetName())!=NULL)){
         TGraphAsymmErrors *h2 = (TGraphAsymmErrors*)adir->Get(key->GetName());
-	TCollection *l1;
-	//l1->Add(h1);
+	TObjArray *l1 = new TObjArray();
 	l1->Add(h2);
 	h->Merge(l1);
 	h->SetName(key->GetName());
 	TString oname(key->GetName());
 	adir->Delete(oname+";1");
+	cout<<oname+";1"<<endl;
+	adir->Delete(oname);
       }
       adir->cd();
       h->Write();
@@ -86,7 +87,7 @@ void repack(TString year="2016"){
   std::vector<TString> norms = {"norm_prefit","norm_fit_b","norm_fit_s"};
   std::vector<TString> fits = {"fit_b","fit_s"};
 
-  TFile *output = new TFile("mlfit_"+year+".root","recreate");
+  TFile *output = new TFile("mlfit_cr_"+year+".root","recreate");
   output->cd();
 
   for(auto shape : shapes){
@@ -98,7 +99,7 @@ void repack(TString year="2016"){
   }
   for(auto fit : fits){
     TObject *obj = input->Get(fit)->Clone(fit);
-    cout<<fit<<endl;
+    //cout<<fit<<endl;
     obj->Write();
   }
 

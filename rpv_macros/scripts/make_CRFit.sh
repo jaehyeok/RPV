@@ -42,10 +42,10 @@ for year in ${years[@]}
 	cp variations/output_CRFit_${year}.root datacards/variations/output_CRFit_${year}.root
 	if [ $1 = "20178" ]
 		then
-		./run/make_rpv_datacard_newbins.exe 1900 mconly output_CRFit_${year}.root ${year} 20178
+		./run/make_rpv_datacard_newbins.exe 1900 mconly output_CRFit_${year}.root ${year} on
 		combineCards.py datacards/datacard_M1900_mconly_cr_nb0_*_CRFit_${year}.dat datacards/datacard_M1900_mconly_cr_nb1_*_CRFit_${year}.dat > datacards/datacard_M1900_CRFit_${year}.dat
 	else
-		./run/make_rpv_datacard_newbins.exe 1900 mconly output_CRFit_${year}.root ${year}
+		./run/make_rpv_datacard_newbins.exe 1900 mconly output_CRFit_${year}.root ${year} off
 		combineCards.py datacards/datacard_M1900_mconly_cr_nb0_*_CRFit_${year}.dat datacards/datacard_M1900_mconly_cr_nb1_*_CRFit_${year}.dat > datacards/datacard_M1900_CRFit_${year}.dat
 		combine -M FitDiagnostics datacards/datacard_M1900_CRFit_${year}.dat --saveNorm --saveShape
 		root -l -q repack.C\(\"CRFit_${year}\"\)

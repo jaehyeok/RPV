@@ -36,16 +36,17 @@ float SF_kap_err(TFile *kappa, int ikap, int ibin);
 
 
 int main(int argc, char* argv[]){
-  TString year = "2018";
+  TString year;
+  year = argv[1];
   TString n_input = "variations/output_"+year+".root";
   TString n_kappa = "plots/kappa/kappa_summary_nominalX_"+year+".root";
-  if(argc==2){
+  /*if(argc==2){
     n_kappa = argv[1];
   }
   else if(argc==2){
     n_kappa = argv[1];
     n_input = argv[2];
-  }
+  }*/
   TString temp = n_input;
   TString n_out = temp.ReplaceAll("output_","output_kappa");
   temp = n_input;

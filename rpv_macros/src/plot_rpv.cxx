@@ -15,6 +15,7 @@
 #include "utilities_macros.hpp"
 #include "utilities_macros_rpv.hpp"
 
+using namespace std;
 namespace {
 
   bool showData = true; // Draw with/wihout data
@@ -22,54 +23,32 @@ namespace {
   TString json = "1";
 
   bool makeNm1 = true; // Make only N=1 plots. Does not draw data
-  
   TString plot_type=".png";
   TString plot_style="CMSPaper_Preliminary";
 }
 
-using namespace std;
+int main(int argc, char *argv[]){
+  TString lumi, trigger;
+  TString year = argv[1];
 
-int main(int argc, char *argv[], TString year){
-
-  TString lumi = "59.7";
-  //TString lumi = "35.9";
-  //TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
-  TString trigger = " trig_ht1050 "; // PFHT800 OR PFHT900 OR PFJet450 */
-
-  /*TString lumi = "41.5";
-  TString trigger = "trig_ht1050";// */
-
-  /*TString lumi = "59.7";
-  TString trigger = "trig_ht1050";// */
-
-  year = argv[1];
-  cout << argc << endl;
   if(argc<1){
-    cout<<"./run/plot_rpv [year] !!!!"<<endl;
-  }
- // cout << "./run/plot_rpv.exe [year]" << endl;
-  /*if(year == 2016){
-  //  lumi = 35.9;
-  //  trigger = "(trig_ht900 || trig_jet450)";
+    cout << argc << "./run/plot_rpv [year] !!!" <<endl;
   }
 
-  else if(year == 2017){
-  //  lumi = 41.5;
-  //  trigger = "trig_ht1050";
+  if(year == "2016"){
+    lumi = "35.9";
+    trigger = "(trig_ht900 || trig_jet450)";
   }
-
-  else if(year == 2018){
-   // lumi = 59.7;
-   //trigger = "trig_ht1050";
+  else if(year == "2017"){
+    lumi = "41.5";
+    trigger = "trig_ht1050";
+  }
+  else if(year == "2018"){
+    lumi = "59.7";
+    trigger = "trig_ht1050";
   }// */
 
-  //cout << trigger << ": trigger"  << endl;
-
   // ntuple folders
-
-  /*TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/"; //FIXME
-  TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
-  TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";// */
 
   TString folder_bkg = folder_year(year,false).at(0);
   TString folder_dat = folder_year(year,false).at(1);
@@ -84,7 +63,11 @@ int main(int argc, char *argv[], TString year){
   vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
   vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
   vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");// */
-  
+
+  /*vector<TString> s_wjets16 = getRPVProcess(folder_bkg16,"wjets");
+  vector<TString> s_wjets17 = getRPVProcess(folder_bkg17,"wjets");
+  vector<TString> s_wjets18 = getRPVProcess(folder_bkg18,"wjets");// */
+
   // Reading ntuples
   vector<sfeats> Samples; 
   // Plot with data if showData == true
@@ -96,15 +79,12 @@ int main(int argc, char *argv[], TString year){
     else{
       // Only use events with njets<=7 (for 0-lepton) and njets<=5 (for 1-lepton)
       Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nbm==0)||(nbm==1)||(nbm>=2 && njets>=4 && njets<=5))"));
-      //Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass","1.")));
       Samples.back().isData = true;
-    }
+    }// */
   }
 
   string extraweight = "1";
-  //Samples.push_back(sfeats(s_rpv_m1600, "m1600", kRed, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_rpv_m1900, "m1900", kNeon, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
-  Samples.back().isSig = true;
   
   Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));
@@ -122,7 +102,7 @@ int main(int argc, char *argv[], TString year){
     // Set cuts
     TString basecut = "mj12>=500&&ht>1200";
     TString lepcuts = "nleps==1";
-    vector<TString> nbcuts = {"nbm==0","nbm==1"};
+    vector<TString> nbcuts = {"nbm==0"};
     vector<TString> njetcuts = {"8<=njets"};
 
     // Loop over cuts to make histograms
@@ -158,10 +138,9 @@ int main(int argc, char *argv[], TString year){
 	  //hists.push_back(hfeats("ht", 20, 900, 3000, rpv_sam, "H_{T}", cut));
 	  //hists.push_back(hfeats("nbm", 6, 0, 6, rpv_sam, "nbm", cut));
 	  //hists.push_back(hfeats("njets", 10, 0, 20, rpv_sam, "njets", cut));
-	  if(showData) hists.back().normalize = true;	
-	}
+	  if(showData) hists.back().normalize = true;
+        }
       }
-    
     plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", true, true);  
   }
   

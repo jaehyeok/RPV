@@ -284,7 +284,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	int isam = vars[var].samples[sam];
 	//bool noStack = Samples[isam].isSig || Samples[isam].isData;
 	if(sam>=last_hist && vars[var].normalize && !Samples[isam].isSig){ 
-	  //histo[0][var][sam]->Scale(normalization_ratio); //FIXME
+	  histo[0][var][sam]->Scale(normalization_ratio); //FIXME
 	  nentries[sam]*= normalization_ratio;
 	}
 	
@@ -368,7 +368,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       float maxpadLog(maxhisto*10*exp(fracLeg*log(maxhisto/minLog)/(1-fracLeg)));
       histo[0][var][firstplotted]->SetMinimum(minLog);
       histo[0][var][firstplotted]->SetMaximum(maxpadLog);
-      for(int bin(0); bin<=histo[0][var][firstplotted]->GetNbinsX()+1; bin++){
+      /*for(int bin(0); bin<=histo[0][var][firstplotted]->GetNbinsX()+1; bin++){
 	histo[0][var][firstplotted]->SetBinError(bin,0);//FIXME//command out this line when the testing pre-firing issue
       }// */
       if (!doRatio) style.moveYAxisLabel(histo[0][var][firstplotted], maxpadLog, true);
@@ -396,8 +396,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           hratio_data = static_cast<TH1D*>(hdata->Clone());
           hratio_data->SetTitle("");
           hratio_data->Divide(histo[0][var][firstplotted]);
-          //hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
-          hratio_data->GetYaxis()->SetRangeUser(0.88,1.12);//FIXME
+          hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
+          //hratio_data->GetYaxis()->SetRangeUser(0.88,1.12);//FIXME
           hratio_data->GetXaxis()->SetLabelOffset(0.025);
           hratio_data->GetXaxis()->SetLabelSize(style.LabelSize*2.2);
           hratio_data->GetYaxis()->SetLabelSize(style.LabelSize*2.1);

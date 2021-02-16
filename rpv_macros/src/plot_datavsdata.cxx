@@ -18,10 +18,10 @@
 
 namespace {
   //TString luminosity="137";
-  TString luminosity="35.9";
+  //TString luminosity="35.9";
   //TString luminosity="41.5";
   //TString luminosity="59.7";
-  //TString luminosity="1.";// when drawing data
+  TString luminosity="1.";// when drawing data
   TString plot_type=".pdf";
   TString plot_style="CMSPaper_Preliminary";
 }
@@ -85,13 +85,13 @@ int main(){
 
 
    //2017 MC weight
-  std::string extraWeight = "1/l1pre_nom";
+  std::string extraWeight = "1";
 
   vector<sfeats> Samples;
 
   //Samples.push_back(sfeats(s_data_2018, "2018 data HEM without 15/16 (1 fb^{-1})", kRed,1,"pass && trig_ht1050 && run>=319077 && Sum$((jets_eta>-3.0 && jets_eta<-1.3 && jets_phi>-1.57 && jets_phi <-0.87) && jets_pt>30 && abs(jets_eta)<2.4)==0")); Samples.back().isData=true;
-  Samples.push_back(sfeats(s_data_2018_HEM, "2018 data HEM (1 fb^{-1})", kRed,1,"pass && trig_ht1050")); Samples.back().isData=true;
-  Samples.push_back(sfeats(s_data_2018, "2018 data (1 fb^{-1})", kBlue,1,"pass && trig_ht1050")); //Samples.back().isData=true;
+  Samples.push_back(sfeats(s_data_2018, "2018 data HEM (1 fb^{-1})", kRed,1,"pass && trig_ht1050 && run>=319077")); Samples.back().isData=true;
+  Samples.push_back(sfeats(s_data_2018, "2018 data (1 fb^{-1})", kBlue,1,"pass && trig_ht1050 && run<319077")); //Samples.back().isData=true;
   //Samples.push_back(sfeats(s_data_2016, "2016 data (1 fb^{-1})", kBlue,1,"trig_ht900 && trig_jet450 && pass")); //Samples.back().isData=true; 
   Samples.back().doBand = true;
   vector<int> data;
@@ -119,12 +119,15 @@ int main(){
   other.push_back(6);
   other.push_back(7);
   
-  Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kRed,1,cutandweight("pass","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kRed,1,cutandweight("pass","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
   Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kBlue,1,cutandweight("pass","1."))); 
   Samples.back().doBand = true;
+  /*Samples.push_back(sfeats(s_wjets_2018, "2018 W+jets", kNeon,1,cutandweight("pass","1."))); 
+  Samples.back().doBand = true;*/
   vector<int> wjets;
   wjets.push_back(8);
   wjets.push_back(9);
+  //wjets.push_back(10);
 
   Samples.push_back(sfeats(s_all_bg_2017, "2017 All_Bkg", kRed,1,cutandweight("pass","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
   Samples.push_back(sfeats(s_all_bg_2017, "2017 All_Bkg", kBlue,1,cutandweight("pass","1.")));
@@ -138,25 +141,40 @@ int main(){
    Samples.push_back(sfeats(s_2016, "Single lepton events, m_{T} < 140", kBlue,1,"nonblind&&nleps==1&&nveto==0&&nbm>=1&&njets>=6&&mt<=140&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass"));   Samples.back().doBand = true;*/
   
   vector<hfeats> vars;
-  std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=8"};// */
+  std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==0&&ht>1200&&njets>=4&&njets<=5"};// */
   /*std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
 				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
 				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&8<=njets",
 				"nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
 				"nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
 				"nbm==1&&mj12>500&&nleps==1&&ht>1200&&8<=njets",
+				"nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
+                                "nbm==2&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
+                                "nbm==2&&mj12>500&&nleps==1&&ht>1200&&8<=njets",
+                                "nbm>=3&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
+                                "nbm==3&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
+                                "nbm==3&&mj12>500&&nleps==1&&ht>1200&&8<=njets",
+                                "nbm>=4&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
+                                "nbm>=4&&mj12>500&&nleps==1&&ht>1200&&8<=njets",
+	};// */
 
+  /*std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==0&&ht>1200&&njets>=4&&njets<=5",
+				"nbm==0&&mj12>500&&nleps==0&&ht>1200&&njets>=6&&njets<=7",
+				"nbm==0&&mj12>500&&nleps==0&&ht>1200&&8<=njets",
+  				"nbm==1&&mj12>500&&nleps==0&&ht>1200&&njets>=4&&njets<=5",
+				"nbm==1&&mj12>500&&nleps==0&&ht>1200&&njets>=6&&njets<=7",
+				"nbm==1&&mj12>500&&nleps==0&&ht>1200&&8<=njets"
 	};// */
 
   for(auto icut : cuts){
     //vars.push_back(hfeats("nbm", 2, 0, 1, data, "N_{b}", icut,-1,"data"));
     //vars.push_back(hfeats("njets", 8, 4, 12, data, "NJets", icut,-1,"data"));
-    /*vars.push_back(hfeats("mj12", 3, 500, 1400, data, "mj12", icut,-1,"data"));
+    vars.push_back(hfeats("mj12", 3, 500, 1400, data, "mj12", icut,-1,"data"));
     //vars.push_back(hfeats("ht", 20, 1200, 2600, data, "H_{t}", icut,-1,"data"));//
     vars.back().normalize = true; // */
     //vars.push_back(hfeats("nbm", 6, 0, 6, ttbar, "N_{b}", icut,-1,"ttbar"));
     //vars.push_back(hfeats("njets", 10, 0, 20, ttbar, "NJets", icut,-1,"ttbar"));
-    vars.push_back(hfeats("mj12", 3, 500, 1400, ttbar, "mj12", icut,-1,"ttbar"));
+    /*vars.push_back(hfeats("mj12", 3, 500, 1400, ttbar, "mj12", icut,-1,"ttbar"));
     //vars.push_back(hfeats("ht", 20, 1200, 2600, ttbar, "H_{t}", icut,-1,"ttbar"));//
     vars.back().normalize = true;// */
     //vars.push_back(hfeats("nbm", 6, 0, 6, qcd, "N_{b}", icut,-1,"qcd"));
@@ -180,7 +198,6 @@ int main(){
     //vars.push_back(hfeats("ht", 20, 1200, 2600, all_bg, "H_{t}", icut,-1,"all_bg"));
     vars.back().normalize = true;// */
   }
-
 
   //  plot_style="CMSPaperNoRatio";
   /*vars.push_back(hfeats("mj14",10,25,775, mj_sam, "M_{J} [GeV]",

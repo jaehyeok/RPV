@@ -942,7 +942,9 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
     TString lownjcon_, mednjcon_, highnjcon_;
     if(year=="2016"){
-      return ;
+      lownjcon_ = "1.13";
+      mednjcon_ = "1.21";
+      highnjcon_ = "1.24";
     }
     if(year=="2017"){
       lownjcon_ = "1.10";

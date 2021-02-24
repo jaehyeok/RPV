@@ -174,6 +174,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       histo[0][var][sam]->SetBinErrorOption(TH1::kPoisson);
       if(samVariable=="noPlot") chain[isam]->Project(histo[0][var][sam]->GetName(), variable, totCut);
       else chain[isam]->Project(histo[0][var][sam]->GetName(), samVariable, totCut);
+      histo[0][var][sam]->SetTitle(Samples[isam].label); 
       if(vars[var].addOverflow) 
 	histo[0][var][sam]->SetBinContent(vars[var].nbins,
 	histo[0][var][sam]->GetBinContent(vars[var].nbins)+
@@ -280,12 +281,21 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	    <<" +- "<<RoundNumber(err_tot*100,1)<<")% the histogram [MC]. Data yield is "<<num<<endl;
       }
       
+      for(unsigned sam(Nsam-1) ; sam < Nsam ; sam--){
+	int isam = vars[var].samples[sam];
+	int maxbin = 20;
+	if(title.Contains("mus")) maxbin = 10;
+        cout<< Samples[isam].label << " : " << histo[0][var][sam]->Integral(1,1)  << endl;
+	cout<< Samples[isam].label << " : " << histo[0][var][sam]->Integral(2,maxbin) << endl;
+      }
+
       for(unsigned sam(Nsam-1); sam < Nsam; sam--){
 	int isam = vars[var].samples[sam];
 	//bool noStack = Samples[isam].isSig || Samples[isam].isData;
 	if(sam>=last_hist && vars[var].normalize && !Samples[isam].isSig){ 
-	  //histo[0][var][sam]->Scale(normalization_ratio); //FIXME
+	  histo[0][var][sam]->Scale(normalization_ratio); //FIXME
 	  nentries[sam]*= normalization_ratio;
+
 	}
 	
 	if(vars[var].normalizeByBin){
@@ -397,7 +407,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           hratio_data->SetTitle("");
           hratio_data->Divide(histo[0][var][firstplotted]);
           //hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
-          hratio_data->GetYaxis()->SetRangeUser(0.88,1.12);//FIXME
+          hratio_data->GetYaxis()->SetRangeUser(0.1,1.9);//FIXME
           hratio_data->GetXaxis()->SetLabelOffset(0.025);
           hratio_data->GetXaxis()->SetLabelSize(style.LabelSize*2.2);
           hratio_data->GetYaxis()->SetLabelSize(style.LabelSize*2.1);

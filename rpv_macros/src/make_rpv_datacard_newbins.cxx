@@ -10,6 +10,7 @@
 #include "TFile.h"
 #include "TSystem.h"
 
+void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
 void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
 void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins, TString year);
@@ -353,6 +354,9 @@ int main(int argc, char *argv[])
   //output the W+jet normalization and Njets connection
   outputWjets(file, bins.at(ipair), cardType, year);
 
+  //output the W+jet normalization and Njets connection
+  outputQCD(file, bins.at(ipair), cardType, year);
+  
   // output kappa systematics
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
@@ -935,6 +939,97 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   }
   }
 
+  void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
+    TString lownjcon_, mednjcon_, highnjcon_;
+    if(year=="2016"){
+      return ;
+    }
+    if(year=="2017"){
+      lownjcon_ = "1.10";
+      mednjcon_ = "1.16";
+      highnjcon_ = "1.16";
+    }
+    if(year=="2018"){
+      lownjcon_ = "1.33";
+      mednjcon_ = "1.38";
+      highnjcon_ = "1.38";
+    }
+
+    map<string, int> bindex;
+    for(uint ibin=22; ibin<52; ibin++){
+      bindex[Form("bin%d",ibin)]=9999;
+    }
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+    if(cardType!="control")  // do not need Njets connection for CR fit
+    { 
+      //create template line
+      TString line;
+      for(uint idash=0; idash<(nprocesses*nbins); idash++)
+        line+="-    ";
+
+      TString tmpLine;
+      TString tmpbin;
+      int numbin;
+      vector<TString> lownj_bins, mednj_bins, highnj_bins;
+      for(uint nbc=0 ; nbc<5 ; nbc++){
+        lownj_bins.push_back(Form("bin%d",22+nbc*3));
+        mednj_bins.push_back(Form("bin%d",22+nbc*3+1));
+        highnj_bins.push_back(Form("bin%d",22+nbc*3+2));
+      }
+      bool flag_brk=true;
+      for(auto jbin:bins){
+        tmpLine = line;        
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+        if((numbin%3==1||numbin%3==2)&&flag_brk){
+          for(auto njb:lownj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4, lownjcon_.Data());
+          }
+          tmpLine.Prepend(Form("normqcd_lownjets_%s        lnN  ",year.Data()));
+          file << tmpLine.Data() << endl;
+          flag_brk=false;
+        }
+      }
+      flag_brk=true;
+      for(auto jbin:bins){
+        tmpLine = line;        
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+        if((numbin%3==1||numbin%3==2)&&flag_brk){
+          for(auto njb:mednj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4, mednjcon_.Data());
+          }
+          tmpLine.Prepend(Form("normqcd_mednjets_%s        lnN  ",year.Data()));
+          file << tmpLine.Data() << endl;
+          flag_brk=false;
+        }
+      }
+      flag_brk=true;
+      for(auto jbin:bins){
+        tmpLine = line;        
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+
+ 
+        if((numbin%3==2||numbin%3==0)&&flag_brk){
+          for(auto njb:highnj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4,highnjcon_.Data());
+          }
+          tmpLine.Prepend(Form("normqcd_highnjets_%s       lnN  ",year.Data()));
+          file << tmpLine.Data() << endl;
+          flag_brk=false;
+        }
+      }
+    }
+  }
   // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
   void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
 

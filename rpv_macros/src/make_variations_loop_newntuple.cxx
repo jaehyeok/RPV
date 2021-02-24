@@ -1032,7 +1032,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             //if(iproc==0) cout << "before " << nominalweight << " " << upweight << " " << downweight << endl; // FIXME   
             upweight    = upweight*sys_kappaup;
             downweight  = downweight*sys_kappadown;
-            if(downweight<0) downweight=0;
             //if(iproc==0) cout << "after " <<  nominalweight << " " << upweight << " " << downweight << endl; // FIXME   
           }
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 

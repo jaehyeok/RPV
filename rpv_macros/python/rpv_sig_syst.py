@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-"""This script plots signal systematics for the RPV analysis"""
+#!/usr/bin/env python """This script plots signal systematics for the RPV analysis"""
 import sys
 import math
 import ROOT
@@ -41,8 +40,8 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
 
 
     # total hists for each variation, to include all processes
-    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",5,0,5)
-    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",5,0,5)
+    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",3,500,1400)
+    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",3,500,1400)
 
   
     #load hists and calculate SFs for floating component for each variation
@@ -108,54 +107,29 @@ set_palette_gray()
 
 #make list of systematics- name, title, plot color and line style
 systList=[]
-#systList.append(["fs_btag_bc","FastSim b,c jet b-tag SF",2,1])
-#systList.append(["fs_btag_udsg","FastSim u,d,s,g jet b-tag SF",3,1])
-#systList.append(["fs_lep_eff","FastSim lepton efficiency",4,1])
-systList.append(["btag_bc","b,c jet b-tag SF",5,1])
-systList.append(["btag_udsg","u,d,s,g jet b-tag SF",6,1])
-systList.append(["jes","Jet energy scale",7,1])
-systList.append(["jer","Jet energy resolution",8,1])
-systList.append(["lep_eff","Lepton efficiency",9,1])
+systList.append(["btag_bc_2018","b,c jet b-tag SF",5,1])
+systList.append(["btag_udsg_2018","u,d,s,g jet b-tag SF",6,1])
+systList.append(["JES_2018","Jet energy scale",7,1])
+#systList.append(["jer","Jet energy resolution",8,1])
+systList.append(["lep_eff_2018","Lepton efficiency",9,1])
 #systList.append(["pileup","Pileup",10,1])
-systList.append(["isr","Initial state radiation",11,1])
-systList.append(["gs45","Gluon splitting (N_{jet}=4,5)",12,1])
-systList.append(["gs67","Gluon splitting (N_{jet}=6,7)",13,1])
-systList.append(["gs89","Gluon splitting (N_{jet}=8,9)",14,1])
-systList.append(["gs10Inf","Gluon splitting (N_{jet}#geq10)",15,1])
-systList.append(["signal_mur","Renormalization scale",16,1])
-systList.append(["signal_muf","Factorization scale",17,1])
-systList.append(["signal_murf","Renorm. and fact. scale",18,1])
+systList.append(["ISR_2018","Initial state radiation",11,1])
+#systList.append(["gs45","Gluon splitting (N_{jet}=4,5)",12,1])
+#systList.append(["gs67","Gluon splitting (N_{jet}=6,7)",13,1])
+#systList.append(["gs89","Gluon splitting (N_{jet}=8,9)",14,1])
+#systList.append(["gs10Inf","Gluon splitting (N_{jet}#geq10)",15,1])
+systList.append(["mur_2018","Renormalization scale",16,1])
+systList.append(["muf_2018","Factorization scale",17,1])
+systList.append(["murf_2018","Renorm. and fact. scale",18,1])
 #systList.append(["pdf","PDF",19,1])
-systList.append(["mc_stat","MC statistics",1,2]) #must be done last!
+#systList.append(["mc_stat","MC statistics",1,2]) #must be done last!
 
 nSyst = len(systList)
 #make list of bins
 
 binList = []
-binList.append(["bin0","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin1","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin2","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-binList.append(["bin3","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin4","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin5","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#
-#binList.append(["bin6","4 #leq n_{jets} #leq 5","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-#binList.append(["bin7","6 #leq n_{jets} #leq 7","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-#binList.append(["bin8","8 #leq n_{jets} #leq 9","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-#binList.append(["bin9","n_{jets} #geq 10","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-# signal regions
-binList.append(["bin10","n_{jets} #geq 10","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin11","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-binList.append(["bin12","n_{jets} #geq 8","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-binList.append(["bin13","n_{jets} #geq 10","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin14","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 1"])
-binList.append(["bin15","n_{jets} #geq 8","M_{J} #geq 800 GeV","n_{lep} = 1"])
-binList.append(["bin16","8 #leq n_{jets} #leq 9","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin17","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin18","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin19","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin20","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin21","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
+binList.append(["bin22", "n_{lep} = 1", "4 #leq n_{jets} #leq 5","N_{b}=0"])
+binList.append(["bin36", "n_{lep} = 1", "n_{jets} #geq 8","N_{b}=4"])
 
 
 sysFile = ROOT.TFile(infile,"read")

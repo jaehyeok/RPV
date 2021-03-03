@@ -191,8 +191,8 @@ void limits()
   leg->Draw();
 
   drawHeader();
-  c->Print("limits_"+year+".pdf");
-  c->Print("limits_"+year+".png");
+  c->Print("limits_"+year+"_0225.pdf");
+  c->Print("limits_"+year+"_0225.png");
 }
 
 TGraphErrors * theoryGraph()

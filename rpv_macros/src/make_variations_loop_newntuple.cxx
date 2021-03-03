@@ -794,14 +794,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       }
       if(variations=="ISR") 
       { 
-	if(year == 2016){
-          upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-          downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
-        }
-	else if(year != 2016){
-          upweight    = lumi*tree.weight();
-          downweight  = lumi*tree.weight();
-	}
+        upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+        downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
       }
       if(variations=="ttbar_muf") 
       { 
@@ -823,14 +817,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     { 
       if(variations=="ISR") 
       { 
-	if(year == 2016){
-          upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-          downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
-	}
-	else if(year != 2016){
-          upweight    = lumi*tree.weight();
-          downweight  = lumi*tree.weight();
-	}
+        upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+        downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
       }
       if(variations=="signal_muf") 
       { 

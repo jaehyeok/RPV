@@ -64,10 +64,6 @@ int main(int argc, char *argv[]){
   vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
   vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");// */
 
-  /*vector<TString> s_wjets16 = getRPVProcess(folder_bkg16,"wjets");
-  vector<TString> s_wjets17 = getRPVProcess(folder_bkg17,"wjets");
-  vector<TString> s_wjets18 = getRPVProcess(folder_bkg18,"wjets");// */
-
   // Reading ntuples
   vector<sfeats> Samples; 
   // Plot with data if showData == true
@@ -103,7 +99,7 @@ int main(int argc, char *argv[]){
     TString basecut = "mj12>=500&&ht>1200";
     TString lepcuts = "nleps==1";
     vector<TString> nbcuts = {"nbm==0"};
-    vector<TString> njetcuts = {"8<=njets"};
+    vector<TString> njetcuts = {"4<=njets&&njets<=5"};
 
     // Loop over cuts to make histograms
     TString cut = "";

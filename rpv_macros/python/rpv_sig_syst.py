@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-"""This script plots signal systematics for the RPV analysis"""
+#!/usr/bin/env python """This script plots signal systematics for the RPV analysis"""
 import sys
 import math
 import ROOT
@@ -42,8 +41,13 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
 
 
     # total hists for each variation, to include all processes
+<<<<<<< HEAD
     systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",nbinsX,500,1400)
     systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",nbinsX,500,1400)
+=======
+    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",3,500,1400)
+    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",3,500,1400)
+>>>>>>> d17a5e14a2aa3a07eb8bcd849976fe4df09c307c
 
   
     #load hists and calculate SFs for floating component for each variation
@@ -109,6 +113,7 @@ set_palette_gray()
 
 #make list of systematics- name, title, plot color and line style
 systList=[]
+<<<<<<< HEAD
 systList.append(["btag_bc_2016","b,c jet b-tag SF",5,1])
 systList.append(["btag_udsg_2016","u,d,s,g jet b-tag SF",6,1])
 systList.append(["JES_2016","Jet energy scale",7,1])
@@ -119,11 +124,30 @@ systList.append(["mur_2016","Renormalization scale",16,1])
 systList.append(["muf_2016","Factorization scale",17,1])
 systList.append(["murf_2016","Renorm. and fact. scale",18,1])
 systList.append(["mc_stat","MC statistics",1,2]) #must be done last!
+=======
+systList.append(["btag_bc_2018","b,c jet b-tag SF",5,1])
+systList.append(["btag_udsg_2018","u,d,s,g jet b-tag SF",6,1])
+systList.append(["JES_2018","Jet energy scale",7,1])
+#systList.append(["jer","Jet energy resolution",8,1])
+systList.append(["lep_eff_2018","Lepton efficiency",9,1])
+#systList.append(["pileup","Pileup",10,1])
+systList.append(["ISR_2018","Initial state radiation",11,1])
+#systList.append(["gs45","Gluon splitting (N_{jet}=4,5)",12,1])
+#systList.append(["gs67","Gluon splitting (N_{jet}=6,7)",13,1])
+#systList.append(["gs89","Gluon splitting (N_{jet}=8,9)",14,1])
+#systList.append(["gs10Inf","Gluon splitting (N_{jet}#geq10)",15,1])
+systList.append(["mur_2018","Renormalization scale",16,1])
+systList.append(["muf_2018","Factorization scale",17,1])
+systList.append(["murf_2018","Renorm. and fact. scale",18,1])
+#systList.append(["pdf","PDF",19,1])
+#systList.append(["mc_stat","MC statistics",1,2]) #must be done last!
+>>>>>>> d17a5e14a2aa3a07eb8bcd849976fe4df09c307c
 
 nSyst = len(systList)
 #make list of bins
 
 binList = []
+<<<<<<< HEAD
 #binList.append(["bin22","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
 #binList.append(["bin23","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
 #binList.append(["bin24","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
@@ -139,6 +163,10 @@ binList = []
 #binList.append(["bin33","n_{jets} #geq 8","M_{J} #geq 800 GeV","n_{lep} = 1"])
 #binList.append(["bin35","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 1"])
 binList.append(["bin36","n_{jets} #geq 8","M_{J} #geq 500 GeV","n_{lep} = 1"])
+=======
+binList.append(["bin22", "n_{lep} = 1", "4 #leq n_{jets} #leq 5","N_{b}=0"])
+binList.append(["bin36", "n_{lep} = 1", "n_{jets} #geq 8","N_{b}=4"])
+>>>>>>> d17a5e14a2aa3a07eb8bcd849976fe4df09c307c
 
 
 sysFile = ROOT.TFile(infile,"read")

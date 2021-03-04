@@ -81,7 +81,7 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "bin25", "bin26", "bin27",                  // bins for control region fit
       "bin28", "bin29", "bin30",                  // signal bins
       "bin31", "bin32", "bin33",
-      "bin34", "bin35", "bin36",                   
+      "bin35", "bin36",                   
       "bin37", "bin38", "bin39",                  // 0 lepton bins
       "bin40", "bin41", "bin42",
       "bin43", "bin44", "bin45",
@@ -93,7 +93,6 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "bin25",                                    // bins for control region fit
       "bin28",                                    // signal bins
       "bin31", 
-      "bin34",                   
       "bin37", "bin38", "bin39",                  // 0 lepton bins
       "bin40", 
       "bin43", 
@@ -131,8 +130,8 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
 
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), year.Data() ,upAndDown.at(idir).c_str()));
-                    //TString histnameRescale(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));//, rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
+                    //TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), year.Data() ,upAndDown.at(idir).c_str()));
+                    TString histnameRescale(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
@@ -152,8 +151,8 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
                 for(unsigned int idir=0; idir<upAndDown.size(); idir++) {
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), year.Data(), upAndDown.at(idir).c_str()));
-                    //TString histnameRescale = Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str());//, upAndDown.at(idir).c_str());
+                    //TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), year.Data(), upAndDown.at(idir).c_str()));
+                    TString histnameRescale = Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str());
                     std::cout << "Getting signal histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));

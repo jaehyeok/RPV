@@ -20,8 +20,10 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     std::string cardType=argv[1]; 
   //    std::string cardType="control";
 
+    //TString year = "2016";
     TString rootfile_org = argv[2];
-    if(argc==4) msig = argv[3];
+    TString year = argv[3];
+    if(argc==5) msig = argv[4];
     TString temp = rootfile_org;
     TString rootfile(temp.ReplaceAll(".root","_rescaled.root"));
     if(cardType=="mconly") rootfile = rootfile.ReplaceAll("_rescaled","_mconly");
@@ -49,17 +51,10 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     // in the fit
     std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets","other"};
     // systematics for which the template should be rescaled for qcd, ttbar, and wjets
-    /* std::vector<std::string> rescaleList = {
-      "btag_bc", "btag_udsg",
-      "gs",
-      "jes", "jer",
-      "lep_eff", "ttbar_pt",//"pileup",
-      "isr",
-      "qcd_flavor",
-      "qcd_mur", "qcd_muf", "qcd_murf",
-      "ttbar_mur", "ttbar_muf", "ttbar_murf",
-      "wjets_mur", "wjets_muf", "wjets_murf"}; */
-    std::vector<std::string> rescaleList = {""}; 
+     std::vector<std::string> rescaleList = {
+      "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
+     }; // */
+    //std::vector<std::string> rescaleList = {""}; 
     // signal list
     std::vector<std::string> signalList = 
     {
@@ -72,12 +67,12 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "Stop_M1100","Stop_M1150","Stop_M1200","Stop_M1250","Stop_M1300","Stop_M1350","Stop_M1400"};// */ //FIXME
 
     std::vector<std::string> signalRescaleList = {
-      ""//"gs"
+      "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
     };
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
   
     // Bins
-    std::vector<std::string> binNames_old = { 
+    std::vector<std::string> binNames_old = {
       "bin0","bin1","bin2","bin3","bin4","bin5","bin6","bin7","bin8","bin9",
       "bin10","bin11","bin12","bin13","bin14","bin15","bin16","bin17","bin18","bin19",
       "bin20","bin21"};
@@ -136,8 +131,8 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
 
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    //TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
-                    TString histnameRescale(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));//, rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
+                    TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), year.Data() ,upAndDown.at(idir).c_str()));
+                    //TString histnameRescale(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));//, rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
                     std::cout << "Getting histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
@@ -157,8 +152,8 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
                 for(unsigned int idir=0; idir<upAndDown.size(); idir++) {
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    //TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
-                    TString histnameRescale = Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str());//, upAndDown.at(idir).c_str());
+                    TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), year.Data(), upAndDown.at(idir).c_str()));
+                    //TString histnameRescale = Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str());//, upAndDown.at(idir).c_str());
                     std::cout << "Getting signal histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));

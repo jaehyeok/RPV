@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-"""This script plots signal systematics for the RPV analysis"""
+#!/usr/bin/env python """This script plots signal systematics for the RPV analysis"""
 import sys
 import math
 import ROOT
@@ -9,7 +8,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input")
 parser.add_argument("-m", "--mass")
 args = parser.parse_args()
-GLUINOMASS = 1200
+GLUINOMASS = 1700
 if (args.input):
   infile = args.input
 else:
@@ -27,6 +26,7 @@ def get_hist_with_overflow(file,histname):
         print" getting "+histname
     hist = file.Get(histname)
     nbinsX = hist.GetNbinsX()
+    #print(nbinsX)
     content = hist.GetBinContent(nbinsX) + hist.GetBinContent(nbinsX+1)
     error  = math.sqrt(math.pow(hist.GetBinError(nbinsX),2) + math.pow(hist.GetBinError(nbinsX+1),2))
     hist.SetBinContent(nbinsX,content)
@@ -41,9 +41,8 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
 
 
     # total hists for each variation, to include all processes
-    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",5,0,5)
-    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",5,0,5)
-
+    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",nbinsX,500,1400)
+    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",nbinsX,500,1400)
   
     #load hists and calculate SFs for floating component for each variation
 
@@ -108,54 +107,36 @@ set_palette_gray()
 
 #make list of systematics- name, title, plot color and line style
 systList=[]
-#systList.append(["fs_btag_bc","FastSim b,c jet b-tag SF",2,1])
-#systList.append(["fs_btag_udsg","FastSim u,d,s,g jet b-tag SF",3,1])
-#systList.append(["fs_lep_eff","FastSim lepton efficiency",4,1])
-systList.append(["btag_bc","b,c jet b-tag SF",5,1])
-systList.append(["btag_udsg","u,d,s,g jet b-tag SF",6,1])
-systList.append(["jes","Jet energy scale",7,1])
-systList.append(["jer","Jet energy resolution",8,1])
-systList.append(["lep_eff","Lepton efficiency",9,1])
-#systList.append(["pileup","Pileup",10,1])
-systList.append(["isr","Initial state radiation",11,1])
-systList.append(["gs45","Gluon splitting (N_{jet}=4,5)",12,1])
-systList.append(["gs67","Gluon splitting (N_{jet}=6,7)",13,1])
-systList.append(["gs89","Gluon splitting (N_{jet}=8,9)",14,1])
-systList.append(["gs10Inf","Gluon splitting (N_{jet}#geq10)",15,1])
-systList.append(["signal_mur","Renormalization scale",16,1])
-systList.append(["signal_muf","Factorization scale",17,1])
-systList.append(["signal_murf","Renorm. and fact. scale",18,1])
-#systList.append(["pdf","PDF",19,1])
+systList.append(["btag_bc_2016","b,c jet b-tag SF",5,1])
+systList.append(["btag_udsg_2016","u,d,s,g jet b-tag SF",6,1])
+systList.append(["JES_2016","Jet energy scale",7,1])
+systList.append(["lep_eff_2016","Lepton efficiency",9,1])
+systList.append(["ISR_2016","Initial state radiation",11,1])
+#systList.append(["GS_2016","Gluon splitting",15,1])
+systList.append(["mur_2016","Renormalization scale",16,1])
+systList.append(["muf_2016","Factorization scale",17,1])
+systList.append(["murf_2016","Renorm. and fact. scale",18,1])
 systList.append(["mc_stat","MC statistics",1,2]) #must be done last!
 
 nSyst = len(systList)
 #make list of bins
 
 binList = []
-binList.append(["bin0","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin1","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin2","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-binList.append(["bin3","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin4","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin5","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#
-#binList.append(["bin6","4 #leq n_{jets} #leq 5","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-#binList.append(["bin7","6 #leq n_{jets} #leq 7","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-#binList.append(["bin8","8 #leq n_{jets} #leq 9","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-#binList.append(["bin9","n_{jets} #geq 10","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
+#binList.append(["bin22","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
+#binList.append(["bin23","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
+#binList.append(["bin24","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
+#binList.append(["bin25","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 1"])
+#binList.append(["bin26","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 1"])
+#binList.append(["bin27","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 1"])
 # signal regions
-binList.append(["bin10","n_{jets} #geq 10","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin11","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-binList.append(["bin12","n_{jets} #geq 8","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-binList.append(["bin13","n_{jets} #geq 10","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin14","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 1"])
-binList.append(["bin15","n_{jets} #geq 8","M_{J} #geq 800 GeV","n_{lep} = 1"])
-binList.append(["bin16","8 #leq n_{jets} #leq 9","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin17","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin18","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin19","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin20","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin21","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
+#binList.append(["bin28","n_{jets} #geq 10","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
+#binList.append(["bin29","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
+#binList.append(["bin30","n_{jets} #geq 8","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
+#binList.append(["bin31","n_{jets} #geq 10","M_{J} #geq 800 GeV","n_{lep} = 0"])
+#binList.append(["bin32","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 1"])
+#binList.append(["bin33","n_{jets} #geq 8","M_{J} #geq 800 GeV","n_{lep} = 1"])
+#binList.append(["bin35","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 1"])
+binList.append(["bin36","n_{jets} #geq 8","M_{J} #geq 500 GeV","n_{lep} = 1"])
 
 
 sysFile = ROOT.TFile(infile,"read")
@@ -176,13 +157,13 @@ for ibin in binList:
     c = ROOT.TCanvas()
     leg = ROOT.TLegend(0.12,0.7,0.54,0.92)
 
-    table = ROOT.TH2F("table_"+directory,"",nbinsX,-0.5,nbinsX-0.5,nSyst,0,nSyst)
+    table = ROOT.TH2F("table_"+directory,"",nbinsX,500,1400,nSyst,0,nSyst)
     systHists_sym = []
 
     
     for isys, syst in enumerate(systList,start=1):
         sysName = syst[0]
-        systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",5,0,5) # will eventually contain errors; define now to remain in scope
+        systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",nbinsX,500,1400) # will eventually contain errors; define now to remain in scope
         if verbose:
             print "starting "+sysName
 
@@ -278,18 +259,16 @@ for ibin in binList:
     ROOT.gStyle.SetPadRightMargin(0.2)
     ROOT.gStyle.SetPadBottomMargin(0.1)
     c2 = ROOT.TCanvas()
-    table.GetXaxis().SetBinLabel(1,"0");
-    table.GetXaxis().SetBinLabel(2,"1");
-    table.GetXaxis().SetBinLabel(3,"2");
-    table.GetXaxis().SetBinLabel(4,"3");
-    table.GetXaxis().SetBinLabel(5,"#geq 4");
+    table.GetXaxis().SetLabelSize(0.02)
+    table.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV");
+    table.GetXaxis().SetBinLabel(2,"800 \leq M_{J} \leq 1100 GeV");
+    table.GetXaxis().SetBinLabel(3,"M_{J} \geq 1100 GeV");
     table.GetXaxis().SetNdivisions(400,0) 
     table.SetMaximum(20)
     table.SetMinimum(0)
     table.SetStats(0)
     table.SetMarkerSize(1.5)
-    table.SetAxisRange(0.5,4.499,"X")
-    table.SetXTitle("N_{b}")
+    table.SetXTitle("M_{J}")
     table.SetZTitle("Uncertainty [%]")
     table.GetYaxis().SetTitleOffset(1.4)
     table.GetYaxis().SetTitleSize(0.054)

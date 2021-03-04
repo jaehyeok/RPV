@@ -135,12 +135,11 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
                     std::cout << "Getting histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
-/*                    if(rescale->Integral()!=0) 
-                    {
+                    /*if(rescale->Integral()!=0) {
                         rescale->Scale(nominal->Integral()/rescale->Integral());
                     }
-*/
-                    rescale->Write("",TObject::kOverwrite);
+
+                    rescale->Write("",TObject::kOverwrite);// */
                    // rescale->Write();
                 }
             }
@@ -156,10 +155,10 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
                     std::cout << "Getting signal histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
-/*                    if(rescale->Integral()!=0) {
+                    /*if(rescale->Integral()!=0) {
                         rescale->Scale(nominal->Integral()/rescale->Integral());
-                    }
-*/
+                    }// */
+
                     rescale->Write("",TObject::kOverwrite);
                     //rescale->Write();
                 }

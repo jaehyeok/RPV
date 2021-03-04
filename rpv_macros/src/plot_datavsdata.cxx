@@ -46,9 +46,8 @@ int main(){
    TString folder_dat_17 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm/";
    vector<TString> s_data_2017 = getRPVProcess(folder_dat_17,"data");
 
-   TString folder_dat_18_HEM = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";//FIXME
-   TString folder_dat_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm_0925/";//FIXME
-   vector<TString> s_data_2018_HEM = getRPVProcess(folder_dat_18_HEM,"data");
+   //TString folder_dat_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm_0925/";//FIXME
+   TString folder_dat_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";//FIXME
    vector<TString> s_data_2018 = getRPVProcess(folder_dat_18,"data");
 
    //MC
@@ -66,10 +65,8 @@ int main(){
    vector<TString> s_other_2017 = getRPVProcess(folder_bkg_17,"other_public"); //This doesn't include W+jets
    vector<TString> s_all_bg_2017 = getRPVProcess(folder_bkg_17,"all_bg");
 
-   TString folder_bkg_18_HEM = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
-   TString folder_bkg_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm_0925/";
+   TString folder_bkg_18 = "/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm/";
    vector<TString> s_wjets_2018 = getRPVProcess(folder_bkg_18,"wjets");
-   vector<TString> s_ttbar_2018_HEM = getRPVProcess(folder_bkg_18_HEM,"ttbar");
    vector<TString> s_ttbar_2018 = getRPVProcess(folder_bkg_18,"ttbar");
    vector<TString> s_qcd_2018 = getRPVProcess(folder_bkg_18,"qcd");
    vector<TString> s_other_2018 = getRPVProcess(folder_bkg_18,"other_public"); //This doesn't include W+jets */  
@@ -89,9 +86,8 @@ int main(){
 
   vector<sfeats> Samples;
 
-  //Samples.push_back(sfeats(s_data_2018, "2018 data HEM without 15/16 (1 fb^{-1})", kRed,1,"pass && trig_ht1050 && run>=319077 && Sum$((jets_eta>-3.0 && jets_eta<-1.3 && jets_phi>-1.57 && jets_phi <-0.87) && jets_pt>30 && abs(jets_eta)<2.4)==0")); Samples.back().isData=true;
-  Samples.push_back(sfeats(s_data_2018, "2018 data HEM (1 fb^{-1})", kRed,1,"pass && trig_ht1050 && run>=319077")); Samples.back().isData=true;
-  Samples.push_back(sfeats(s_data_2018, "2018 data (1 fb^{-1})", kBlue,1,"pass && trig_ht1050 && run<319077")); //Samples.back().isData=true;
+  Samples.push_back(sfeats(s_data_2018, "2018 dataAB HEM (1 fb^{-1})", kRed,1,"pass && trig_ht1050 && run<319077 && Sum$((jets_eta>-3.0 && jets_eta<-1.3 && jets_phi>-1.57 && jets_phi <-0.87) && jets_pt>30 && abs(jets_eta)<2.4)==0")); Samples.back().isData=true;
+  Samples.push_back(sfeats(s_data_2018, "2018 dataAB (1 fb^{-1})", kBlue,1,"pass && trig_ht1050 && run<319077")); //Samples.back().isData=true;
   //Samples.push_back(sfeats(s_data_2016, "2016 data (1 fb^{-1})", kBlue,1,"trig_ht900 && trig_jet450 && pass")); //Samples.back().isData=true; 
   Samples.back().doBand = true;
   vector<int> data;
@@ -141,7 +137,7 @@ int main(){
    Samples.push_back(sfeats(s_2016, "Single lepton events, m_{T} < 140", kBlue,1,"nonblind&&nleps==1&&nveto==0&&nbm>=1&&njets>=6&&mt<=140&&(trig[4]||trig[8]||trig[13]||trig[33])&&pass"));   Samples.back().doBand = true;*/
   
   vector<hfeats> vars;
-  std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==0&&ht>1200&&njets>=4&&njets<=5"};// */
+  std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5"};// */
   /*std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
 				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
 				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&8<=njets",
@@ -158,12 +154,12 @@ int main(){
                                 "nbm>=4&&mj12>500&&nleps==1&&ht>1200&&8<=njets",
 	};// */
 
-  /*std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==0&&ht>1200&&njets>=4&&njets<=5",
-				"nbm==0&&mj12>500&&nleps==0&&ht>1200&&njets>=6&&njets<=7",
-				"nbm==0&&mj12>500&&nleps==0&&ht>1200&&8<=njets",
-  				"nbm==1&&mj12>500&&nleps==0&&ht>1200&&njets>=4&&njets<=5",
-				"nbm==1&&mj12>500&&nleps==0&&ht>1200&&njets>=6&&njets<=7",
-				"nbm==1&&mj12>500&&nleps==0&&ht>1200&&8<=njets"
+  /*std::vector<TString> cuts = {"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
+				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
+				"nbm==0&&mj12>500&&nleps==1&&ht>1200&&8<=njets",
+  				"nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=4&&njets<=5",
+				"nbm==1&&mj12>500&&nleps==1&&ht>1200&&njets>=6&&njets<=7",
+				"nbm==1&&mj12>500&&nleps==1&&ht>1200&&8<=njets"
 	};// */
 
   for(auto icut : cuts){

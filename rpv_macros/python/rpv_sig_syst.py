@@ -24,8 +24,10 @@ verbose = True
 def get_hist_with_overflow(file,histname):
     if verbose:
         print" getting "+histname
+    print"11"
     hist = file.Get(histname)
     nbinsX = hist.GetNbinsX()
+    print"12"
     #print(nbinsX)
     content = hist.GetBinContent(nbinsX) + hist.GetBinContent(nbinsX+1)
     error  = math.sqrt(math.pow(hist.GetBinError(nbinsX),2) + math.pow(hist.GetBinError(nbinsX+1),2))
@@ -34,15 +36,15 @@ def get_hist_with_overflow(file,histname):
     hist.SetBinError(nbinsX+1,0)
     hist.SetBinError(nbinsX,error)
     return hist
-    
+
 #This function calculates symmetrized relative errors for a single variation in a single kinematic bin
 #Return a histogram binned in Nb with the mean of the absolute value of relative errors up and down
 def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
 
 
     # total hists for each variation, to include all processes
-    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",nbinsX,500,1400)
-    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",nbinsX,500,1400)
+    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",3,500,1400)
+    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",3,500,1400)
   
     #load hists and calculate SFs for floating component for each variation
 
@@ -163,7 +165,7 @@ for ibin in binList:
     
     for isys, syst in enumerate(systList,start=1):
         sysName = syst[0]
-        systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",nbinsX,500,1400) # will eventually contain errors; define now to remain in scope
+        systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",3,500,1400) # will eventually contain errors; define now to remain in scope
         if verbose:
             print "starting "+sysName
 
@@ -214,7 +216,7 @@ for ibin in binList:
 
 
         table.GetYaxis().SetBinLabel(isys,syst[1])
-        systHists_sym[isys-1].SetTitle(";N_{b};Relative Error")
+        systHists_sym[isys-1].SetTitle(";M_{J};Relative Error")
         systHists_sym[isys-1].SetLineColor(syst[2])
         systHists_sym[isys-1].SetLineStyle(syst[3])
         systHists_sym[isys-1].SetLineWidth(2)

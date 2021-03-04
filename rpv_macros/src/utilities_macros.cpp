@@ -174,7 +174,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       histo[0][var][sam]->SetBinErrorOption(TH1::kPoisson);
       if(samVariable=="noPlot") chain[isam]->Project(histo[0][var][sam]->GetName(), variable, totCut);
       else chain[isam]->Project(histo[0][var][sam]->GetName(), samVariable, totCut);
-      histo[0][var][sam]->SetTitle(Samples[isam].label); 
+      histo[0][var][sam]->SetTitle(title); 
       if(vars[var].addOverflow) 
 	histo[0][var][sam]->SetBinContent(vars[var].nbins,
 	histo[0][var][sam]->GetBinContent(vars[var].nbins)+

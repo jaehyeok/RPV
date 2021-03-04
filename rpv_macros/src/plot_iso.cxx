@@ -136,9 +136,9 @@ int main(int argc, char *argv[]){
     	hists.push_back(hfeats("mus_miniso", 10, 0, 2, rpv_sam, "I_{mini}/P_{T}^{mus}", cut));
     	if(showData) hists.back().normalize = true;
     }
-    plot_distributions(Samples, hists, lumi, ".root", plot_style, "rpv_base", true, true);  
+    //plot_distributions(Samples, hists, lumi, ".root", plot_style, "rpv_base", true, true);  
     if(showData) hists.back().normalize = true;
-    plot_distributions(Samples, hists, lumi, ".png", plot_style, "rpv_base", true, true);  
+    plot_distributions(Samples, hists, lumi, ".pdf", plot_style, "rpv_base", true, true);  
     if(showData) hists.back().normalize = true;
     /*
       for(auto inb : nbcuts) {

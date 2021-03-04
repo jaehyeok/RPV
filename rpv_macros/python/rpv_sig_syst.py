@@ -7,14 +7,18 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input")
 parser.add_argument("-m", "--mass")
+parser.add_argument("-y", "--year")
 args = parser.parse_args()
 GLUINOMASS = 1700
+Year = 2016
 if (args.input):
   infile = args.input
 else:
   sys.exit("Please provide an input root file")
 if (args.mass):
   GLUINOMASS = args.mass
+if (args.year):
+  Year = args.year
 
 one_pdf = False #put all plots in one pdf file
 verbose = True  
@@ -24,11 +28,8 @@ verbose = True
 def get_hist_with_overflow(file,histname):
     if verbose:
         print" getting "+histname
-    print"11"
     hist = file.Get(histname)
     nbinsX = hist.GetNbinsX()
-    print"12"
-    #print(nbinsX)
     content = hist.GetBinContent(nbinsX) + hist.GetBinContent(nbinsX+1)
     error  = math.sqrt(math.pow(hist.GetBinError(nbinsX),2) + math.pow(hist.GetBinError(nbinsX+1),2))
     hist.SetBinContent(nbinsX,content)
@@ -48,9 +49,8 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
   
     #load hists and calculate SFs for floating component for each variation
 
-    up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Up")
-    down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Down")
-
+    up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
+    down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
 
     #Put yields in new histogram to avoid modifying originals
     systHistUp.Add(up)
@@ -109,15 +109,15 @@ set_palette_gray()
 
 #make list of systematics- name, title, plot color and line style
 systList=[]
-systList.append(["btag_bc_2016","b,c jet b-tag SF",5,1])
-systList.append(["btag_udsg_2016","u,d,s,g jet b-tag SF",6,1])
-systList.append(["JES_2016","Jet energy scale",7,1])
-systList.append(["lep_eff_2016","Lepton efficiency",9,1])
-systList.append(["ISR_2016","Initial state radiation",11,1])
-#systList.append(["GS_2016","Gluon splitting",15,1])
-systList.append(["mur_2016","Renormalization scale",16,1])
-systList.append(["muf_2016","Factorization scale",17,1])
-systList.append(["murf_2016","Renorm. and fact. scale",18,1])
+systList.append(["btag_bc","b,c jet b-tag SF",5,1])
+systList.append(["btag_udsg","u,d,s,g jet b-tag SF",6,1])
+systList.append(["JES","Jet energy scale",7,1])
+systList.append(["lep_eff","Lepton efficiency",9,1])
+systList.append(["ISR","Initial state radiation",11,1])
+#systList.append(["GS","Gluon splitting",15,1])
+systList.append(["mur","Renormalization scale",16,1])
+systList.append(["muf","Factorization scale",17,1])
+systList.append(["murf","Renorm. and fact. scale",18,1])
 systList.append(["mc_stat","MC statistics",1,2]) #must be done last!
 
 nSyst = len(systList)

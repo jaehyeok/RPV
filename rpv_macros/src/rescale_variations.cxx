@@ -22,8 +22,8 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
 
     //TString year = "2016";
     TString rootfile_org = argv[2];
-    TString year = argv[3];
-    if(argc==5) msig = argv[4];
+    //TString year = argv[3];
+    if(argc==4) msig = argv[3];
     TString temp = rootfile_org;
     TString rootfile(temp.ReplaceAll(".root","_rescaled.root"));
     if(cardType=="mconly") rootfile = rootfile.ReplaceAll("_rescaled","_mconly");
@@ -51,8 +51,8 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     // in the fit
     std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets","other"};
     // systematics for which the template should be rescaled for qcd, ttbar, and wjets
-     std::vector<std::string> rescaleList = {
-      "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
+     std::vector<std::string> rescaleList = {""
+      //"btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
      }; // */
     //std::vector<std::string> rescaleList = {""}; 
     // signal list
@@ -62,12 +62,8 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "signal_M1500", 
       "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000", "signal_M2100", "signal_M2200"};// */ //FIXME
 
-      /*"Stop_M300","Stop_M350","Stop_M400","Stop_M450","Stop_M500","Stop_M550","Stop_M600","Stop_M650",
-      "Stop_M700","Stop_M750","Stop_M800","Stop_M850","Stop_M900","Stop_M950","Stop_M1000","Stop_M1050",
-      "Stop_M1100","Stop_M1150","Stop_M1200","Stop_M1250","Stop_M1300","Stop_M1350","Stop_M1400"};// */ //FIXME
-
-    std::vector<std::string> signalRescaleList = {
-      "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
+    std::vector<std::string> signalRescaleList = {""
+     // "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
     };
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
   
@@ -81,7 +77,7 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "bin25", "bin26", "bin27",                  // bins for control region fit
       "bin28", "bin29", "bin30",                  // signal bins
       "bin31", "bin32", "bin33",
-      "bin35", "bin36",                   
+      "bin34", "bin35", "bin36",                  
       "bin37", "bin38", "bin39",                  // 0 lepton bins
       "bin40", "bin41", "bin42",
       "bin43", "bin44", "bin45",
@@ -137,9 +133,9 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
                     /*if(rescale->Integral()!=0) {
                         rescale->Scale(nominal->Integral()/rescale->Integral());
-                    }
+                    }// */
 
-                    rescale->Write("",TObject::kOverwrite);// */
+                    rescale->Write("",TObject::kOverwrite);
                    // rescale->Write();
                 }
             }

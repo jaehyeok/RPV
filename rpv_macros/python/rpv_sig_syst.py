@@ -244,14 +244,14 @@ for ibin in binList:
     tla.DrawLatexNDC(0.17, 0.55, ibin[2])
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + ".pdf("
+            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + ".pdf)"
+            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
         else:
-            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + ".pdf"
+            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
     else:
-         outname = "plots/rpv_sig_syst/sig_systs_" + directory + "_m" + str(GLUINOMASS) + ".pdf"
+         outname = "plots/rpv_sig_syst/sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
     print "outname is " +outname
     c.Print(outname)
 

@@ -114,7 +114,6 @@ systList.append(["btag_udsg","u,d,s,g jet b-tag SF",6,1])
 systList.append(["JES","Jet energy scale",7,1])
 systList.append(["lep_eff","Lepton efficiency",9,1])
 systList.append(["ISR","Initial state radiation",11,1])
-#systList.append(["GS","Gluon splitting",15,1])
 systList.append(["mur","Renormalization scale",16,1])
 systList.append(["muf","Factorization scale",17,1])
 systList.append(["murf","Renorm. and fact. scale",18,1])
@@ -124,21 +123,21 @@ nSyst = len(systList)
 #make list of bins
 
 binList = []
-#binList.append(["bin22","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin23","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin24","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin25","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#binList.append(["bin26","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#binList.append(["bin27","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 1"])
+binList.append(["bin22","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin23","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin24","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin25","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin26","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin27","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin28","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin29","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin30","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin31","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
 # signal regions
-#binList.append(["bin28","n_{jets} #geq 10","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin29","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin30","n_{jets} #geq 8","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin31","n_{jets} #geq 10","M_{J} #geq 800 GeV","n_{lep} = 0"])
-#binList.append(["bin32","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#binList.append(["bin33","n_{jets} #geq 8","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#binList.append(["bin35","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 1"])
-binList.append(["bin36","n_{jets} #geq 8","M_{J} #geq 500 GeV","n_{lep} = 1"])
+binList.append(["bin32","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin33","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin35","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin36","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
 
 
 sysFile = ROOT.TFile(infile,"read")
@@ -245,14 +244,14 @@ for ibin in binList:
     tla.DrawLatexNDC(0.17, 0.55, ibin[2])
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/sig_systs_all_m" + str(GLUINOMASS) + ".pdf("
+            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + ".pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/sig_systs_all_m" + str(GLUINOMASS) + ".pdf)"
+            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + ".pdf)"
         else:
-            outname = "plots/sig_systs_all_m" + str(GLUINOMASS) + ".pdf"
+            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + ".pdf"
 
     else:
-         outname = "plots/sig_systs_" + directory + "_m" + str(GLUINOMASS) + ".pdf"
+         outname = "plots/rpv_sig_syst/sig_systs_" + directory + "_m" + str(GLUINOMASS) + ".pdf"
     print "outname is " +outname
     c.Print(outname)
 
@@ -286,14 +285,14 @@ for ibin in binList:
     tla.DrawLatexNDC(0.66,0.93,"#sqrt{s} = 13 TeV")
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
+            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
+            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
         else:
-            outname = "plots/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
     else:
-         outname = "plots/table_sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+         outname = "plots/rpv_sig_syst/table_sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
          
     c2.Print(outname)

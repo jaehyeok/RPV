@@ -24,7 +24,7 @@ TString getBinName(int bin);
 int main() 
 {
 
-/*    vector<TString> variations={
+    /*vector<TString> variations={
         "btag_bc","btag_udsg",
         "gs45", "gs67", "gs89", "gs10Inf",
         "jes", "jer",
@@ -37,12 +37,12 @@ int main()
         "wjets_mur", "wjets_muf", "wjets_murf",
         "other_mur", "other_muf", "other_murf"};
 // */
-    //vector<TString> variations={"GS","ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
+    vector<TString> variations={"ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
     //vector<TString> variations={"kappa1", "kappa2"};
-    vector<TString> variations={"ISR"};
+    //vector<TString> variations={"ISR"};
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
-    vector<int> bins = {22, 23, 24, 25, 26, 27, 28, 31, 34, 29, 30, 32, 33, 35, 36};
+    vector<int> bins = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36};
     //for(int i=0; i<100; i++) variations.push_back(Form("w_pdf%i",i)); 
     
     for(auto ibin : bins){ 
@@ -90,9 +90,9 @@ void drawUpDown(int bin, vector<TString> variations)
     TPad *pad1;
     TPad *pad2;
 
-    for(unsigned int iprocess=0; iprocess<4; iprocess++) 
+    for(unsigned int iprocess=0; iprocess<1; iprocess++) 
     {
-        TString hname = "ttbar";
+        TString hname = "signal_M1700";
         if(iprocess==1) hname = "qcd";
         if(iprocess==2) hname = "wjets";
         if(iprocess==3) hname = "other";
@@ -100,7 +100,7 @@ void drawUpDown(int bin, vector<TString> variations)
         if(iprocess==5) hname = "signal_M1900"; 
         for(unsigned int ivariation=0; ivariation<variations.size(); ivariation++) 
         { 
-          if(iprocess>=3 && variations.at(ivariation).Contains("kappa")) continue; // kappa other
+          if(variations.at(ivariation).Contains("kappa")) continue; // kappa other
 
           const char* haltername = variations.at(ivariation).Data();
           TString njets="njets45"; 
@@ -298,9 +298,10 @@ void drawUpDown(int bin, vector<TString> variations)
             l0p9->Draw("same");
             //cout << hname  << h1_central->GetBinError(5) << " " <<  h1_central->GetBinContent(5) << " = " <<  h1_central->GetBinError(5) / h1_central->GetBinContent(5)<< endl; 
 
-            gSystem->mkdir(Form("plots/plots_variations/bin%i",bin), kTRUE); 
-            c->Print(Form("plots/plots_variations/bin%i/bin%i_%s_%s_mconly.pdf", bin, bin, hname.Data(), haltername));
-            c->SaveAs(Form("plots/plots_variations/bin%i/bin%i_%s_%s_mconly.png", bin, bin, hname.Data(), haltername));
+            //gSystem->mkdir(Form("plots/plots_variations/bin%i",bin), kTRUE); 
+            gSystem->mkdir("plots/plots_variations");
+            c->Print(Form("plots/plots_variations/bin%i_%s_%s_"+year+"_mconly.pdf", bin, hname.Data(), haltername));
+            c->SaveAs(Form("plots/plots_variations/bin%i_%s_%s_"+year+"_mconly.png", bin, hname.Data(), haltername));
 
 	    //TCanvas *c1 = new TCanvas("c1","c1",2000,1000);
 	    c1 = new TCanvas(Form("c1_%i_%s_%s",bin,hname.Data(),haltername),Form("c1_%i_%s_%s",bin,hname.Data(),haltername),2000,1000);
@@ -315,8 +316,8 @@ void drawUpDown(int bin, vector<TString> variations)
 	    pad2->cd();
 	    h1_ratio2->SetStats(0);
 	    h1_ratio2->Draw("hist");
-            c1->Print(Form("plots/plots_variations/bin%i/bin%i_%s_%s_ratio.pdf", bin, bin, hname.Data(), haltername));
-            c1->SaveAs(Form("plots/plots_variations/bin%i/bin%i_%s_%s_ratio.png", bin, bin, hname.Data(), haltername));
+            c1->Print(Form("plots/plots_variations/bin%i_%s_%s_"+year+"_ratio.pdf", bin, hname.Data(), haltername));
+            c1->SaveAs(Form("plots/plots_variations/bin%i_%s_%s_"+year+"_ratio.png", bin, hname.Data(), haltername));
 
             delete h1_central; 
             delete h1_up; 
@@ -352,8 +353,8 @@ TString getBinName(int bin)
     binnumber = {22, 23, 24,
                  25, 26, 27,
                  28, 29, 30,
-                 31, 32, 33,
-                 34, 35, 36};
+		 31, 32, 33,
+                 35, 36};
 
     for(unsigned int i=0; i<binname.size(); i++)  
     { 

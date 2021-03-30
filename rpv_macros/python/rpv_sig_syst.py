@@ -7,14 +7,18 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input")
 parser.add_argument("-m", "--mass")
+parser.add_argument("-y", "--year")
 args = parser.parse_args()
 GLUINOMASS = 1700
+Year = 2016
 if (args.input):
   infile = args.input
 else:
   sys.exit("Please provide an input root file")
 if (args.mass):
   GLUINOMASS = args.mass
+if (args.year):
+  Year = args.year
 
 one_pdf = False #put all plots in one pdf file
 verbose = True  
@@ -26,7 +30,6 @@ def get_hist_with_overflow(file,histname):
         print" getting "+histname
     hist = file.Get(histname)
     nbinsX = hist.GetNbinsX()
-    #print(nbinsX)
     content = hist.GetBinContent(nbinsX) + hist.GetBinContent(nbinsX+1)
     error  = math.sqrt(math.pow(hist.GetBinError(nbinsX),2) + math.pow(hist.GetBinError(nbinsX+1),2))
     hist.SetBinContent(nbinsX,content)
@@ -34,21 +37,20 @@ def get_hist_with_overflow(file,histname):
     hist.SetBinError(nbinsX+1,0)
     hist.SetBinError(nbinsX,error)
     return hist
-    
+
 #This function calculates symmetrized relative errors for a single variation in a single kinematic bin
 #Return a histogram binned in Nb with the mean of the absolute value of relative errors up and down
 def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
 
 
     # total hists for each variation, to include all processes
-    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",nbinsX,500,1400)
-    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",nbinsX,500,1400)
+    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",3,500,1400)
+    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",3,500,1400)
   
     #load hists and calculate SFs for floating component for each variation
 
-    up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Up")
-    down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Down")
-
+    up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
+    down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
 
     #Put yields in new histogram to avoid modifying originals
     systHistUp.Add(up)
@@ -107,36 +109,35 @@ set_palette_gray()
 
 #make list of systematics- name, title, plot color and line style
 systList=[]
-systList.append(["btag_bc_2016","b,c jet b-tag SF",5,1])
-systList.append(["btag_udsg_2016","u,d,s,g jet b-tag SF",6,1])
-systList.append(["JES_2016","Jet energy scale",7,1])
-systList.append(["lep_eff_2016","Lepton efficiency",9,1])
-systList.append(["ISR_2016","Initial state radiation",11,1])
-#systList.append(["GS_2016","Gluon splitting",15,1])
-systList.append(["mur_2016","Renormalization scale",16,1])
-systList.append(["muf_2016","Factorization scale",17,1])
-systList.append(["murf_2016","Renorm. and fact. scale",18,1])
+systList.append(["btag_bc","b,c jet b-tag SF",5,1])
+systList.append(["btag_udsg","u,d,s,g jet b-tag SF",6,1])
+systList.append(["JES","Jet energy scale",7,1])
+systList.append(["lep_eff","Lepton efficiency",9,1])
+systList.append(["ISR","Initial state radiation",11,1])
+systList.append(["mur","Renormalization scale",16,1])
+systList.append(["muf","Factorization scale",17,1])
+systList.append(["murf","Renorm. and fact. scale",18,1])
 systList.append(["mc_stat","MC statistics",1,2]) #must be done last!
 
 nSyst = len(systList)
 #make list of bins
 
 binList = []
-#binList.append(["bin22","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin23","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin24","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin25","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#binList.append(["bin26","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#binList.append(["bin27","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 1"])
+binList.append(["bin22","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin23","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin24","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin25","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin26","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin27","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin28","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin29","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin30","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin31","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
 # signal regions
-#binList.append(["bin28","n_{jets} #geq 10","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin29","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin30","n_{jets} #geq 8","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-#binList.append(["bin31","n_{jets} #geq 10","M_{J} #geq 800 GeV","n_{lep} = 0"])
-#binList.append(["bin32","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#binList.append(["bin33","n_{jets} #geq 8","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#binList.append(["bin35","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 1"])
-binList.append(["bin36","n_{jets} #geq 8","M_{J} #geq 500 GeV","n_{lep} = 1"])
+binList.append(["bin32","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin33","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin35","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin36","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
 
 
 sysFile = ROOT.TFile(infile,"read")
@@ -163,7 +164,7 @@ for ibin in binList:
     
     for isys, syst in enumerate(systList,start=1):
         sysName = syst[0]
-        systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",nbinsX,500,1400) # will eventually contain errors; define now to remain in scope
+        systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",3,500,1400) # will eventually contain errors; define now to remain in scope
         if verbose:
             print "starting "+sysName
 
@@ -214,7 +215,7 @@ for ibin in binList:
 
 
         table.GetYaxis().SetBinLabel(isys,syst[1])
-        systHists_sym[isys-1].SetTitle(";N_{b};Relative Error")
+        systHists_sym[isys-1].SetTitle(";M_{J};Relative Error")
         systHists_sym[isys-1].SetLineColor(syst[2])
         systHists_sym[isys-1].SetLineStyle(syst[3])
         systHists_sym[isys-1].SetLineWidth(2)
@@ -243,14 +244,14 @@ for ibin in binList:
     tla.DrawLatexNDC(0.17, 0.55, ibin[2])
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/sig_systs_all_m" + str(GLUINOMASS) + ".pdf("
+            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/sig_systs_all_m" + str(GLUINOMASS) + ".pdf)"
+            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
         else:
-            outname = "plots/sig_systs_all_m" + str(GLUINOMASS) + ".pdf"
+            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
     else:
-         outname = "plots/sig_systs_" + directory + "_m" + str(GLUINOMASS) + ".pdf"
+         outname = "plots/rpv_sig_syst/sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
     print "outname is " +outname
     c.Print(outname)
 
@@ -284,14 +285,14 @@ for ibin in binList:
     tla.DrawLatexNDC(0.66,0.93,"#sqrt{s} = 13 TeV")
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/table_sig_systs_all_m" + str(GLUINOMASS) + ".pdf("
+            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/table_sig_systs_all_m" + str(GLUINOMASS) + ".pdf)"
+            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
         else:
-            outname = "plots/table_sig_systs_all_m" + str(GLUINOMASS) + ".pdf"
+            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
     else:
-         outname = "plots/table_sig_systs_" + directory + "_m" + str(GLUINOMASS) + ".pdf"
+         outname = "plots/rpv_sig_syst/table_sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
          
     c2.Print(outname)

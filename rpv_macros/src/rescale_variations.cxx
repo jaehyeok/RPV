@@ -20,7 +20,9 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     std::string cardType=argv[1]; 
   //    std::string cardType="control";
 
+    //TString year = "2016";
     TString rootfile_org = argv[2];
+    //TString year = argv[3];
     if(argc==4) msig = argv[3];
     TString temp = rootfile_org;
     TString rootfile(temp.ReplaceAll(".root","_rescaled.root"));
@@ -49,17 +51,10 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     // in the fit
     std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets","other"};
     // systematics for which the template should be rescaled for qcd, ttbar, and wjets
-    /* std::vector<std::string> rescaleList = {
-      "btag_bc", "btag_udsg",
-      "gs",
-      "jes", "jer",
-      "lep_eff", "ttbar_pt",//"pileup",
-      "isr",
-      "qcd_flavor",
-      "qcd_mur", "qcd_muf", "qcd_murf",
-      "ttbar_mur", "ttbar_muf", "ttbar_murf",
-      "wjets_mur", "wjets_muf", "wjets_murf"}; */
-    std::vector<std::string> rescaleList = {""}; 
+     std::vector<std::string> rescaleList = {""
+      //"btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
+     }; // */
+    //std::vector<std::string> rescaleList = {""}; 
     // signal list
     std::vector<std::string> signalList = 
     {
@@ -67,17 +62,13 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "signal_M1500", 
       "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000", "signal_M2100", "signal_M2200"};// */ //FIXME
 
-      /*"Stop_M300","Stop_M350","Stop_M400","Stop_M450","Stop_M500","Stop_M550","Stop_M600","Stop_M650",
-      "Stop_M700","Stop_M750","Stop_M800","Stop_M850","Stop_M900","Stop_M950","Stop_M1000","Stop_M1050",
-      "Stop_M1100","Stop_M1150","Stop_M1200","Stop_M1250","Stop_M1300","Stop_M1350","Stop_M1400"};// */ //FIXME
-
-    std::vector<std::string> signalRescaleList = {
-      ""//"gs"
+    std::vector<std::string> signalRescaleList = {""
+     // "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
     };
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
   
     // Bins
-    std::vector<std::string> binNames_old = { 
+    std::vector<std::string> binNames_old = {
       "bin0","bin1","bin2","bin3","bin4","bin5","bin6","bin7","bin8","bin9",
       "bin10","bin11","bin12","bin13","bin14","bin15","bin16","bin17","bin18","bin19",
       "bin20","bin21"};
@@ -86,7 +77,7 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "bin25", "bin26", "bin27",                  // bins for control region fit
       "bin28", "bin29", "bin30",                  // signal bins
       "bin31", "bin32", "bin33",
-      "bin34", "bin35", "bin36",                   
+      "bin34", "bin35", "bin36",                  
       "bin37", "bin38", "bin39",                  // 0 lepton bins
       "bin40", "bin41", "bin42",
       "bin43", "bin44", "bin45",
@@ -98,7 +89,6 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "bin25",                                    // bins for control region fit
       "bin28",                                    // signal bins
       "bin31", 
-      "bin34",                   
       "bin37", "bin38", "bin39",                  // 0 lepton bins
       "bin40", 
       "bin43", 
@@ -136,16 +126,15 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
 
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    //TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
-                    TString histnameRescale(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));//, rescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
+                    //TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), year.Data() ,upAndDown.at(idir).c_str()));
+                    TString histnameRescale(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
-/*                    if(rescale->Integral()!=0) 
-                    {
+                    /*if(rescale->Integral()!=0) {
                         rescale->Scale(nominal->Integral()/rescale->Integral());
-                    }
-*/
+                    }// */
+
                     rescale->Write("",TObject::kOverwrite);
                    // rescale->Write();
                 }
@@ -157,15 +146,15 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
                 for(unsigned int idir=0; idir<upAndDown.size(); idir++) {
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    //TString histnameRescale(Form("%s/%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), upAndDown.at(idir).c_str()));
-                    TString histnameRescale = Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str());//, upAndDown.at(idir).c_str());
+                    //TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), year.Data(), upAndDown.at(idir).c_str()));
+                    TString histnameRescale = Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str());
                     std::cout << "Getting signal histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
- /*                   if(rescale->Integral()!=0) {
+                    /*if(rescale->Integral()!=0) {
                         rescale->Scale(nominal->Integral()/rescale->Integral());
-                    }
-*/
+                    }// */
+
                     rescale->Write("",TObject::kOverwrite);
                     //rescale->Write();
                 }

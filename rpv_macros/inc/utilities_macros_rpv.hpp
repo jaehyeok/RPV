@@ -765,23 +765,23 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
   if(bin==0){
 		nleps       = 0;
 		ht          = ht1lepCut;
-		njetsLow    = njetsLowCut;
-		njetsHigh   = njetsLowCut+1;
+		njetsLow    = njetsVLowCut+1;
+		njetsHigh   = njetsLowCut;
 		nbLow       = nbVLowCut;
 		nbHigh      = nbLowCut;
   }                   
   else if(bin==1){
 		nleps       = 0;
 		ht          = ht1lepCut;
-		njetsLow    = njetsMedCut;
-		njetsHigh   = njetsMedCut+1;
+		njetsLow    = njetsLowCut+1;
+		njetsHigh   = njetsMedCut;
 		nbLow       = nbVLowCut;
 		nbHigh      = nbLowCut;
   }                     
   else if(bin==2){  
 		nleps       = 0;
 		ht          = ht1lepCut;
-		njetsLow    = njetsHighCut;
+		njetsLow    = njetsMedCut+1;
 		njetsHigh   = njetsInfCut;
 		nbLow       = nbVLowCut;
 		nbHigh      = nbLowCut;
@@ -874,7 +874,7 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
 		njetsLow    = njetsLowCut;
 		njetsHigh   = njetsLowCut+1;
 		nbLow       = nbLowCut;
-		nbHigh      = nbMedCut;
+		nbHigh      = nbHighCut;
   }                            
   else if(bin==13){            
 		nleps       = 0;
@@ -882,7 +882,7 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
 		njetsLow    = njetsMedCut;
 		njetsHigh   = njetsMedCut+1;
 		nbLow       = nbLowCut;
-		nbHigh      = nbMedCut;
+		nbHigh      = nbHighCut;
   }                            
   else if(bin==14){            
 		nleps       = 0;
@@ -890,7 +890,7 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
 		njetsLow    = njetsHighCut;
 		njetsHigh   = njetsInfCut;
 		nbLow       = nbLowCut;
-		nbHigh      = nbMedCut;
+		nbHigh      = nbHighCut;
   }
   //Generate regions to fit the CR
   else if(bin==15){

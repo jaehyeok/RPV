@@ -634,6 +634,25 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       if(tree.jets_csv().at(j)>0.8484) nb_csv++;
     }
 */
+    int loose_lep(0), loose_els(0), loose_mus(0);
+    for(unsigned int ie=0; ie<tree.els_pt().size(); ie++){
+      if(tree.els_pt().at(ie)<20) continue;
+      if(abs(tree.els_eta().at(ie))>2.5) continue;
+      if(!tree.els_sigid().at(ie)) continue;
+      if(tree.els_miniso().at(ie)>1.0) continue;
+      if(tree.els_miniso().at(ie)<0.05) continue;
+      loose_els++;
+      loose_lep++;
+    }
+    for(unsigned int im=0; im<tree.mus_pt().size(); im++){
+      if(tree.mus_pt().at(im)<20) continue;
+      if(abs(tree.mus_eta().at(im))>2.4) continue;
+      if(!tree.mus_sigid().at(im)) continue;
+      if(tree.mus_miniso().at(im)>1.0) continue;
+      if(tree.mus_miniso().at(im)<0.1) continue;
+      loose_mus++;
+      loose_lep++;
+    }
     // qcd jet flavor central weights
     /* if(procname=="qcd") 
        { 
@@ -1081,6 +1100,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         {
           if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm()))
           {
+           // if(loose_lep==0) nominalweight=0;
             float hmjmax = mjmax-0.001;
             if(tree.nleps()==0 && !nl0shape){
               hmjmax = mjmin+(mjmax-mjmin)/(MjBin+1)-0.001;

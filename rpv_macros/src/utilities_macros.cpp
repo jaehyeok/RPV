@@ -280,15 +280,16 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	cout<<"Markers [data] are ("<<RoundNumber((num/den)*100,1)
 	    <<" +- "<<RoundNumber(err_tot*100,1)<<")% the histogram [MC]. Data yield is "<<num<<endl;
       }
-      
+  /*    
       for(unsigned sam(Nsam-1) ; sam < Nsam ; sam--){
 	int isam = vars[var].samples[sam];
 	int maxbin = 20;
 	if(title.Contains("mus")) maxbin = 10;
-        cout<< Samples[isam].label << " : " << histo[0][var][sam]->Integral(1,1)  << endl;
-	cout<< Samples[isam].label << " : " << histo[0][var][sam]->Integral(2,maxbin) << endl;
+        cout<< Samples[isam].label << " : " << "first bin :" <<histo[0][var][sam]->Integral(1,1)  << endl;
+	cout<< Samples[isam].label << " : " << "bin 2 to 4 :"  <<histo[0][var][sam]->Integral(2,4) << endl;
+	cout<< Samples[isam].label << " : " << "bin 5 to max :" <<histo[0][var][sam]->Integral(5,maxbin) << endl;	
       }
-
+*/
       for(unsigned sam(Nsam-1); sam < Nsam; sam--){
 	int isam = vars[var].samples[sam];
 	//bool noStack = Samples[isam].isSig || Samples[isam].isData;

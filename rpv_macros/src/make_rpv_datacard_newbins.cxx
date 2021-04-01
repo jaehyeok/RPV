@@ -1245,7 +1245,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
       if(filename.find("lownjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("            %s      ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -1290,7 +1290,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
       else{  
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape);
+          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc])file << "1.00" << " ";

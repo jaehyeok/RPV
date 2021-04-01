@@ -53,7 +53,8 @@ int main(int argc, char *argv[])
 					                     "wjets_muf", "wjets_mur", "wjets_murf",
 					                     "other_muf", "other_mur", "other_murf",
 					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
-  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
+  //std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","lep_eff"};
+  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","ISR","lep_eff"};//FIXME
 
   std::string gluinoMass;
   std::string signalBinName;
@@ -67,8 +68,8 @@ int main(int argc, char *argv[])
     std::stringstream ss;
     gluinoMass = argv[1];
     year = argv[4];
-    ss << "signal_M" << gluinoMass;
-    //ss << "Stop_M" << gluinoMass;
+    //ss << "signal_M" << gluinoMass;
+    ss << "GluToNeu_M" << gluinoMass;
     signalBinName = ss.str();
     // this is supposed to be the first entry in the process list
     processes.insert(processes.begin(), signalBinName);

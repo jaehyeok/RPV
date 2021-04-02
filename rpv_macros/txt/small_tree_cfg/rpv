@@ -57,6 +57,7 @@ std::vector<float> mus_eta
 std::vector<float> mus_phi
 std::vector<float> mus_miniso
 std::vector<float> mus_m
+std::vector<float> mus_miniso
 std::vector<bool> mus_sigid
 std::vector<float> mus_d0
 std::vector<float> mus_dz

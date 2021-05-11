@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     gluinoMass = argv[1];
     year = argv[4];
     ss << "signal_M" << gluinoMass;
-    //ss << "Stop_M" << gluinoMass;
+    //ss << "GluToNeu_M" << gluinoMass;
     signalBinName = ss.str();
     // this is supposed to be the first entry in the process list
     processes.insert(processes.begin(), signalBinName);

@@ -41,7 +41,8 @@ int main(int argc, char* argv[])
     cout << " .. I am making yield table " << endl; 
     cout << " ........................... "<< endl; 
 
-    TString bin[52] = {
+    const int nbins = 52;
+    TString bin[nbins] = {
         // control regions
         "0-lepton,HT>1500,4#leq N_{jets}#leq5,500<MJ<800",
         "0-lepton,HT>1500,6#leq N_{jets}#leq7,500<MJ<800",
@@ -83,9 +84,9 @@ int main(int argc, char* argv[])
 	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=3",
 	"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
 	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=3",
-	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
+	"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",//bin34 //ibin==34
 	"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",
-	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4"
+	"1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4",
 	"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
 	"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=0",
 	"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=0",
@@ -103,7 +104,7 @@ int main(int argc, char* argv[])
 	"0-lepton,HT>1200,N_{jets}#geq10,N_{b}#geq4"
     };
 
-    TString binLatex[52] = {
+    TString binLatex[nbins] = {
         // control regions
         "N_{leps}=0,H_{T}>1500~\\textrm{GeV},4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\textrm{GeV}",
         "N_{leps}=0,H_{T}>1500~\\textrm{GeV},6\\leq N_{jets}\\leq7, 500<M_{J}<800~\\textrm{GeV}",
@@ -144,8 +145,8 @@ int main(int argc, char* argv[])
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=2",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=3",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=3",    
-	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=3",    
-	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}\\geq4",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=3",
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}\\geq4",//bin34
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}\\geq4",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}\\geq4",    
 	"N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=0",    
@@ -171,12 +172,13 @@ int main(int argc, char* argv[])
     //TFile* infile  = TFile::Open("variations/output_nominal_newnt_nl0shape2016.root", "READ"); 
     TFile* infile  = TFile::Open(inputName, "READ"); 
  
-    float data[52][3], qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3],
-          sig1500[52][3], sig1600[52][3], sig1700[52][3], sig1800[52][3], sig1900[52][3],
-          data_err[52][3], qcd_err[52][3], ttbar_err[52][3], wjets_err[52][3], other_err[52][3],
-          sig1500_err[52][3], sig1600_err[52][3], sig1700_err[52][3], sig1800_err[52][3], sig1900_err[52][3];
-    for(int ibin=0; ibin<52; ibin++)  
-    { 
+    float data[nbins][3], qcd[nbins][3], ttbar[nbins][3], wjets[nbins][3], other[nbins][3],
+          sig1500[nbins][3], sig1600[nbins][3], sig1700[nbins][3], sig1800[nbins][3], sig1900[nbins][3],
+          data_err[nbins][3], qcd_err[nbins][3], ttbar_err[nbins][3], wjets_err[nbins][3], other_err[nbins][3],
+          sig1500_err[nbins][3], sig1600_err[nbins][3], sig1700_err[nbins][3], sig1800_err[nbins][3], sig1900_err[nbins][3];
+    for(int ibin=0; ibin<nbins; ibin++)  
+    {
+	if(ibin==34) continue; // exclude bin34
         //if(ibin>=6 && ibin<=9) continue;
         for(int inb=0; inb<3; inb++) 
         {
@@ -204,8 +206,9 @@ int main(int argc, char* argv[])
         }
     }
     //
-    for(int ibin=22; ibin<52; ibin++) 
+    for(int ibin=22; ibin<nbins; ibin++) 
     {
+	if(ibin==34) continue; //exclude bin34
         //if(ibin>=6 && ibin<=9) continue;
         //TDirectory* dir = infile->GetDirectory(Form("bin%i", ibin));
 
@@ -237,10 +240,10 @@ int main(int argc, char* argv[])
 
         }  
     }
-        
     float sig1500sum(0), sig1600sum(0), sig1700sum(0), sig1800sum(0), sig1900sum(0);
-    for(int ibin=22; ibin<52; ibin++) 
+    for(int ibin=22; ibin<nbins; ibin++) 
     {
+      if(ibin==34) continue;//exclude bin34
       //if(ibin>5 && ibin<10) continue; // skip low MJ bins 
       for(int inb=0; inb<3; inb++)  
       {
@@ -255,9 +258,9 @@ int main(int argc, char* argv[])
     // -----------------------------------------------------
     // table for AN
     // -----------------------------------------------------
-    for(int ibin=22; ibin<52; ibin++) 
+    for(int ibin=22; ibin<nbins; ibin++) 
     {
-
+	if(ibin==34) continue;
        //if(ibin>5 && ibin<10) continue; // skip low MJ bins
 
        if(formatLatex) 
@@ -319,10 +322,11 @@ int main(int argc, char* argv[])
     // -----------------------------------------------------
 
     // Get pre-fit errors
-    float err[4][52][3];
+    float err[4][nbins][3];
 
-    for(int ibin=22; ibin<52; ibin++)
+    for(int ibin=22; ibin<nbins; ibin++)
     {
+	if(ibin==34) continue;//exclude bin34
         for(int inb=0; inb<3; inb++)
         {
             err[0][ibin][inb] = qcd_err[ibin][inb];
@@ -334,9 +338,9 @@ int main(int argc, char* argv[])
 
     // Get relative error using up variations
     // using both up and down is be better way, but should be very close
-    for(int ibin=22; ibin<52; ibin++) 
+    for(int ibin=22; ibin<nbins; ibin++) 
     {
-        
+	if(ibin==34) continue;//exclude bin34
         if(ibin>=6 && ibin<=9) continue;
 
         for(int iproc=0; iproc<4; iproc++)
@@ -515,11 +519,12 @@ int main(int argc, char* argv[])
     cout << "\\centering" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
-    cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1800\\textrm{GeV}$\\\\"  << endl;
+    cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1600\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
-    for(int ibin=22; ibin<52; ibin++)
+    for(int ibin=22; ibin<nbins; ibin++)
     { 
+	if(ibin==34) continue;//exclude bin34
         int tablebin=tablebin_1lep[ibin-22];
         
         float databin(0), mcbin(0); 
@@ -538,7 +543,7 @@ int main(int argc, char* argv[])
                     ttbar[tablebin][inb],
                     wjets[tablebin][inb],
                     other[tablebin][inb],
-                    sig1800[tablebin][inb],
+                    sig1600[tablebin][inb],
                     err[0][tablebin][inb],//*qcd[tablebin][inb],
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],
                     err[2][tablebin][inb],//*wjets[tablebin][inb],

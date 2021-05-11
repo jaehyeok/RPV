@@ -283,6 +283,12 @@ int main(int argc, char *argv[])
   vector<TString> s_rpv_m2100 = getRPVProcess(folder_sig,"rpv_m2100");
   vector<TString> s_rpv_m2200 = getRPVProcess(folder_sig,"rpv_m2200");// */
 
+  //GluinoToNeutralino
+  /*vector<TString> s_GN_1200 = getRPVProcess(folder_sig,"gn_1200");
+  vector<TString> s_GN_1600 = getRPVProcess(folder_sig,"gn_1600");// */
+  //vector<TString> s_GN_2400 = getRPVProcess(folder_sig,"gn_2400");
+  //vector<TString> s_GN_3000 = getRPVProcess(folder_sig,"gn_3000");
+
   //StealthSHH
   /*vector<TString> s_mStop_300 = getRPVProcess(folder_sig,"mStop_300");  
   vector<TString> s_mStop_350 = getRPVProcess(folder_sig,"mStop_350");  
@@ -334,6 +340,12 @@ int main(int argc, char *argv[])
   small_tree_rpv rpv_m2000((static_cast<std::string>(s_rpv_m2000.at(0))));
   small_tree_rpv rpv_m2100((static_cast<std::string>(s_rpv_m2100.at(0))));
   small_tree_rpv rpv_m2200((static_cast<std::string>(s_rpv_m2200.at(0))));// */
+
+  //GluinoToNeutralino
+  /*small_tree_rpv gn_1200((static_cast<std::string>(s_GN_1200.at(0))));
+  small_tree_rpv gn_1600((static_cast<std::string>(s_GN_1600.at(0))));// */
+  //small_tree_rpv gn_2400((static_cast<std::string>(s_GN_2400.at(0))));
+  //small_tree_rpv gn_3000((static_cast<std::string>(s_GN_3000.at(0))));
 
   // Stealth SUSY Signal
   /*small_tree_rpv mStop_300((static_cast<std::string>(s_mStop_300.at(0))));
@@ -395,6 +407,12 @@ int main(int argc, char *argv[])
   getSyst(rpv_m2000, variations, year, f, "signal_M2000");
   getSyst(rpv_m2100, variations, year, f, "signal_M2100");
   getSyst(rpv_m2200, variations, year, f, "signal_M2200");// */
+
+  //GluinoToNeutralino
+  /*getSyst(gn_1200, variations, year, f, "GluToNeu_M1200");
+  getSyst(gn_1600, variations, year, f, "GluToNeu_M1600");// */
+  //getSyst(gn_2400, variations, year, f, "GluToNeu_M2400");
+  //getSyst(gn_3000, variations, year, f, "GluToNeu_M3000");
 
   //StealthSHH
   /*getSyst(mStop_300, variations, year, f, "Stop_M300");
@@ -626,7 +644,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if (procname=="data_obs" && year=="2016") nominalweight = tree.pass() * (tree.trig_ht900()||tree.trig_jet450());
     else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
     //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
-    else if (procname=="signal") nominalweight = nominalweight * 1;
+    else if (procname=="signal" || procname=="GluToNeu") nominalweight = nominalweight * 1;
     //else if ((tree.nbm()==0||tree.nbm()==1) && tree.mj12()>1100 && tree.njets()>=4 && tree.njets()<=5) nominalweight=lumi*tree.weight()*0.4;//FIXME HEM issue
 /*
     int nb_csv=0;
@@ -815,9 +833,15 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         downweight  = downweight*(2-tree.w_toppt());
       }
       if(variations=="ISR") 
-      { 
-        upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-        downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+      {
+	if(year == 2016){
+          upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+          downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+	}
+	else if(year == 2017 || year == 2018){
+	  upweight = upweight*tree.w_isr();
+	  downweight = downweight*tree.w_isr();
+	}
       }
       if(variations=="ttbar_muf") 
       { 
@@ -838,9 +862,15 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if(procname.Contains("signal")) 
     { 
       if(variations=="ISR") 
-      { 
-        upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-        downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+      {
+	if(year == 2016){
+          upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+          downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
+	}
+	else if(year == 2017 || year == 2018){
+	  upweight = upweight*tree.w_isr();
+	  downweight = downweight*tree.w_isr();
+	}
       }
       if(variations=="signal_muf") 
       { 
@@ -1156,7 +1186,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         else if(ibin%3==2) temp_ = Form("kappa%d_njets67_%s",kap, procname.Data());
         else if(ibin%3==0) temp_ = Form("kappa%d_njets8_%s",kap, procname.Data());
 
-        if(procname=="other"||procname.Contains("signal")||procname.Contains("Stop")) continue;
+        if(procname=="other"||procname.Contains("signal")||procname.Contains("Stop")||procname.Contains("GluToNeu")) continue;
 
 	if(str_year==""){
           upname = procname+"_"+temp_+"_"+year+"Up";
@@ -1198,6 +1228,7 @@ TString color(TString procname){
   else if(procname == "wjets") return green;
   else if(procname == "other") return gray;
   else if(procname == "Stop") return cyan;
+  else if(procname == "GluToNeu") return cyan;
   else return red;
 }
 //void fillTH1F(TH1F* &h1, float var, float weight)

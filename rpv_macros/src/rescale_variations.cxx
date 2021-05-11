@@ -22,8 +22,9 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
 
     //TString year = "2016";
     TString rootfile_org = argv[2];
-    //TString year = argv[3];
-    if(argc==4) msig = argv[3];
+    TString year = argv[3];
+    if(argc==4) msig = argv[4];
+    //./run/rescale_variations.exe [cardType] [inputdir] [year] [mass]
     TString temp = rootfile_org;
     TString rootfile(temp.ReplaceAll(".root","_rescaled.root"));
     if(cardType=="mconly") rootfile = rootfile.ReplaceAll("_rescaled","_mconly");
@@ -42,7 +43,7 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     // samples for which MC statistics should be considered
 /*    std::vector<std::string> mcStatisticsList = {
       "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", "signal_M1500", 
-      "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000", 
+      "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000", "signal_M2100", "signal_M2200",
       "qcd", "ttbar", "wjets", "other"};
 */
     std::vector<std::string> mcStatisticsList = {};    
@@ -51,20 +52,31 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     // in the fit
     std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets","other"};
     // systematics for which the template should be rescaled for qcd, ttbar, and wjets
-     std::vector<std::string> rescaleList = {""
-      //"btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
-     }; // */
+
+    //std::vector<std::string> rescaleList = {""};
+
+    std::vector<std::string> rescaleList = {
+      "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
+      //"btag_bc","btag_udsg","JES","lep_eff", "ISR"
+    };  // */
     //std::vector<std::string> rescaleList = {""}; 
     // signal list
     std::vector<std::string> signalList = 
     {
       "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", 
-      "signal_M1500", 
-      "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900", "signal_M2000", "signal_M2100", "signal_M2200"};// */ //FIXME
+      "signal_M1500", "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900",
+	"signal_M2000", "signal_M2100", "signal_M2200"};// */ //FIXME
 
-    std::vector<std::string> signalRescaleList = {""
-     // "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
-    };
+    /*std::vector<std::string> signalList =
+    {
+	"GluToNeu_M1200", "GluToNeu_M1600"};//FIXME */
+
+    //std::vector<std::string> signalRescaleList = {""};
+
+    std::vector<std::string> signalRescaleList = {
+      "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
+      //"btag_bc","btag_udsg","JES","lep_eff", "ISR"
+    };// */
     std::vector<std::string> upAndDown = {"Up", "Down"}; 
   
     // Bins
@@ -126,16 +138,17 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
 
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    //TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), year.Data() ,upAndDown.at(idir).c_str()));
-                    TString histnameRescale(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
+		    TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), process.c_str(), rescaleList.at(isyst).c_str(), year.Data() ,upAndDown.at(idir).c_str()));
+		    //TString histnameRescale(Form("%s/%s", binNames.at(ibin).c_str(), process.c_str()));
                     std::cout << "Getting histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
-                    /*if(rescale->Integral()!=0) {
+                    if(rescale->Integral()!=0) {
                         rescale->Scale(nominal->Integral()/rescale->Integral());
                     }// */
 
                     rescale->Write("",TObject::kOverwrite);
+                    nominal->Write("",TObject::kOverwrite);
                    // rescale->Write();
                 }
             }
@@ -146,16 +159,17 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
                 for(unsigned int idir=0; idir<upAndDown.size(); idir++) {
                     TString histnameNominal(Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str()));
                     std::cout << "Getting histogram " << histnameNominal << std::endl;
-                    //TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), year.Data(), upAndDown.at(idir).c_str()));
-                    TString histnameRescale = Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str());
+                    TString histnameRescale(Form("%s/%s_%s_%s%s", binNames.at(ibin).c_str(), isignal.c_str(), signalRescaleList.at(isyst).c_str(), year.Data(), upAndDown.at(idir).c_str()));
+		    //TString histnameRescale = Form("%s/%s", binNames.at(ibin).c_str(), isignal.c_str());
                     std::cout << "Getting signal histogram " << histnameRescale << std::endl;
                     TH1F *nominal = static_cast<TH1F*>(f->Get(histnameNominal));
                     TH1F *rescale = static_cast<TH1F*>(f->Get(histnameRescale));
-                    /*if(rescale->Integral()!=0) {
+                    if(rescale->Integral()!=0) {
                         rescale->Scale(nominal->Integral()/rescale->Integral());
                     }// */
 
                     rescale->Write("",TObject::kOverwrite);
+                    nominal->Write("",TObject::kOverwrite);
                     //rescale->Write();
                 }
             }
@@ -203,7 +217,8 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
             if(cardType=="mconlySplusB"&&binnumber>21){
               signal = static_cast<TH1F*>(f->Get(Form("%s/signal_M%s", binNames.at(ibin).c_str(), msig.Data())));
               std::cout<<binNames.at(ibin).c_str()<<std::endl;
-              std::cout<<Form("%s/signal_M%s", binNames.at(ibin).c_str(), msig.Data())<<std::endl;
+              std::cout<<Form("%s/signal_M%s", binNames.at(ibin).c_str(), msig.Data())<<std::endl;//FIXME
+              //std::cout<<Form("%s/GluToNeu_M%s", binNames.at(ibin).c_str(), msig.Data())<<std::endl;//FIXME
             }
             
             for(int i=1; i<=data_obs->GetNbinsX(); i++) {

@@ -381,7 +381,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       float maxpadLog(maxhisto*10*exp(fracLeg*log(maxhisto/minLog)/(1-fracLeg)));
       histo[0][var][firstplotted]->SetMinimum(minLog);
       histo[0][var][firstplotted]->SetMaximum(maxpadLog);
-      for(int bin(0); bin<=histo[0][var][firstplotted]->GetNbinsX()+1; bin++){
+      /*for(int bin(0); bin<=histo[0][var][firstplotted]->GetNbinsX()+1; bin++){
 	histo[0][var][firstplotted]->SetBinError(bin,0);//FIXME//command out this line when the testing pre-firing issue
       }// */
       if (!doRatio) style.moveYAxisLabel(histo[0][var][firstplotted], maxpadLog, true);

@@ -9,6 +9,7 @@
 #include "TLine.h"
 #include "TString.h"
 #include "TColor.h"
+#include "TROOT.h"
 
 #include "styles.hpp"
 #include "utilities.hpp"
@@ -30,6 +31,8 @@ namespace {
 using namespace std;
 
 int main(int argc, char *argv[]){
+  int nthreads = 10;
+  ROOT::EnableImplicitMT(nthreads);
   TString year;
   TString lumi = "59.7";
   //TString lumi = "35.9";
@@ -74,6 +77,8 @@ int main(int argc, char *argv[]){
   TString folder_bkg = folder_year(year,false).at(0);
   TString folder_dat = folder_year(year,false).at(1);
   TString folder_sig = folder_year(year,false).at(2);// */
+  
+  cout<<folder_dat<<endl;
 
   // Get file lists
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
@@ -95,7 +100,7 @@ int main(int argc, char *argv[]){
     }
     else{
       // Only use events with njets<=7 (for 0-lepton) and njets<=5 (for 1-lepton)
-      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nbm==0)||(nbm==1)||(nbm>=2 && njets>=4 && njets<=5))"));
+      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nbm==0)||(nbm==1)||(nbm==2))"));
       //Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass","1.")));
       Samples.back().isData = true;
     }
@@ -121,20 +126,26 @@ int main(int argc, char *argv[]){
   // Make analysis regions plots
   if(makeNm1==true){
     // Set cuts
-    TString basecut = "mj12>=500&&ht>1200";
+    TString basecut = "ht>1200";
     TString lepcuts = "nleps==1";
     vector<TString> nbcuts = {"nbm==0","nbm==1"};
-    vector<TString> njetcuts = {"njets>=4&&njets<=5","njets>=6&&njets<=7","8<=njets"};
+    vector<TString> njetcuts = {"(njets>=4&&njets<=5)","(njets>=6&&njets<=7)","njets>=8"};//&&njets<=9","njets>=10"};
+    TString elscut  = "(els_pt>20&&abs(els_eta)<2.5&&els_sigid)";
+    TString muscut  = "(mus_pt>20&&abs(mus_eta)<2.4&&mus_sigid)";
 
     // Loop over cuts to make histograms
     TString cut = "";
     for(auto injet : njetcuts){
-    	cut = basecut + "&&nbm==0&&" + injet;
+    	cut = basecut + "&&(nbm==1||nbm==2)&&" + injet + "&&" + elscut + "&&met<50";
 	cout<<cut<<endl;
-    	hists.push_back(hfeats("els_miniso", 20, 0, 2, rpv_sam, "I_{mini}/P_{T}^{els}", cut));
-    	if(showData) hists.back().normalize = true;
-    	hists.push_back(hfeats("mus_miniso", 10, 0, 2, rpv_sam, "I_{mini}/P_{T}^{mus}", cut));
-    	if(showData) hists.back().normalize = true;
+    //	hists.push_back(hfeats("els_sigid", 2, 0, 2, rpv_sam, "els_{sigid}"/*"I_{mini}/P_{T}^{els}"* "els_sigid"*/, cut));
+    	hists.push_back(hfeats("els_miniso", 20, 0, 2, rpv_sam, "I_{mini}/P_{T}^{els}"/* "els_sigid"*/, cut));
+    	if(showData) hists.back().normalize = false;
+    	cut = basecut + "&&(nbm==1||nbm==2)&&" + injet + "&&" + muscut + "&&met<50";
+	cout<<cut<<endl;
+    //	hists.push_back(hfeats("mus_sigid", 2, 0, 2, rpv_sam, "mus_{sigid}"/*"I_{mini}/P_{T}^{mus}"* "mus_sigid"*/, cut));
+    	hists.push_back(hfeats("mus_sigid", 10, 0, 2, rpv_sam, "I_{mini}/P_{T}^{mus}"/* "mus_sigid"*/, cut));
+    	if(showData) hists.back().normalize = false;
     }
     //plot_distributions(Samples, hists, lumi, ".root", plot_style, "rpv_base", true, true);  
     if(showData) hists.back().normalize = true;

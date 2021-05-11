@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "TROOT.h"
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TGraphErrors.h"
@@ -51,7 +52,12 @@ TString reset = "\033[0m";
 
 int main(int argc, char *argv[])
 {
+<<<<<<< HEAD
   ROOT::EnableImplicitMT(8);
+=======
+  int nthreads=16;
+  ROOT::EnableImplicitMT(nthreads);
+>>>>>>> fa9cf755f615cebadde4cf35fceaa005e959df3e
   gErrorIgnoreLevel=kError+1;
   TH1::SetDefaultSumw2();
 
@@ -974,6 +980,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     float temp_nominal = nominalweight;
     float temp_up = upweight;
     float temp_down = downweight;
+    if(tree.mj12()<500) nominalweight=0;
     //if(procname!="data_obs") cout<<nominalweight<<endl;
     for(int ibin=0; ibin<nbins; ibin++)  
     {
@@ -1059,7 +1066,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             sys_kappadown = 1-kappa_syst[ihb][ibin][njbin][iproc]; 
             //cout << ihb << " " << ibin << " " << njbin << " " << iproc << " " <<  njbin+3*iproc+1 << endl; // FIXME
             //cout << kappa_syst[ihb][ibin][njbin][iproc] << " " << kappa_syst[ihb][ibin][njbin][iproc] << endl; // FIXME
-            if(sys_kappadown<0)  sys_kappadown = 0; 
+            if(sys_kappadown<0)  sys_kappadown = 0.01; 
             //cout<<sys_kappaup<<"::"<<sys_kappadown<<endl;
 
             //if(iproc==0) cout << "before " << nominalweight << " " << upweight << " " << downweight << endl; // FIXME   

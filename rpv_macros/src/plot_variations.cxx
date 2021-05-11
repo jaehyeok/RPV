@@ -37,11 +37,9 @@ int main()
         "wjets_mur", "wjets_muf", "wjets_murf",
         "other_mur", "other_muf", "other_murf"};
 // */
-    vector<TString> variations={"ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
+    //vector<TString> variations={"ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
     //vector<TString> variations={"kappa1", "kappa2"};
-    //vector<TString> variations={"ISR"};
-//    vector<int> bins={0,1,2,3,4,5, // CR
-//                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
+    vector<TString> variations={"ISR"};
     vector<int> bins = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36};
     //for(int i=0; i<100; i++) variations.push_back(Form("w_pdf%i",i)); 
     

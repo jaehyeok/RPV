@@ -259,6 +259,7 @@ for ibin in binList:
     ROOT.gStyle.SetPadLeftMargin(0.35)
     ROOT.gStyle.SetPadRightMargin(0.2)
     ROOT.gStyle.SetPadBottomMargin(0.1)
+    #ROOT.gStyle.SetPaintTextFormat("4.5f")
     c2 = ROOT.TCanvas()
     table.GetXaxis().SetLabelSize(0.02)
     table.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV");

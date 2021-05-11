@@ -192,13 +192,11 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
         if(isBlinded(binNames.at(ibin), blindedBins)) {
             // add fake data_obs histogram for blinded bins
             std::cout << "Getting histogram " << Form("%s/data_obs", binNames.at(ibin).c_str()) << std::endl;
-            std::cout<<"HI"<<std::endl;
             TH1F *data_obs = static_cast<TH1F*>(f->Get(Form("%s/data_obs", binNames.at(ibin).c_str())));
             TH1F *qcd = static_cast<TH1F*>(f->Get(Form("%s/qcd", binNames.at(ibin).c_str())));
             TH1F *ttbar = static_cast<TH1F*>(f->Get(Form("%s/ttbar", binNames.at(ibin).c_str())));
             TH1F *wjets = static_cast<TH1F*>(f->Get(Form("%s/wjets", binNames.at(ibin).c_str())));
             TH1F *other = static_cast<TH1F*>(f->Get(Form("%s/other", binNames.at(ibin).c_str())));
-            std::cout<<"HI"<<std::endl;
             TH1F *signal = new TH1F("signal","signal",3,500,1400);
             signal->Print("all");
             int binnumber = atoi(binname.ReplaceAll("bin","").Data());
@@ -216,7 +214,6 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
                             + other->GetBinContent(i))*morphBins.at(i-1));
                 }
                 else if(cardType=="mconlySplusB"&&binnumber>21){
-            std::cout<<"HI"<<std::endl;
             std::cout<<signal->GetBinContent(i)<<std::endl;
                    data_obs->SetBinContent(i, (qcd->GetBinContent(i)
                             + ttbar->GetBinContent(i)

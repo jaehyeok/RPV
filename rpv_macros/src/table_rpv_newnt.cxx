@@ -17,9 +17,9 @@ bool formatLatex=false;
 float addInQuad(float a, float b);
 void printOneLine(int nb, 
                   float data, float qcd, float ttbar, float wjets, float other, 
-                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900,
+                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900, float sig2400,
                   float data_err, float qcd_err, float ttbar_err, float wjets_err, float other_err, 
-                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, bool doLatex);
+                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, bool sig2400_err, bool doLatex);
 //void printOneLine(int nb, 
 //                  float qcd, float ttbar, float wjets, float other, 
 //                  float sig1500, 
@@ -173,9 +173,9 @@ int main(int argc, char* argv[])
     TFile* infile  = TFile::Open(inputName, "READ"); 
  
     float data[nbins][3], qcd[nbins][3], ttbar[nbins][3], wjets[nbins][3], other[nbins][3],
-          sig1500[nbins][3], sig1600[nbins][3], sig1700[nbins][3], sig1800[nbins][3], sig1900[nbins][3],
+          sig1500[nbins][3], sig1600[nbins][3], sig1700[nbins][3], sig1800[nbins][3], sig1900[nbins][3], sig2400[nbins][3],
           data_err[nbins][3], qcd_err[nbins][3], ttbar_err[nbins][3], wjets_err[nbins][3], other_err[nbins][3],
-          sig1500_err[nbins][3], sig1600_err[nbins][3], sig1700_err[nbins][3], sig1800_err[nbins][3], sig1900_err[nbins][3];
+          sig1500_err[nbins][3], sig1600_err[nbins][3], sig1700_err[nbins][3], sig1800_err[nbins][3], sig1900_err[nbins][3], sig2400_err[nbins][3];
     for(int ibin=0; ibin<nbins; ibin++)  
     {
 	if(ibin==34) continue; // exclude bin34
@@ -192,6 +192,7 @@ int main(int argc, char* argv[])
             sig1700[ibin][inb] = 0;
             sig1800[ibin][inb] = 0;
             sig1900[ibin][inb] = 0;   
+            sig2400[ibin][inb] = 0;   
             data_err[ibin][inb] = 0;
             qcd_err[ibin][inb] = 0;
             ttbar_err[ibin][inb] = 0;
@@ -202,6 +203,7 @@ int main(int argc, char* argv[])
             sig1700_err[ibin][inb] = 0;
             sig1800_err[ibin][inb] = 0;
             sig1900_err[ibin][inb] = 0;
+            sig2400_err[ibin][inb] = 0;
 
         }
     }
@@ -225,6 +227,7 @@ int main(int argc, char* argv[])
             sig1700[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinContent(inb+1);
             sig1800[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinContent(inb+1);
             sig1900[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinContent(inb+1);// */
+            sig2400[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M2400", ibin)))->GetBinContent(inb+1);// */
             
             data_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin)))->GetBinError(inb+1);
             qcd_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinError(inb+1);
@@ -237,10 +240,11 @@ int main(int argc, char* argv[])
             sig1700_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinError(inb+1);
             sig1800_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinError(inb+1);
             sig1900_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1900", ibin)))->GetBinError(inb+1);
+            sig2400_err[ibin][inb]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M2400", ibin)))->GetBinError(inb+1);
 
         }  
     }
-    float sig1500sum(0), sig1600sum(0), sig1700sum(0), sig1800sum(0), sig1900sum(0);
+    float sig1500sum(0), sig1600sum(0), sig1700sum(0), sig1800sum(0), sig1900sum(0), sig2400sum(0);
     for(int ibin=22; ibin<nbins; ibin++) 
     {
       if(ibin==34) continue;//exclude bin34
@@ -252,6 +256,7 @@ int main(int argc, char* argv[])
           sig1700sum = sig1700sum + sig1700[ibin][inb]; 
           sig1800sum = sig1800sum + sig1800[ibin][inb]; 
           sig1900sum = sig1900sum + sig1900[ibin][inb]; 
+          sig2400sum = sig2400sum + sig2400[ibin][inb]; 
       }
     }
 
@@ -519,7 +524,7 @@ int main(int argc, char* argv[])
     cout << "\\centering" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
-    cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1600\\textrm{GeV}$\\\\"  << endl;
+    cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=2400\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
     for(int ibin=22; ibin<nbins; ibin++)
@@ -543,7 +548,7 @@ int main(int argc, char* argv[])
                     ttbar[tablebin][inb],
                     wjets[tablebin][inb],
                     other[tablebin][inb],
-                    sig1600[tablebin][inb],
+                    sig2400[tablebin][inb],
                     err[0][tablebin][inb],//*qcd[tablebin][inb],
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],
                     err[2][tablebin][inb],//*wjets[tablebin][inb],
@@ -563,9 +568,9 @@ int main(int argc, char* argv[])
 //
 void printOneLine(int nb, 
                   float data, float qcd, float ttbar, float wjets, float other, 
-                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900,
+                  float sig1500, float sig1600, float sig1700, float sig1800, float sig1900, float sig2400,
                   float data_err, float qcd_err, float ttbar_err, float wjets_err, float other_err, 
-                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, float doLatex)
+                  float sig1500_err, float sig1600_err, float sig1700_err, float sig1800_err, float sig1900_err, float sig2400_err, float doLatex)
 {
 
     float how_to_deal_with_unused_vars;
@@ -577,6 +582,8 @@ void printOneLine(int nb,
     how_to_deal_with_unused_vars=sig1700_err;
     how_to_deal_with_unused_vars=sig1900;
     how_to_deal_with_unused_vars=sig1900_err;
+    how_to_deal_with_unused_vars=sig2400;
+    how_to_deal_with_unused_vars=sig2400_err;
     how_to_deal_with_unused_vars=4;
 
     float totbkg=qcd+ttbar+wjets+other;

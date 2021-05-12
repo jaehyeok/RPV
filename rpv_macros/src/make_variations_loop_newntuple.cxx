@@ -8,11 +8,13 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "TROOT.h"
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TGraphErrors.h"
 #include "TStyle.h"
 #include "TMath.h"
+#include "TROOT.h"
 
 #include "small_tree_rpv.hpp"
 #include "utilities.hpp"
@@ -50,6 +52,12 @@ TString reset = "\033[0m";
 
 int main(int argc, char *argv[])
 {
+<<<<<<< HEAD
+  ROOT::EnableImplicitMT(8);
+=======
+  int nthreads=16;
+  ROOT::EnableImplicitMT(nthreads);
+>>>>>>> fa9cf755f615cebadde4cf35fceaa005e959df3e
   gErrorIgnoreLevel=kError+1;
   TH1::SetDefaultSumw2();
 
@@ -282,9 +290,9 @@ int main(int argc, char *argv[])
 
   //GluinoToNeutralino
   /*vector<TString> s_GN_1200 = getRPVProcess(folder_sig,"gn_1200");
-  vector<TString> s_GN_1600 = getRPVProcess(folder_sig,"gn_1600");// */
-  //vector<TString> s_GN_2400 = getRPVProcess(folder_sig,"gn_2400");
-  //vector<TString> s_GN_3000 = getRPVProcess(folder_sig,"gn_3000");
+  vector<TString> s_GN_1600 = getRPVProcess(folder_sig,"gn_1600");
+  vector<TString> s_GN_2400 = getRPVProcess(folder_sig,"gn_2400");
+  vector<TString> s_GN_3000 = getRPVProcess(folder_sig,"gn_3000");// */
 
   //StealthSHH
   /*vector<TString> s_mStop_300 = getRPVProcess(folder_sig,"mStop_300");  
@@ -340,9 +348,9 @@ int main(int argc, char *argv[])
 
   //GluinoToNeutralino
   /*small_tree_rpv gn_1200((static_cast<std::string>(s_GN_1200.at(0))));
-  small_tree_rpv gn_1600((static_cast<std::string>(s_GN_1600.at(0))));// */
-  //small_tree_rpv gn_2400((static_cast<std::string>(s_GN_2400.at(0))));
-  //small_tree_rpv gn_3000((static_cast<std::string>(s_GN_3000.at(0))));
+  small_tree_rpv gn_1600((static_cast<std::string>(s_GN_1600.at(0))));
+  small_tree_rpv gn_2400((static_cast<std::string>(s_GN_2400.at(0))));
+  small_tree_rpv gn_3000((static_cast<std::string>(s_GN_3000.at(0))));// */
 
   // Stealth SUSY Signal
   /*small_tree_rpv mStop_300((static_cast<std::string>(s_mStop_300.at(0))));
@@ -406,10 +414,10 @@ int main(int argc, char *argv[])
   getSyst(rpv_m2200, variations, year, f, "signal_M2200");// */
 
   //GluinoToNeutralino
-  /*getSyst(gn_1200, variations, year, f, "GluToNeu_M1200");
-  getSyst(gn_1600, variations, year, f, "GluToNeu_M1600");// */
-  //getSyst(gn_2400, variations, year, f, "GluToNeu_M2400");
-  //getSyst(gn_3000, variations, year, f, "GluToNeu_M3000");
+  /*getSyst(gn_1200, variations, year, f, "signal_M1200");
+  getSyst(gn_1600, variations, year, f, "signal_M1600");
+  getSyst(gn_2400, variations, year, f, "signal_M2400");
+  getSyst(gn_3000, variations, year, f, "signal_M3000");// */
 
   //StealthSHH
   /*getSyst(mStop_300, variations, year, f, "Stop_M300");
@@ -641,7 +649,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if (procname=="data_obs" && year=="2016") nominalweight = tree.pass() * (tree.trig_ht900()||tree.trig_jet450());
     else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
     //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
-    else if (procname=="signal" || procname=="GluToNeu") nominalweight = nominalweight * 1;
+    else if (procname=="signal") nominalweight = nominalweight * 1;
     //else if ((tree.nbm()==0||tree.nbm()==1) && tree.mj12()>1100 && tree.njets()>=4 && tree.njets()<=5) nominalweight=lumi*tree.weight()*0.4;//FIXME HEM issue
 /*
     int nb_csv=0;
@@ -738,8 +746,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if(variations=="GS") 
     {
       if(tree.fromGS()==1){
-        upweight    = upweight*(1.5*tree.fromGS());
-        downweight  = downweight*(0.5*tree.fromGS()); 
+        upweight    = upweight*(1.2*tree.fromGS());
+        downweight  = downweight*(0.8*tree.fromGS()); 
       }
     }
     if(variations=="gs67") 
@@ -831,14 +839,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       }
       if(variations=="ISR") 
       {
-	if(year == 2016){
-          upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-          downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
-	}
-	else if(year == 2017 || year == 2018){
-	  upweight = upweight*tree.w_isr();
-	  downweight = downweight*tree.w_isr();
-	}
+        upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+        downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
+
+	/*upweight = upweight*tree.w_isr();
+	downweight = downweight*tree.w_isr();// */
       }
       if(variations=="ttbar_muf") 
       { 
@@ -860,14 +865,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     { 
       if(variations=="ISR") 
       {
-	if(year == 2016){
-          upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-          downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();
-	}
-	else if(year == 2017 || year == 2018){
-	  upweight = upweight*tree.w_isr();
-	  downweight = downweight*tree.w_isr();
-	}
+	upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+	downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
+
+	/*upweight = upweight*tree.w_isr();
+	downweight = downweight*tree.w_isr();// */
       }
       if(variations=="signal_muf") 
       { 
@@ -978,6 +980,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     float temp_nominal = nominalweight;
     float temp_up = upweight;
     float temp_down = downweight;
+    if(tree.mj12()<500) nominalweight=0;
     //if(procname!="data_obs") cout<<nominalweight<<endl;
     for(int ibin=0; ibin<nbins; ibin++)  
     {
@@ -1063,7 +1066,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             sys_kappadown = 1-kappa_syst[ihb][ibin][njbin][iproc]; 
             //cout << ihb << " " << ibin << " " << njbin << " " << iproc << " " <<  njbin+3*iproc+1 << endl; // FIXME
             //cout << kappa_syst[ihb][ibin][njbin][iproc] << " " << kappa_syst[ihb][ibin][njbin][iproc] << endl; // FIXME
-            if(sys_kappadown<0)  sys_kappadown = 0; 
+            if(sys_kappadown<0)  sys_kappadown = 0.01; 
             //cout<<sys_kappaup<<"::"<<sys_kappadown<<endl;
 
             //if(iproc==0) cout << "before " << nominalweight << " " << upweight << " " << downweight << endl; // FIXME   
@@ -1182,7 +1185,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         else if(ibin%3==2) temp_ = Form("kappa%d_njets67_%s",kap, procname.Data());
         else if(ibin%3==0) temp_ = Form("kappa%d_njets8_%s",kap, procname.Data());
 
-        if(procname=="other"||procname.Contains("signal")||procname.Contains("Stop")||procname.Contains("GluToNeu")) continue;
+        if(procname=="other"||procname.Contains("signal")) continue;
 
 	if(str_year==""){
           upname = procname+"_"+temp_+"_"+year+"Up";
@@ -1223,8 +1226,6 @@ TString color(TString procname){
   else if(procname == "ttbar") return blue;
   else if(procname == "wjets") return green;
   else if(procname == "other") return gray;
-  else if(procname == "Stop") return cyan;
-  else if(procname == "GluToNeu") return cyan;
   else return red;
 }
 //void fillTH1F(TH1F* &h1, float var, float weight)

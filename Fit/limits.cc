@@ -81,7 +81,7 @@ void pulls()
 
 void limits()
 {
-  TString year = "tot";//FIXME
+  //TString year = "tot";//FIXME
   std::vector<float> gluinoMasses = {1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200};
   std::vector<float> minus2Sigma, minus1Sigma, mean, plus1Sigma, plus2Sigma;
   std::vector<float> observed;
@@ -191,8 +191,8 @@ void limits()
   leg->Draw();
 
   drawHeader();
-  c->Print("limits_"+year+"_0225.pdf");
-  c->Print("limits_"+year+"_0225.png");
+  c->Print("limits_0402.pdf");
+  c->Print("limits_0402.png");
 }
 
 TGraphErrors * theoryGraph()

@@ -20,6 +20,7 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
 void outputLognormalSystematics(std::ofstream &file, TString year);
 void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> &bins, const std::string & signalBinName, TString year);
 void outputautoMCStats(std::ofstream &file, const std::vector<std::string> &bins);
+void outputrateParam(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 // determine if a histogram has an entry for a given nB
 bool hasEntry(const std::string &sample, const std::string &bin, const int nB);
 
@@ -53,8 +54,14 @@ int main(int argc, char *argv[])
 					                     "wjets_muf", "wjets_mur", "wjets_murf",
 					                     "other_muf", "other_mur", "other_murf",
 					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
+<<<<<<< HEAD
+
   std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","lep_eff"};
-  //std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","lep_eff"};//FIXME
+  //std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","lep_eff","ISR"};//FIXME
+=======
+  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
+  shapeSysts = {};
+>>>>>>> fa9cf755f615cebadde4cf35fceaa005e959df3e
 
   std::string gluinoMass;
   std::string signalBinName;
@@ -69,7 +76,6 @@ int main(int argc, char *argv[])
     gluinoMass = argv[1];
     year = argv[4];
     ss << "signal_M" << gluinoMass;
-    //ss << "GluToNeu_M" << gluinoMass;
     signalBinName = ss.str();
     // this is supposed to be the first entry in the process list
     processes.insert(processes.begin(), signalBinName);
@@ -350,7 +356,7 @@ int main(int argc, char *argv[])
 //  outputMJConnection(file, bins.at(ipair)),year;
   
   //output if you want to see only normalizations between nleps
-  outputOnlyNormalization(file, bins.at(ipair), year);
+  //outputOnlyNormalization(file, bins.at(ipair), year);
 
   //output the W+jet normalization and Njets connection
   outputWjets(file, bins.at(ipair), cardType, year);
@@ -361,10 +367,10 @@ int main(int argc, char *argv[])
   // output kappa systematics
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
+  outputShapeSystematics(file, shapeSysts, year);
 
   if(sig_onoff=="on"){
   // output shape systematics
-    outputShapeSystematics(file, shapeSysts, year);
   
   // output lognormal lumi uncertainties for signal, wjets and other
     outputLognormalSystematics(file, year);
@@ -375,10 +381,13 @@ int main(int argc, char *argv[])
   //        this should be done by checking the bins in the nominal shape 
     //outputMCStatisticsSyst(file, bins.at(ipair), signalBinName, year);
   
-    outputautoMCStats(file, bins.at(ipair));
   
-    file << "\n------------------------------------" << std::endl;
   }
+  file << "\n------------------------------------" << std::endl;
+  //outputautoMCStats(file, bins.at(ipair));
+
+  outputrateParam(file, bins.at(ipair), year);
+
   file.close();
   }
 }
@@ -944,18 +953,18 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     TString lownjcon_, mednjcon_, highnjcon_;
     if(year=="2016"){
       lownjcon_ = "1.13";
-      mednjcon_ = "1.21";
-      highnjcon_ = "1.24";
+      mednjcon_ = "1.05";
+      highnjcon_ = "0.85";
     }
     if(year=="2017"){
-      lownjcon_ = "1.10";
-      mednjcon_ = "1.16";
-      highnjcon_ = "1.16";
+      lownjcon_ = "1.00";
+      mednjcon_ = "1.09";
+      highnjcon_ = "1.70";
     }
     if(year=="2018"){
-      lownjcon_ = "1.33";
-      mednjcon_ = "1.38";
-      highnjcon_ = "1.38";
+      lownjcon_ = "0.73";
+      mednjcon_ = "1.03";
+      highnjcon_ = "1.29";
     }
 
     map<string, int> bindex;
@@ -1063,7 +1072,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     for(uint idash=0; idash<nbins; idash++)
       line_norm+="-    -    -    2    -    ";
     line_norm.Prepend(Form("normwjets_%s                 lnU  ",year.Data()));
-    file << line_norm.Data() << endl;
+    //file << line_norm.Data() << endl;
 
     if(cardType!="control")  // do not need Njets connection for CR fit
     { 
@@ -1196,12 +1205,12 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       file << shapesysts.at(isyst) << "_" << year << "     shape     ";
       if(shapesysts.at(isyst).find("pdf")!=std::string::npos) {
         // there are 100 nnpdf variations and so each needs to be scaled down by a factor 1/sqrt(100)
-        //for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
-        for(unsigned int index=0; index<nbins; index++) file << " 0.1 - - - 0.1 ";//accept systematics to signal and other
+        for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
+        //for(unsigned int index=0; index<nbins; index++) file << " 0.1 - - - 0.1 ";//accept systematics to signal and other
       }
       else {
-        //for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";// one sigma
-        for(unsigned int index=0; index<nbins; index++) file << " 1 - - - 1 ";//accept systematics to signal and other
+        for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";// one sigma
+        //for(unsigned int index=0; index<nbins; index++) file << " 1 - - - 1 ";//accept systematics to signal and other
       }
       file << "\n";
     }
@@ -1366,6 +1375,41 @@ void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins
  }
 }
 
+void outputrateParam( std::ofstream &file, const std::vector<std::string> &bins, TString year ){
+  file << Form("normwjets_%s",year.Data()) << " rateParam * wjets 1.0 [0,20]  ";
+  file << "\n";
+  for(auto ibin : bins){
+    TString tmpbin;
+    int i;
+    tmpbin  = ibin;
+    tmpbin.Replace(0,3,"");
+    i = atoi(tmpbin);
+    if(i>36) continue;
+    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i) << " qcd 1.0 [0,20] ";
+    file << "\n";
+    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i+15) << " qcd 1.0 [0,20] ";
+    file << "\n";
+    if(i<25){
+      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,year.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,year.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+    }
+    else if(i<28){
+      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i-3,i+12,i,i+15,year.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i-3,i+12,i,i+15,year.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+    }
+    else{
+      file << Form("normttbar_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+      file << Form("normttbar_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+    }
+  }
+}
+
 // exclude by hand following bins that have no entries:
 // signal_mcstat_signal_bin0_nb3
 // signal_mcstat_signal_bin2_nb4
@@ -1418,3 +1462,4 @@ bool hasEntry(const std::string &sample, const std::string &bin, const int nB)
 
   return true;
 }
+

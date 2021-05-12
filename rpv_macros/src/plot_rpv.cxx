@@ -18,7 +18,7 @@
 using namespace std;
 namespace {
 
-  bool showData = true; // Draw with/wihout data
+  bool showData = false; // Draw with/wihout data
   bool unblindSRs = false; // Draw data in (unblind) SRs
   TString json = "1";
 
@@ -47,6 +47,10 @@ int main(int argc, char *argv[]){
     lumi = "59.7";
     trigger = "trig_ht1050";
   }// */
+  else if(year == "20178"){
+    lumi = "50.51";
+    trigger = "trig_ht1050";
+  }
 
   // ntuple folders
 
@@ -57,6 +61,9 @@ int main(int argc, char *argv[]){
   // Get file lists
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
   vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");
+  vector<TString> s_GluToNeu_m1600 = getRPVProcess(folder_sig,"gn_1600");
+  vector<TString> s_GluToNeu_m2400 = getRPVProcess(folder_sig,"gn_2400");
+  vector<TString> s_GluToNeu_m3000 = getRPVProcess(folder_sig,"gn_3000");
   vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900");
 
   vector<TString> s_ttbar = getRPVProcess(folder_bkg,"ttbar");
@@ -80,8 +87,7 @@ int main(int argc, char *argv[]){
   }
 
   string extraweight = "1";
-  Samples.push_back(sfeats(s_rpv_m1900, "m1900", kNeon, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
-  
+  Samples.push_back(sfeats(s_rpv_m1900, "m1900", kRed, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
   Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_wjets, "W+ jets", rpv::c_wjets, 1, cutandweight("pass",extraweight)));
   Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass",extraweight)));
@@ -98,8 +104,8 @@ int main(int argc, char *argv[]){
     // Set cuts
     TString basecut = "mj12>=500&&ht>1200";
     TString lepcuts = "nleps==1";
-    vector<TString> nbcuts = {"nbm==0"};
-    vector<TString> njetcuts = {"4<=njets&&njets<=5"};
+    vector<TString> nbcuts = {"nbm>=4"};
+    vector<TString> njetcuts = {"njets>=8"};
 
     // Loop over cuts to make histograms
     TString cut = "";
@@ -137,7 +143,7 @@ int main(int argc, char *argv[]){
 	  if(showData) hists.back().normalize = true;
         }
       }
-    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", true, true);  
+    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", false, true);  
   }
   
   /*////////////

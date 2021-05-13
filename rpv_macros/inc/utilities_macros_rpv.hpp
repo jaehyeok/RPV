@@ -79,6 +79,13 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		else if(process=="mStop_1350") files.push_back(folder+"*mStop-1350*");
 		else if(process=="mStop_1400") files.push_back(folder+"*mStop-1400*");
 	}
+	else if(process.Contains("gn")){
+		if(process=="gn_1200") files.push_back(folder+"*2T2B2S_M-1200*");
+		else if(process=="gn_1600") files.push_back(folder+"*2T2B2S_M-1600*");
+		else if(process=="gn_2400") files.push_back(folder+"*2T2B2S_M-2400*");
+		else if(process=="gn_3000") files.push_back(folder+"*2T2B2S_M-3000*");
+	}
+
 	// For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
 	else if(process=="ttbar"){
 		//files.push_back(folder+"TTJets_*"); //

@@ -303,18 +303,21 @@ vector<double> LinearSpacing(size_t npts, double low, double high){
 vector<TString> folder_year(TString year, bool te){
   vector<TString> ret;
   if(te){
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
     //ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
   }
   else{
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/skim_rpvfitnbge0_nbm2/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_njets3nleps2/");
-    //ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
+  //  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+  //  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/skim_rpvfitnbge0_nbm2/");
+  //  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
+  //  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_njets3nleps2/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_noMJ/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_noMJ/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_noMJ/");
+    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_noMJ/");
   }
   return ret;
 }

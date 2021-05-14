@@ -310,10 +310,16 @@ vector<TString> folder_year(TString year, bool te){
     //ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
   }
   else{
+    ret.push_back("/data2/babies/20210430/"+year+"/merged_norm/");
+    ret.push_back("/data2/babies/20210430/"+year+"/skim_rpvfitnbge0_nbm2/");
+    ret.push_back("/data2/babies/20210430/"+year+"/merged_norm/");
+    ret.push_back("/data2/babies/20210217/"+year+"/skim_rpvfitnbge0_njets3nleps2/");
+/*
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/skim_rpvfitnbge0_nbm2/");
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_sig_210501/");
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_njets3nleps2/");
+*/
     //ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
   }
   return ret;

@@ -52,12 +52,8 @@ TString reset = "\033[0m";
 
 int main(int argc, char *argv[])
 {
-<<<<<<< HEAD
-  ROOT::EnableImplicitMT(8);
-=======
   int nthreads=16;
   ROOT::EnableImplicitMT(nthreads);
->>>>>>> fa9cf755f615cebadde4cf35fceaa005e959df3e
   gErrorIgnoreLevel=kError+1;
   TH1::SetDefaultSumw2();
 
@@ -743,7 +739,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       upweight    = upweight*tree.sys_udsgtag()[0]/tree.w_btag_dcsv();
       downweight  = downweight*tree.sys_udsgtag()[1]/tree.w_btag_dcsv();
     }
-    if(variations=="GS") 
+    if(variations=="gs") 
     {
       if(tree.fromGS()==1){
         upweight    = upweight*(1.2*tree.fromGS());
@@ -837,12 +833,12 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         upweight    = upweight*tree.w_toppt();
         downweight  = downweight*(2-tree.w_toppt());
       }
-      if(variations=="ISR") 
+      if(variations=="isr") 
       {
-        upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+        /*upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
         downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
 
-	/*upweight = upweight*tree.w_isr();
+	upweight = upweight*tree.w_isr();
 	downweight = downweight*tree.w_isr();// */
       }
       if(variations=="ttbar_muf") 
@@ -863,12 +859,12 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     }
     if(procname.Contains("signal")) 
     { 
-      if(variations=="ISR") 
+      if(variations=="isr") 
       {
-	upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+	/*upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
 	downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
 
-	/*upweight = upweight*tree.w_isr();
+	upweight = upweight*tree.w_isr();
 	downweight = downweight*tree.w_isr();// */
       }
       if(variations=="signal_muf") 
@@ -1030,7 +1026,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             h1down[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), downweight);                    // down  
 
         } 
-        else if(variations=="JES") //jet energy scale
+        else if(variations=="jec") //jet energy scale
         {
           if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
             h1nominal[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), nominalweight);              // nominal  
@@ -1116,7 +1112,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);                    // down  
 
         } 
-        else if(variations=="JES") //jet energy scale
+        else if(variations=="jec") //jet energy scale
         { 
           float hmjmax = mjmax-0.001;
           if(tree.nleps()==0 && !nl0shape){

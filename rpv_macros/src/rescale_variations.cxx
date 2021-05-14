@@ -58,7 +58,7 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     //std::vector<std::string> kappaList = {"kappa1","kappa2"};
 
     std::vector<std::string> rescaleList = {
-      "btag_bc","btag_udsg","JES","lep_eff", "ISR","mur", "muf", "murf"
+      "btag_bc","btag_udsg","jec","lep_eff", "isr","mur", "muf", "murf", "gs"
     };  // */
     //std::vector<std::string> rescaleList = {""}; 
     // signal list

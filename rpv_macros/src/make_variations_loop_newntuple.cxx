@@ -1022,8 +1022,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             h1nominal[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), nominalweight);              // nominal  
           if(tree.sys_nbm()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2], tree.sys_nbm()[2])) 
             h1up[ibin]->Fill(tree.sys_nbm()[2]>hnbmax?hnbmax:tree.sys_nbm()[2], upweight);          // up
-          if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
-            h1down[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.nbm(), downweight);                    // down  
+          if(nb_csv>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[3], tree.sys_njets()[3], tree.sys_mj12()[3], tree.sys_nbm()[3])) 
+            h1down[ibin]->Fill(nb_csv>hnbmax?hnbmax:tree.sys_nbm()[3], downweight);                    // down  
 
         } 
         else if(variations=="jec") //jet energy scale
@@ -1108,8 +1108,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);              // nominal  
           if(tree.sys_mj12()[2]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[2], tree.sys_njets()[2], tree.sys_mj12()[2], tree.sys_nbm()[2])) 
             h1up[ibin]->Fill(tree.sys_mj12()[2]>hmjmax?hmjmax:tree.sys_mj12()[2], upweight);          // up
-          if(tree.mj12()>0 && passBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm())) 
-            h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);                    // down  
+          if(tree.sys_mj12()[3]>0 && passBinCut(ibin, tree.nleps(), tree.sys_ht()[3], tree.sys_njets()[3], tree.sys_mj12()[3], tree.sys_nbm()[3])) 
+            h1down[ibin]->Fill(tree.sys_mj12()[3]>hmjmax?hmjmax:tree.sys_mj12()[3], downweight);                    // down  
 
         } 
         else if(variations=="jec") //jet energy scale

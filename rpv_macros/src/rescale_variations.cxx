@@ -79,6 +79,10 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "bin10","bin11","bin12","bin13","bin14","bin15","bin16","bin17","bin18","bin19",
       "bin20","bin21"};
     std::vector<std::string> binNames = { 
+	"bin0","bin1","bin2","bin3","bin4","bin5","bin6","bin7","bin8","bin9",
+      "bin10","bin11","bin12","bin13","bin14","bin15","bin16","bin17","bin18","bin19",
+      "bin20","bin21",
+
       "bin22", "bin23", "bin24",                  // bins for control region fit
       "bin25", "bin26", "bin27",                  // bins for control region fit
       "bin28", "bin29", "bin30",                  // signal bins

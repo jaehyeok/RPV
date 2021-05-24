@@ -231,11 +231,11 @@ int main(int argc, char *argv[])
         h1_mj_data[ibin]  = static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin))); 
       }
       else if(syst!="nominal"){
-        h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s%s", ibin, syst.Data(), updo.Data()))); 
-        h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s%s", ibin, syst.Data(), updo.Data()))); 
-        h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s%s", ibin, syst.Data(), updo.Data()))); 
+        h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+        h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+        h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
         //h1_mj_wjets[ibin]->Scale(1.53); //FIXME
-        h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s%s", ibin, syst.Data(), updo.Data()))); 
+        h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
         h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
         h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
         h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);

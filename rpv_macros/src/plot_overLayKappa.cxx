@@ -31,7 +31,7 @@ void set_legend_style(TLegend *l){
 
 int main(int argc, char *argv[]){
 
-	TString Systematic1, Systematic2, Scale, year;
+	TString Systematic1, Systematic2, Scale, year, outdir;
 
 	Systematic1 = argv[1];
 	Systematic2 = argv[2];
@@ -47,8 +47,8 @@ int main(int argc, char *argv[]){
 		cout << "" <<endl;
 		cout << "./run/plot_overLayKappa.exe [Systematic1] [Systematic2] [Up/Down] [year]" << endl;
 		cout << "" <<endl;
-		cout << "Systematic1: JES,btag_bc,btag_udsg,mur,muf,murf,ISR" << endl;
-		cout << "Systematic2: JES,btag_bc,btag_udsg,mur,muf,murf,ISR" << endl;
+		cout << "Systematic1: jec,btag_bc,btag_udsg,mur,muf,murf,isr,gs,jer" << endl;
+		cout << "Systematic2: jec,btag_bc,btag_udsg,mur,muf,murf,isr,gs,jer" << endl;
 		cout << "Up/Down: Up or Down" << endl;
 		cout << "year: 2016, 2017, 2018" << endl;
 		cout << "" << endl;
@@ -69,8 +69,8 @@ int main(int argc, char *argv[]){
 	c = new TCanvas;
 	c->Divide(1,2);
 
-	f1 = new TFile("plots/kappa/kappa_summary_"+Systematic1+Scale+year+".root");
-	f2 = new TFile("plots/kappa/kappa_summary_"+Systematic2+Scale+year+".root");
+	f1 = new TFile("plots/kappa/"+year+"/kappa_summary_"+Systematic1+Scale+"_"+year+".root");
+	f2 = new TFile("plots/kappa/"+year+"/kappa_summary_"+Systematic2+Scale+"_"+year+".root");
 	h1 = (TH1D*)f1->Get("h1_1l_summary1");
 	h2 = (TH1D*)f2->Get("h1_1l_summary1");
 	h3 = (TH1D*)f1->Get("h1_1l_summary2");
@@ -99,6 +99,6 @@ int main(int argc, char *argv[]){
 	h3->Draw();
 	h4->Draw("same");
 	l2->Draw();
-	c->SaveAs("plots/kappa/overlay_kappa"+Systematic1+"vs"+Systematic2+Scale+year+".png");
-	c->SaveAs("plots/kappa/overlay_kappa"+Systematic1+"vs"+Systematic2+Scale+year+".pdf");
+	c->SaveAs("plots/kappa/"+year+"/overlay_kappa"+Systematic1+"vs"+Systematic2+Scale+"_"+year+".png");
+	c->SaveAs("plots/kappa/"+year+"/overlay_kappa"+Systematic1+"vs"+Systematic2+Scale+"_"+year+".pdf");
 }

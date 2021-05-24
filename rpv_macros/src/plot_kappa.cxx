@@ -26,7 +26,6 @@ vector<float> calculateR(TH1F* h1, int mjbin);
 //
 int main(int argc, char *argv[])
 {
-    gSystem->mkdir("plots/kappa/");
     TString syst("nominal"), updo("X");
     TString reweight("other");
     float mjmin(500), mjmax(1400);
@@ -65,6 +64,8 @@ int main(int argc, char *argv[])
     cout << " ........................... "<< endl; 
     cout << " .... Evaluating kappas .... " << endl; 
     cout << " ........................... "<< endl; 
+
+    gSystem->mkdir("plots/kappa/"+year+"/");
 
     TString bin[52] = {
         // control regions
@@ -363,8 +364,8 @@ int main(int argc, char *argv[])
         }
       }
     }
-    TString outputname="plots/kappa/kappa_summary_"+syst+updo+"_"+year+".root";
-    if(filename.Contains("mconly")) outputname="plots/kappa/kappa_summary_"+syst+updo+"_"+year+"_mconly.root"; 
+    TString outputname="plots/kappa/"+year+"/kappa_summary_"+syst+updo+"_"+year+".root";
+    if(filename.Contains("mconly")) outputname="plots/kappa/"+year+"/kappa_summary_"+syst+updo+"_"+year+"_mconly.root"; 
     TFile *f = new TFile(outputname,"recreate");
 
     TString s_mj1 = Form("%.0f",mjmin);
@@ -413,8 +414,8 @@ int main(int argc, char *argv[])
     h1_0l_summary2->SetMaximum(3);
     h1_0l_summary2->Draw("ep");
     h1_0l_summary2->Write();
-    c->Print("plots/kappa/kappa_summary_"+syst+updo+"_"+year+".pdf");
-    c->Print("plots/kappa/kappa_summary_"+syst+updo+"_"+year+".png");
+    c->Print("plots/kappa/"+year+"/kappa_summary_"+syst+updo+"_"+year+".pdf");
+    c->Print("plots/kappa/"+year+"/kappa_summary_"+syst+updo+"_"+year+".png");
     f->Close();  
 /*
     //

@@ -11,6 +11,7 @@
 #include "TDirectory.h"
 #include "TMath.h"
 #include "TSystem.h"
+#include "TLatex.h"
 
 using namespace std;
 
@@ -20,6 +21,18 @@ float addInQuad(float a, float b);
 vector<float> ratioError(float a, float a_err, float b, float b_err); // a/b
 vector<float> calculateR(TH1F* h1, int mjbin);
 
+void drawHeader()
+{
+  TLatex *lat = new TLatex;
+  lat->SetTextSize(0.053);
+  lat->DrawLatexNDC(0.12, 0.93, "CMS #scale[0.8]{#font[52]{Work In Progress}}");
+  lat->SetTextFont(42);
+  lat->DrawLatexNDC(0.78, 0.93, "35.9 fb^{-1} (13 TeV)");//FIXME
+}
+
+void drawSyst(TLatex *lat1){
+  lat1->SetTextSize(0.06);
+}
 
 //
 // main
@@ -372,6 +385,7 @@ int main(int argc, char *argv[])
     TString s_mj2 = Form("%.0f",mjmin+300);
     TString s_mj3 = Form("%.0f",mjmin+600);
 
+    TLatex *lat_1 = new TLatex();
     TCanvas *c = new TCanvas("c", "c", 1200, 1400);
     c->Divide(1,4);
     c->cd(1);
@@ -383,6 +397,10 @@ int main(int argc, char *argv[])
     h1_1l_summary1->SetMinimum(0);
     h1_1l_summary1->SetMaximum(3);
     h1_1l_summary1->Draw("ep");
+    drawSyst(lat_1);
+    if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
+    else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
+    drawHeader();
     h1_1l_summary1->Write();
     c->cd(2);
     h1_1l_summary2->SetTitle("#kappa ("+s_mj3+"-inf/"+s_mj1+"-"+s_mj2+" GeV)");
@@ -393,6 +411,10 @@ int main(int argc, char *argv[])
     h1_1l_summary2->SetMinimum(0);
     h1_1l_summary2->SetMaximum(3);
     h1_1l_summary2->Draw("ep");
+    drawSyst(lat_1);
+    if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
+    else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
+    drawHeader();
     h1_1l_summary2->Write();
     c->cd(3);
     h1_0l_summary1->SetTitle("#kappa ("+s_mj2+"-"+s_mj3+"/"+s_mj1+"-"+s_mj2+" GeV)");
@@ -403,6 +425,10 @@ int main(int argc, char *argv[])
     h1_0l_summary1->SetMinimum(0);
     h1_0l_summary1->SetMaximum(3);
     h1_0l_summary1->Draw("ep");
+    drawSyst(lat_1);
+    if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
+    else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
+    drawHeader();
     h1_0l_summary1->Write();
     c->cd(4);
     h1_0l_summary2->SetTitle("#kappa ("+s_mj3+"-inf/"+s_mj1+"-"+s_mj2+" GeV)");
@@ -413,6 +439,10 @@ int main(int argc, char *argv[])
     h1_0l_summary2->SetMinimum(0);
     h1_0l_summary2->SetMaximum(3);
     h1_0l_summary2->Draw("ep");
+    drawSyst(lat_1);
+    if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
+    else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
+    drawHeader();
     h1_0l_summary2->Write();
     c->Print("plots/kappa/"+year+"/kappa_summary_"+syst+updo+"_"+year+".pdf");
     c->Print("plots/kappa/"+year+"/kappa_summary_"+syst+updo+"_"+year+".png");

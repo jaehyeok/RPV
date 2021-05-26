@@ -7,13 +7,15 @@ from array import array
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input")
-
+parser.add_argument("-y", "--year")
 args = parser.parse_args()
+Year = 2016
 if (args.input):
   infile = args.input
 else:
   sys.exit("Please provide an input root file")
-  
+if (args.year):
+  Year = args.year
 
 verbose = True
 one_pdf = False #put all plots in one pdf file
@@ -40,8 +42,8 @@ def get_symmetrized_relative_errors(sysName,tot_data,total_nominal,procList,floa
 
 
     # total hists for each variation, to include all processes
-    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",5,0,5)
-    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",5,0,5)
+    systHistUp = ROOT.TH1F(directory+"_"+sysName+"_u","",3,500,1400)
+    systHistDown = ROOT.TH1F(directory+"_"+sysName+"_d","",3,500,1400)
 
     #list of hists, one for each process
     histsUp = []
@@ -53,8 +55,8 @@ def get_symmetrized_relative_errors(sysName,tot_data,total_nominal,procList,floa
     for ip,proc in enumerate(procList):
         fixed = (ip != floating_process) # identify if this process has fixed or floating normalization
 
-        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Up")
-        down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Down")
+        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
+        down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
 
         histsUp.append(up)
         histsDown.append(down)
@@ -75,7 +77,7 @@ def get_symmetrized_relative_errors(sysName,tot_data,total_nominal,procList,floa
     #scale factor for floating is just the leftover data, after fixed subtraction, divided by floating yield
     sfUp = totUp/floatingUp
     sfDown = totDown/floatingDown
-    if tot_data ==0:
+    if tot_data == 0 or floatingUp ==0 or floatingDown == 0:
         sfUp= 1.
         sfDown=1.
     histsUp[floating_process].Scale(sfUp)
@@ -165,57 +167,37 @@ procList=["qcd","ttbar","wjets","other"]
 #WARNING The phrases 'pdf' and 'mu' trigger special handling later on
 
 systList=[]
-## for i in range(0,100):
-##     if i == 26 or i == 46: continue
-##     systList.append(["w_pdf"+str(i),"PDF "+str(i),i,1])
 systList.append(["btag_bc","b,c jet b-tag SF",2,1])
 systList.append(["btag_udsg","u,d,s,g jet b-tag SF",3,1])
-systList.append(["jes","Jet energy scale",4,1])
-systList.append(["jer","Jet energy resolution",5,1])
+systList.append(["jec","Jet energy scale",4,1])
+#systList.append(["jer","Jet energy resolution",5,1])
 systList.append(["lep_eff","Lepton efficiency",6,1])
-#systList.append(["pileup","Pileup",7,1])
-#systList.append(["gs","Gluon splitting",9,1])
-systList.append(["qcd_flavor","QCD flavor",8,1])
-systList.append(["gs45","Gluon splitting (N_{jet}=4,5)",9,1])
-systList.append(["gs67","Gluon splitting (N_{jet}=6,7)",10,1])
-systList.append(["gs89","Gluon splitting (N_{jet}=8,9)",11,1])
-systList.append(["gs10Inf","Gluon splitting (N_{jet}#geq10)",12,1])
-systList.append(["ttbar_pt","Top quark p_{T}",13,1])
+systList.append(["gs","Gluon splitting",9,1])
+#systList.append(["isr","Initial state radiation",9,1])
 systList.append(["mur","Renormalization scale",14,1])
 systList.append(["muf","Factorization scale",15,1])
 systList.append(["murf","Renorm. and fact. scale",16,1])
-#systList.append(["pdf","PDF",17,1])
 systList.append(["mc_stat","MC statistics",1,2])
 
 nSyst = len(systList)
 #make list of bins
 
 binList = []
-binList.append(["bin0","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin1","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin2","4 #leq n_{jets} #leq 5","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-binList.append(["bin3","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin4","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin5","4 #leq n_{jets} #leq 5","M_{J} #geq 800 GeV","n_{lep} = 1"])
-#
-#binList.append(["bin6","4 #leq n_{jets} #leq 5","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-#binList.append(["bin7","6 #leq n_{jets} #leq 7","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-#binList.append(["bin8","8 #leq n_{jets} #leq 9","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
-#binList.append(["bin9","n_{jets} #geq 10","300 #leq M_{J} < 500 GeV","n_{lep} = 0"])
+binList.append(["bin22","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin23","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin24","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin25","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin26","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin27","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin28","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin29","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin30","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin31","4 #leq n_{jets} #leq 5","M_{J} > 500 GeV","n_{lep} = 1"])
 # signal regions
-binList.append(["bin10","n_{jets} #geq 10","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin11","6 #leq n_{jets} #leq 7","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-binList.append(["bin12","n_{jets} #geq 8","500 #leq M_{J} < 800 GeV","n_{lep} = 1"])
-binList.append(["bin13","n_{jets} #geq 10","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin14","6 #leq n_{jets} #leq 7","M_{J} #geq 800 GeV","n_{lep} = 1"])
-binList.append(["bin15","n_{jets} #geq 8","M_{J} #geq 800 GeV","n_{lep} = 1"])
-binList.append(["bin16","8 #leq n_{jets} #leq 9","500 #leq M_{J} < 800 GeV","n_{lep} = 0"])
-binList.append(["bin17","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin18","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin19","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin20","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-binList.append(["bin21","8 #leq n_{jets} #leq 9","M_{J} #geq 800 GeV","n_{lep} = 0"])
-
+binList.append(["bin32","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin33","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin35","6 #leq n_{jets} #leq 7","M_{J} > 500 GeV","n_{lep} = 1"])
+binList.append(["bin36","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
 
 sysFile = ROOT.TFile(infile,"read")
 for ibin in binList:
@@ -258,7 +240,7 @@ for ibin in binList:
     histsNom[floating_process].Scale(sf)
 
     #Make master histogram of all nominal histograms (with floating normalization already corrected)
-    total_nominal = ROOT.TH1F(directory+"_nominal","",5,0,5)
+    total_nominal = ROOT.TH1F(directory+"_nominal","",3,500,1400)
     total_nominal.Sumw2()
     for ip,proc in enumerate(procList):
         total_nominal.Add(histsNom[ip])
@@ -290,7 +272,7 @@ for ibin in binList:
             print "starting "+sysName
         
         # this will eventually contain the errors to plot
-        systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",5,0,5)
+        systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",3,500,1400)
       
         #stat uncertainty treated separately 
         if "mc_stat" not in sysName:
@@ -303,7 +285,7 @@ for ibin in binList:
                 #We want to plot something to represent the total impact of varying mu for all the processes, so we just add them in quadrature
                 for pr in procList:
                     #calculate errors for each process (i.e. qcd_mur, wjets_mur ...)
-                    thisproc = get_symmetrized_relative_errors(pr+"_"+sysName,tot_data,total_nominal,procList,floating_process,sysFile,directory)
+                    thisproc = get_symmetrized_relative_errors(sysName,tot_data,total_nominal,procList,floating_process,sysFile,directory)
 
                     #square contents to add in quadrature
                     for i in range(1,thisproc.GetNbinsX()+1):
@@ -354,7 +336,7 @@ for ibin in binList:
         systHists_sym.append(systHist)
                  
         table.GetYaxis().SetBinLabel(isys,syst[1])
-        systHists_sym[isys-1].SetTitle(";N_{b};Relative Error")
+        systHists_sym[isys-1].SetTitle(";M_{J};Relative Error")
         systHists_sym[isys-1].SetLineColor(syst[2])
         systHists_sym[isys-1].SetLineStyle(syst[3])
         systHists_sym[isys-1].SetLineWidth(2)
@@ -372,7 +354,7 @@ for ibin in binList:
     leg.Draw()
     tla = ROOT.TLatex()
     tla.SetTextSize(0.038)
-    tla.DrawLatexNDC(0.12,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Simulation}}")
+    tla.DrawLatexNDC(0.12,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}")
     tla.SetTextFont(42)
     tla.DrawLatexNDC(0.71,0.93,"#sqrt{s} = 13 TeV")
 #    tla.SetTextSize(0.045)
@@ -381,14 +363,14 @@ for ibin in binList:
     tla.DrawLatexNDC(0.17, 0.35, ibin[2])
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/bkg_systs_all.pdf("
+            outname = "plots/rpv_bkg_syst/bkg_systs_all.pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/bkg_systs_all.pdf)"
+            outname = "plots/rpv_bkg_syst/bkg_systs_all.pdf)"
         else:
-            outname = "plots/bkg_systs_all.pdf"
+            outname = "plots/rpv_bkg_syst/bkg_systs_all.pdf"
 
     else:
-         outname = "plots/bkg_systs_" + directory +".pdf"
+         outname = "plots/rpv_bkg_syst/bkg_systs_" + directory +".pdf"
     print "outname is " +outname
     c.Print(outname)
 
@@ -397,18 +379,16 @@ for ibin in binList:
     ROOT.gStyle.SetPadRightMargin(0.2)
     ROOT.gStyle.SetPadBottomMargin(0.1)
     c2 = ROOT.TCanvas()
-    table.GetXaxis().SetBinLabel(1,"0");
-    table.GetXaxis().SetBinLabel(2,"1");
-    table.GetXaxis().SetBinLabel(3,"2");
-    table.GetXaxis().SetBinLabel(4,"3");
-    table.GetXaxis().SetBinLabel(5,"#geq 4");
+    table.GetXaxis().SetLabelSize(0.02)
+    table.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV")
+    table.GetXaxis().SetBinLabel(2,"800 \leq M_{J} \leq 1100 GeV")
+    table.GetXaxis().SetBinLabel(3,"M_{J} \geq 1100 GeV")
     table.GetXaxis().SetNdivisions(400,0)
     table.SetMaximum(20)
     table.SetMinimum(0)
     table.SetStats(0)
     table.SetMarkerSize(1.5)
-    table.SetAxisRange(0.5,4.499,"X")
-    table.SetXTitle("N_{b}")
+    table.SetXTitle("M_{J}")
     table.SetZTitle("Uncertainty [%]")
     table.GetYaxis().SetTitleOffset(1.4)
     table.GetYaxis().SetTitleSize(0.05)
@@ -419,19 +399,19 @@ for ibin in binList:
     table.Draw("axis y+ same")
     tla = ROOT.TLatex()
     tla.SetTextSize(0.038)
-    tla.DrawLatexNDC(0.35,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Simulation}}")
+    tla.DrawLatexNDC(0.35,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}")
     tla.SetTextFont(42)
     tla.DrawLatexNDC(0.66,0.93,"#sqrt{s} = 13 TeV")
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/table_bkg_systs_all.pdf("
+            outname = "plots/rpv_bkg_syst/table_bkg_systs_all.pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/table_bkg_systs_all.pdf)"
+            outname = "plots/rpv_bkg_syst/table_bkg_systs_all.pdf)"
         else:
-            outname = "plots/table_bkg_systs_all.pdf"
+            outname = "plots/rpv_bkg_syst/table_bkg_systs_all.pdf"
 
     else:
-         outname = "plots/table_bkg_systs_" + directory +".pdf"
+         outname = "plots/rpv_bkg_syst/table_bkg_systs_" + directory +".pdf"
 
          
     c2.Print(outname)

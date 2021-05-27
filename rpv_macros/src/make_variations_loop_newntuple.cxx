@@ -52,12 +52,8 @@ TString reset = "\033[0m";
 
 int main(int argc, char *argv[])
 {
-<<<<<<< HEAD
-  ROOT::EnableImplicitMT(8);
-=======
   int nthreads=16;
   ROOT::EnableImplicitMT(nthreads);
->>>>>>> fa9cf755f615cebadde4cf35fceaa005e959df3e
   gErrorIgnoreLevel=kError+1;
   TH1::SetDefaultSumw2();
 

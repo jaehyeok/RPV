@@ -54,14 +54,10 @@ int main(int argc, char *argv[])
 					                     "wjets_muf", "wjets_mur", "wjets_murf",
 					                     "other_muf", "other_mur", "other_murf",
 					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
-<<<<<<< HEAD
 
-  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","lep_eff"};
   //std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","lep_eff","ISR"};//FIXME
-=======
   std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
   shapeSysts = {};
->>>>>>> fa9cf755f615cebadde4cf35fceaa005e959df3e
 
   std::string gluinoMass;
   std::string signalBinName;

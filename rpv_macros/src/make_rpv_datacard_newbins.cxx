@@ -85,6 +85,14 @@ int main(int argc, char *argv[])
     merge_78  = argv[5];
     sig_onoff = argv[6];
   }
+  std::vector<std::string> shapeSysts;
+  if(year == "2016"){
+	shapeSysts = {"jec","btag_bc","btag_udsg","muf","mur","murf","isr","gs","lep_eff","jer"};
+  }
+  else if(year != "2016"){
+	shapeSysts = {"jec","btag_bc","btag_udsg","muf","mur","murf","gs","lep_eff","jer"};
+  }
+  shapeSysts = {};
 
   nprocesses=processes.size();
 
@@ -380,7 +388,7 @@ int main(int argc, char *argv[])
   
   }
   file << "\n------------------------------------" << std::endl;
-  //outputautoMCStats(file, bins.at(ipair));
+  outputautoMCStats(file, bins.at(ipair));
 
   outputrateParam(file, bins.at(ipair), year);
 
@@ -948,19 +956,19 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
     TString lownjcon_, mednjcon_, highnjcon_;
     if(year=="2016"){
-      lownjcon_ = "1.13";
-      mednjcon_ = "1.05";
-      highnjcon_ = "0.85";
+      lownjcon_ = "1.19";
+      mednjcon_ = "1.12";
+      highnjcon_ = "1.27";
     }
     if(year=="2017"){
-      lownjcon_ = "1.00";
-      mednjcon_ = "1.09";
-      highnjcon_ = "1.70";
+      lownjcon_ = "1.15";
+      mednjcon_ = "1.13";
+      highnjcon_ = "1.35";
     }
     if(year=="2018"){
-      lownjcon_ = "0.73";
-      mednjcon_ = "1.03";
-      highnjcon_ = "1.29";
+      lownjcon_ = "1.10";
+      mednjcon_ = "1.19";
+      highnjcon_ = "1.38";
     }
 
     map<string, int> bindex;

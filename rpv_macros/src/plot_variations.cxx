@@ -37,9 +37,11 @@ int main()
         "wjets_mur", "wjets_muf", "wjets_murf",
         "other_mur", "other_muf", "other_murf"};
 // */
-    //vector<TString> variations={"ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
-    //vector<TString> variations={"kappa1", "kappa2"};
-    vector<TString> variations={"ISR"};
+//    vector<TString> variations={"ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
+    vector<TString> variations={"kappa1", "kappa2"};
+    //vector<TString> variations={"ISR"};
+//    vector<int> bins={0,1,2,3,4,5, // CR
+//                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
     vector<int> bins = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36};
     //for(int i=0; i<100; i++) variations.push_back(Form("w_pdf%i",i)); 
     
@@ -75,7 +77,7 @@ void h1cosmetic(TH1F* &h1, const char* title, int linecolor, int linewidth, int 
 void drawUpDown(int bin, vector<TString> variations)
 {
 
-	TString year = "2016";
+	TString year = "2017_20178";
 
 	// style
 	gStyle->SetPaintTextFormat(".1f");
@@ -84,13 +86,15 @@ void drawUpDown(int bin, vector<TString> variations)
 //    TFile* infile = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root");
 
     TFile* infile = TFile::Open("variations/output_"+year+".root");
+    cout<<"variations/output_"+year+".root"<<endl;
     TCanvas *c1;
     TPad *pad1;
     TPad *pad2;
 
-    for(unsigned int iprocess=0; iprocess<1; iprocess++) 
+    for(unsigned int iprocess=0; iprocess<4; iprocess++) 
     {
-        TString hname = "signal_M1700";
+        //TString hname = "signal_M1500";
+	TString hname = "qcd";
         if(iprocess==1) hname = "qcd";
         if(iprocess==2) hname = "wjets";
         if(iprocess==3) hname = "other";
@@ -98,7 +102,7 @@ void drawUpDown(int bin, vector<TString> variations)
         if(iprocess==5) hname = "signal_M1900"; 
         for(unsigned int ivariation=0; ivariation<variations.size(); ivariation++) 
         { 
-          if(variations.at(ivariation).Contains("kappa")) continue; // kappa other
+        //  if(variations.at(ivariation).Contains("kappa")) continue; // kappa other
 
           const char* haltername = variations.at(ivariation).Data();
           TString njets="njets45"; 

@@ -321,7 +321,7 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
     float mll(0);
     TLorentzVector mom1, mom2;
     if(flag_kwj && tree.nleps()!=2){
-      cout<< tree.nleps() << endl;
+      //cout<< tree.nleps() << endl;
       continue;
     }
     else if(flag_kwj){

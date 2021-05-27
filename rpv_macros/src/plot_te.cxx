@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "TLatex.h"
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TGraphErrors.h"
@@ -16,6 +17,7 @@
 #include "TLegend.h"
 #include "TMath.h"
 
+#include "styles.hpp"
 #include "small_tree_rpv.hpp"
 #include "utilities.hpp"
 #include "utilities_macros.hpp"
@@ -53,7 +55,7 @@ int main(int argc, char *argv[])
 		s_proc = s_; 
 	}
 	for(auto str : s_proc) cout<<str<<endl;
-
+	
 	small_tree_rpv events((static_cast<std::string>(s_proc.at(0))));
 	for(unsigned int iproc=1; iproc<s_proc.size(); iproc++) events.Add((static_cast<std::string>(s_proc.at(iproc))));
 	TFile *f = new TFile("plots/trig_eff"+year+"_"+procname+".root","recreate");
@@ -64,6 +66,17 @@ int main(int argc, char *argv[])
 void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 	ioctl(0, TIOCGWINSZ, &w);
 	int cols = w.ws_col;
+
+	styles style("CMSPaper");
+	style.LegendSize=style.LegendSize*0.5;
+	style.TitleSize=style.TitleSize*0.5;
+	style.LabelSize=style.LabelSize*0.5;
+	style.setDefaultStyle();
+	gStyle->SetPadLeftMargin(0.10);
+	gStyle->SetPadBottomMargin(0.10);
+	gStyle->SetNdivisions(10710,"xyz");
+	gStyle->SetPadTickX(0);
+	gStyle->SetPadTickY(0);
 
 	TH1D* h1den[4];
 	TH1D* h1num[4];
@@ -78,10 +91,12 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 	float max[4] = {2000,2000,15.5,15.5};
 	int nbins[4] = {20,15,12,16};
 	TString var[4] = {"H_{T}", "M_{J}", "N_{Jets}","N_b"};
+	TString varf[4] = {"HT","MJ","Njets","Nb"};
 
 	for(int j=0;j<4;j++){
-		c[j] = new TCanvas(Form("c%d",j),Form("c%d",j),1600,800);
-		c[j]->Divide(2,1);
+		c[j] = new TCanvas();
+//		c[j] = new TCanvas(Form("c%d",j),Form("c%d",j),1600,800);
+//		c[j]->Divide(2,1);
 		h1den[j] = new TH1D(Form("den%d",j),Form("den%d",j),nbins[j],min[j],max[j]);
 		h1num[j] = new TH1D(Form("num%d",j),Form("num%d",j),nbins[j],min[j],max[j]);
 		h1innum[j] = new TH1D(Form("innum%d",j),Form("innum%d",j),nbins[j],min[j],max[j]);
@@ -138,7 +153,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 			if(procname=="mc") nomweight=tree.weight();
 			else if(procname=="data") nomweight=tree.pass();
 			float trig;
-			if(year=="2016") trig=(tree.trig_ht900()||tree.trig_jet450());
+			if(year=="2016") trig=(tree.trig_ht900());
 			else if(year=="2017"||year=="2018") trig=(tree.trig_ht1050());
 			if(ibin==0) nomweight = nomweight;
 			else nomweight = (tree.ht()>1200)*nomweight;
@@ -148,11 +163,20 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		}
 	}
 	for(unsigned int ibin=0; ibin<4; ibin++){
+
 		h1eff[ibin] = dynamic_cast<TH1D*>(h1num[ibin]->Clone("h1_eff"));
 		h1eff[ibin]->Divide(h1num[ibin],h1den[ibin],1,1,"B");
 		h1den[ibin]->Write();
 		h1num[ibin]->Write();
 		h1eff[ibin]->Write();
+
+		TString lumi;
+		if(year=="2016") lumi = "35.9";
+		if(year=="2017") lumi = "41.5";
+		if(year=="2018") lumi = "59.7";
+
+		TString cmslabel = "#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}";
+		TString lumilabel = TString::Format("%1.1f", lumi.Atof())+" fb^{-1}, 13 TeV";
 
 		h1ineff[ibin] = dynamic_cast<TH1D*>(h1num[ibin]->Clone("h1_eff"));
 		h1ineff[ibin]->Divide(h1innum[ibin],h1den[ibin],1,1,"B");
@@ -161,9 +185,12 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 
 		double denmax = h1den[ibin]->GetMaximum();
 	
-		c[ibin]->cd(1);
+//		c[ibin]->cd(1);
 
-		h1eff[ibin]->SetTitle("");
+//		c[ibin]->cd(1)->SetGrid();
+		c[ibin]->cd();
+		c[ibin]->SetGrid();
+				
 		h1eff[ibin]->GetXaxis()->SetTitle(var[ibin]);
 		h1eff[ibin]->GetYaxis()->SetTitle("Trigger Efficiency");
 		h1eff[ibin]->SetStats(0);
@@ -171,7 +198,15 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		h1eff[ibin]->SetMinimum(0);
 		h1eff[ibin]->SetLineWidth(2);
 		h1eff[ibin]->SetLineColor(kBlack);
+		h1eff[ibin]->SetTitle("");
 		h1eff[ibin]->Draw("e");
+
+		TLatex label; label.SetNDC(kTRUE);
+		label.SetTextSize(0.03);
+		label.SetTextAlign(11);
+		label.DrawLatex(0.10,1-style.PadTopMargin+0.02,cmslabel);
+		label.SetTextAlign(31);
+		label.DrawLatex(1-style.PadRightMargin,1-style.PadTopMargin+0.02,lumilabel);
 
 		TGaxis *ax1 = new TGaxis(max[ibin],0,max[ibin],1.2,0,denmax*3,10510,"+L");
 		ax1->SetLabelSize(0.03);
@@ -180,9 +215,11 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		ax1->SetTitleSize(0.04);
 		ax1->SetTitleFont(40);
 		ax1->SetTitleOffset(1.3);
+		ax1->SetMaxDigits(2);
 		ax1->Draw("same");
 
-		TLegend *l1 = new TLegend(0.15,0.85,0.85,0.89);
+
+		TLegend *l1 = new TLegend(style.PadLeftMargin+0.01,1-style.PadTopMargin-0.04,1-style.PadRightMargin-0.01,1-style.PadTopMargin-0.01);
 		l1->AddEntry(h1eff[ibin],"Trigger Efficiency","l");
 		l1->AddEntry(h1den[ibin],"Denominator","l");
 		l1->AddEntry(h1num[ibin],"Numerator","f");
@@ -208,7 +245,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		h1num[ibin]->Draw("hist same");
 
 		h1eff[ibin]->Draw("same e");
-
+/*
 		c[ibin]->cd(2);
 
 		h1ineff[ibin]->GetXaxis()->SetTitle(var[ibin]);
@@ -244,9 +281,9 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		h1innum[ibin]->Draw("hist same");
 
 		h1ineff[ibin]->Draw("same e");
+*/
 
-
-		c[ibin]->Print(Form("plots/trig_eff_%s_%s_%d.pdf",year.Data(),procname.Data(),ibin));
+		c[ibin]->Print(Form("plots/trig_eff_%s_%s_%s.pdf",year.Data(),procname.Data(),varf[ibin].Data()));
 	}	
 }
 

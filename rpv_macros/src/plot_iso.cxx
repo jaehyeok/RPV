@@ -141,8 +141,8 @@ int main(int argc, char *argv[]){
     for(auto injet : njetcuts){
     	cut = basecut + "&&(nbm==1||nbm==2||nbm==0)&&" + injet + "&&" + elscut + "&&met<50";
 	cout<<cut<<endl;
-    //	hists.push_back(hfeats("els_sigid", 2, 0, 2, rpv_sam, "els_{sigid}"/*"I_{mini}/P_{T}^{els}"* "els_sigid"*/, cut));
-    	hists.push_back(hfeats("els_miniso", 20, 0, 2, rpv_sam, "I_{mini}/P_{T}^{els}"/* "els_sigid"*/, cut));
+    	hists.push_back(hfeats("els_sigid", 2, 0, 2, rpv_sam, "els_{sigid}"/*"I_{mini}/P_{T}^{els}"* "els_sigid"*/, cut));
+    //	hists.push_back(hfeats("els_miniso", 20, 0, 2, rpv_sam, "I_{mini}/P_{T}^{els}"/* "els_sigid"*/, cut));
     	if(showData) hists.back().normalize = false;
     	cut = basecut + "&&(nbm==0||nbm==1||nbm==2)&&" + injet + "&&" + muscut + "&&met<50";
 	cout<<cut<<endl;
@@ -153,6 +153,7 @@ int main(int argc, char *argv[]){
     //plot_distributions(Samples, hists, lumi, ".root", plot_style, "rpv_base", true, true);  
     if(showData) hists.back().normalize = false;
     plot_distributions(Samples, hists, lumi, ".pdf", plot_style, "rpv_base", true, false);  
+    if(showData) hists.back().normalize = false;
     /*
       for(auto inb : nbcuts) {
 	for(auto injet : njetcuts){

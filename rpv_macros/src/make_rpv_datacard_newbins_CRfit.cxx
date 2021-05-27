@@ -10,6 +10,7 @@
 #include "TFile.h"
 #include "TSystem.h"
 
+void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
 void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
 void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins, TString year);
@@ -19,6 +20,7 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
 void outputLognormalSystematics(std::ofstream &file, TString year);
 void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> &bins, const std::string & signalBinName, TString year);
 void outputautoMCStats(std::ofstream &file, const std::vector<std::string> &bins);
+void outputrateParam(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 // determine if a histogram has an entry for a given nB
 bool hasEntry(const std::string &sample, const std::string &bin, const int nB);
 
@@ -29,6 +31,8 @@ namespace {
 
 using namespace std;
 
+TString merge_78;
+
 int main(int argc, char *argv[])
 {
   bool includePDFUncert = false;
@@ -36,28 +40,29 @@ int main(int argc, char *argv[])
   bool nocrvr = false;
 //  bool includeSignalRegion = true;
   TString year;
+  TString sig_onoff;
   // signal is added later
   std::vector<std::string> processes = { "qcd", "ttbar", "wjets", "other"};
-  std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg", //"kappa"
+  /*std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg", //"kappa"
 					                     "gs45", "gs67", "gs89", "gs10Inf",
 					                     //"jes", "jer",
-					                     /*"pileup",*/"lep_eff", "ttbar_pt",
+					                     "pileup", "lep_eff", "ttbar_pt",
 					                     "qcd_flavor",
 					                     "qcd_muf", "qcd_mur", "qcd_murf", 
 					                     //"isr",
 					                     "ttbar_muf", "ttbar_mur", "ttbar_murf",
 					                     "wjets_muf", "wjets_mur", "wjets_murf",
 					                     "other_muf", "other_mur", "other_murf",
-					                     /*"fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"*/}; // temporarily removed
-
-  shapeSysts={}; 
+					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
+  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
+  shapeSysts = {"GS"};
 
   std::string gluinoMass;
   std::string signalBinName;
   std::string cardType;
   TString inputname;
   if(argc<3) {
-    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename] [year]" << std::endl;
+    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename] [year] [20178 on/off] [signal Systematics on/off]" << std::endl;
     return 1;
   }
   else {
@@ -75,14 +80,9 @@ int main(int argc, char *argv[])
       std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly]" << std::endl;
       return 1;
     }
-    if(argc>3)
-      inputname = argv[3];
-
-//    else {
-//      if(cardType=="control") includeSignalRegion=false;
-//      if(cardType=="default") includeSignalRegion=true;
-//      if(cardType=="mconly")  includeSignalRegion=true;
-//    }
+    inputname = argv[3];
+    merge_78  = argv[5];
+    sig_onoff = argv[6];
   }
 
   nprocesses=processes.size();
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
   std::vector<std::string> bins_cr_nb1_lownjets    = {"bin40","bin25"}; 
   std::vector<std::string> bins_cr_nb2_lownjets    = {"bin43","bin28"}; 
   std::vector<std::string> bins_cr_nb3_lownjets    = {"bin46","bin31"}; 
-  std::vector<std::string> bins_cr_nb4_lownjets    = {"bin49","bin34"}; 
+  //std::vector<std::string> bins_cr_nb4_lownjets    = {"bin49","bin34"}; 
   std::vector<std::string> bins_cr_nb0_mednjets    = {"bin38","bin23"}; 
   std::vector<std::string> bins_cr_nb1_mednjets    = {"bin41","bin26"}; 
   std::vector<std::string> bins_sr_nb2_mednjets    = {"bin44","bin29"}; 
@@ -129,8 +129,8 @@ int main(int argc, char *argv[])
   if(cardType=="default" || cardType=="mconly"){
     bins_all.push_back("bin46");
     bins_all.push_back("bin31");
-    bins_all.push_back("bin49");
-    bins_all.push_back("bin34");
+   // bins_all.push_back("bin49");
+   // bins_all.push_back("bin34");
     bins_all.push_back("bin47");
     bins_all.push_back("bin32");
     bins_all.push_back("bin50");
@@ -178,12 +178,11 @@ int main(int argc, char *argv[])
       bins.push_back(bins_sr_highnj_vhighmj); 
   }
   */
-  /*
   bins.push_back(bins_cr_nb0_lownjets);
   bins.push_back(bins_cr_nb1_lownjets);
   bins.push_back(bins_cr_nb2_lownjets);
   bins.push_back(bins_cr_nb3_lownjets);
-  bins.push_back(bins_cr_nb4_lownjets);
+  //bins.push_back(bins_cr_nb4_lownjets);
   bins.push_back(bins_cr_nb0_mednjets);
   bins.push_back(bins_cr_nb1_mednjets);
   bins.push_back(bins_cr_nb0_highnjets);
@@ -199,10 +198,7 @@ int main(int argc, char *argv[])
   }
 
   bins.push_back(bins_all);
- */
-  cout<<"HI"<<endl;
-  std::vector <std::string> bins_CRFit = {"bin6","bin7","bin8","bin9","bin10","bin11"}; 
-  bins.push_back(bins_CRFit);
+ 
   // include pdf syst to the shapeSysts
   if(includePDFUncert) {
     for(unsigned int i=0; i<100; i++) {
@@ -243,10 +239,26 @@ int main(int argc, char *argv[])
       if(ipair==7) filename+="_sr_highnj_vhighmj";
   }
   */
-  /*
+
   if(ipair==0) filename+="_cr_nb0_lownjets";
   if(ipair==1) filename+="_cr_nb1_lownjets";
   if(ipair==2) filename+="_cr_nb2_lownjets";
+  if(ipair==3) filename+="_cr_nb3_lownjets";
+  if(ipair==4) filename+="_cr_nb0_mednjets";
+  if(ipair==5) filename+="_cr_nb1_mednjets";
+  if(ipair==6) filename+="_cr_nb0_highnjets";
+  if(ipair==7) filename+="_cr_nb1_highnjets";
+
+  if(cardType!="control")
+  {
+      if(ipair==8) filename+="_sr_nb2_mednjets";
+      if(ipair==9) filename+="_sr_nb3_mednjets";
+      if(ipair==10) filename+="_sr_nb4_mednjets";
+      if(ipair==11) filename+="_sr_nb2_highnjets";
+      if(ipair==12) filename+="_sr_nb3_highnjets";
+      if(ipair==13) filename+="_sr_nb4_highnjets";
+  }
+/*
   if(ipair==3) filename+="_cr_nb3_lownjets";
   if(ipair==4) filename+="_cr_nb4_lownjets";
   if(ipair==5) filename+="_cr_nb0_mednjets";
@@ -263,11 +275,8 @@ int main(int argc, char *argv[])
       if(ipair==13) filename+="_sr_nb3_highnjets";
       if(ipair==14) filename+="_sr_nb4_highnjets";
   }
-  */
-
-  if(ipair==0) filename+="_CRFit";
-  //if(!includePDFUncert) filename+="_nopdf";
-  cout<<"HI"<<endl;
+*/
+  if(!includePDFUncert) filename+="_nopdf";
 
   if(argc>3){
     TString tmpname = inputname;
@@ -277,7 +286,6 @@ int main(int argc, char *argv[])
 
   filename+=".dat";
   file.open(filename);
-  cout<<"HI"<<endl;
 
   // output header
   file << "imax " << nbins << " number of bins" << std::endl;
@@ -299,21 +307,18 @@ int main(int argc, char *argv[])
   file << "------------------------------------" << std::endl;  
   file << "bin          ";
 
-  cout<<"HI"<<endl;
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     variations->cd(bins.at(ipair).at(ibin).c_str());
     file << bins.at(ipair).at(ibin) << " ";
   }
   file << "\n";
   file << "observation  ";
-  cout<<"HI"<<endl;
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     TString binName(bins.at(ipair).at(ibin));
     TH1F *hist = static_cast<TH1F*>(variations->Get(Form("%s/data_obs",binName.Data())));
     file << hist->Integral() << " ";
     hist->Delete();
   }
-  cout<<"HI"<<endl;
   file << "\n";
   file << "------------------------------------" << std::endl;
   file << "bin  ";
@@ -332,11 +337,9 @@ int main(int argc, char *argv[])
   file << "rate  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
     for(unsigned int iprocess=0; iprocess<nprocesses; iprocess++) {
-  cout<<"HI"<<processes.at(iprocess)<<endl;
       TString histName(Form("%s/%s", bins.at(ipair).at(ibin).c_str(), processes.at(iprocess).c_str()));
       TH1F *hist = static_cast<TH1F*>(variations->Get(histName));
       file << hist->Integral() << "  ";
-  cout<<"HI"<<endl;
     }
   }
   file << "\n------------------------------------" << std::endl;
@@ -347,32 +350,39 @@ int main(int argc, char *argv[])
   //output the MJ connection
 //  outputMJConnection(file, bins.at(ipair)),year;
   
-  cout<<"HI"<<endl;
   //output if you want to see only normalizations between nleps
-  outputOnlyNormalization(file, bins.at(ipair), year);
+  //outputOnlyNormalization(file, bins.at(ipair), year);
 
-  cout<<"HI"<<endl;
   //output the W+jet normalization and Njets connection
   outputWjets(file, bins.at(ipair), cardType, year);
 
-  cout<<"HI"<<endl;
+  //output the W+jet normalization and Njets connection
+  outputQCD(file, bins.at(ipair), cardType, year);
+  
   // output kappa systematics
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
+  //outputShapeSystematics(file, shapeSysts, year);
+
+  if(sig_onoff=="on"){
   // output shape systematics
-//  outputShapeSystematics(file, shapeSysts,year);
   
   // output lognormal lumi uncertainties for signal, wjets and other
-//  outputLognormalSystematics(file);
+    outputLognormalSystematics(file, year);
 
   // output MC statistics nuisance parameters
   // FIXME: the treatment of emtpy bins should be updated
   //        right now this is done by hand basically using "hasEntry" function at the end of this code
   //        this should be done by checking the bins in the nominal shape 
-//  outputMCStatisticsSyst(file, bins.at(ipair), signalBinName);
+    //outputMCStatisticsSyst(file, bins.at(ipair), signalBinName, year);
+  
+  
+  }
+  file << "\n------------------------------------" << std::endl;
+  //outputautoMCStats(file, bins.at(ipair));
 
-//  file << "\n------------------------------------" << std::endl;
-//  outputautoMCStats(file, bins.at(ipair));
+  outputrateParam(file, bins.at(ipair), year);
+
   file.close();
   }
 }
@@ -934,6 +944,99 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   }
   }
 
+  void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
+    TString lownjcon_, mednjcon_, highnjcon_;
+    if(year=="2016"){
+      lownjcon_ = "1.13";
+      mednjcon_ = "1.21";
+      highnjcon_ = "1.24";
+    }
+    if(year=="2017"){
+      lownjcon_ = "1.10";
+      mednjcon_ = "1.16";
+      highnjcon_ = "1.16";
+    }
+    if(year=="2018"){
+      lownjcon_ = "1.33";
+      mednjcon_ = "1.38";
+      highnjcon_ = "1.38";
+    }
+
+    map<string, int> bindex;
+    for(uint ibin=22; ibin<52; ibin++){
+      bindex[Form("bin%d",ibin)]=9999;
+    }
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+    if(cardType!="control")  // do not need Njets connection for CR fit
+    { 
+      //create template line
+      TString line;
+      for(uint idash=0; idash<(nprocesses*nbins); idash++)
+        line+="-    ";
+
+      TString tmpLine;
+      TString tmpbin;
+      int numbin;
+      vector<TString> lownj_bins, mednj_bins, highnj_bins;
+      for(uint nbc=0 ; nbc<5 ; nbc++){
+        lownj_bins.push_back(Form("bin%d",22+nbc*3));
+        mednj_bins.push_back(Form("bin%d",22+nbc*3+1));
+        highnj_bins.push_back(Form("bin%d",22+nbc*3+2));
+      }
+      bool flag_brk=true;
+      for(auto jbin:bins){
+        tmpLine = line;        
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+        if((numbin%3==1||numbin%3==2)&&flag_brk){
+          for(auto njb:lownj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4, lownjcon_.Data());
+          }
+          tmpLine.Prepend(Form("normqcd_lownjets_%s        lnN  ",year.Data()));
+          file << tmpLine.Data() << endl;
+          flag_brk=false;
+        }
+      }
+      flag_brk=true;
+      for(auto jbin:bins){
+        tmpLine = line;        
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+        if((numbin%3==1||numbin%3==2)&&flag_brk){
+          for(auto njb:mednj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4, mednjcon_.Data());
+          }
+          tmpLine.Prepend(Form("normqcd_mednjets_%s        lnN  ",year.Data()));
+          file << tmpLine.Data() << endl;
+          flag_brk=false;
+        }
+      }
+      flag_brk=true;
+      for(auto jbin:bins){
+        tmpLine = line;        
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+
+ 
+        if((numbin%3==2||numbin%3==0)&&flag_brk){
+          for(auto njb:highnj_bins){
+            if(bindex[njb.Data()]==9999) continue;
+            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4,highnjcon_.Data());
+          }
+          tmpLine.Prepend(Form("normqcd_highnjets_%s       lnN  ",year.Data()));
+          file << tmpLine.Data() << endl;
+          flag_brk=false;
+        }
+      }
+    }
+  }
   // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
   void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
 
@@ -946,7 +1049,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       mednjcon_ = "1.35";
       highnjcon_ = "1.33";
     }
-    if(year=="2016"){
+    if(year=="2018"){
       mednjcon_ = "1.26";
       highnjcon_ = "1.30";
     }
@@ -964,7 +1067,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     for(uint idash=0; idash<nbins; idash++)
       line_norm+="-    -    -    2    -    ";
     line_norm.Prepend(Form("normwjets_%s                 lnU  ",year.Data()));
-    file << line_norm.Data() << endl;
+    //file << line_norm.Data() << endl;
 
     if(cardType!="control")  // do not need Njets connection for CR fit
     { 
@@ -1076,27 +1179,33 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     }
   }
 
-  void outputLognormalSystematics(std::ofstream &file)
+  void outputLognormalSystematics(std::ofstream &file, TString year)
   {
     // luminosity uncertainty is 2.6% for 2016 data
+    // luminosity uncertainty is 2.3% for 2017 data
+    // luminosity uncertainty is 2.5% for 2018 data
     file << "lumi  lnN  ";
     for(unsigned int ibin=0; ibin<nbins; ibin++) {
-      file << "1.106 - - - 1.106 ";
+      if(year == "2016") file << "1.026 - - - 1.026 ";
+      if(year == "2017") file << "1.023 - - - 1.023 ";
+      if(year == "2018") file << "1.025 - - - 1.025 ";
     }
     file << std::endl;
 
   }
 
-  void outputshapesystematics(std::ofstream &file, const std::vector<std::string> shapesysts, TString year)
+  void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, TString year)
   {
     for(unsigned int isyst=0; isyst<shapesysts.size(); isyst++) {
       file << shapesysts.at(isyst) << "_" << year << "     shape     ";
       if(shapesysts.at(isyst).find("pdf")!=std::string::npos) {
         // there are 100 nnpdf variations and so each needs to be scaled down by a factor 1/sqrt(100)
         for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
+        //for(unsigned int index=0; index<nbins; index++) file << " 0.1 - - - 0.1 ";//accept systematics to signal and other
       }
       else {
-        for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";
+        for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";// one sigma
+        //for(unsigned int index=0; index<nbins; index++) file << " 1 - - - 1 ";//accept systematics to signal and other
       }
       file << "\n";
     }
@@ -1106,7 +1215,9 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   {
     map<string, int> bindex;
     map<TString, int> procind;
-    vector<TString> process = {"qcd","wjets"};
+    vector<TString> process = {"qcd","ttbar","wjets"};
+    TString par_shape;
+    TString par_value;
     for(uint ibin=0; ibin<nbins; ibin++){
       bindex[bins[ibin]]=ibin;
     }
@@ -1122,14 +1233,27 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
     }
 
+    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
+    else if(merge_78=="on"){
+      year = "20178";
+      cout<< "2017-2018 merged : 20178"  << endl;
+    }
     for(auto iproc : process){
+      par_shape="shape";
+      par_value="1.00";
+      if(iproc=="ttbar"){
+	par_value="-";
+      }
+      else{
+	par_value="1.00";
+      }
       if(filename.find("lownjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << "             shape     ";
+          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
-            else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
+            else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&int(index%5)==procind[iproc])file << par_value << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -1140,11 +1264,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
       else if(filename.find("mednjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << "             shape     ";
+          file << Form("kappa%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
-            else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
+            else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&int(index%5)==procind[iproc])file << par_value << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -1155,11 +1279,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
       else if(filename.find("highnjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << "              shape     ";
+          file << Form("kappa%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
-            else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
+            else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&int(index%5)==procind[iproc])file << par_value << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -1170,11 +1294,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
       else{  
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << "             shape     ";
+          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
-            else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
+            else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&int(index%5)==procind[iproc])file << par_value << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -1182,11 +1306,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
           }
           file << "\n";
 
-          file << Form("kappa%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << "             shape     ";
+          file << Form("kappa%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
-            else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
+            else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&int(index%5)==procind[iproc])file << par_value << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -1194,11 +1318,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
           }
           file << "\n";
 
-          file << Form("kappa%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << "              shape     ";
+          file << Form("kappa%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&(int(index%5)==procind[iproc]))file << "1.00" << " ";
-            else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&(int(index%5)==procind[iproc]))file << "1.00" << " ";
+            else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&(int(index%5)==procind[iproc]))file << par_value << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&(int(index%5)==procind[iproc]))file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&(int(index%5)==procind[iproc]))file << "1.00" << " ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&(int(index%5)==procind[iproc]))file << "1.00" << " ";
@@ -1240,10 +1364,45 @@ void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> 
 }
 
 void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins){
- int threshold = 5;
+ int threshold = 5;// Gaussian approximation threshold
  for(auto ibin : bins){
    file << ibin << " autoMCStats " << threshold << "\n";
  }
+}
+
+void outputrateParam( std::ofstream &file, const std::vector<std::string> &bins, TString year ){
+  file << Form("normwjets_%s",year.Data()) << " rateParam * wjets 1.0 [0,20]  ";
+  file << "\n";
+  for(auto ibin : bins){
+    TString tmpbin;
+    int i;
+    tmpbin  = ibin;
+    tmpbin.Replace(0,3,"");
+    i = atoi(tmpbin);
+    if(i>36) continue;
+    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i) << " qcd 1.0 [0,20] ";
+    file << "\n";
+    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i+15) << " qcd 1.0 [0,20] ";
+    file << "\n";
+    if(i<25){
+      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,year.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,year.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+    }
+    else if(i<28){
+      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i-3,i+12,i,i+15,year.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i-3,i+12,i,i+15,year.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+    }
+    else{
+      file << Form("normttbar_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+      file << Form("normttbar_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
+      file << "\n";
+    }
+  }
 }
 
 // exclude by hand following bins that have no entries:
@@ -1298,3 +1457,4 @@ bool hasEntry(const std::string &sample, const std::string &bin, const int nB)
 
   return true;
 }
+

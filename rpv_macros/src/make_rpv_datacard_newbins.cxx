@@ -54,14 +54,10 @@ int main(int argc, char *argv[])
 					                     "wjets_muf", "wjets_mur", "wjets_murf",
 					                     "other_muf", "other_mur", "other_murf",
 					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
-<<<<<<< HEAD
 
-  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","lep_eff"};
   //std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","lep_eff","ISR"};//FIXME
-=======
   std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
   shapeSysts = {};
->>>>>>> fa9cf755f615cebadde4cf35fceaa005e959df3e
 
   std::string gluinoMass;
   std::string signalBinName;
@@ -384,7 +380,7 @@ int main(int argc, char *argv[])
   
   }
   file << "\n------------------------------------" << std::endl;
-  //outputautoMCStats(file, bins.at(ipair));
+  outputautoMCStats(file, bins.at(ipair));
 
   outputrateParam(file, bins.at(ipair), year);
 
@@ -952,19 +948,19 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
     TString lownjcon_, mednjcon_, highnjcon_;
     if(year=="2016"){
-      lownjcon_ = "1.13";
-      mednjcon_ = "1.05";
-      highnjcon_ = "0.85";
+      lownjcon_ = "1.19";
+      mednjcon_ = "1.12";
+      highnjcon_ = "1.27";
     }
     if(year=="2017"){
-      lownjcon_ = "1.00";
-      mednjcon_ = "1.09";
-      highnjcon_ = "1.70";
+      lownjcon_ = "1.15";
+      mednjcon_ = "1.13";
+      highnjcon_ = "1.35";
     }
     if(year=="2018"){
-      lownjcon_ = "0.73";
-      mednjcon_ = "1.03";
-      highnjcon_ = "1.29";
+      lownjcon_ = "1.10";
+      mednjcon_ = "1.19";
+      highnjcon_ = "1.38";
     }
 
     map<string, int> bindex;

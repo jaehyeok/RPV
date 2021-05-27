@@ -85,6 +85,14 @@ int main(int argc, char *argv[])
     merge_78  = argv[5];
     sig_onoff = argv[6];
   }
+  std::vector<std::string> shapeSysts;
+  if(year == "2016"){
+	shapeSysts = {"jec","btag_bc","btag_udsg","muf","mur","murf","isr","gs","lep_eff","jer"};
+  }
+  else if(year != "2016"){
+	shapeSysts = {"jec","btag_bc","btag_udsg","muf","mur","murf","gs","lep_eff","jer"};
+  }
+  shapeSysts = {};
 
   nprocesses=processes.size();
 

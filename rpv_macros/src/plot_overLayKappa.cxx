@@ -29,27 +29,31 @@ void set_legend_style(TLegend *l){
 	l->SetTextSize(0.07);
 }
 
+void drawHeader(){
+  TLatex *lat = new TLatex;
+  lat->SetTextSize(0.053);
+  lat->DrawLatexNDC(0.12, 0.93, "CMS #scale[0.8]{#font[52]{Work In Progress}}");
+  lat->SetTextFont(42);
+  lat->DrawLatexNDC(0.78, 0.93, "35.9 fb^{-1} (13 TeV)");//FIXME
+}
+
 int main(int argc, char *argv[]){
 
-	TString Systematic1, Systematic2, Scale, year;
+	TString Systematic, year, outdir;
 
-	Systematic1 = argv[1];
-	Systematic2 = argv[2];
-	Scale = argv[3];
-	year = argv[4];
+	Systematic = argv[1];
+	year = argv[2];
 
 	if(argc<2){
 		cout << "[Error] Not Enough Arguments! argument \"--help\" may help you" << endl;
 		return 1;
 	}
 
-	if(Systematic1 == "--help" || argc<3){
+	if(Systematic == "--help" || argc<2){
 		cout << "" <<endl;
-		cout << "./run/plot_overLayKappa.exe [Systematic1] [Systematic2] [Up/Down] [year]" << endl;
+		cout << "./run/plot_overLayKappa.exe [Systematic] [year]" << endl;
 		cout << "" <<endl;
-		cout << "Systematic1: JES,btag_bc,btag_udsg,mur,muf,murf,ISR" << endl;
-		cout << "Systematic2: JES,btag_bc,btag_udsg,mur,muf,murf,ISR" << endl;
-		cout << "Up/Down: Up or Down" << endl;
+		cout << "Systematic: jec,btag_bc,btag_udsg,mur,muf,murf,isr,gs,jer" << endl;
 		cout << "year: 2016, 2017, 2018" << endl;
 		cout << "" << endl;
 		return 1;
@@ -69,8 +73,8 @@ int main(int argc, char *argv[]){
 	c = new TCanvas;
 	c->Divide(1,2);
 
-	f1 = new TFile("plots/kappa/kappa_summary_"+Systematic1+Scale+year+".root");
-	f2 = new TFile("plots/kappa/kappa_summary_"+Systematic2+Scale+year+".root");
+	f1 = new TFile("plots/kappa/"+year+"/kappa_summary_"+Systematic+"Up_"+year+".root");
+	f2 = new TFile("plots/kappa/"+year+"/kappa_summary_"+Systematic+"Down_"+year+".root");
 	h1 = (TH1D*)f1->Get("h1_1l_summary1");
 	h2 = (TH1D*)f2->Get("h1_1l_summary1");
 	h3 = (TH1D*)f1->Get("h1_1l_summary2");
@@ -85,20 +89,22 @@ int main(int argc, char *argv[]){
 	h3->SetMarkerColor(kRed);
 	h4->SetMarkerColor(kBlue);
 
-	l1->AddEntry(h1,Systematic1+" 1#sigma "+Scale,"p");
-	l1->AddEntry(h2,Systematic2+" 1#sigma "+Scale,"p");
-	l2->AddEntry(h3,Systematic1+" 1#sigma "+Scale,"p");
-	l2->AddEntry(h4,Systematic2+" 1#sigma "+Scale,"p");
+	l1->AddEntry(h1,Systematic+" 1#sigma Up","p");
+	l1->AddEntry(h2,Systematic+" 1#sigma Down","p");
+	l2->AddEntry(h3,Systematic+" 1#sigma Up","p");
+	l2->AddEntry(h4,Systematic+" 1#sigma Down","p");
 
 	c->cd(1);
 	h1->Draw();
 	h2->Draw("same");
+	drawHeader();
 	l1->Draw();
 
 	c->cd(2);
 	h3->Draw();
 	h4->Draw("same");
+	drawHeader();
 	l2->Draw();
-	c->SaveAs("plots/kappa/overlay_kappa"+Systematic1+"vs"+Systematic2+Scale+year+".png");
-	c->SaveAs("plots/kappa/overlay_kappa"+Systematic1+"vs"+Systematic2+Scale+year+".pdf");
+	c->SaveAs("plots/kappa/"+year+"/overlay_kappa"+Systematic+"_"+year+".png");
+	c->SaveAs("plots/kappa/"+year+"/overlay_kappa"+Systematic+"_"+year+".pdf");
 }

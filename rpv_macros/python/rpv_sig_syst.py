@@ -109,12 +109,13 @@ set_palette_gray()
 
 #make list of systematics- name, title, plot color and line style
 systList=[]
-systList.append(["GS","Gluon splitting",4,1])
+systList.append(["gs","Gluon splitting",4,1])
 systList.append(["btag_bc","b,c jet b-tag SF",5,1])
 systList.append(["btag_udsg","u,d,s,g jet b-tag SF",6,1])
-systList.append(["JES","Jet energy scale",7,1])
+systList.append(["jec","Jet energy scale",7,1])
+systList.append(["jer","Jet energy scale",7,1])
 systList.append(["lep_eff","Lepton efficiency",9,1])
-systList.append(["ISR","Initial state radiation",11,1])
+systList.append(["isr","Initial state radiation",11,1])
 systList.append(["mur","Renormalization scale",16,1])
 systList.append(["muf","Factorization scale",17,1])
 systList.append(["murf","Renorm. and fact. scale",18,1])

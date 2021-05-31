@@ -52,6 +52,10 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     CMStype = "Preliminary";
     namestyle.ReplaceAll("_Preliminary","");
   }
+  if(namestyle.Contains("_WorkInProgress")) {
+    CMStype = "Work In Progress";
+    namestyle.ReplaceAll("_WorkInProgress","");
+  }
   bool normByBin=false;
   if(namestyle.Contains("_normalizeByBin")) {
     normByBin=true;
@@ -299,7 +303,6 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	errorother = TMath::Sqrt(quad);
         cout<< Samples[isam].label << " : " << "first bin error :" << error1 << endl;
 	cout<< Samples[isam].label << " : " << "bin 2 to max error :"  << errorother << endl;
-
 	//cout<< Samples[isam].label << " : " << "err first bin :" <<histo[0][var][sam]->GetBinError(1) << endl;
 	//for(unsigned int i=0;i<maxbin;i++) 
 //	cout<< Samples[isam].label << " : " << "bin 5 to max :" <<histo[0][var][sam]->Integral(5,maxbin) << endl;	

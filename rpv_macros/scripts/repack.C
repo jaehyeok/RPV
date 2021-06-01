@@ -80,7 +80,8 @@ void CopyDir(TDirectory *source){
 
 void repack(TString year="2016"){
   //TFile *input = new TFile("fitDiagnostics_cr_"+year+".root","read");
-  TFile *input = new TFile("fitDiagnostics.root","read");
+  //TFile *input = new TFile("fitDiagnostics.root","read");
+  TFile *input = new TFile("fitDiagnosticsTest.root","read");
   input->cd();
   gDirectory->cd("/");
   std::vector<TString> shapes = {"shapes_prefit","shapes_fit_b","shapes_fit_s"};

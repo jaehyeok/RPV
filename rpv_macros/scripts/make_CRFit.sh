@@ -27,7 +27,7 @@ for year in ${years[@]}
 			./run/rescale_variations.exe mconly variations/output_nominal_newnt_${year}_20178.root
 			hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}_20178_mconly.root variations/output_kappa_newnt_${year}_20178.root
 		else
-			./run/rescale_variation.exe mconly variations/output_nominal_newnt_${year}.root
+			./run/rescale_variations.exe mconly variations/output_nominal_newnt_${year}.root
 			hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}_mconly.root variations/output_kappa_newnt_${year}.root
 		fi
 	else
@@ -42,10 +42,10 @@ for year in ${years[@]}
 	cp variations/output_CRFit_${year}.root datacards/variations/output_CRFit_${year}.root
 	if [ $1 = "20178" ]
 		then
-		./run/make_rpv_datacard_newbins.exe 1900 mconly output_CRFit_${year}.root ${year} on
+		./run/make_rpv_datacard_newbins_CRfit.exe 1900 mconly output_CRFit_${year}.root ${year} on
 		combineCards.py datacards/datacard_M1900_mconly_cr_nb0_*_CRFit_${year}.dat datacards/datacard_M1900_mconly_cr_nb1_*_CRFit_${year}.dat > datacards/datacard_M1900_CRFit_${year}.dat
 	else
-		./run/make_rpv_datacard_newbins.exe 1900 mconly output_CRFit_${year}.root ${year} off
+		./run/make_rpv_datacard_newbins_CRfit.exe 1900 mconly output_CRFit_${year}.root ${year} off
 		combineCards.py datacards/datacard_M1900_mconly_cr_nb0_*_CRFit_${year}.dat datacards/datacard_M1900_mconly_cr_nb1_*_CRFit_${year}.dat > datacards/datacard_M1900_CRFit_${year}.dat
 		combine -M FitDiagnostics datacards/datacard_M1900_CRFit_${year}.dat --saveNorm --saveShape
 		root -l -q repack.C\(\"CRFit_${year}\"\)

@@ -47,7 +47,7 @@ for year in ${years[@]}
 	else
 		./run/make_rpv_datacard_newbins_CRfit.exe 1900 mconly output_CRFit_${year}.root ${year} off
 		combineCards.py datacards/datacard_M1900_mconly_cr_nb0_*_CRFit_${year}.dat datacards/datacard_M1900_mconly_cr_nb1_*_CRFit_${year}.dat > datacards/datacard_M1900_CRFit_${year}.dat
-		combine -M FitDiagnostics datacards/datacard_M1900_CRFit_${year}.dat --saveNorm --saveShape
+		combine -M FitDiagnostics datacards/datacard_M1900_CRFit_${year}.dat --saveNorm --saveShape --cminDefaultMinimizerType Minuit
 		root -l -q repack.C\(\"CRFit_${year}\"\)
 	fi
 done
@@ -56,6 +56,6 @@ if [ $1 = "20178" ]
 	cd datacards
 	combineCards.py datacard_M1900_CRFit_2017.dat datacard_M1900_CRFit_2018.dat > datacard_M1900_CRFit_20178.dat
 	cd - 
-	combine -M FitDiagnostics datacards/datacard_M1900_CRFit_20178.dat --saveNorm --saveShape
+	combine -M FitDiagnostics datacards/datacard_M1900_CRFit_20178.dat --saveNorm --saveShape --cminDefaultMinimizerType Minuit
 	root -l -q repack.C\(\"CRFit_20178\"\)
 fi

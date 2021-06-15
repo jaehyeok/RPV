@@ -448,7 +448,7 @@ void genKappaFactors(TFile *f, TString year){
       mc_kap_->SetBinContent(j+1, BinCont*kappa[j-1][ind_ibin][ind_proc]);
     }
     for(int i=1 ; i<3 ; i++){
-      float unc_diff(0), unc_stat(0), unc_mc(0), temp_mc_(0);
+      float unc_diff(0), unc_stat(0), unc_mc(0), unc_dy(0), temp_mc_(0);
       temp_mc_ = mc_kap_->GetBinContent(i+1);
       unc_diff = abs(data_obs->GetBinContent(i+1)-mc_kap_->GetBinContent(i+1));
       if(debug_unc){
@@ -459,9 +459,41 @@ void genKappaFactors(TFile *f, TString year){
         cout<<"kappa uncertainty   : "<<unc_diff<<endl;
         cout<<"temp_mc_          : "<<temp_mc_<<endl;
       }
+      float unc_dy_2016[3][2]={
+	      {0.20, 0.19},
+	      {0.15, 0.19},
+	      {0.12, 0.11}};
+      float unc_dy_20178[3][2]={
+	      {0.13, 0.15},
+	      {0.14, 0.12},
+	      {0.10, 0.05}};
+      float unc_dy_2017[3][2]={
+	      {0.13, 0.16},
+	      {0.14, 0.15},
+	      {0.10, 0.10}};
+      float unc_dy_2018[3][2]={
+	      {0.14, 0.14},
+	      {0.13, 0.08},
+	      {0.10, 0.01}};
+      if(ind_proc==1){
+	if(year=="2016"){
+	  unc_dy=unc_dy_2016[ind_ibin][i];
+	}
+	if(year=="20178"){
+	  unc_dy=unc_dy_20178[ind_ibin][i];
+	}
+	if(year=="2017"){
+	  unc_dy=unc_dy_2017[ind_ibin][i];
+	}
+	if(year=="2018"){
+	  unc_dy=unc_dy_2018[ind_ibin][i];
+	}
+      }
+      else unc_dy==0;
+      unc_dy=0;
       unc_stat = data_obs->GetBinError(i+1);
       unc_mc   = mc_kap_->GetBinError(i+1);
-      kappa_unc[i-1][ind_ibin][ind_proc] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc)/temp_mc_; 
+      kappa_unc[i-1][ind_ibin][ind_proc] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc+unc_dy*unc_dy)/temp_mc_; 
       mc_unc[i-1][ind_ibin][ind_proc] = unc_mc/temp_mc_;
     }
   }

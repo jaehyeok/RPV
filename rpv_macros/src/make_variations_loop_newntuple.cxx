@@ -565,13 +565,47 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       //cout << procname << " " << ibin << " " << njbin << " " << iproc << " " <<  njbin+3*iproc+1 << " " << kappa1_err << " "<< kappa1_cont << " " << kappa2_err << " " << kappa2_cont << endl; // FIXME
       kappa_syst[0][ibin][njbin][iproc] = TMath::Sqrt(kappa1_err*kappa1_err + (1-kappa1_cont)*(1-kappa1_cont));
       kappa_syst[1][ibin][njbin][iproc] = TMath::Sqrt(kappa2_err*kappa2_err + (1-kappa2_cont)*(1-kappa2_cont));
-      cout << kappa_syst[0][ibin][njbin][iproc] << " " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
+      //cout << kappa_syst[0][ibin][njbin][iproc] << " " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
       kappa_wgt[0][njbin][iproc] = 1;
       kappa_wgt[1][njbin][iproc] = 1;
       if(procname=="qcd") 
       {
         kappa_wgt[0][njbin][iproc] = kappa1_cont;
         kappa_wgt[1][njbin][iproc] = kappa2_cont;
+      }
+      float unc_dy(0);
+      float unc_dy_2016[3][2]={
+	      {0.20, 0.19},
+	      {0.15, 0.19},
+	      {0.12, 0.11}};
+      float unc_dy_20178[3][2]={
+	      {0.13, 0.15},
+	      {0.14, 0.12},
+	      {0.10, 0.05}};
+      float unc_dy_2017[3][2]={
+	      {0.13, 0.16},
+	      {0.14, 0.15},
+	      {0.10, 0.10}};
+      float unc_dy_2018[3][2]={
+	      {0.14, 0.14},
+	      {0.13, 0.08},
+	      {0.10, 0.01}};
+      for(int ihb=0; ihb<2; ihb++){
+        if(iproc==1){
+          if(year=="2016"){
+            unc_dy=unc_dy_2016[njbin][ihb];
+          }
+          if(year=="20178"){
+            unc_dy=unc_dy_20178[njbin][ihb];
+          }
+          if(year=="2017"){
+            unc_dy=unc_dy_2017[njbin][ihb];
+          }
+          if(year=="2018"){
+            unc_dy=unc_dy_2018[njbin][ihb];
+          }
+          kappa_syst[ihb][ibin][njbin][iproc]=TMath::Sqrt(kappa_syst[ihb][ibin][njbin][iproc]*kappa_syst[ihb][ibin][njbin][iproc]+unc_dy*unc_dy);
+        }
       }
     }
     else if(variations.Contains("kappa")&&ibin<22){
@@ -998,7 +1032,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       else if(tree.mj12()>mjmin+300 && tree.mj12()<mjmin+600) ihb = 0;
       else if(tree.mj12()>mjmin+600) ihb = 1;
 
-      if((iproc==1)&&ibin>21) cout << kappa_syst[0][ibin][njbin][iproc] << " " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
+//      if((iproc==1)&&ibin>21) cout << kappa_syst[0][ibin][njbin][iproc] << " " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
+
       flag=false;
 
       if(procname!="data_obs"&&ibin>22){
@@ -1060,47 +1095,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             downweight  = nominalweight;
           }
 	  else{
-	    float unc_dy(0);
-	    float unc_dy_2016[3][2]={
-			  {0.20, 0.19},
-			  {0.15, 0.19},
-			  {0.12, 0.11}};
-	    float unc_dy_20178[3][2]={
-			  {0.13, 0.15},
-			  {0.14, 0.12},
-			  {0.10, 0.05}};
-	    float unc_dy_2017[3][2]={
-			  {0.13, 0.16},
-			  {0.14, 0.15},
-			  {0.10, 0.10}};
-	    float unc_dy_2018[3][2]={
-			  {0.14, 0.14},
-			  {0.13, 0.08},
-			  {0.10, 0.01}};
-	    if(iproc==1){
-      	    //  cout << kappa_syst[0][ibin][njbin][iproc] << " " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
-	    //  cout<<kappa_syst[ihb][ibin][njbin][iproc]<<endl;	
-              if(year=="2016"){
-	        unc_dy=unc_dy_2016[njbin][ihb];
-	      }
-	      if(year=="20178"){
-	        unc_dy=unc_dy_20178[njbin][ihb];
-	      }
-	      if(year=="2017"){
-	        unc_dy=unc_dy_2017[njbin][ihb];
-	      }
-	      if(year=="2018"){
-	        unc_dy=unc_dy_2018[njbin][ihb];
-	      }
-	      kappa_syst[ihb][ibin][njbin][iproc]=TMath::Sqrt(kappa_syst[ihb][ibin][njbin][iproc]*kappa_syst[ihb][ibin][njbin][iproc]+unc_dy*unc_dy);
-	      //cout<<ihb<<" "<<ibin<<" "<<njbin<<" "<<kappa_syst[ihb][ibin][njbin][iproc]<<endl;
-	    }
 	    upweight   = nominalweight;
             downweight = nominalweight;
             sys_kappaup   = 1+kappa_syst[ihb][ibin][njbin][iproc];
             sys_kappadown = 1-kappa_syst[ihb][ibin][njbin][iproc]; 
-            //cout << ihb << " " << ibin << " " << njbin << " " << iproc << " " <<  njbin+3*iproc+1 << endl; // FIXME
-            //cout << kappa_syst[ihb][ibin][njbin][iproc] << " " << kappa_syst[ihb][ibin][njbin][iproc] << endl; // FIXME
             if(sys_kappadown<0)  sys_kappadown = 0.01; 
             //cout<<sys_kappaup<<"::"<<sys_kappadown<<endl;
 

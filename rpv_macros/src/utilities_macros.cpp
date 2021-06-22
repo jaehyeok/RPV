@@ -52,6 +52,10 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     CMStype = "Preliminary";
     namestyle.ReplaceAll("_Preliminary","");
   }
+  if(namestyle.Contains("_WorkInProgress")) {
+    CMStype = "Work In Progress";
+    namestyle.ReplaceAll("_WorkInProgress","");
+  }
   bool normByBin=false;
   if(namestyle.Contains("_normalizeByBin")) {
     normByBin=true;
@@ -283,10 +287,22 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       
       for(unsigned sam(Nsam-1) ; sam < Nsam ; sam--){
 	int isam = vars[var].samples[sam];
-	int maxbin = 10;
-	if(title.Contains("mus")) maxbin = 20;
-        cout<< Samples[isam].label << " : " << "first bin :" <<histo[0][var][sam]->Integral(1,1)  << endl;
-	cout<< Samples[isam].label << " : " << "bin 2 to max :"  <<histo[0][var][sam]->Integral(2,maxbin) << endl;
+	int maxbin = 20;
+	if(title.Contains("mus")) maxbin = 10;	
+	maxbin =2 ;
+        cout<< Samples[isam].label << " : " << "first bin content :" <<histo[0][var][sam]->Integral(1,1)  << endl;
+	cout<< Samples[isam].label << " : " << "bin 2 to max content :"  <<histo[0][var][sam]->Integral(2,maxbin) << endl;
+	double error1(0), errorother(0);
+	double quad=0;
+	for(unsigned int ibin=1 ; ibin<maxbin ; ibin++){
+		double temp;
+		temp = histo[0][var][sam]->GetBinError(ibin+1);
+		quad = quad + temp*temp;
+	}
+	error1 = histo[0][var][sam]->GetBinError(1);
+	errorother = TMath::Sqrt(quad);
+        cout<< Samples[isam].label << " : " << "first bin error :" << error1 << endl;
+	cout<< Samples[isam].label << " : " << "bin 2 to max error :"  << errorother << endl;
 	//cout<< Samples[isam].label << " : " << "err first bin :" <<histo[0][var][sam]->GetBinError(1) << endl;
 	//for(unsigned int i=0;i<maxbin;i++) 
 //	cout<< Samples[isam].label << " : " << "bin 5 to max :" <<histo[0][var][sam]->Integral(5,maxbin) << endl;	

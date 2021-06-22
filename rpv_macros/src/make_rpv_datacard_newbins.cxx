@@ -55,6 +55,11 @@ int main(int argc, char *argv[])
 					                     "other_muf", "other_mur", "other_murf",
 					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
 
+  //std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","lep_eff","ISR"};//FIXME
+  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
+  cout<<"HI"<<endl;
+  shapeSysts = {};
+
   std::string gluinoMass;
   std::string signalBinName;
   std::string cardType;
@@ -81,7 +86,6 @@ int main(int argc, char *argv[])
     merge_78  = argv[5];
     sig_onoff = argv[6];
   }
-  std::vector<std::string> shapeSysts;
   if(year == "2016"){
 	shapeSysts = {"jec","btag_bc","btag_udsg","muf","mur","murf","isr","gs","lep_eff","jer"};
   }
@@ -131,6 +135,7 @@ int main(int argc, char *argv[])
   if(nocrvr){
     bins_all = {};
   }
+
   if(cardType=="default" || cardType=="mconly"){
     bins_all.push_back("bin46");
     bins_all.push_back("bin31");
@@ -224,6 +229,7 @@ int main(int argc, char *argv[])
   else if(cardType=="mconly") dataCardPath += "/variations/11jan2016/35/sum_rescaled_mconly.root";
   else if(cardType=="control") dataCardPath += "/variations/11jan2016/12p9/sum_rescaled_control.root";
   else dataCardPath += "/variations/sum_rescaled.root"; 
+
   TFile *variations = TFile::Open(dataCardPath.c_str());
   std::ofstream file;
   // card name
@@ -384,7 +390,7 @@ int main(int argc, char *argv[])
   
   }
   file << "\n------------------------------------" << std::endl;
-  //outputautoMCStats(file, bins.at(ipair));
+  outputautoMCStats(file, bins.at(ipair));
 
   outputrateParam(file, bins.at(ipair), year);
 
@@ -488,7 +494,6 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
     }
 
   }
-  cout<<"5"<<endl;
   for(auto jbin:bins){ // ttbar 
     tmpLine = line;
     /*
@@ -952,19 +957,19 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
     TString lownjcon_, mednjcon_, highnjcon_;
     if(year=="2016"){
-      lownjcon_ = "1.13";
-      mednjcon_ = "1.05";
-      highnjcon_ = "0.85";
+      lownjcon_ = "1.19";
+      mednjcon_ = "1.12";
+      highnjcon_ = "1.27";
     }
     if(year=="2017"){
-      lownjcon_ = "1.00";
-      mednjcon_ = "1.09";
-      highnjcon_ = "1.70";
+      lownjcon_ = "1.15";
+      mednjcon_ = "1.13";
+      highnjcon_ = "1.35";
     }
     if(year=="2018"){
-      lownjcon_ = "0.73";
-      mednjcon_ = "1.03";
-      highnjcon_ = "1.29";
+      lownjcon_ = "1.10";
+      mednjcon_ = "1.19";
+      highnjcon_ = "1.38";
     }
 
     map<string, int> bindex;

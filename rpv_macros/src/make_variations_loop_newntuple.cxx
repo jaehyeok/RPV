@@ -820,11 +820,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     }
     if(variations=="muf")
     {
-      if((year == 2016 && procname=="other") || ((year == 2017 || year == 2018) && procname == "ttbar")){
+      if(((year == 2017 || year == 2018) && procname == "ttbar")){
         upweight   = lumi*tree.weight();
         downweight   = lumi*tree.weight();
       }
-      else if(!(procname=="other" || procname=="ttbar")){// procname!="other" //-->2016
+      else {// procname!="other" //-->2016
         upweight    = upweight*tree.sys_muf()[0];
         downweight  = downweight*tree.sys_muf()[1];
       } 
@@ -991,8 +991,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     { 
       if(variations=="other_muf") 
       { 
-	upweight    = lumi*tree.weight();
-        downweight  = lumi*tree.weight();
+        upweight    = upweight*tree.sys_mur()[0];
+        downweight  = downweight*tree.sys_mur()[1];
       }
       if(variations=="other_mur") 
       { 

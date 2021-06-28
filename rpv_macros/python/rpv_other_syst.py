@@ -64,7 +64,7 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
     #Fill histUp with symmetrized error by adding histDown and dividing by 2, then divide by nominal to get relative symmetrized error    
     systHistUp.Add(systHistDown)
     systHistUp.Scale(0.5)
-    systHistUp.Divide(nominal) # now systHistUp contains our relative errors
+    systHistUp.Divide(total_nominal) # now systHistUp contains our relative errors
     return systHistUp
 
 def set_palette_gray(ncontours=20):
@@ -140,8 +140,11 @@ binList.append(["bin36","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
 
 sysFile = ROOT.TFile(infile,"read")
 proc = "other"
+procList = ["qcd","ttbar","wjets","other"]
 
 for ibin in binList: 
+
+    histNom = []
 
     directory = ibin[0]
     if verbose:
@@ -149,7 +152,18 @@ for ibin in binList:
     
     nominal = get_hist_with_overflow(sysFile,(directory + "/" + proc))
     nbinsX = nominal.GetNbinsX()
-    
+
+
+
+    total_nominal = ROOT.TH1F(directory+"_nominal","",3,500,1400)
+    total_nominal.Sumw2()
+
+    for ip, proc_ in enumerate(procList):
+	nominal_tot = get_hist_with_overflow(sysFile,(directory + "/" + proc_))
+	histNom.append(nominal_tot)
+	total_nominal.Add(histNom[ip])
+
+
 
     ROOT.gStyle.SetPadRightMargin()
     ROOT.gStyle.SetPadLeftMargin(0.12) #so it's not messed by larger table margin each iteration of the loop
@@ -167,36 +181,16 @@ for ibin in binList:
             print "starting "+sysName
 
         if "mc_stat" not in sysName:
-            #pdf treated separately
-            if "pdf" not in sysName:
-                #this function does everything
-                systHist = get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory)
+            #this function does everything
+            systHist = get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory)
             
-                    
-            elif "pdf" in sysName:
-                #This systematic is calculated from 100 variations that all represent a single source of uncertainty.
-                #We want to use information from all variations without artifically inflating the total uncertainty just by sampling the same effect many times.
-                #Therefore, we find symmetrized uncertainties for each pdf variation up/down, add them in quadrature and divide by sqrt(100) to normalize
-                for i in range(0,100):
-                    #if i == 9 : continue 
-                    #Get errors for this pdf variation
-                    thisvar = get_symmetrized_relative_errors("w_pdf"+str(i),nominal,proc,sysFile,directory)
-                    #Add in quadrature to running total
-                    for i in range(1,systHist.GetNbinsX()+1):
-                        thisvar.SetBinContent(i,math.pow(thisvar.GetBinContent(i),2))
-                    systHist.Add(thisvar)
-                
-                #take square root and normalize by sqrt(100)
-                for i in range(1,systHist.GetNbinsX()+1):
-                        systHist.SetBinContent(i,math.pow(systHist.GetBinContent(i),0.5)/10)
-                           
             
         elif "mc_stat" in sysName:
             systHist.Add(nominal)
             for i in range(1,systHist.GetNbinsX()+1):
                 #in this case, we want our relative errors to just be the MC errors
                 if systHist.GetBinContent(i)>0:
-                    systHist.SetBinContent(i,(systHist.GetBinError(i)/systHist.GetBinContent(i))) 
+                    systHist.SetBinContent(i,(systHist.GetBinError(i)/total_nominal.GetBinContent(i))) 
 
         #normalize to percentage for humans            
         for i in range(1,systHist.GetNbinsX()+1):

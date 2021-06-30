@@ -529,7 +529,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   float kappa1_err(0),kappa1_cont(0),kappa2_err(0),kappa2_cont(0);
   float kappa_syst[2][nbins][3][3];    
   float kappa_wgt[2][3][3];
+  float other_wgt_up[3][52];
+  float other_wgt_down[3][52];
   TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root","read");
+  TFile *f_other_syst = TFile::Open("data/other_syst_"+year+".root","read");
   if(str_year=="20178"){
     //f_kappa_syst->Close();
     //cout<<"20178 opened"<<endl;
@@ -545,6 +548,17 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   for(int ibin=0; ibin<nbins; ibin++)
   {
     if(ibin>21){
+      TH1F *h_other_up;
+      TH1F *h_other_down;
+      if(variations=="muf"||variations=="mur"||variations=="murf"){
+        h_other_up = static_cast<TH1F*>(f_other_syst->Get("ratio_other_"+variations+"_"+year+"Up"));
+        h_other_down = static_cast<TH1F*>(f_other_syst->Get("ratio_other_"+variations+"_"+year+"down"));
+        for(int iratio=0 ; iratio<3 ; iratio++){
+          other_wgt_up[iratio][ibin]=h_other_up->GetBinContent(iratio+1);
+          other_wgt_down[iratio][ibin]=h_other_down->GetBinContent(iratio+1);
+	}
+      }
+
       int njbin(0), iproc(0);
 
       if(ibin%3==1) njbin=0;
@@ -820,7 +834,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     }
     if(variations=="muf")
     {
-      if(((year == 2017 || year == 2018) && procname == "ttbar")){
+      if(((year == "2017" || year == "2018") && procname == "ttbar")){
         upweight   = lumi*tree.weight();
         downweight   = lumi*tree.weight();
       }
@@ -1035,6 +1049,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 //      if((iproc==1)&&ibin>21) cout << kappa_syst[0][ibin][njbin][iproc] << " " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
 
       flag=false;
+
+      if(variations=="mur"||variations=="muf"||variations=="murf"){
+        int hbother=(ihb+1)%1000;
+	if(tree.sys_mur()[0]==0){
+          upweight=nominalweight*other_wgt_up[hbother][ibin];
+          downweight=nominalweight*other_wgt_up[hbother][ibin];
+	}
+      }
 
       if(procname!="data_obs"&&ibin>22){
         if(ihb!=999){

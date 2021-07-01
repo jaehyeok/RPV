@@ -530,7 +530,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   float kappa_syst[2][nbins][3][3];    
   float kappa_wgt[2][3][3];
   float other_wgt_up[3][52];
-  float other_wgt_down[3][52];
+  float other_wgt_down[3][nbins];
   TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root","read");
   TFile *f_other_syst = TFile::Open("data/other_syst_"+year+".root","read");
   if(str_year=="20178"){
@@ -551,11 +551,13 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       TH1F *h_other_up;
       TH1F *h_other_down;
       if(variations=="muf"||variations=="mur"||variations=="murf"){
-        h_other_up = static_cast<TH1F*>(f_other_syst->Get("ratio_other_"+variations+"_"+year+"Up"));
-        h_other_down = static_cast<TH1F*>(f_other_syst->Get("ratio_other_"+variations+"_"+year+"down"));
+        h_other_up = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Up",ibin)));
+        h_other_down = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Down",ibin)));
         for(int iratio=0 ; iratio<3 ; iratio++){
           other_wgt_up[iratio][ibin]=h_other_up->GetBinContent(iratio+1);
+	 // cout<<" up weight iratio : " << iratio << " / ibin : " << ibin << " :: " <<other_wgt_up[iratio][ibin]<<endl;
           other_wgt_down[iratio][ibin]=h_other_down->GetBinContent(iratio+1);
+	 // cout<<" down weight iratio : " << iratio << " / ibin : " << ibin << " :: " <<other_wgt_down[iratio][ibin]<<endl;
 	}
       }
 
@@ -1050,15 +1052,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
       flag=false;
 
-      if(variations=="mur"||variations=="muf"||variations=="murf"){
-        int hbother=(ihb+1)%1000;
-	if(tree.sys_mur()[0]==0){
-          upweight=nominalweight*other_wgt_up[hbother][ibin];
-          downweight=nominalweight*other_wgt_up[hbother][ibin];
-	}
-      }
-
-      if(procname!="data_obs"&&ibin>22){
+      if(procname!="data_obs"&&procname!="other"&&ibin>22){
         if(ihb!=999){
           float kappa_w = kappa_wgt[ihb][njbin][iproc];
           nominalweight = temp_nominal*kappa_w;
@@ -1070,6 +1064,20 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         nominalweight = temp_nominal;
         upweight = temp_up;
         downweight = temp_down;
+      }
+
+      if(procname=="other"&&(variations=="mur"||variations=="muf"||variations=="murf")){
+        int hbother=(ihb+1)%1000;
+	if(tree.sys_mur()[0]==0){
+          upweight=nominalweight*other_wgt_up[hbother][ibin];
+          downweight=nominalweight*other_wgt_down[hbother][ibin];
+/*	  if(ibin==27){
+	    cout<<hbother<<" :: "<<endl;
+	    cout<<upweight/nominalweight<<endl;
+	    cout<<downweight/nominalweight<<endl;
+	    cout<<other_wgt_up[hbother][ibin]<<endl;
+	  }
+*/	}
       }
       //if(procname!="data_obs") cout<<nominalweight<<endl;
       if(ibin<22)

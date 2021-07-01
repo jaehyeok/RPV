@@ -108,7 +108,7 @@ int main(int argc, char *argv[]){
 
   string extraweight = "1";
   //Samples.push_back(sfeats(s_rpv_m1600, "m1600", kRed, 1, cutandweight("pass",extraweight)));
-  Samples.push_back(sfeats(s_rpv_m1900, "m1900", kNeon, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
+  Samples.push_back(sfeats(s_rpv_m1600, "m1600", kNeon, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
   Samples.back().isSig = true;
   
   Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
@@ -126,30 +126,22 @@ int main(int argc, char *argv[]){
   // Make analysis regions plots
   if(makeNm1==true){
     // Set cuts
-    TString basecut = "mj12>1100&&ht>1200";
+    TString basecut = "mj12>500&&ht>1200";
     TString lepcuts = "nleps==1";
     vector<TString> nbcuts = {"nbm==0","nbm==1"};
     vector<TString> njetcuts = {"(njets>=4&&njets<=5)","(njets>=6&&njets<=7)","njets>=8"};//&&njets<=9","njets>=10"};
     //vector<TString> njetcuts = {"njets>=8"};//&&njets<=9","njets>=10"};
-    TString elscutiso  = "(els_pt>20&&abs(els_eta)<2.5&&els_sigid)";
-    TString elscutid  = "(els_pt>20&&abs(els_eta)<2.5&&els_miniso<0.1)";
-    TString muscutiso  = "(mus_pt>20&&abs(mus_eta)<2.4&&mus_sigid)";
-    TString muscutid  = "(mus_pt>20&&abs(mus_eta)<2.4&&mus_miniso<0.2)";
+    TString elscut  = "(els_pt>20&&abs(els_eta)<2.5&&els_sigid)";
+    //TString elscut  = "(els_pt>20&&abs(els_eta)<2.5&&els_miniso<0.1)";
+    TString muscut  = "(mus_pt>20&&abs(mus_eta)<2.4&&mus_sigid)";
+    //TString muscut  = "(mus_pt>20&&abs(mus_eta)<2.4&&mus_miniso<0.2)";
 
     // Loop over cuts to make histograms
     TString cut = "";
     for(auto injet : njetcuts){
-    	cut = basecut + "&&(nbm==0||nbm==1||nbm==2)&&" + injet + "&&" + elscutid + "&&met<50";
+    	cut = basecut + "&&" + injet + "&&nleps==1";
 	cout<<cut<<endl;
-    	hists.push_back(hfeats("els_sigid", 2, 0, 2, rpv_sam, "els_{sigid}"/*"I_{mini}/P_{T}^{els}"* "els_sigid"*/, cut));
-    	cut = basecut + "&&(nbm==0||nbm==1||nbm==2)&&" + injet + "&&" + elscutiso + "&&met<50";
-    	hists.push_back(hfeats("els_miniso", 20, 0, 2, rpv_sam, "I_{mini}/P_{T}^{els}"/* "els_sigid"*/, cut));
-    	if(showData) hists.back().normalize = false;
-    	cut = basecut + "&&(nbm==0||nbm==1||nbm==2)&&" + injet + "&&" + muscutid + "&&met<50";
-	cout<<cut<<endl;
-    	hists.push_back(hfeats("mus_sigid", 2, 0, 2, rpv_sam, "mus_{sigid}"/*"I_{mini}/P_{T}^{mus}"* "mus_sigid"*/, cut));
-    	cut = basecut + "&&(nbm==0||nbm==1||nbm==2)&&" + injet + "&&" + muscutiso + "&&met<50";
-    	hists.push_back(hfeats("mus_miniso", 10, 0, 2, rpv_sam, "I_{mini}/P_{T}^{mus}"/* "mus_sigid"*/, cut));
+    	hists.push_back(hfeats("ht", 100, 1200, 4200, rpv_sam, "E_{T}^{miss}"/* "mus_sigid"*/, cut));
     	if(showData) hists.back().normalize = false;
     }
     //plot_distributions(Samples, hists, lumi, ".root", plot_style, "rpv_base", true, true);  

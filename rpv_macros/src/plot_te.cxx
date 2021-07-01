@@ -73,6 +73,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 	style.LabelSize=style.LabelSize*0.5;
 	style.setDefaultStyle();
 	gStyle->SetPadLeftMargin(0.10);
+	gStyle->SetPadRightMargin(style.PadRightMargin+0.02);
 	gStyle->SetPadBottomMargin(0.10);
 	gStyle->SetNdivisions(10710,"xyz");
 	gStyle->SetPadTickX(0);
@@ -153,7 +154,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 			if(procname=="mc") nomweight=tree.weight();
 			else if(procname=="data") nomweight=tree.pass();
 			float trig;
-			if(year=="2016") trig=(tree.trig_ht900());
+			if(year=="2016") trig=(tree.trig_ht900()||tree.trig_jet450());
 			else if(year=="2017"||year=="2018") trig=(tree.trig_ht1050());
 			if(ibin==0) nomweight = nomweight;
 			else nomweight = (tree.ht()>1200)*nomweight;
@@ -206,7 +207,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		label.SetTextAlign(11);
 		label.DrawLatex(0.10,1-style.PadTopMargin+0.02,cmslabel);
 		label.SetTextAlign(31);
-		label.DrawLatex(1-style.PadRightMargin,1-style.PadTopMargin+0.02,lumilabel);
+		label.DrawLatex(1-style.PadRightMargin-0.02,1-style.PadTopMargin+0.02,lumilabel);
 
 		TGaxis *ax1 = new TGaxis(max[ibin],0,max[ibin],1.2,0,denmax*3,10510,"+L");
 		ax1->SetLabelSize(0.03);
@@ -219,7 +220,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		ax1->Draw("same");
 
 
-		TLegend *l1 = new TLegend(style.PadLeftMargin+0.01,1-style.PadTopMargin-0.04,1-style.PadRightMargin-0.01,1-style.PadTopMargin-0.01);
+		TLegend *l1 = new TLegend(style.PadLeftMargin+0.01,1-style.PadTopMargin-0.04,1-style.PadRightMargin-0.03,1-style.PadTopMargin-0.01);
 		l1->AddEntry(h1eff[ibin],"Trigger Efficiency","l");
 		l1->AddEntry(h1den[ibin],"Denominator","l");
 		l1->AddEntry(h1num[ibin],"Numerator","f");

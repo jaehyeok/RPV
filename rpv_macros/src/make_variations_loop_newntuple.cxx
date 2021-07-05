@@ -1070,7 +1070,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
       if(procname=="other"&&(variations=="mur"||variations=="muf"||variations=="murf")){
         int hbother=(ihb+1)%1000;
-	if(tree.sys_mur()[0]==999){
+	if(tree.sys_mur()[0]==1){
           upweight=nominalweight*other_wgt_up[hbother][ibin];
           downweight=nominalweight*other_wgt_down[hbother][ibin];
 /*	  if(ibin==27){

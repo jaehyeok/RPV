@@ -554,10 +554,12 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         h_other_up = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Up",ibin)));
         h_other_down = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Down",ibin)));
         for(int iratio=0 ; iratio<3 ; iratio++){
-          other_wgt_up[iratio][ibin]=h_other_up->GetBinContent(iratio+1);
+           other_wgt_up[iratio][ibin]=h_other_up->GetBinContent(iratio+1);
 	 // cout<<" up weight iratio : " << iratio << " / ibin : " << ibin << " :: " <<other_wgt_up[iratio][ibin]<<endl;
-          other_wgt_down[iratio][ibin]=h_other_down->GetBinContent(iratio+1);
+           other_wgt_down[iratio][ibin]=h_other_down->GetBinContent(iratio+1);
 	 // cout<<" down weight iratio : " << iratio << " / ibin : " << ibin << " :: " <<other_wgt_down[iratio][ibin]<<endl;
+	 //other_wgt_up[iratio][ibin]=1;
+	 //other_wgt_down[iratio][ibin]=1;
 	}
       }
 
@@ -1068,7 +1070,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
       if(procname=="other"&&(variations=="mur"||variations=="muf"||variations=="murf")){
         int hbother=(ihb+1)%1000;
-	if(tree.sys_mur()[0]==0){
+	if(tree.sys_mur()[0]==999){
           upweight=nominalweight*other_wgt_up[hbother][ibin];
           downweight=nominalweight*other_wgt_down[hbother][ibin];
 /*	  if(ibin==27){

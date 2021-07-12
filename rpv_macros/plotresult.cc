@@ -32,7 +32,7 @@ using namespace RooFit;
 
 float AddInQuad(float a, float b);
 void setValues(RooWorkspace *work, RooFitResult *result);
-void plotFitPulls(const RooArgList &pulls, const TString & pullString, const std::string & type);
+void plotFitPulls(const RooArgList &pulls, const TString & pullString, const std::string & type, const TString year);
 void printYieldBin(int bin, int nb, float data, float qcd, float ttbar, float wjets, float other, float sig);
 void printYieldBin(int bin, int nb, float data, 
                    float qcd, float ttbar, float wjets, float other, float sig, 
@@ -82,7 +82,7 @@ TH1D* changeHistogram(TH1D* h){
     return hist;
 }
 
-void plotresult(TString year="2016",int gluinoMass=1700)
+void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
 {
   float lumi = 35.9;
   if(year=="2017") lumi = 41.5;
@@ -101,12 +101,27 @@ void plotresult(TString year="2016",int gluinoMass=1700)
   std::vector<int> binnumber;
   if(doControl) 
   {
-    binname = {"nlep1_nj45_nb0",   "nlep1_nj67_nb0",     "nlep1_nj8_nb0",
-   			       "nlep1_nj45_nb1",   "nlep1_nj67_nb1",     "nlep1_nj8_nb1"}; 
-   //			   "nlep1_nj45_nb2",  "nlep1_nj67_nb2",    "nlep1_nj8_nb2", 
+    if(step=="step1"){  
+      binname = {"nlep1_nj45_nb0",   "nlep1_nj67_nb0", //    "nlep1_nj8_nb0",
+     	         "nlep1_nj45_nb1",   "nlep1_nj67_nb1", //    "nlep1_nj8_nb1", 
+   	         "nlep1_nj45_nb2",   "nlep1_nj67_nb2"}; //    "nlep1_nj8_nb2"};
+      binnumber = {22,23,25,26,28,29};
+    }
+    else if(step=="step2"){
+      binname = {"nlep1_nj45_nb0",   "nlep1_nj67_nb0",     "nlep1_nj8_nb0",
+   	         "nlep1_nj45_nb1",   "nlep1_nj67_nb1",     "nlep1_nj8_nb1", 
+   	         "nlep1_nj45_nb2",   "nlep1_nj67_nb2",     "nlep1_nj8_nb2"};
+      binnumber = {22,23,24,25,26,27,28,29,30};
+    }
+    else if(step=="step3"){
+      binname = {"nlep1_nj45_nb0",   "nlep1_nj67_nb0",     "nlep1_nj8_nb0",
+   	         "nlep1_nj45_nb1",   "nlep1_nj67_nb1",     "nlep1_nj8_nb1", 
+   	         "nlep1_nj45_nb2",   "nlep1_nj67_nb2",     "nlep1_nj8_nb2"
+		 "nlep1_nj45_nb3"};
+      binnumber = {22,23,24,25,26,27,28,29,30,31};
+    }
    //			   "nlep1_nj45_nb3",  "nlep1_nj67_nb3",    "nlep1_nj8_nb3", 
   // 			   "nlep1_nj45_nb4",  "nlep1_nj67_nb4",    "nlep1_nj8_nb4"}; 
-    binnumber = {22,23,24,25,26,27};
     //binnumber = {22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
    // binname = {"nlep1_nj45_lowmj", "nlep1_nj45_highmj", "nlep1_nj67_lowmj"}; 
    // binnumber = {2,5,11};
@@ -156,7 +171,7 @@ void plotresult(TString year="2016",int gluinoMass=1700)
   TH1D* h1_prefit_data[31]; 
   //TFile* infile  = TFile::Open("variations/output_tdatcard10_M1700.root", "READ");
 //  TFile* infile  = TFile::Open(Form("output_tdatcard11_%s.root", year.Data()), "READ");
-  TFile* infile  = TFile::Open(Form("variations/output_%s.root", year.Data()), "READ");
+  TFile* infile  = TFile::Open(Form("variations/output_impact_%s.root", year.Data()), "READ");
 //  TFile* infile = TFile::Open(Form("output_CRFit_20178.root"),"read");
   for(unsigned int i=22; i<22+binname.size(); i++) {   
     int ibin = binnumber.at(i-22);
@@ -184,11 +199,10 @@ void plotresult(TString year="2016",int gluinoMass=1700)
   //infile->Close();
 
   cout << "Pre or postfit Uncertatinty " << endl;
-/*
   // Get post-fit uncertainty 
-  TFile* errfile  = TFile::Open("rpv_postfit_err_ANv7.root", "READ");
-  for(int i=0; i<binname.size(); i++) {   
-      int ibin = binnumber.at(i);
+  TFile* errfile  = TFile::Open(Form("rpv_postfit_err_%s_%s.root",step.Data(),year.Data()),"READ");
+  for(int i=22; i<22+binname.size(); i++) {   
+      int ibin = binnumber.at(i-22);
       
       if(ibin>=6 && ibin<=9) continue;
 
@@ -209,7 +223,7 @@ void plotresult(TString year="2016",int gluinoMass=1700)
           }
       }
   }
-*/  
+//*/  
 
 // FIXME: these lines can be removed
 /*  
@@ -245,7 +259,11 @@ void plotresult(TString year="2016",int gluinoMass=1700)
   RooCategory *cat = work->cat("CMS_channel");
   //cat->Print();
 */ 
-  std::string resultsFilename=Form("mlfit_%s.root",year.Data());
+  TString crvr = "";
+  if(step=="step1") crvr="cr";
+  if(step=="step2") crvr="vr";
+  if(step=="step3") crvr="vr2";
+  std::string resultsFilename=Form("mlfit_%s_%s.root",crvr.Data(),year.Data());
   TFile *fResults = TFile::Open(resultsFilename.c_str());
   RooFitResult *result_b = static_cast<RooFitResult*>(fResults->Get("fit_b"));
   RooFitResult *result_s = static_cast<RooFitResult*>(fResults->Get("fit_s"));
@@ -336,7 +354,9 @@ void plotresult(TString year="2016",int gluinoMass=1700)
     h1_mc->Add(h1_wjets);
     h1_mc->Add(h1_other);
     //if(plotSPlusB) h1_mc->Add(h1_signal);
-    for(unsigned int inb=1; inb<4; inb++)  h1_mc->SetBinError(inb,err[4][i][inb-1]*h1_mc->GetBinContent(inb));
+    for(unsigned int inb=1; inb<4; inb++){
+      h1_mc->SetBinError(inb,err[4][ibin][inb-1]*h1_mc->GetBinContent(inb));
+    }
     h1_mc->SetMarkerSize(0);
     h1_mc->SetFillColor(kBlack);
     h1_mc->SetLineColor(kBlack);
@@ -353,7 +373,7 @@ void plotresult(TString year="2016",int gluinoMass=1700)
     st->SetMaximum(h1_data->GetMaximum()*2000);
     st->SetMinimum(0.1);
     st->Draw("hist");
-    //h1_mc->Draw("same E2");
+    h1_mc->Draw("same E2");
     h1_data->Draw("e same"); 
     //if(plotSPlusB) h1_signal->Draw("hist same"); 
     st->GetYaxis()->SetTitle("Events");
@@ -395,8 +415,12 @@ void plotresult(TString year="2016",int gluinoMass=1700)
     float lumi = 35.9;
     if(year=="2017") lumi = 41.5;
     if(year=="2017_20178") lumi = 41.5;
+    if(year=="vr_2017_20178") lumi = 41.5;
+    if(year=="cr_2017_20178") lumi = 41.5;
     if(year=="2018") lumi = 59.7;
     if(year=="2018_20178") lumi = 59.7;
+    if(year=="vr_2018_20178") lumi = 59.7;
+    if(year=="cr_2018_20178") lumi = 59.7;
     if(year=="20178") lumi = 101.2;
     TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", lumi));
     TexEnergyLumi->SetNDC();
@@ -404,7 +428,7 @@ void plotresult(TString year="2016",int gluinoMass=1700)
     TexEnergyLumi->SetTextAlign (31);
     TexEnergyLumi->SetLineWidth(2);
 
-    TLatex *TexCMS = new TLatex(0.2,0.92,"CMS #font[52]{Preliminary}");
+    TLatex *TexCMS = new TLatex(0.2,0.92,"CMS #font[52]{Work In Progress}");
     TexCMS->SetNDC();
     TexCMS->SetTextSize(textSize);
     TexCMS->SetLineWidth(2);
@@ -469,20 +493,20 @@ void plotresult(TString year="2016",int gluinoMass=1700)
     for(unsigned int inb=1; inb<4; inb++)  
     { 
         h1_ratio_err->SetBinContent(inb, 1);
-        h1_ratio_err->SetBinError(inb, err[4][i][inb-1]);
+        h1_ratio_err->SetBinError(inb, err[4][ibin][inb-1]);
     }
     h1_ratio_err->SetMarkerSize(0);
     h1_ratio_err->SetFillColor(kBlack);
     h1_ratio_err->SetLineColor(kBlack);
     h1_ratio_err->SetFillStyle(3354);
-    //h1_ratio_err->Draw("e2 same");
+    h1_ratio_err->Draw("e2 same");
 
     TLine *l = new TLine(500,1,1400,1);
     l->SetLineStyle(2);
     l->Draw("same");
 
-    c->Print(Form("plots/%s/%s_%s.pdf", year.Data(), doPrefit?"pre":"fit", binname[i-22].c_str()));
-    c->Print(Form("plots/%s/%s_%s.png", year.Data(), doPrefit?"pre":"fit", binname[i-22].c_str()));
+    c->Print(Form("plots/%s_%s/%s_%s.pdf", year.Data(), step.Data(), doPrefit?"pre":"fit", binname[i-22].c_str()));
+    c->Print(Form("plots/%s_%s/%s_%s.png", year.Data(), step.Data(), doPrefit?"pre":"fit", binname[i-22].c_str()));
     
     //debug
     for(unsigned int inb=1; inb<4; inb++)
@@ -644,14 +668,14 @@ void plotresult(TString year="2016",int gluinoMass=1700)
   // -------------------------------------------------------------------------------
  
  if(plotSPlusB) {
-    plotFitPulls(result_s->floatParsFinal(), "plots/pulls_nopdf.pdf", "base");
-    plotFitPulls(result_s->floatParsFinal(), "plots/pulls_pdf.pdf", "pdf");
-    plotFitPulls(result_s->floatParsFinal(), "plots/pulls_mcstats.pdf", "mcstat");
+    plotFitPulls(result_s->floatParsFinal(), Form("plots/%s_%s/pulls_nopdf.pdf",year.Data(), step.Data()), "base",year);
+    plotFitPulls(result_s->floatParsFinal(), "plots/pulls_pdf.pdf", "pdf",year);
+    plotFitPulls(result_s->floatParsFinal(), "plots/pulls_mcstats.pdf", "mcstat",year);
   }
   else {
-    plotFitPulls(result_b->floatParsFinal(), "plots/pulls_nopdf.pdf", "base");
-    plotFitPulls(result_b->floatParsFinal(), "plots/pulls_pdf.pdf", "pdf");
-    plotFitPulls(result_b->floatParsFinal(), "plots/pulls_mcstats.pdf", "mcstat");
+    plotFitPulls(result_b->floatParsFinal(), Form("plots/%s_%s/pulls_nopdf.pdf",year.Data(), step.Data()), "base",year);
+    plotFitPulls(result_b->floatParsFinal(), "plots/pulls_pdf.pdf", "pdf",year);
+    plotFitPulls(result_b->floatParsFinal(), "plots/pulls_mcstats.pdf", "mcstat",year);
   }
 }
 
@@ -728,9 +752,13 @@ float AddInQuad(float a, float b)
     return TMath::Sqrt(a*a+b*b);
 } 
 
-void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std::string &type)
+void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std::string &type, const TString year)
 {
-  TCanvas *cPull = new TCanvas; 
+  float PadTopMargin(0.08), PadRightMargin(0.08);
+  gStyle->SetPadLeftMargin(0.1);
+  gStyle->SetPadTopMargin(PadTopMargin);
+  gStyle->SetPadRightMargin(PadRightMargin);
+  TCanvas *cPull = new TCanvas("c","c",1600,800); 
   cPull->SetBottomMargin(0.2);
 
   int size = pulls.getSize();
@@ -740,6 +768,7 @@ void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std:
     RooRealVar *pullVar = static_cast<RooRealVar*>((pulls.at(i)));
     TString name(pullVar->GetName());
     if(name.Contains("norm")) continue;
+    //if(name.BeginsWith("prop")) continue;
     if(name.BeginsWith("w_pdf") && type.find("pdf")!=std::string::npos) continue;
     else if(name.BeginsWith("mcstat") && type.find("mcstat")!=std::string::npos) continue;
     else if((name.BeginsWith("w_pdf") || name.BeginsWith("mcstat")) && type.find("base")!=std::string::npos) continue;
@@ -759,6 +788,7 @@ void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std:
     double value = pullVar->getVal();
     TString name(pullVar->GetName()); 
     if(name.Contains("norm")) continue;
+    //if(name.BeginsWith("prop")) continue;
     if(!name.BeginsWith("w_pdf") && type.find("pdf")!=std::string::npos) continue;
     else if(!name.BeginsWith("mcstat") && type.find("mcstat")!=std::string::npos) continue;
     else if((name.BeginsWith("w_pdf") || name.BeginsWith("mcstat")) && type.find("base")!=std::string::npos) continue;
@@ -773,7 +803,7 @@ void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std:
       h->SetBinContent(iGood, value);
       h->SetBinError(iGood, binError);
       std::cout.precision(3);
-      std::cout << " & \\texttt{" << name << "} & $" << value << " \\pm " <<  binError << "$\\\\" << std::endl;
+      std::cout << " & \\texttt{" << name.ReplaceAll("_","\\_") << "} & $" << value << " \\pm " <<  binError << "$\\\\" << std::endl;
       sumChi2+=pow(value/binError,2);
       h->GetXaxis()->LabelsOption("v");
       h->GetXaxis()->SetBinLabel(iGood, pullVar->GetName());
@@ -783,7 +813,24 @@ void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std:
   
   std::cout << "pull chi2/ndof: " << sumChi2 << "/" << iGood << std::endl;
 
+  TString lumi;
+  if(year=="2016") lumi = "35.9";
+  if(year=="2017") lumi = "41.5";
+  if(year=="2018") lumi = "59.7";
+  if(year=="20178") lumi = "101.2";
+  TString cmslabel = "#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}";
+  TString lumilabel = TString::Format("%1.1f", lumi.Atof())+" fb^{-1}, 13 TeV";
+
+  h->GetYaxis()->SetTitleOffset(0.7);
+  h->GetXaxis()->SetLabelSize(0.02);
   h->Draw();
+
+  TLatex label; label.SetNDC(kTRUE);
+  label.SetTextSize(0.03);
+  label.SetTextAlign(11);
+  label.DrawLatex(0.1,1-PadTopMargin+0.02,cmslabel);
+  label.SetTextAlign(31);
+  label.DrawLatex(1-PadRightMargin,1-PadTopMargin+0.02,lumilabel);
 
   TBox *b = new TBox(0, -1, goodVars, 1);
   b->SetFillStyle(3003);

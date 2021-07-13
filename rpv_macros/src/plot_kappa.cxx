@@ -269,6 +269,7 @@ int main(int argc, char *argv[])
     cout << "\\begin{table}[h]" << endl;
     cout << "\\centering" << endl;
     cout << "\\caption{"+syst+"}" << endl;
+    cout << "\\vspace{2mm}" << endl;
     cout << "\\begin{tabular}{c|c}" << endl;
     cout << "\\hline\\hline" << endl;
 

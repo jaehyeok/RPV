@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
     cout << "\\begin{table}[h]" << endl;
     cout << "\\centering" << endl;
     cout << "\\caption{"+syst+"}" << endl;
-    cout << "\\begin{tabular}{l|l}" << endl;
+    cout << "\\begin{tabular}{c|c}" << endl;
     cout << "\\hline\\hline" << endl;
 
     for(int ibin=22; ibin<52; ibin++)

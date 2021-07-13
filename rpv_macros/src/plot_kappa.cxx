@@ -268,6 +268,7 @@ int main(int argc, char *argv[])
 
     cout << "\\begin{table}[h]" << endl;
     cout << "\\centering" << endl;
+    cout << "\\caption{"+syst+"}" << endl;
     cout << "\\begin{tabular}{l|l}" << endl;
     cout << "\\hline\\hline" << endl;
 
@@ -307,7 +308,8 @@ int main(int argc, char *argv[])
       cout << "kappa2  &  " << kappa2.at(ibin-22).at(0) << " +- " <<  kappa2.at(ibin-22).at(1) << "\\\\ \\hline" << endl;
 
     }
-    cout << "\\\\ \\hline" << endl;
+    cout << "\\hline" << endl;
+    cout << "\\hline" << endl;
     cout << "\\end{tabular}" << endl;
     cout << "\\end{table}\n" << endl;
 

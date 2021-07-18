@@ -144,64 +144,64 @@ int main(int argc, char *argv[])
 
     TString binLatex[52] = {
         // control regions
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\textrm{GeV}",
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},6\\leq N_{jets}\\leq7, 500<M_{J}<800~\\textrm{GeV}",
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\textrm{GeV}", 
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},4\\leq N_{jets}\\leq5, M_{J}>800~\\textrm{GeV}",
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},6\\leq N_{jets}\\leq7, M_{J}>800~\\textrm{GeV}",
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5, M_{J}>800~\\textrm{GeV}",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\textrm{GeV}$",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},6\\leq N_{jets}\\leq7, 500<M_{J}<800~\\textrm{GeV}$",
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5, 500<M_{J}<800~\\textrm{GeV}$", 
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},4\\leq N_{jets}\\leq5, M_{J}>800~\\textrm{GeV}$",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},6\\leq N_{jets}\\leq7, M_{J}>800~\\textrm{GeV}$",
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5, M_{J}>800~\\textrm{GeV}$",
         // low M_{J} control regions
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},4\\leq N_{jets}\\leq5,300<M_{J}<500~\\textrm{GeV}",  // 6
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},6\\leq N_{jets}\\leq7,300<M_{J}<500~\\textrm{GeV}",
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,300<M_{J}<500~\\textrm{GeV}",
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,300<M_{J}<500~\\textrm{GeV}",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},4\\leq N_{jets}\\leq5,300<M_{J}<500~\\textrm{GeV}$",  // 6
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},6\\leq N_{jets}\\leq7,300<M_{J}<500~\\textrm{GeV}$",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,300<M_{J}<500~\\textrm{GeV}$",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,300<M_{J}<500~\\textrm{GeV}$",
         // signal regions, low M_{J}
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,500<M_{J}<800~\\textrm{GeV}",       // 10
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,500<M_{J}<800~\\textrm{GeV}",
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,500<M_{J}<800~\\textrm{GeV}",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,500<M_{J}<800~\\textrm{GeV}$",       // 10
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,500<M_{J}<800~\\textrm{GeV}$",
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,500<M_{J}<800~\\textrm{GeV}$",
         // signal regions, high M_{J}
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,800<M_{J}<1000~\\textrm{GeV}",           // 13
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,800<M_{J}<1000~\\textrm{GeV}",
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,800<M_{J}<1000~\\textrm{GeV}",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,800<M_{J}<1000~\\textrm{GeV}$",           // 13
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,800<M_{J}<1000~\\textrm{GeV}$",
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,800<M_{J}<1000~\\textrm{GeV}$",
         // Missing regions
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,500<M_{J}<800~\\textrm{GeV}",  // 16
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,800<M_{J}<1000~\\textrm{GeV}",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,500<M_{J}<800~\\textrm{GeV}$",  // 16
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,800<M_{J}<1000~\\textrm{GeV}$",
         // Very high MJ bins
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,M_{J}>1000~\\textrm{GeV}",
-        "N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,M_{J}>1000~\\textrm{GeV}",           // 13
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,M_{J}>1000~\\textrm{GeV}",
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,M_{J}>1000~\\textrm{GeV}",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},8\\leq N_{jets}\\leq9,M_{J}>1000~\\textrm{GeV}$",
+        "$N_{leps}=0,H_{T}>1500~\\textrm{GeV},N_{jets}\\geq10,M_{J}>1000~\\textrm{GeV}$",           // 13
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,M_{J}>1000~\\textrm{GeV}$",
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,M_{J}>1000~\\textrm{GeV}$",
         // Njets-Nb basis
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=0",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=0",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,N_{b}=0",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=1",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=1",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,N_{b}=1",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=2",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=2",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=2",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=3",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=3",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=3",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}\\geq4",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}\\geq4",    
-        "N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}\\geq4",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=0",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=0",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq10,N_{b}=0",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=1",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=1",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq10,N_{b}=1",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=2",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=2",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}=2",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=3",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=3",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}=3",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}\\geq4",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}\\geq4",    
-        "N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}\\geq4"   
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=0$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=0$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,N_{b}=0$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=1$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=1$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq8,N_{b}=1$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=2$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=2$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=2$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=3$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=3$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=3$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}\\geq4$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}\\geq4$",    
+        "$N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}\\geq4$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=0$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=0$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq10,N_{b}=0$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=1$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=1$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},N_{jets}\\geq10,N_{b}=1$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=2$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=2$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}=2$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=3$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}=3$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}=3$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}\\geq4$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV},7\\leq N_{jets}\\leq8,N_{b}\\geq4$",    
+        "$N_{leps}=0,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq10,N_{b}\\geq4$"   
     };
 
     TFile *infile;
@@ -265,7 +265,14 @@ int main(int argc, char *argv[])
       h1_mj_mc[ibin]->Add(h1_mj_wjets[ibin]);
       h1_mj_mc[ibin]->Add(h1_mj_other[ibin]);
     } 
-    
+
+    cout << "\\begin{table}[h]" << endl;
+    cout << "\\centering" << endl;
+    cout << "\\caption{"+syst+"}" << endl;
+    cout << "\\vspace{2mm}" << endl;
+    cout << "\\begin{tabular}{c|c}" << endl;
+    cout << "\\hline\\hline" << endl;
+
     for(int ibin=22; ibin<52; ibin++)
     {
        vector<float> r1_data;
@@ -288,18 +295,24 @@ int main(int argc, char *argv[])
       r1_mc   = calculateR(h1_mj_mc_thisbin, 1);
       r2_mc   = calculateR(h1_mj_mc_thisbin, 2);
 
-      cout << ".... " << bin[ibin] << endl; 
+      cout << "        & "<< binLatex[ibin]<<" \\\\ \\hline" << endl;
+      //cout << ".... " << bin[ibin] << endl; 
 
-      cout << "r1 data: " << r1_data[0] << " +- " << r1_data[1] <<  endl;
+      /*cout << "r1 data: " << r1_data[0] << " +- " << r1_data[1] <<  endl;
       cout << "r2 data: " << r2_data[0] << " +- " << r2_data[1] << endl;
       cout << "r1 mc:   " << r1_mc[0] << " +- " << r1_mc[1] << endl;
-      cout << "r2 mc:   " << r2_mc[0] << " +- " << r2_mc[1] << endl;
+      cout << "r2 mc:   " << r2_mc[0] << " +- " << r2_mc[1] << endl;*/
 
       kappa1.push_back(ratioError(r1_data[0], r1_data[1], r1_mc[0], r1_mc[1]));
       kappa2.push_back(ratioError(r2_data[0], r2_data[1], r2_mc[0], r2_mc[1]));
-      cout << "kappa1:   " << kappa1.at(ibin-22).at(0) << " +- " <<  kappa1.at(ibin-22).at(1) << endl;
-      cout << "kappa2:   " << kappa2.at(ibin-22).at(0) << " +- " <<  kappa2.at(ibin-22).at(1) << endl;
-    }   
+      cout << "kappa1  &  " << kappa1.at(ibin-22).at(0) << " +- " <<  kappa1.at(ibin-22).at(1) << "\\\\ \\cline{1-1}" << endl;
+      cout << "kappa2  &  " << kappa2.at(ibin-22).at(0) << " +- " <<  kappa2.at(ibin-22).at(1) << "\\\\ \\hline" << endl;
+
+    }
+    cout << "\\hline" << endl;
+    cout << "\\hline" << endl;
+    cout << "\\end{tabular}" << endl;
+    cout << "\\end{table}\n" << endl;
 
     // visualize 
     TH1F *h1_0l_summary1 = new TH1F("h1_0l_summary1", "h1_0l_summary1", 75, 0, 75);

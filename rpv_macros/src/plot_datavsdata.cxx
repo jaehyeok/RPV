@@ -18,8 +18,8 @@
 
 namespace {
   //TString luminosity="137";
-  //TString luminosity="35.9";
-  TString luminosity="41.5";
+  TString luminosity="35.9";
+  //TString luminosity="41.5";
   //TString luminosity="59.7";
   //TString luminosity="1.";// when drawing data
   TString plot_type=".pdf";
@@ -181,22 +181,22 @@ int main(){
   sig_2000.push_back(16);
   sig_2000.push_back(17);
 
-  Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kRed,1,cutandweight("pass*(nleps==1&&njets>=4&&njets<=5)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_DY_2017, "2017 DYjets", kBlue,1,cutandweight("pass*(nleps==2&&njets>=3&&njets<=4)","1.")));
+  Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=4&&njets<=5)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_DY_2016, "2016 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=3&&njets<=4)","1.")));
   Samples.back().doBand = true;
   vector<int> dy_njet_45;
   dy_njet_45.push_back(18);
   dy_njet_45.push_back(19);
 
-  Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kRed,1,cutandweight("pass*(nleps==1&&njets>=6&&njets<=7)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_DY_2017, "2017 DYjets", kBlue,1,cutandweight("pass*(nleps==2&&njets>=5&&njets<=6)","1.")));
+  Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=6&&njets<=7)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_DY_2016, "2016 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=5&&njets<=6)","1.")));
   Samples.back().doBand = true;
   vector<int> dy_njet_67;
   dy_njet_67.push_back(20);
   dy_njet_67.push_back(21);
 
-  Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kRed,1,cutandweight("pass*(nleps==1&&njets>=8)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_DY_2017, "2017 DYjets", kBlue,1,cutandweight("pass*(nleps==2&&njets>=7)","1.")));
+  Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=8)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_DY_2016, "2016 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=7)","1.")));
   Samples.back().doBand = true;
   vector<int> dy_njet_8;
   dy_njet_8.push_back(22);
@@ -272,6 +272,7 @@ int main(){
     //vars.push_back(hfeats("njets", 9, 0, 18, all_bg, "Njets", icut,-1,"all_bg"));
     /*vars.push_back(hfeats("mj12", 3, 500, 1400, all_bg, "mj12", icut,-1,"all_bg"));
     //vars.push_back(hfeats("ht", 20, 1200, 2600, all_bg, "H_{t}", icut,-1,"all_bg"));
+    
     vars.back().normalize = true;// */
     /*vars.push_back(hfeats("mj12", 3, 500, 1400, sig_1600, "mj12", icut,-1,"sig_1600"));
     vars.back().normalize = true;// */

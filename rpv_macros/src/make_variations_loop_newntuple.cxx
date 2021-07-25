@@ -832,9 +832,15 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       downweight  = downweight*tree.sys_lep()[1]/tree.w_lep();
     }
     if(variations=="pileup") 
-    { 
-      upweight    = upweight*tree.sys_pu()[0];
-      downweight  = downweight*tree.sys_pu()[1];
+    {
+      if(procname.Contains("signal")){
+        upweight    = upweight*tree.sys_pu()[0];
+        downweight  = downweight*tree.sys_pu()[1];
+      }
+      else{
+        upweight    = upweight;
+        downweight  = downweight;
+      }
     }
     if(variations=="muf")
     {
@@ -889,11 +895,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       }
       if(variations=="isr") 
       {
-        /*upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-        downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
-
-	upweight = upweight*tree.w_isr();
-	downweight = downweight*tree.w_isr();// */
+	if(year == "2016"){
+          upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+          downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
+	}
+	else {
+	  upweight = upweight*tree.w_isr();
+	  downweight = downweight*tree.w_isr();// */
+	}
       }
       if(variations=="ttbar_muf") 
       { 
@@ -915,11 +924,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     { 
       if(variations=="isr") 
       {
-	upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
-	downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
-
-	/*upweight = upweight*tree.w_isr();
-	downweight = downweight*tree.w_isr();// */
+        if(year == "2016"){
+	  upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
+	  downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
+        }
+	else {
+	  upweight = upweight*tree.w_isr();
+	  downweight = downweight*tree.w_isr();// */
+	}
       }
       if(variations=="signal_muf") 
       { 

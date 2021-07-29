@@ -834,8 +834,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if(variations=="pileup") 
     {
       if(procname.Contains("signal")){
-        upweight    = upweight*tree.sys_pu()[0];
-        downweight  = downweight*tree.sys_pu()[1];
+        upweight    = upweight*tree.sys_pu()[0]/tree.w_pu();
+        downweight  = downweight*tree.sys_pu()[1]/tree.w_pu();
       }
       else{
         upweight    = upweight;

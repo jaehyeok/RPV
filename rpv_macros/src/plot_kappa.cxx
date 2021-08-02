@@ -305,8 +305,8 @@ int main(int argc, char *argv[])
 
       kappa1.push_back(ratioError(r1_data[0], r1_data[1], r1_mc[0], r1_mc[1]));
       kappa2.push_back(ratioError(r2_data[0], r2_data[1], r2_mc[0], r2_mc[1]));
-      cout << "kappa1  &  " << kappa1.at(ibin-22).at(0) << " +- " <<  kappa1.at(ibin-22).at(1) << "\\\\ \\cline{1-1}" << endl;
-      cout << "kappa2  &  " << kappa2.at(ibin-22).at(0) << " +- " <<  kappa2.at(ibin-22).at(1) << "\\\\ \\hline" << endl;
+      cout << "$\\kappa$1  &  " << Form("%.2f",kappa1.at(ibin-22).at(0)) << " $\\pm$ " <<  Form("%.2f",kappa1.at(ibin-22).at(1)) << "\\\\ \\cline{1-1}" << endl;
+      cout << "$\\kappa$2  &  " << Form("%.2f",kappa2.at(ibin-22).at(0)) << " $\\pm$ " <<  Form("%.2f",kappa2.at(ibin-22).at(1)) << "\\\\ \\hline" << endl;
 
     }
     cout << "\\hline" << endl;
@@ -331,12 +331,12 @@ int main(int argc, char *argv[])
       if(ibin>=25 && ibin<=27) nb_region=1;
       if(ibin>=28 && ibin<=30) nb_region=2;
       if(ibin>=31 && ibin<=33) nb_region=3; 
-      if(ibin>=34 && ibin<=36) continue; //nb_region=4;
+      if(ibin>=34 && ibin<=36) nb_region=4;
       if(ibin>=37 && ibin<=39) nb_region=0;
       if(ibin>=40 && ibin<=42) nb_region=1;
       if(ibin>=43 && ibin<=45) nb_region=2;
       if(ibin>=46 && ibin<=48) nb_region=3;
-      if(ibin>=49 && ibin<=51) continue; //nb_region=4;
+      if(ibin>=49 && ibin<=51) nb_region=4;
       int bin_index= (njets_region-1)*25 + nb_region*2 + 8;
       if(kappa1.at(ibin-22).at(0)>=0)
       {

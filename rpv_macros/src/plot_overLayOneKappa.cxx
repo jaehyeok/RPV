@@ -59,8 +59,9 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	TFile *f1, *f2;
+	TFile *f1, *f2 ,*f3;
 	TH1D *h1, *h2, *h3, *h4;
+	TH1D *hn1, *hn2;
 	TLegend *l1, *l2;
 
 	l1 = new TLegend(0.65,0.54,0.75,0.8);
@@ -75,10 +76,13 @@ int main(int argc, char *argv[]){
 
 	f1 = new TFile("plots/kappa/"+year+"/kappa_summary_"+Systematic+"Up_"+year+".root");
 	f2 = new TFile("plots/kappa/"+year+"/kappa_summary_"+Systematic+"Down_"+year+".root");
+	f3 = new TFile("plots/kappa/"+year+"/kappa_summary_nominalX_"+year+".root");
 	h1 = (TH1D*)f1->Get("h1_1l_summary1");
 	h2 = (TH1D*)f2->Get("h1_1l_summary1");
 	h3 = (TH1D*)f1->Get("h1_1l_summary2");
 	h4 = (TH1D*)f2->Get("h1_1l_summary2");
+	hn1 = (TH1D*)f3->Get("h1_1l_summary1");
+	hn2 = (TH1D*)f3->Get("h1_1l_summary2");
 
 	h1->SetMarkerStyle(22);
 	h2->SetMarkerStyle(32);
@@ -104,58 +108,60 @@ int main(int argc, char *argv[]){
 
 
   // set bin label
-  h1->GetXaxis()->SetLabelSize(0.05);
-  h1->GetXaxis()->SetBinLabel(8,  "N_{b}=0");
-  h1->GetXaxis()->SetBinLabel(33, "N_{b}=0");
-  h1->GetXaxis()->SetBinLabel(58, "N_{b}=0");
-  h1->GetXaxis()->SetBinLabel(10, "N_{b}=1");
-  h1->GetXaxis()->SetBinLabel(35, "N_{b}=1");
-  h1->GetXaxis()->SetBinLabel(60, "N_{b}=1");
-  h1->GetXaxis()->SetBinLabel(12, "N_{b}=2");
-  h1->GetXaxis()->SetBinLabel(37, "N_{b}=2");
-  h1->GetXaxis()->SetBinLabel(62, "N_{b}=2");
-  h1->GetXaxis()->SetBinLabel(14, "N_{b}=3");
-  h1->GetXaxis()->SetBinLabel(39, "N_{b}=3");
-  h1->GetXaxis()->SetBinLabel(64, "N_{b}=3");
-  h1->GetXaxis()->SetBinLabel(41, "N_{b}#geq 4");
-  h1->GetXaxis()->SetBinLabel(66, "N_{b}#geq 4");
+  hn1->GetXaxis()->SetLabelSize(0.05);
+  hn1->GetXaxis()->SetBinLabel(8,  "N_{b}=0");
+  hn1->GetXaxis()->SetBinLabel(33, "N_{b}=0");
+  hn1->GetXaxis()->SetBinLabel(58, "N_{b}=0");
+  hn1->GetXaxis()->SetBinLabel(10, "N_{b}=1");
+  hn1->GetXaxis()->SetBinLabel(35, "N_{b}=1");
+  hn1->GetXaxis()->SetBinLabel(60, "N_{b}=1");
+  hn1->GetXaxis()->SetBinLabel(12, "N_{b}=2");
+  hn1->GetXaxis()->SetBinLabel(37, "N_{b}=2");
+  hn1->GetXaxis()->SetBinLabel(62, "N_{b}=2");
+  hn1->GetXaxis()->SetBinLabel(14, "N_{b}=3");
+  hn1->GetXaxis()->SetBinLabel(39, "N_{b}=3");
+  hn1->GetXaxis()->SetBinLabel(64, "N_{b}=3");
+  hn1->GetXaxis()->SetBinLabel(41, "N_{b}#geq 4");
+  hn1->GetXaxis()->SetBinLabel(66, "N_{b}#geq 4");
  
-  h3->GetXaxis()->SetLabelSize(0.05);
-  h3->GetXaxis()->SetBinLabel(8,  "N_{b}=0");
-  h3->GetXaxis()->SetBinLabel(33, "N_{b}=0");
-  h3->GetXaxis()->SetBinLabel(58, "N_{b}=0");
-  h3->GetXaxis()->SetBinLabel(10, "N_{b}=1");
-  h3->GetXaxis()->SetBinLabel(35, "N_{b}=1");
-  h3->GetXaxis()->SetBinLabel(60, "N_{b}=1");
-  h3->GetXaxis()->SetBinLabel(12, "N_{b}=2");
-  h3->GetXaxis()->SetBinLabel(37, "N_{b}=2");
-  h3->GetXaxis()->SetBinLabel(62, "N_{b}=2");
-  h3->GetXaxis()->SetBinLabel(14, "N_{b}=3");
-  h3->GetXaxis()->SetBinLabel(39, "N_{b}=3");
-  h3->GetXaxis()->SetBinLabel(64, "N_{b}=3");
-  h3->GetXaxis()->SetBinLabel(41, "N_{b}#geq 4");
-  h3->GetXaxis()->SetBinLabel(66, "N_{b}#geq 4");
+  hn2->GetXaxis()->SetLabelSize(0.05);
+  hn2->GetXaxis()->SetBinLabel(8,  "N_{b}=0");
+  hn2->GetXaxis()->SetBinLabel(33, "N_{b}=0");
+  hn2->GetXaxis()->SetBinLabel(58, "N_{b}=0");
+  hn2->GetXaxis()->SetBinLabel(10, "N_{b}=1");
+  hn2->GetXaxis()->SetBinLabel(35, "N_{b}=1");
+  hn2->GetXaxis()->SetBinLabel(60, "N_{b}=1");
+  hn2->GetXaxis()->SetBinLabel(12, "N_{b}=2");
+  hn2->GetXaxis()->SetBinLabel(37, "N_{b}=2");
+  hn2->GetXaxis()->SetBinLabel(62, "N_{b}=2");
+  hn2->GetXaxis()->SetBinLabel(14, "N_{b}=3");
+  hn2->GetXaxis()->SetBinLabel(39, "N_{b}=3");
+  hn2->GetXaxis()->SetBinLabel(64, "N_{b}=3");
+  hn2->GetXaxis()->SetBinLabel(41, "N_{b}#geq 4");
+  hn2->GetXaxis()->SetBinLabel(66, "N_{b}#geq 4");
 
   //  
-  h1->SetTitle("N_{jets}=4-5                                          N_{jets}=6-7                                          N_{jets}#geq 8        ");
-  h3->SetTitle("N_{jets}=4-5                                          N_{jets}=6-7                                          N_{jets}#geq 8        ");
+  hn1->SetTitle("N_{jets}=4-5                                          N_{jets}=6-7                                          N_{jets}#geq 8        ");
+  hn2->SetTitle("N_{jets}=4-5                                          N_{jets}=6-7                                          N_{jets}#geq 8        ");
 
   // 
-  h1->GetYaxis()->SetTitle("#kappa_{1}");
-  h1->GetYaxis()->SetTitleSize(0.05);
-  h3->GetYaxis()->SetTitle("#kappa_{2}");
-  h3->GetYaxis()->SetTitleSize(0.05);
+  hn1->GetYaxis()->SetTitle("#kappa_{1}");
+  hn1->GetYaxis()->SetTitleSize(0.05);
+  hn2->GetYaxis()->SetTitle("#kappa_{2}");
+  hn2->GetYaxis()->SetTitleSize(0.05);
   
  
 	c->cd(1);
-	h1->Draw();
-	h2->Draw("same");
+	hn1->Draw();
+	h1->Draw("same hist p");
+	h2->Draw("same hist p");
 	drawHeader();
 	l1->Draw();
 
 	c->cd(2);
-	h3->Draw();
-	h4->Draw("same");
+	hn2->Draw();
+	h3->Draw("same hist p");
+	h4->Draw("same hist p");
 	drawHeader();
 	l2->Draw();
 

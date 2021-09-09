@@ -88,8 +88,9 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 
 	// For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
 	else if(process=="ttbar"){
-		//files.push_back(folder+"TTJets_*"); //
-		files.push_back(folder+"*TTJets_HT*");
+		files.push_back(folder+"TTJets_Tune*");
+		//files.push_back(folder+"*TTJets_inclusive*");
+		files.push_back(folder+"TTJets_HT*");
 	}
 	//Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
 	else if(process=="ttbar_2l"){

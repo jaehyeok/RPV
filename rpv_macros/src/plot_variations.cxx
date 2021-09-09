@@ -37,8 +37,8 @@ int main()
         "wjets_mur", "wjets_muf", "wjets_murf",
         "other_mur", "other_muf", "other_murf"};
 // */
-//    vector<TString> variations={"ISR","JES","btag_bc","btag_udsg","lep_eff","muf","mur","murf"};
-    vector<TString> variations={"kappa1", "kappa2"};
+    vector<TString> variations={"isr","btag_bc","btag_udsg","lep_eff","muf","mur","murf","jer","jec"};
+    //vector<TString> variations={"kappa1", "kappa2"};
     //vector<TString> variations={"ISR"};
 //    vector<int> bins={0,1,2,3,4,5, // CR
 //                      10,11,12,13,14,15,16,17,18,19,20,21}; // SR
@@ -77,7 +77,8 @@ void h1cosmetic(TH1F* &h1, const char* title, int linecolor, int linewidth, int 
 void drawUpDown(int bin, vector<TString> variations)
 {
 
-	TString year = "2017_20178";
+	TString year = "2016";
+	TString outdir = "plots/plot_variations/";
 
 	// style
 	gStyle->SetPaintTextFormat(".1f");
@@ -91,14 +92,14 @@ void drawUpDown(int bin, vector<TString> variations)
     TPad *pad1;
     TPad *pad2;
 
-    for(unsigned int iprocess=0; iprocess<4; iprocess++) 
+    for(unsigned int iprocess=0; iprocess<1; iprocess++) 
     {
         //TString hname = "signal_M1500";
-	TString hname = "qcd";
-        if(iprocess==1) hname = "qcd";
+	TString hname = "other";
+        if(iprocess==1) hname = "ttbar";
         if(iprocess==2) hname = "wjets";
         if(iprocess==3) hname = "other";
-        if(iprocess==4) hname = "signal_M1600";
+        if(iprocess==4) hname = "signal_M1700";
         if(iprocess==5) hname = "signal_M1900"; 
         for(unsigned int ivariation=0; ivariation<variations.size(); ivariation++) 
         { 
@@ -129,8 +130,8 @@ void drawUpDown(int bin, vector<TString> variations)
           float SF_up       = stat_cent/stat_up;
           float SF_down     = stat_cent/stat_down;
 
-          h1_up->Scale(SF_up);
-          h1_down->Scale(SF_down);
+          //h1_up->Scale(SF_up);//FIXME
+          //h1_down->Scale(SF_down);
 
             for(int ibin = 0 ; ibin<3 ; ibin++){
              bc_cent = h1_central->GetBinContent(ibin+1); 
@@ -300,10 +301,9 @@ void drawUpDown(int bin, vector<TString> variations)
             l0p9->Draw("same");
             //cout << hname  << h1_central->GetBinError(5) << " " <<  h1_central->GetBinContent(5) << " = " <<  h1_central->GetBinError(5) / h1_central->GetBinContent(5)<< endl; 
 
-            //gSystem->mkdir(Form("plots/plots_variations/bin%i",bin), kTRUE); 
-            gSystem->mkdir("plots/plots_variations");
-            c->Print(Form("plots/plots_variations/bin%i_%s_%s_"+year+"_mconly.pdf", bin, hname.Data(), haltername));
-            c->SaveAs(Form("plots/plots_variations/bin%i_%s_%s_"+year+"_mconly.png", bin, hname.Data(), haltername));
+            gSystem->mkdir(Form(outdir+"bin%i",bin), kTRUE); 
+            c->Print(Form(outdir+"bin%i/bin%i_%s_%s_"+year+"_mconly.pdf",bin, bin, hname.Data(), haltername));
+            c->SaveAs(Form(outdir+"bin%i/bin%i_%s_%s_"+year+"_mconly.png",bin, bin, hname.Data(), haltername));
 
 	    //TCanvas *c1 = new TCanvas("c1","c1",2000,1000);
 	    c1 = new TCanvas(Form("c1_%i_%s_%s",bin,hname.Data(),haltername),Form("c1_%i_%s_%s",bin,hname.Data(),haltername),2000,1000);
@@ -318,8 +318,8 @@ void drawUpDown(int bin, vector<TString> variations)
 	    pad2->cd();
 	    h1_ratio2->SetStats(0);
 	    h1_ratio2->Draw("hist");
-            c1->Print(Form("plots/plots_variations/bin%i_%s_%s_"+year+"_ratio.pdf", bin, hname.Data(), haltername));
-            c1->SaveAs(Form("plots/plots_variations/bin%i_%s_%s_"+year+"_ratio.png", bin, hname.Data(), haltername));
+           // c1->Print(Form(outdir+"bin%i/bin%i_%s_%s_"+year+"_ratio.pdf",bin, bin, hname.Data(), haltername));
+           // c1->SaveAs(Form(outdir+"bin%i/bin%i_%s_%s_"+year+"_ratio.png",bin, bin, hname.Data(), haltername));
 
             delete h1_central; 
             delete h1_up; 
@@ -356,7 +356,7 @@ TString getBinName(int bin)
                  25, 26, 27,
                  28, 29, 30,
 		 31, 32, 33,
-                 35, 36};
+                 34, 35, 36};
 
     for(unsigned int i=0; i<binname.size(); i++)  
     { 

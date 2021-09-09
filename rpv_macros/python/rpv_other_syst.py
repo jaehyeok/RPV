@@ -173,7 +173,7 @@ for ibin in binList:
     table = ROOT.TH2F("table_"+directory,"",nbinsX,500,1400,nSyst,0,nSyst)
     systHists_sym = []
 
-    
+
     for isys, syst in enumerate(systList,start=1):
         sysName = syst[0]
         systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",3,500,1400) # will eventually contain errors; define now to remain in scope
@@ -251,7 +251,7 @@ for ibin in binList:
     ROOT.gStyle.SetPadLeftMargin(0.35)
     ROOT.gStyle.SetPadRightMargin(0.2)
     ROOT.gStyle.SetPadBottomMargin(0.1)
-    #ROOT.gStyle.SetPaintTextFormat("4.5f")
+    #ROOT.gStyle.SetPaintTextFormat("2.2f")
     c2 = ROOT.TCanvas()
     table.GetXaxis().SetLabelSize(0.02)
     table.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV")
@@ -285,7 +285,7 @@ for ibin in binList:
             outname = "plots/rpv_other_syst/table_other_systs_all_" + str(Year) + ".pdf"
 
     else:
-         outname = "plots/rpv_other_syst/table_other_systs_" + directory + "_" + str(Year) + ".pdf"
+         outname = "plots/rpv_other_syst/table_other_systs_" + directory + "_" + str(Year) + ".png"
 
          
     c2.Print(outname)

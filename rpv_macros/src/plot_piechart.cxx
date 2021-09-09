@@ -27,7 +27,7 @@ void set_piechart(TPie *p_opt){
 	p_opt->GetSlice(1)->SetTitle("t#bar{t}");
 	p_opt->GetSlice(2)->SetTitle("W+jets");
 	p_opt->GetSlice(3)->SetTitle("Other");
-	p_opt->GetSlice(4)->SetTitle("m_{gluino} = 1700 GeV");
+	//p_opt->GetSlice(4)->SetTitle("m_{gluino} = 1700 GeV");
 	p_opt->SetTextSize(0.038);
 	p_opt->SetRadius(.40);
 	p_opt->SetLabelsOffset(-.26);
@@ -49,32 +49,33 @@ int main(int argc, char *argv[])
 
 	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_"+year+".root", "READ");
 
-	float qcd[52][3], ttbar[52][3], wjets[52][3], other[52][3], sig1700[52][3];
+	const int nbins = 52;
 
-	for(int ibin=0; ibin<52; ibin++){
+	float qcd[nbins][3], ttbar[nbins][3], wjets[nbins][3], other[nbins][3];//, sig1700[nbins][3];
+	for(int ibin=0; ibin<nbins; ibin++){
 		for(int iMj=0; iMj<3; iMj++){
 			qcd[ibin][iMj] = 0;
 			ttbar[ibin][iMj] = 0;
 			wjets[ibin][iMj] = 0;
 			other[ibin][iMj] = 0;
-			sig1700[ibin][iMj] = 0;
+			//sig1700[ibin][iMj] = 0;
 		}
 	}
 
-	for(int ibin=22; ibin<52; ibin++){
+	for(int ibin=22; ibin<nbins; ibin++){
 		for(int iMj=0; iMj<3; iMj++){
 			qcd[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinContent(iMj+1);
 			ttbar[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(iMj+1);
 			wjets[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinContent(iMj+1);
 			other[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinContent(iMj+1);
-			sig1700[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinContent(iMj+1);
+			//sig1700[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1700", ibin)))->GetBinContent(iMj+1);
 		}
 	}
 
 	TCanvas *cpie[12][3];
 	TPie *pie4[12][3];
 
-	TString title_1[52] = {
+	TString title_1[nbins] = {
 		"",//0
 		"",
 		"",
@@ -110,7 +111,7 @@ int main(int argc, char *argv[])
 		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=3",
 		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=3",
-		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
+		//"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
 		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4", // 35
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4",
 		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
@@ -132,9 +133,10 @@ int main(int argc, char *argv[])
 
 	TString Mj_txt[3]={", 500<M_{J}<800",", 800<M_{J}<1100",", 1100<M_{J}"};
 
-	for(int ibin=22; ibin<52; ibin++){
+	for(int ibin=22; ibin<nbins; ibin++){
+		if(ibin == 34 or ibin==49) continue;
 		for (int iMj=0; iMj<3; iMj++){
-			Float_t vals[] = {qcd[ibin][iMj],ttbar[ibin][iMj],wjets[ibin][iMj],other[ibin][iMj],sig1700[ibin][iMj]};
+			Float_t vals[] = {qcd[ibin][iMj],ttbar[ibin][iMj],wjets[ibin][iMj],other[ibin][iMj]};//,sig1700[ibin][iMj]};
 			Int_t colors[] = {kYellow-7,kAzure+7,kGreen+2,kGray+1,kRed+1};
 			Int_t nvals = sizeof(vals)/sizeof(vals[0]);
 			cpie[ibin][iMj] = new TCanvas(Form("cpie_%i_%i",ibin,iMj),Form("TPie test_%i_%i",ibin,iMj),700,700);

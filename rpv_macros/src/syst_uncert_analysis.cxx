@@ -39,7 +39,7 @@ int main(int argc, char* argv[]){
   TString year;
   year = argv[1];
   TString n_input = "variations/output_"+year+".root";
-  TString n_kappa = "plots/kappa/kappa_summary_nominalX_"+year+".root";
+  TString n_kappa = "plots/kappa/"+year+"/kappa_summary_nominalX_"+year+".root";
   /*if(argc==2){
     n_kappa = argv[1];
   }

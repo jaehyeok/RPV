@@ -690,7 +690,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     // 
     // Central weights
     // 
-    float nominalweight = lumi*tree.weight();    
+    //float nominalweight = lumi*tree.weight();
+    float nominalweight = lumi*tree.weight()*tree.frac1718(); // FIXME for 2017+2018 merging
     //cout<<nominalweight<<endl;
     //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
 
@@ -834,8 +835,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if(variations=="pileup") 
     {
       if(procname.Contains("signal")){
-        upweight    = upweight*tree.sys_pu()[0]/tree.w_pu();
-        downweight  = downweight*tree.sys_pu()[1]/tree.w_pu();
+	if(tree.w_pu()!=0){
+          upweight    = upweight*tree.sys_pu()[0]/tree.w_pu();
+          downweight  = downweight*tree.sys_pu()[1]/tree.w_pu();
+	}
+	else if(tree.w_pu()==0){
+	  upweight    = 0;
+          downweight  = 0;
+	}// */
       }
       else{
         upweight    = upweight;
@@ -859,7 +866,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         upweight   = lumi*tree.weight();
         downweight   = lumi*tree.weight();
       }
-      else if(procname!="ttbar"){
+      else {
         upweight = upweight*tree.sys_mur()[0];
         downweight = downweight*tree.sys_mur()[1];
       }
@@ -870,7 +877,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         upweight   = lumi*tree.weight();
         downweight   = lumi*tree.weight();
       }
-      if(procname != "ttbar"){
+      else {
         upweight    = upweight*tree.sys_murf()[0];
         downweight  = downweight*tree.sys_murf()[1];
       } 
@@ -1281,8 +1288,17 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         h1down_[ibin][kap-1]->Write();
       }
     }
-    else
+    else 
     {
+      if(str_year==""){ // for 2017+2018 merging FIXME
+        upname = procname+"_"+variations+"_"+year+"Up";
+        downname = procname+"_"+variations+"_"+year+"Down";
+      }
+      else{
+        upname = procname+"_"+variations+"_"+str_year+"Up";
+        downname = procname+"_"+variations+"_"+str_year+"Down";
+      }// */
+
       h1up[ibin]->SetTitle(upname.Data());
       h1up[ibin]->SetName(upname.Data());
       h1down[ibin]->SetTitle(downname.Data());

@@ -356,7 +356,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
         bool noStack = Samples[isam].isSig || Samples[isam].isData;
         unsigned ileg = (Nsam<=3?0:legcount>=(Nsam+1)/2);
         if(!noStack){
-          if(Samples[isam].doBand) leg[ileg].AddEntry(histo[0][var][sam], leghisto,"fl");
+          if(Samples[isam].doBand) leg[ileg].AddEntry(histo[0][var][sam], leghisto,"l");//FIXME
 	  else leg[ileg].AddEntry(histo[0][var][sam], leghisto,"f");
           legcount++;
           if(firstplotted < 0) {
@@ -426,7 +426,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           hratio_data->SetTitle("");
           hratio_data->Divide(histo[0][var][firstplotted]);
           hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
-          //hratio_data->GetYaxis()->SetRangeUser(0.88,1.12);//FIXME
+          //hratio_data->GetYaxis()->SetRangeUser(0.8,1.2);//FIXME
           hratio_data->GetXaxis()->SetLabelOffset(0.025);
           hratio_data->GetXaxis()->SetLabelSize(style.LabelSize*2.2);
           hratio_data->GetYaxis()->SetLabelSize(style.LabelSize*2.1);

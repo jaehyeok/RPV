@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
 
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;
-    
+
     //
     TH1F *h1_mj_data[52], *h1_mj_qcd[52], *h1_mj_ttbar[52], *h1_mj_wjets[52], *h1_mj_other[52], *h1_mj_mc[52];
     TH1F *h1_mj_qcd_syst[52], *h1_mj_ttbar_syst[52], *h1_mj_wjets_syst[52], *h1_mj_other_syst[52], *h1_mj_mc_syst[52];
@@ -301,12 +301,14 @@ int main(int argc, char *argv[])
       /*cout << "r1 data: " << r1_data[0] << " +- " << r1_data[1] <<  endl;
       cout << "r2 data: " << r2_data[0] << " +- " << r2_data[1] << endl;
       cout << "r1 mc:   " << r1_mc[0] << " +- " << r1_mc[1] << endl;
-      cout << "r2 mc:   " << r2_mc[0] << " +- " << r2_mc[1] << endl;*/
+      cout << "r2 mc:   " << r2_mc[0] << " +- " << r2_mc[1] << endl;// */
 
-      kappa1.push_back(ratioError(r1_data[0], r1_data[1], r1_mc[0], r1_mc[1]));
-      kappa2.push_back(ratioError(r2_data[0], r2_data[1], r2_mc[0], r2_mc[1]));
-      cout << "kappa1  &  " << kappa1.at(ibin-22).at(0) << " +- " <<  kappa1.at(ibin-22).at(1) << "\\\\ \\cline{1-1}" << endl;
-      cout << "kappa2  &  " << kappa2.at(ibin-22).at(0) << " +- " <<  kappa2.at(ibin-22).at(1) << "\\\\ \\hline" << endl;
+      /*kappa1.push_back(ratioError(r1_data[0], r1_data[1], r1_mc[0], r1_mc[1]));
+      kappa2.push_back(ratioError(r2_data[0], r2_data[1], r2_mc[0], r2_mc[1]));// */
+      kappa1.push_back(ratioError(r1_data[0], 0, r1_mc[0], r1_mc[1]));//FIXME //r1_data[1], r2_data[1]
+      kappa2.push_back(ratioError(r2_data[0], 0, r2_mc[0], r2_mc[1]));// */
+      cout << "$\\kappa$1  &  " << Form("%.2f",kappa1.at(ibin-22).at(0)) << " $\\pm$ " <<  Form("%.2f",kappa1.at(ibin-22).at(1)) << " \\\\ \\cline{1-1}" << endl;
+      cout << "$\\kappa$2  &  " << Form("%.2f",kappa2.at(ibin-22).at(0)) << " $\\pm$ " <<  Form("%.2f",kappa2.at(ibin-22).at(1)) << " \\\\ \\hline" << endl;
 
     }
     cout << "\\hline" << endl;
@@ -331,12 +333,12 @@ int main(int argc, char *argv[])
       if(ibin>=25 && ibin<=27) nb_region=1;
       if(ibin>=28 && ibin<=30) nb_region=2;
       if(ibin>=31 && ibin<=33) nb_region=3; 
-      if(ibin>=34 && ibin<=36) continue; //nb_region=4;
+      if(ibin>=34 && ibin<=36) nb_region=4;
       if(ibin>=37 && ibin<=39) nb_region=0;
       if(ibin>=40 && ibin<=42) nb_region=1;
       if(ibin>=43 && ibin<=45) nb_region=2;
       if(ibin>=46 && ibin<=48) nb_region=3;
-      if(ibin>=49 && ibin<=51) continue; //nb_region=4;
+      if(ibin>=49 && ibin<=51) nb_region=4;
       int bin_index= (njets_region-1)*25 + nb_region*2 + 8;
       if(kappa1.at(ibin-22).at(0)>=0)
       {
@@ -404,12 +406,18 @@ int main(int argc, char *argv[])
     c->cd(1);
     h1_1l_summary1->SetTitle("#kappa ("+s_mj2+"-"+s_mj3+"/"+s_mj1+"-"+s_mj2+" GeV)");
     h1_1l_summary1->SetLineColor(kBlack);
+    if(syst == "nominal"){
+      h1_1l_summary1->SetFillStyle(3354);
+      h1_1l_summary1->SetLineWidth(2);
+      h1_1l_summary1->SetMarkerSize(0);
+    }
     h1_1l_summary1->SetMarkerColor(kBlack);
     h1_1l_summary1->SetMarkerStyle(21);
     h1_1l_summary1->SetStats(0);
     h1_1l_summary1->SetMinimum(0);
     h1_1l_summary1->SetMaximum(3);
-    h1_1l_summary1->Draw("ep");
+    if (syst == "nominal") h1_1l_summary1->Draw("e");
+    else h1_1l_summary1->Draw("hist p");
     drawSyst(lat_1);
     if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
     else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
@@ -417,13 +425,19 @@ int main(int argc, char *argv[])
     h1_1l_summary1->Write();
     c->cd(2);
     h1_1l_summary2->SetTitle("#kappa ("+s_mj3+"-inf/"+s_mj1+"-"+s_mj2+" GeV)");
+    if(syst == "nominal"){
+      h1_1l_summary2->SetFillStyle(3354);
+      h1_1l_summary2->SetLineWidth(2);
+      h1_1l_summary2->SetMarkerSize(0);
+    }
     h1_1l_summary2->SetLineColor(kBlack);
     h1_1l_summary2->SetMarkerColor(kBlack);
     h1_1l_summary2->SetMarkerStyle(21);
     h1_1l_summary2->SetStats(0);
     h1_1l_summary2->SetMinimum(0);
     h1_1l_summary2->SetMaximum(3);
-    h1_1l_summary2->Draw("ep");
+    if (syst == "nominal") h1_1l_summary2->Draw("e");
+    else h1_1l_summary2->Draw("hist p");
     drawSyst(lat_1);
     if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
     else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
@@ -515,7 +529,7 @@ float addInQuad(float a, float b)
 //
 vector<float> ratioError(float a, float a_err, float b, float b_err)
 {
-  float r = a/b;
+  float r = a/b; //a: data, b: mc
   float r_err = r * TMath::Sqrt(a_err*a_err/a/a + b_err*b_err/b/b);
   if (b==0 || a<0 || b<0) {r=-1; r_err=0;}
   vector<float> results; 

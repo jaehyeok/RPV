@@ -110,6 +110,7 @@ set_palette_gray()
 #make list of systematics- name, title, plot color and line style
 systList=[]
 systList.append(["gs","Gluon splitting",4,1])
+systList.append(["pileup","Pileup",10,1])
 systList.append(["btag_bc","b,c jet b-tag SF",5,1])
 systList.append(["btag_udsg","u,d,s,g jet b-tag SF",6,1])
 systList.append(["jec","Jet energy scale",7,1])
@@ -296,7 +297,6 @@ for ibin in binList:
 
     else:
          outname = "plots/rpv_sig_syst/table_sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
-
          
     c2.Print(outname)
 

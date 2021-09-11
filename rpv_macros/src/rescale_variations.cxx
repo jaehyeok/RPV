@@ -50,7 +50,9 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     // only QCD, ttbar, wjets shapes should be rescaled
     // as only these processes have a floating normalization
     // in the fit
-    std::vector<std::string> rescaleProcess = {"ttbar","qcd","wjets","other"};
+    std::vector<std::string> rescaleProcess = {"other","ttbar","qcd","wjets"};
+    //std::vector<std::string> rescaleProcess = {"other"};
+
     // systematics for which the template should be rescaled for qcd, ttbar, and wjets
 
     //std::vector<std::string> rescaleList = {""};
@@ -58,7 +60,7 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     //std::vector<std::string> kappaList = {"kappa1","kappa2"};
 
     std::vector<std::string> rescaleList = {
-      "btag_bc","btag_udsg","jec","lep_eff", "isr","mur", "muf", "murf", "gs"
+      "btag_bc","btag_udsg","jec","lep_eff", "isr","mur", "muf", "murf", "gs", "pileup"
     };  // */
     //std::vector<std::string> rescaleList = {""}; 
     // signal list
@@ -66,8 +68,10 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
     {
       "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", 
       "signal_M1500", "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900",
-	"signal_M2000", "signal_M2100", "signal_M2200"
-    };
+	"signal_M2000", "signal_M2200"
+    };// */
+
+    //std::vector<std::string> signalList = {""};
 
     std::vector<std::string> signalRescaleList = {""};
 
@@ -79,9 +83,6 @@ int main(int argc, char* argv[], small_tree_rpv &tree)
       "bin10","bin11","bin12","bin13","bin14","bin15","bin16","bin17","bin18","bin19",
       "bin20","bin21"};
     std::vector<std::string> binNames = { 
-	"bin0","bin1","bin2","bin3","bin4","bin5","bin6","bin7","bin8","bin9",
-      "bin10","bin11","bin12","bin13","bin14","bin15","bin16","bin17","bin18","bin19",
-      "bin20","bin21",
 
       "bin22", "bin23", "bin24",                  // bins for control region fit
       "bin25", "bin26", "bin27",                  // bins for control region fit

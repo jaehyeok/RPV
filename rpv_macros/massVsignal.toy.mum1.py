@@ -40,16 +40,20 @@ r_arry = []
 err_arry = []
 r_min_arry = []
 r_max_arry = []
+r_val_rms  =[]
 
-TH1_1800 = ROOT.TH1F("1800 GeV", "1800 GeV",320,-0.1,3.1)
-TH1_1500 = ROOT.TH1F("1500 GeV", "1500 GeV",320,-0.1,3.1)
+TH1_1500 = ROOT.TH1F("1500 GeV", "1500 GeV",64,-0.1,3.1)
+TH1_1800 = ROOT.TH1F("1800 GeV", "1800 GeV",64,-0.1,3.1)
+TH1_2100 = ROOT.TH1F("2100 GeV", "2100 GeV",64,-0.1,3.1)
+
 for mass in list(range(1500,2300,100)):
-	up      =[]
-	down    =[]
-	central =[]
+	up	   =[]
+	down	   =[]
+	central    =[]
+	list_val_r =[]
 	for seed in list(range(1,1000)):
 		if seed%100==0 : print(str(mass)+" GeV, "+str(seed)+"th loop")
-		fitresult = "out_injection/higgsCombine_M"+str(mass)+".FitDiagnostics.mH120."+str(seed)+".root"
+		fitresult = "out_injection/higgsCombine_M"+str(mass)+"_"+str(seed)+".FitDiagnostics.mH120."+str(seed)+".root"
 		file = ROOT.TFile(fitresult)
 		if file == None : raise RuntimeError, "Cannot open file %s" % fitresult
 		limit_t = file.Get("limit"); 
@@ -58,20 +62,38 @@ for mass in list(range(1500,2300,100)):
 		stdev_r = limit_t.limit
 		limit_t.GetEntry(4)
 		value_r = limit_t.limit
+		list_val_r.append(value_r)
 		if stdev_r==0 : continue
 		central.append((value_r-1)/stdev_r)
 		if mass==1500 : TH1_1500.Fill(value_r)
 		elif mass==1800 : TH1_1800.Fill(value_r)
-	med_cent = np.mean(central) 
+		elif mass==2100 : TH1_2100.Fill(value_r)
+	central = sorted(central)
+	list_val_r = sorted(list_val_r)
+	#med_cent = np.mean(central)
+	med_cent = central[500] 
+	med_val_r = list_val_r[500]
 	ms = 0
+	cnt = 0
+	cnt_r = 0
+	ms_r = 0
+	for val_r_i in list_val_r :
+		if val_r_i < med_val_r : continue
+		cnt_r = cnt_r + 1
+		ms_r = ms_r + ((val_r_i-med_val_r)**2)
 	for r_i in central :
-		ms = ms +  ((r_i-med_cent)**2)/len(central)
-	rms = np.sqrt(ms)
+		if r_i < med_cent : continue
+		cnt = cnt + 1
+		ms = ms + ((r_i-med_cent)**2)
+	rms = np.sqrt(ms/cnt)
+	val_rms = np.sqrt(ms_r/cnt_r)
 	r_arry.append(med_cent)
 	r_max_arry.append(rms)
+	r_val_rms.append(val_rms)
 hist_mvsr = ROOT.TH1F("GvsS", "Gluino mass vs Signal Strength", 8, 1450, 2250)
 for i in range(0,8) : 
 	hist_mvsr.SetBinContent(i+1,r_arry[i])
+	print(r_val_rms[i])
 	hist_mvsr.SetBinError(i+1,r_max_arry[i])
 #err_mvsr = ROOT.TGraphAsymmErrors(hist_mvsr)
 #for i in range(0,8) : 
@@ -87,7 +109,7 @@ hist_mvsr.SetTitle("");
 hist_mvsr.GetYaxis().SetRangeUser(-2, 2)
 hist_mvsr.GetXaxis().SetRangeUser(1450,2250)
 hist_mvsr.GetXaxis().SetTitle("m_{#tilde{g}}")
-hist_mvsr.GetYaxis().SetTitle("#mu")
+hist_mvsr.GetYaxis().SetTitle("(#mu-1)/#sigma")
 hist_mvsr.SetTitleSize(TitleSize)
 hist_mvsr.SetStats(0)
 hist_mvsr.SetMarkerStyle(42)
@@ -116,11 +138,22 @@ b.SetFillColor(ROOT.kBlue)
 b.Draw("same")
 hist_mvsr.Draw("same EP")
 c.Print("mass_vs_r_result.pdf")
+c.Print("mass_vs_r_result.C")
 
 c2=ROOT.TCanvas()
-TH1_1500.SetLineColor(ROOT.kBlue)
+c2.SetGrid()
+TH1_1500.SetLineColor(ROOT.kViolet)
 TH1_1500.SetStats(0)
-TH1_1800.SetLineColor(ROOT.kRed)
+TH1_1500.SetTitle("")
+TH1_1800.SetLineColor(ROOT.kBlue)
+TH1_2100.SetLineColor(ROOT.kRed)
 TH1_1500.Draw("hist")
 TH1_1800.Draw("same hist")
+label.SetNDC(ROOT.kTRUE)
+label.SetTextSize(0.03)
+label.SetTextAlign(11)
+label.DrawLatex(PadLeftMargin,1-PadTopMargin+0.02,cmslabel);
+label.SetTextAlign(31)
+label.DrawLatex(1-PadRightMargin,1-PadTopMargin+0.02,lumilabel);
+TH1_2100.Draw("same hist")
 c2.Print("1800vs1500.pdf")

@@ -90,6 +90,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
   if(year=="2018") lumi = 59.7;
   if(year=="2018_20178") lumi = 59.7;
   if(year=="20178") lumi = 101.2;
+  if(year=="fullrun2") lumi =137;
   bool doPrefit=false;
   bool plotSPlusB=false;
   bool doControl=true;
@@ -116,9 +117,17 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
     else if(step=="step3"){
       binname = {"nlep1_nj45_nb0",   "nlep1_nj67_nb0",     "nlep1_nj8_nb0",
    	         "nlep1_nj45_nb1",   "nlep1_nj67_nb1",     "nlep1_nj8_nb1", 
-   	         "nlep1_nj45_nb2",   "nlep1_nj67_nb2",     "nlep1_nj8_nb2"
+   	         "nlep1_nj45_nb2",   "nlep1_nj67_nb2",     "nlep1_nj8_nb2",
 		 "nlep1_nj45_nb3"};
       binnumber = {22,23,24,25,26,27,28,29,30,31};
+    }
+    else if(step=="unblind"){
+      binname = {"nlep1_nj45_nb0",   "nlep1_nj67_nb0",     "nlep1_nj8_nb0",
+   	         "nlep1_nj45_nb1",   "nlep1_nj67_nb1",     "nlep1_nj8_nb1", 
+   	         "nlep1_nj45_nb2",   "nlep1_nj67_nb2",     "nlep1_nj8_nb2",
+		 "nlep1_nj45_nb3",   "nlep1_nj67_nb3",     "nlep1_nj8_nb3",
+				     "nlep1_nj67_nb4",     "nlep1_nj8_nb4"};
+      binnumber = {22,23,24,25,26,27,28,29,30,31,32,33,35,36};
     }
    //			   "nlep1_nj45_nb3",  "nlep1_nj67_nb3",    "nlep1_nj8_nb3", 
   // 			   "nlep1_nj45_nb4",  "nlep1_nj67_nb4",    "nlep1_nj8_nb4"}; 
@@ -162,6 +171,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
           err[2][ibin][inb] = 0;
           err[3][ibin][inb] = 0;
           err[4][ibin][inb] = 0;
+        // */
       }
   }
   
@@ -197,6 +207,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
     }  
   } 
   //infile->Close();
+  /**/
 
   cout << "Pre or postfit Uncertatinty " << endl;
   // Get post-fit uncertainty 
@@ -223,7 +234,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
           }
       }
   }
-//*/  
+// */  
 
 // FIXME: these lines can be removed
 /*  
@@ -263,6 +274,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
   if(step=="step1") crvr="cr";
   if(step=="step2") crvr="vr";
   if(step=="step3") crvr="vr2";
+  if(step=="unblind") crvr="unblind";
   std::string resultsFilename=Form("mlfit_%s_%s.root",crvr.Data(),year.Data());
   TFile *fResults = TFile::Open(resultsFilename.c_str());
   RooFitResult *result_b = static_cast<RooFitResult*>(fResults->Get("fit_b"));
@@ -276,6 +288,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
     
     int ibin = binnumber.at(i-22);
     cout << "...... BIN: " << ibin << " :: " << binname[i-22]<< endl;
+    cout<<i<<endl;
     std::cout << "Drawing frame" << std::endl;
     c = new TCanvas("c","c",300,300);
     c->cd();
@@ -355,6 +368,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
     h1_mc->Add(h1_other);
     //if(plotSPlusB) h1_mc->Add(h1_signal);
     for(unsigned int inb=1; inb<4; inb++){
+      cout<< err[4][ibin][inb-1] << endl;
       h1_mc->SetBinError(inb,err[4][ibin][inb-1]*h1_mc->GetBinContent(inb));
     }
     h1_mc->SetMarkerSize(0);
@@ -712,11 +726,16 @@ void printYieldBin(int bin, int nb, float data, float qcd, float ttbar, float wj
     
     float tot_err = TMath::Sqrt(qcd_err*qcd_err+ttbar_err*ttbar_err+wjets_err*wjets_err+other_err*other_err);
     cout << ((nb==3)?"$3$":"$\\geq 4$") << " & "
-        << Form("$%.1f \\pm %.1f$",qcd,qcd_err)  << " & "
-        << Form("$%.1f \\pm %.1f$",ttbar,ttbar_err) << " & "
-        << Form("$%.1f \\pm %.1f$",wjets,wjets_err) << " & "
-        << Form("$%.1f \\pm %.1f$",other,other_err) << " & "
-        << Form("$%.1f \\pm %.1f$",qcd+ttbar+wjets+other,tot_err) << " & "
+        //<< Form("$%.1f \\pm %.1f$",qcd,qcd_err)  << " & "
+        //<< Form("$%.1f \\pm %.1f$",ttbar,ttbar_err) << " & "
+        //<< Form("$%.1f \\pm %.1f$",wjets,wjets_err) << " & "
+        //<< Form("$%.1f \\pm %.1f$",other,other_err) << " & "
+        //<< Form("$%.1f \\pm %.1f$",qcd+ttbar+wjets+other,tot_err) << " & "
+        << Form("$%.1f $",qcd)  << " & "
+        << Form("$%.1f $",ttbar) << " & "
+        << Form("$%.1f $",wjets) << " & "
+        << Form("$%.1f $",other) << " & "
+        << Form("$%.1f $",qcd+ttbar+wjets+other) << " & "
         << Form("$%.0f$",data) << " & "
         << Form("$%.1f$",sig) << " \\\\ " << endl;
 }
@@ -737,11 +756,16 @@ void printYieldBin(int bin, int nb, float data, float qcd, float ttbar, float wj
     if(nb==4) nbbin="$\\geq 4$";
 
     cout << nbbin << " & "
-        << Form("$%.1f \\pm %.1f$",qcd,qcd_err)  << " & "
-        << Form("$%.1f \\pm %.1f$",ttbar,ttbar_err) << " & "
-        << Form("$%.1f \\pm %.1f$",wjets,wjets_err) << " & "
-        << Form("$%.1f \\pm %.1f$",other,other_err) << " & "
-        << Form("$%.1f \\pm %.1f$",qcd+ttbar+wjets+other,allbkg_err) << " & "
+        //<< Form("$%.1f \\pm %.1f$",qcd,qcd_err)  << " & "
+        //<< Form("$%.1f \\pm %.1f$",ttbar,ttbar_err) << " & "
+        //<< Form("$%.1f \\pm %.1f$",wjets,wjets_err) << " & "
+        //<< Form("$%.1f \\pm %.1f$",other,other_err) << " & "
+        //<< Form("$%.1f \\pm %.1f$",qcd+ttbar+wjets+other,allbkg_err) << " & "
+        << Form("$%.1f $",qcd)  << " & "
+        << Form("$%.1f $",ttbar) << " & "
+        << Form("$%.1f $",wjets) << " & "
+        << Form("$%.1f $",other) << " & "
+        << Form("$%.1f $",qcd+ttbar+wjets+other) << " & "
         << Form("$%.0f$",data) << " & "
         << Form("$%.1f$",sig) << " \\\\ " << endl;
 }
@@ -803,7 +827,7 @@ void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std:
       h->SetBinContent(iGood, value);
       h->SetBinError(iGood, binError);
       std::cout.precision(3);
-      std::cout << " & \\texttt{" << name << "} & $" << value << " \\pm " <<  binError << "$\\\\" << std::endl;
+      std::cout << " & \\texttt{" << name.ReplaceAll("_","\\_") << "} & $" << value << " \\pm " <<  binError << "$\\\\" << std::endl;
       sumChi2+=pow(value/binError,2);
       h->GetXaxis()->LabelsOption("v");
       h->GetXaxis()->SetBinLabel(iGood, pullVar->GetName());

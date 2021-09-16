@@ -170,7 +170,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       int isam = vars[var].samples[sam];
       if(!Samples[isam].isSig && !Samples[isam].isData) nbkg++;
       samVariable = Samples[isam].samVariable;
-      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
+      //totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
+      totCut = Samples[isam].factor+"*"+luminosity+"*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; 
       if(Samples[isam].isData) totCut= vars[var].cuts+"&&"+Samples[isam].cut;
       if(vars[var].PU_reweight && !Samples[isam].isData) totCut = Samples[isam].factor+"*"+luminosity+"*weight*wpu*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
       //cout<<totCut<<endl;

@@ -947,19 +947,19 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
     TString lownjcon_, mednjcon_, highnjcon_;
     if(year=="2016"){
-      lownjcon_ = "1.13";
-      mednjcon_ = "1.21";
-      highnjcon_ = "1.24";
+      lownjcon_ = "1.23";
+      mednjcon_ = "1.23";
+      highnjcon_ = "1.25";
     }
     if(year=="2017"){
-      lownjcon_ = "1.10";
-      mednjcon_ = "1.16";
-      highnjcon_ = "1.16";
+      lownjcon_ = "1.23";
+      mednjcon_ = "1.08";
+      highnjcon_ = "1.32";
     }
     if(year=="2018"){
-      lownjcon_ = "1.33";
-      mednjcon_ = "1.38";
-      highnjcon_ = "1.38";
+      lownjcon_ = "1.17";
+      mednjcon_ = "1.11";
+      highnjcon_ = "1.30";
     }
 
     map<string, int> bindex;

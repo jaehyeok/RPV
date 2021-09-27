@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
   bool includePDFUncert = false;
   bool includeLowMJ = false;
   bool nocrvr = false;
+  bool othersyst = false; 
 //  bool includeSignalRegion = true;
   TString year;
   TString sig_onoff;
@@ -59,7 +60,6 @@ int main(int argc, char *argv[])
   std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
   cout<<"HI"<<endl;
   shapeSysts = {};
-
   std::string gluinoMass;
   std::string signalBinName;
   std::string cardType;
@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
     inputname = argv[3];
     merge_78  = argv[5];
     sig_onoff = argv[6];
+    cout<<"year : "<< year <<endl;
   }
   if(year == "2016"){
 	shapeSysts = {"jec","btag_bc","btag_udsg","muf","mur","murf","isr","gs","lep_eff","jer"};
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
   else if(year != "2016"){
 	shapeSysts = {"jec","btag_bc","btag_udsg","muf","mur","murf","gs","lep_eff","jer"};
   }
-  shapeSysts = {};
+  if(!othersyst) shapeSysts = {};
 
   nprocesses=processes.size();
 
@@ -957,19 +958,19 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
     TString lownjcon_, mednjcon_, highnjcon_;
     if(year=="2016"){
-      lownjcon_ = "1.19";
-      mednjcon_ = "1.12";
-      highnjcon_ = "1.27";
+      lownjcon_ = "1.23";
+      mednjcon_ = "1.23";
+      highnjcon_ = "1.25";
     }
     if(year=="2017"){
-      lownjcon_ = "1.15";
-      mednjcon_ = "1.13";
-      highnjcon_ = "1.35";
+      lownjcon_ = "1.23";
+      mednjcon_ = "1.08";
+      highnjcon_ = "1.32";
     }
     if(year=="2018"){
-      lownjcon_ = "1.10";
-      mednjcon_ = "1.19";
-      highnjcon_ = "1.38";
+      lownjcon_ = "1.17";
+      mednjcon_ = "1.11";
+      highnjcon_ = "1.30";
     }
 
     map<string, int> bindex;
@@ -1214,11 +1215,14 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         //for(unsigned int index=0; index<nbins; index++) file << " 0.1 - - - 0.1 ";//accept systematics to signal and other
       }
       else {
-        for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";// one sigma
-        //for(unsigned int index=0; index<nbins; index++) file << " 1 - - - 1 ";//accept systematics to signal and other
+        //for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";// one sigma
+        for(unsigned int index=0; index<nbins; index++) file << " 1 - - - 1 ";//accept systematics to signal and other
       }
       file << "\n";
     }
+    file << "trigeff_" << year << "       lnN ";
+    for(unsigned int index=0; index<nbins; index++) file <<" 1.01 - - - 1.01";
+    file << "\n";
   }
 
   void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year)

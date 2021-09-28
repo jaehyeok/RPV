@@ -108,7 +108,6 @@ def MakeLegend(list_hist,Data):
 	return l
 
 def DY(pathlist, njcut, year):
-	for path in pathlist :
 		chMC = TChain("tree")
 		chData = TChain("tree")
 		process_list = ['qcd','others','ttbar','wjets','dyjet']
@@ -129,9 +128,11 @@ def DY(pathlist, njcut, year):
 		list_hist0 = []
 		list_hist1 = []
 		for proc in process_list:
-			for fname in process_det[proc]:
-				print(fname)
-				chMC.Add(path+fname)#DYJetsTo*")
+			for path in pathlist :
+				for fname in process_det[proc]:
+					print(fname)
+					chMC.Add(path+fname)#DYJetsTo*")
+				chData.Add(path+"JetHT*")
 			histRatio, histMC0, histMC1, histllMC0, histllMC1, h_intMC = getDYHist(chMC,0,njcut,"MC_"+proc, year)
 			histMC0.SetTitle(process_name[proc])
 			histMC1.SetTitle(process_name[proc])
@@ -159,7 +160,6 @@ def DY(pathlist, njcut, year):
 			MC_int.Add(h_intMC)
 			print('process_name & yield: ', process_name[proc], h_intMC.Integral())
 			chMC.Reset()
-		chData.Add(path+"JetHT*")
 		histRatio, histData0, histData1, histllData0, histllData1, h_intData = getDYHist(chData,0,njcut, "Data0", year)
 		kappa1, kappa2 = getKappa(histData0, histMC0) 
 		SF_1bin = histData1.GetBinContent(1)/MC_Stack1p.GetBinContent(1)

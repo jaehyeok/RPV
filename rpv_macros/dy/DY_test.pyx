@@ -6,16 +6,16 @@ from ROOT import kGreen, kBlue, kBlack, kAzure, kRed, kYellow, kViolet, kGray
 
 #totpath = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm_njets3nleps2/"
 lumi = {'2016':35.9,'2017':41.5,'2018':59.7,'Run2':137,'20178':101.2}
-#lumi = {'2016':35.9,'2017':41.5,'2018':59.7,'Run2':137}
+#lumi = {'2016':35.9,'2017':41.5,'2018':59.7,'20178':101.2}
 
 def totpath(year):
 	ret = []
 	if year=="Run2" :
 		for y in ["2016","2017","2018"]:
-			ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing//"+y+"/merged_norm_dy0923/") 
+			ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/") 
 	elif year == "20178":
-		ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/2017/merged_norm_dy0923/")
-		ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/2018/merged_norm_dy0923/")
+		for y in ["2017","2018"]:
+			ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/")
 	else : ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_dy0923/")
 	print(ret)
 	return ret
@@ -41,14 +41,14 @@ cpdef (float, float) getKappa(h1, h2):
 cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 	if njetscut >= 7 : njetscut_up = 9999999 #FIXME
 	else : njetscut_up = njetscut+2 #FIXME
-	h_ratio = TH1D("h_ratio"+histname,"h_ratio_"+histname,3,500,1400)
-	h_int = TH1D("h_int_"+histname, "h_int_"+histname, 3, 500, 1400)
-	h = TH1D("h_"+histname,"h_"+histname,3,500,1400)
-	h2 = TH1D("h2_"+histname,"h2_"+histname,3,500,1400)
-	#h_ratio = TH1D("h_ratio"+histname,"h_ratio_"+histname,3,4,8)
-	#h_int = TH1D("h_int_"+histname, "h_int_"+histname, 3, 4, 8)
-	#h = TH1D("h_"+histname,"h_"+histname,3,4,8)
-	#h2 = TH1D("h2_"+histname,"h2_"+histname,3,4,8)
+	#h_ratio = TH1D("h_ratio"+histname,"h_ratio_"+histname,3,500,1400)
+	#h_int = TH1D("h_int_"+histname, "h_int_"+histname, 3, 500, 1400)
+	#h = TH1D("h_"+histname,"h_"+histname,3,500,1400)
+	#h2 = TH1D("h2_"+histname,"h2_"+histname,3,500,1400) #FIXME mj
+	h_ratio = TH1D("h_ratio"+histname,"h_ratio_"+histname,3,4,8)
+	h_int = TH1D("h_int_"+histname, "h_int_"+histname, 3, 4, 8)
+	h = TH1D("h_"+histname,"h_"+histname,3,4,8)
+	h2 = TH1D("h2_"+histname,"h2_"+histname,3,4,8)
 	hll = TH1D("h_ll_"+histname, "h_ll_"+histname, 5, 80 ,100)
 	hll = TH1D("h_ll_"+histname, "h_ll_"+histname, 5, 80 ,100)
 	hll2 = TH1D("h_ll2_"+histname, "h_ll2_"+histname, 5, 80 ,100)
@@ -60,7 +60,7 @@ cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 		ch.GetEntry(entry)
 		if(entry%(ch.GetEntries()/10)==0) : Progress(entry, ch.GetEntries())
 		if not ch.stitch_ht : continue
-		if not (ch.njets>njetscut-1 and ch.njets<njetscut_up) : continue #FIXME
+		#if not (ch.njets>njetscut-1 and ch.njets<njetscut_up) : continue #FIXME
 		if not ch.nleps==2 : continue
 		if not ch.nbm<=2 : continue #FIXME
 		if not ch.ht > 1200 : continue 
@@ -76,22 +76,22 @@ cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 		mll = momtot.M()
 		if not mll < 100 : continue
 		if not mll > 80 : continue
-		if "MC" in histname : 
-			h_int.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac1718*lumi[year])
+		if "MC" in histname :
+			h_int.Fill(min(ch.njets,7.99),ch.weight*lumi[year])
 			if ch.nbm==nbmcut:
-				h.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac1718*lumi[year])
-				hll.Fill(mll,ch.weight*ch.frac1718*lumi[year])
+				h.Fill(min(ch.njets,7.99),ch.weight*lumi[year])
+				hll.Fill(mll,ch.weight*lumi[year])
 			elif ch.nbm==nbmcut+1:
-				h2.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac1718*lumi[year])
-				hll2.Fill(mll,ch.weight*ch.frac1718*lumi[year])
+				h2.Fill(min(ch.njets,7.99),ch.weight*lumi[year])
+				hll2.Fill(mll,ch.weight*lumi[year])
 			else : continue
 		else : 
-			h_int.Fill(min(ch.mj12,1399.99),1)
+			h_int.Fill(min(ch.njets,7.99),1)
 			if ch.nbm==nbmcut:
-				h.Fill(min(ch.mj12,1399.99),1)
+				h.Fill(min(ch.njets,7.99),1)
 				hll.Fill(mll,1)
 			elif ch.nbm==nbmcut+1:
-				h2.Fill(min(ch.mj12,1399.99),1)
+				h2.Fill(min(ch.njets,7.99),1)
 				hll2.Fill(mll,1)
 			else : continue
 	return h_ratio, h, h2, hll, hll2, h_int
@@ -111,22 +111,21 @@ def DY(pathlist, njcut, year):
 	for path in pathlist :
 		chMC = TChain("tree")
 		chData = TChain("tree")
-		chTest = TChain("tree")
 		process_list = ['qcd','others','ttbar','wjets','dyjet']
 		process_name = {'qcd':'QCD', 'others':'Others', 'ttbar':'ttbar', 'wjets':'W+jets', 'dyjet':'DY'}
 		#process_list = ['dyjet']
-		#process_det = {'qcd':['QCD_*'],'dyjet':['DYJetsTo*'],'others':['ST_*','TTTT*','TTW*','TTZ*','WW*','WWW*','WWZ*','WZ*','WZZ*','ZZ*','ZZZ*'],'ttbar':['TTJets_*'],'wjets':['WJetsTo*']}
-		process_det = {'qcd':['*QCD_*'],'dyjet':['*DYJetsTo*'],'others':['*ST_*','*TTTT*','*TTW*','*TTZ*','WW_*','*WWW*','*WWZ*','WZ_*','*WZZ*','ZZ_*','ZZZ*'],'ttbar':['*TTJets_*'],'wjets':['*WJetsTo*']}
+		process_det = {'qcd':['QCD_*'],'dyjet':['DYJets*'],'others':['ST_*','TTTT*','TTW*','TTZ*','WW_*','WWW*','WWZ*','WZ_*','WZZ*','ZZ_*','ZZZ*'],'ttbar':['TTJets_*'],'wjets':['WJets*']}
+		#process_det = {'qcd':['*QCD_*'],'dyjet':['*DYJetsTo*'],'others':['*ST_*','*TTTT*','*TTW*','*TTZ*','WW_*','*WWW*','*WWZ*','WZ_*','*WZZ*','ZZ_*','*ZZZ*'],'ttbar':['*TTJets_*'],'wjets':['*WJetsTo*']}
 		process_color = {'qcd':kBlue-4,'dyjet':kViolet-9,'ttbar':kAzure+7,'wjets':kGreen+2,'others':kGray}
 		MC_Stack0 = THStack("MC_Stack0","MC_Stack0")
 		MC_Stack1 = THStack("MC_Stack1","MC_Stack1")
 		MC_Stack_int = THStack("MC_Stack_int"+year,"MC_Stack_int"+year)
-		MC_int = TH1D("MC_int","",3,500,1400)
-		#MC_int = TH1D("MC_int","",3,4,8)
+		#MC_int = TH1D("MC_int","",3,500,1400)#FIXME
+		MC_int = TH1D("MC_int","",3,4,8)
 		MCll_Stack0 = THStack("MC_Stack0","MC_Stack0")
 		MCll_Stack1 = THStack("MC_Stack1","MC_Stack1")
-		MC_Stack1p = TH1D("Stack","Stack",3,500,1400)
-		#MC_Stack1p = TH1D("Stack","Stack",3,4,8)
+		#MC_Stack1p = TH1D("Stack","Stack",3,500,1400)
+		MC_Stack1p = TH1D("Stack","Stack",3,4,8)
 		list_hist0 = []
 		list_hist1 = []
 		for proc in process_list:
@@ -160,8 +159,7 @@ def DY(pathlist, njcut, year):
 			MC_int.Add(h_intMC)
 			print('process_name & yield: ', process_name[proc], h_intMC.Integral())
 			chMC.Reset()
-		chData.Add(path+"*JetHT*")
-		chTest.Add(path+"*")
+		chData.Add(path+"JetHT*")
 		histRatio, histData0, histData1, histllData0, histllData1, h_intData = getDYHist(chData,0,njcut, "Data0", year)
 		kappa1, kappa2 = getKappa(histData0, histMC0) 
 		SF_1bin = histData1.GetBinContent(1)/MC_Stack1p.GetBinContent(1)
@@ -295,24 +293,23 @@ def DY(pathlist, njcut, year):
 		#histRatio.GetXaxis().SetTitle("M_{J} [GeV]")
 		histRatio.GetXaxis().SetTitleSize(0.12)
 		histRatio.GetXaxis().SetTitleOffset(1.3)
-		#histRatio.GetXaxis().SetBinLabel(1,"4 \leq N_{jets} \leq 5")#FIXME
-		#histRatio.GetXaxis().SetBinLabel(2,"6 \leq N_{jets} \leq 7")
-		#histRatio.GetXaxis().SetBinLabel(3,"N_{jets} \geq 8")
-		histRatio.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV")#FIXME
-		histRatio.GetXaxis().SetBinLabel(2,"800 \leq M_{J} \leq 1100 GeV")#FIXME
-		histRatio.GetXaxis().SetBinLabel(3,"M_{J} \geq 1100 GeV")#FIXME
+		histRatio.GetXaxis().SetBinLabel(1,"4 \leq N_{jets} \leq 5")#FIXME
+		histRatio.GetXaxis().SetBinLabel(2,"6 \leq N_{jets} \leq 7")
+		histRatio.GetXaxis().SetBinLabel(3,"N_{jets} \geq 8")
+		#histRatio.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV")#FIXME
+		#histRatio.GetXaxis().SetBinLabel(2,"800 \leq M_{J} \leq 1100 GeV")#FIXME
+		#histRatio.GetXaxis().SetBinLabel(3,"M_{J} \geq 1100 GeV")#FIXME
 		#histRatio.GetXaxis().SetNdivisions(4)
 		histRatio.SetStats(0)
 		histRatio.Draw("e0 x0")
-		#line.DrawLine(4,1,8,1)#FIXME
-		line.DrawLine(500,1,1400,1)
-		c_int.Print("Figure_MJ/DY_comp_intnb_njets"+str(njcut)+"_"+str(year)+".pdf")		
+		line.DrawLine(4,1,8,1)#FIXME
+		#line.DrawLine(500,1,1400,1)
+		c_int.Print("Figure_njets/DY_comp_intnb_njets"+str(njcut)+"_"+str(year)+".pdf")		
 
 		print('\n')
 		print SF_1bin
 		print kappa1
 		print kappa2
-
 
 if __name__ == '__main__':
 	year=sys.argv[1]

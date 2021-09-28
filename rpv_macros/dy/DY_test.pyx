@@ -132,7 +132,6 @@ def DY(pathlist, njcut, year):
 				for fname in process_det[proc]:
 					print(fname)
 					chMC.Add(path+fname)#DYJetsTo*")
-				chData.Add(path+"JetHT*")
 			histRatio, histMC0, histMC1, histllMC0, histllMC1, h_intMC = getDYHist(chMC,0,njcut,"MC_"+proc, year)
 			histMC0.SetTitle(process_name[proc])
 			histMC1.SetTitle(process_name[proc])
@@ -160,6 +159,8 @@ def DY(pathlist, njcut, year):
 			MC_int.Add(h_intMC)
 			print('process_name & yield: ', process_name[proc], h_intMC.Integral())
 			chMC.Reset()
+		for path in pathlist :
+			chData.Add(path+"JetHT*")
 		histRatio, histData0, histData1, histllData0, histllData1, h_intData = getDYHist(chData,0,njcut, "Data0", year)
 		kappa1, kappa2 = getKappa(histData0, histMC0) 
 		SF_1bin = histData1.GetBinContent(1)/MC_Stack1p.GetBinContent(1)

@@ -1050,11 +1050,13 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   }
   // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
   void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
-
+    if(merge_78=="on"){
+      year = "20178";
+    }
     TString mednjcon_, highnjcon_;
     if(year=="2016"){
       mednjcon_ = "1.25";
-      highnjcon_ = "1.33";
+      highnjcon_ = "1.35";
     }
     if(year=="2017"){
       mednjcon_ = "1.35";
@@ -1063,6 +1065,10 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     if(year=="2018"){
       mednjcon_ = "1.26";
       highnjcon_ = "1.30";
+    }
+    if(year=="20178"){
+      mednjcon_ = "1.25";
+      highnjcon_ = "1.10"; 
     }
     //create map between bin name and bin index
     map<string, int> bindex;

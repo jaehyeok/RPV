@@ -1207,6 +1207,9 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
   void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, TString year)
   {
+    if(merge_78=="on"){
+      year = "20178";
+    }
     for(unsigned int isyst=0; isyst<shapesysts.size(); isyst++) {
       file << shapesysts.at(isyst) << "_" << year << "     shape     ";
       if(shapesysts.at(isyst).find("pdf")!=std::string::npos) {
@@ -1385,6 +1388,9 @@ void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins
 }
 
 void outputrateParam( std::ofstream &file, const std::vector<std::string> &bins, TString year ){
+  if(merge_78=="on"){
+    year = "20178";
+  }
   file << Form("normwjets_%s",year.Data()) << " rateParam * wjets 1.0 [0,20]  ";
   file << "\n";
   for(auto ibin : bins){

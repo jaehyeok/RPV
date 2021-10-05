@@ -15,7 +15,7 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
 void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bins, TString year);
-void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts, TString year);
+void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts, const std::vector<std::string> &bins, TString year);
 void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
 void outputLognormalSystematics(std::ofstream &file, TString year);
 void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> &bins, const std::string & signalBinName, TString year);
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   bool includePDFUncert = false;
   bool includeLowMJ = false;
   bool nocrvr = false;
-  bool othersyst = false; 
+  bool othersyst = true; 
 //  bool includeSignalRegion = true;
   TString year;
   TString sig_onoff;
@@ -374,7 +374,7 @@ int main(int argc, char *argv[])
   // output kappa systematics
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
-  outputShapeSystematics(file, shapeSysts, year);
+  outputShapeSystematics(file, shapeSysts, bins.at(ipair), year);
 
   if(sig_onoff=="on"){
   // output shape systematics
@@ -1211,8 +1211,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
   }
 
-  void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, TString year)
+  void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, const std::vector<std::string> &bins, TString year)
   {
+    map<string, int> bindex;
+    for(uint ibin=0; ibin<nbins; ibin++) bindex[bins[ibin]]=ibin;
+
     if(merge_78=="on"){
       year = "20178";
     }
@@ -1225,12 +1228,22 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
       else {
         //for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";// one sigma
-        for(unsigned int index=0; index<nbins; index++) file << " 1 - - - 1 ";//accept systematics to signal and other
+        for(unsigned int index=0; index<nbins; index++){
+	  std::string temp = bins.at(index);
+	  int binnumber = atoi(temp.erase(0,3).c_str());
+	  if(binnumber<37) file << " 1 - - - 1 ";//accept systematics to signal and other
+	  else file << " - - - - - ";//accept systematics to signal and other
+	}
       }
       file << "\n";
     }
     file << "trigeff_" << year << "       lnN ";
-    for(unsigned int index=0; index<nbins; index++) file <<" 1.01 - - - 1.01";
+    for(unsigned int index=0; index<nbins; index++){
+	  std::string temp = bins.at(index);
+	  int binnumber = atoi(temp.erase(0,3).c_str());
+	  if(binnumber<37) file << " 1.01 - - - 1.01 ";//accept systematics to signal and other
+	  else file << " - - - - - ";//accept systematics to signal and other
+    }
     file << "\n";
   }
 

@@ -1087,7 +1087,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         downweight = temp_down;
       }
 
-      if(procname=="other"&&(variations=="mur"||variations=="muf"||variations=="murf")){
+      if((procname=="other")&&(variations=="mur"||variations=="muf"||variations=="murf")){
         int hbother=(ihb+1)%1000;
 	if(tree.sys_mur()[0]==1){
           upweight=nominalweight*other_wgt_up[hbother][ibin];
@@ -1287,6 +1287,26 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         h1up_[ibin][kap-1]->Write();
         h1down_[ibin][kap-1]->Write();
       }
+    }
+    else if(variations.Contains("mu")) 
+    {
+      TString procnamemu=procname;
+      if(procname.Contains("signal"))procnamemu="sig";
+      if(str_year==""){ // for 2017+2018 merging FIXME
+        upname = procname+"_"+variations+"_"+procnamemu+"_"+year+"Up";
+        downname = procname+"_"+variations+"_"+procnamemu+"_"+year+"Down";
+      }
+      else{
+        upname = procname+"_"+variations+"_"+procnamemu+"_"+str_year+"Up";
+        downname = procname+"_"+variations+"_"+procnamemu+"_"+str_year+"Down";
+      }// */
+
+      h1up[ibin]->SetTitle(upname.Data());
+      h1up[ibin]->SetName(upname.Data());
+      h1down[ibin]->SetTitle(downname.Data());
+      h1down[ibin]->SetName(downname.Data());
+      h1up[ibin]->Write();
+      h1down[ibin]->Write();
     }
     else 
     {

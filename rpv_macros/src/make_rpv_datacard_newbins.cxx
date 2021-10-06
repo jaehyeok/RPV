@@ -88,10 +88,10 @@ int main(int argc, char *argv[])
     cout<<"year : "<< year <<endl;
   }
   if(year == "2016"){
-	shapeSysts = {"jec","btag_bc","btag_udsg","muf","mur","murf","isr","gs","lep_eff","jer"};
+	shapeSysts = {"jec","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","isr","gs","lep_eff","jer"};
   }
   else if(year != "2016"){
-	shapeSysts = {"jec","btag_bc","btag_udsg","muf","mur","murf","gs","lep_eff","jer"};
+	shapeSysts = {"jec","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","jer"};
   }
   if(!othersyst) shapeSysts = {};
 
@@ -1231,7 +1231,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         for(unsigned int index=0; index<nbins; index++){
 	  std::string temp = bins.at(index);
 	  int binnumber = atoi(temp.erase(0,3).c_str());
-	  if(binnumber<37) file << " 1 - - - 1 ";//accept systematics to signal and other
+	  if(binnumber<37){
+	    if(shapesysts.at(isyst).find("mu") != std::string::npos && shapesysts.at(isyst).find("other") != std::string::npos ) file << " - - - - 1 ";
+	    else if(shapesysts.at(isyst).find("mu") != std::string::npos && shapesysts.at(isyst).find("sig") != std::string::npos ) file << " 1 - - - - ";
+	    else file << " 1 - - - 1 ";//accept systematics to signal and other
+	  }
 	  else file << " - - - - - ";//accept systematics to signal and other
 	}
       }
@@ -1402,6 +1406,9 @@ void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> 
 void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins){
  int threshold = 5;// Gaussian approximation threshold
  for(auto ibin : bins){
+   std::string temp = ibin;
+   int binnumber = atoi(temp.erase(0,3).c_str());
+   if(binnumber>36) continue;
    file << ibin << " autoMCStats " << threshold << "\n";
  }
 }

@@ -690,8 +690,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     // 
     // Central weights
     // 
-    //float nominalweight = lumi*tree.weight();
-    float nominalweight = lumi*tree.weight()*tree.frac1718(); // FIXME for 2017+2018 merging
+    float nominalweight = lumi*tree.weight();
+    //float nominalweight = lumi*tree.weight()*tree.frac1718(); // FIXME for 2017+2018 merging
     //cout<<nominalweight<<endl;
     //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
 
@@ -1310,7 +1310,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     }
     else 
     {
-      if(str_year==""){ // for 2017+2018 merging FIXME
+      /*if(str_year==""){ // for 2017+2018 merging FIXME
         upname = procname+"_"+variations+"_"+year+"Up";
         downname = procname+"_"+variations+"_"+year+"Down";
       }

@@ -12,7 +12,7 @@ std::vector<float> morphBins = {1.00, 0.900, 0.800};
 
 bool isBlinded(const std::string &binName, const std::vector<std::string>& blindBins);
 
-int main(int argc, char* argv[], small_tree_rpv &tree)
+int main(int argc, char* argv[])
 {
     // Choose the type of cards to produce: mconly, control, and default
     //    For signal injection studies(mconly), only want to use MC as nuisance parameters

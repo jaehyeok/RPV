@@ -27,14 +27,15 @@ using std::cout;
 using std::endl;
 
 
-int main(int argc, char *argv[], small_tree_rpv &tree, TString year, TFile *f){
+int main(int argc, char *argv[])
+{
     // don't want to include RA4 trigger efficiency
     //std::string extraWeight("w_btag_bf/w_btag");
     std::string extraWeight("1");
     TString trigger = "(trig_ht900 || trig_jet450)";
     //TString trigger = "trig_ht1050";//2017 and 2018
 
-    year = argv[1];
+    TString year = argv[1];
 
     // Reading ntuples
     vector<sfeats> Samples; 

@@ -6,7 +6,7 @@
 #include <iostream>
 #include "small_tree_rpv.hpp"
 
-TString msig = "1900";
+TString msig = "1500";
 
 std::vector<float> morphBins = {1.00, 0.900, 0.800};
 
@@ -55,20 +55,25 @@ int main(int argc, char* argv[])
 
     // systematics for which the template should be rescaled for qcd, ttbar, and wjets
 
-    //std::vector<std::string> rescaleList = {""};
+//    std::vector<std::string> rescaleList = {""};
 
     //std::vector<std::string> kappaList = {"kappa1","kappa2"};
 
+
     std::vector<std::string> rescaleList = {
-      "btag_bc","btag_udsg","jec","lep_eff", "isr","mur", "muf", "murf", "gs", "pileup"
+      "btag_bc","btag_udsg","jec","jer","lep_eff","mur", "muf", "murf", "gs", "pileup"
     };  // */
+
+//    std::vector<std::string> rescaleList = {
+//      "btag_bc","btag_udsg","jec","jer","lep_eff", "isr","mur", "muf", "murf", "gs", "pileup"
+//    };  // */
     //std::vector<std::string> rescaleList = {""}; 
     // signal list
     std::vector<std::string> signalList = 
     {
       "signal_M1000", "signal_M1100", "signal_M1200", "signal_M1300", "signal_M1400", 
       "signal_M1500", "signal_M1600", "signal_M1700", "signal_M1800", "signal_M1900",
-	"signal_M2000", "signal_M2200"
+	"signal_M2000", "signal_M2100", "signal_M2200"
     };// */
 
     //std::vector<std::string> signalList = {""};

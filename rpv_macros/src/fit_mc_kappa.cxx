@@ -51,6 +51,8 @@ void drawHeader(){
 
 int main(int argc, char *argv[]){
 
+  gStyle->SetOptStat(0);
+
   TString Systematic, year;
 
   year = argv[1];
@@ -71,12 +73,12 @@ int main(int argc, char *argv[]){
 
 
   vector<TString> syst_list; 
-  //syst_list.push_back("murf"); 
+//  syst_list.push_back("jec"); 
   syst_list = {"murf", "mur", "muf", 
                "jec", "jer", 
-               "lep_eff", 
-               "btag_bc", "btag_udsg"}; 
-  if(year == "2016") syst_list.push_back("gs");
+               "lep_eff", "pileup", "gs", 
+ 	       "btag_bc", "btag_udsg"}; 
+  if(year == "2016") syst_list.push_back("isr");
 
   const int nsysts = syst_list.size();
   
@@ -125,6 +127,15 @@ int main(int argc, char *argv[]){
     // initialize Nb hists
     for(unsigned int ihist=0; ihist<3; ihist++)
     { 
+      h1_nb_up[ihist]   = new TH1F(year+"_"+syst_list[isyst]+"_"+Form("kappa1_njet%d", 10*(2*ihist+4)+5+2*ihist),   year+"_"+syst_list[isyst]+"_"+Form("kappa1_njet%d", 10*(2*ihist+4)+5+2*ihist),    5, -0.5, 4.5);
+      h2_nb_up[ihist]   = new TH1F(year+"_"+syst_list[isyst]+"_"+Form("kappa2_njet%d", 10*(2*ihist+4)+5+2*ihist),   year+"_"+syst_list[isyst]+"_"+Form("kappa2_njet%d", 10*(2*ihist+4)+5+2*ihist),    5, -0.5, 4.5);
+      h1_nb_down[ihist] = new TH1F(year+"_"+syst_list[isyst]+"_"+Form("kappa1_njet%d", 10*(2*ihist+4)+5+2*ihist), year+"_"+syst_list[isyst]+"_"+Form("kappa1_njet%d", 10*(2*ihist+4)+5+2*ihist),  5, -0.5, 4.5);
+      h2_nb_down[ihist] = new TH1F(year+"_"+syst_list[isyst]+"_"+Form("kappa2_njet%d", 10*(2*ihist+4)+5+2*ihist), year+"_"+syst_list[isyst]+"_"+Form("kappa2_njet%d", 10*(2*ihist+4)+5+2*ihist),  5, -0.5, 4.5);
+      h1_nb_fit_up[ihist]   = new TH1F(Form("h1_nb_fit_up%d", 10*(2*ihist+4)+5+2*ihist),   Form("h1_nb_fit_up%d", 10*(2*ihist+4)+5+2*ihist),    5, -0.5, 4.5);
+      h2_nb_fit_up[ihist]   = new TH1F(Form("h2_nb_fit_up%d", 10*(2*ihist+4)+5+2*ihist),   Form("h2_nb_fit_up%d", 10*(2*ihist+4)+5+2*ihist),    5, -0.5, 4.5);
+      h1_nb_fit_down[ihist] = new TH1F(Form("h1_nb_fit_down%d", 10*(2*ihist+4)+5+2*ihist), Form("h1_nb_fit_down%d", 10*(2*ihist+4)+5+2*ihist),  5, -0.5, 4.5);
+      h2_nb_fit_down[ihist] = new TH1F(Form("h2_nb_fit_down%d", 10*(2*ihist+4)+5+2*ihist), Form("h2_nb_fit_down%d", 10*(2*ihist+4)+5+2*ihist),  5, -0.5, 4.5);
+/*
       h1_nb_up[ihist]   = new TH1F(Form("h1_nb_up%d", ihist),   Form("h1_nb_up%d", ihist),    5, -0.5, 4.5);
       h2_nb_up[ihist]   = new TH1F(Form("h2_nb_up%d", ihist),   Form("h2_nb_up%d", ihist),    5, -0.5, 4.5);
       h1_nb_down[ihist] = new TH1F(Form("h1_nb_down%d", ihist), Form("h1_nb_down%d", ihist),  5, -0.5, 4.5);
@@ -133,6 +144,7 @@ int main(int argc, char *argv[]){
       h2_nb_fit_up[ihist]   = new TH1F(Form("h2_nb_fit_up%d", ihist),   Form("h2_nb_fit_up%d", ihist),    5, -0.5, 4.5);
       h1_nb_fit_down[ihist] = new TH1F(Form("h1_nb_fit_down%d", ihist), Form("h1_nb_fit_down%d", ihist),  5, -0.5, 4.5);
       h2_nb_fit_down[ihist] = new TH1F(Form("h2_nb_fit_down%d", ihist), Form("h2_nb_fit_down%d", ihist),  5, -0.5, 4.5);
+*/
     }
 
     //
@@ -174,8 +186,8 @@ int main(int argc, char *argv[]){
       h1_nb_up[ihist]->SetBinError(4, h1_up->GetBinError(25*ihist+14)); 
       if(ihist>0) 
       {
-        h1_nb_up[ihist]->SetBinContent(5, h1_up->GetBinContent(25*ihist+14)); 
-        h1_nb_up[ihist]->SetBinError(5, h1_up->GetBinError(25*ihist+14)); 
+        h1_nb_up[ihist]->SetBinContent(5, h1_up->GetBinContent(25*ihist+16)); 
+        h1_nb_up[ihist]->SetBinError(5, h1_up->GetBinError(25*ihist+16)); 
       }
 
 
@@ -191,8 +203,8 @@ int main(int argc, char *argv[]){
       h1_nb_down[ihist]->SetBinError(4, h1_down->GetBinError(25*ihist+14)); 
       if(ihist>0) 
       {
-        h1_nb_down[ihist]->SetBinContent(5, h1_down->GetBinContent(25*ihist+14)); 
-        h1_nb_down[ihist]->SetBinError(5, h1_down->GetBinError(25*ihist+14)); 
+        h1_nb_down[ihist]->SetBinContent(5, h1_down->GetBinContent(25*ihist+16)); 
+        h1_nb_down[ihist]->SetBinError(5, h1_down->GetBinError(25*ihist+16)); 
       }
 
       // kappa2 up
@@ -207,8 +219,8 @@ int main(int argc, char *argv[]){
       h2_nb_up[ihist]->SetBinError(4, h2_up->GetBinError(25*ihist+14)); 
       if(ihist>0) 
       {
-        h2_nb_up[ihist]->SetBinContent(5, h2_up->GetBinContent(25*ihist+14)); 
-        h2_nb_up[ihist]->SetBinError(5, h2_up->GetBinError(25*ihist+14)); 
+        h2_nb_up[ihist]->SetBinContent(5, h2_up->GetBinContent(25*ihist+16)); 
+        h2_nb_up[ihist]->SetBinError(5, h2_up->GetBinError(25*ihist+16)); 
       }
 
       // kappa2 down
@@ -223,8 +235,8 @@ int main(int argc, char *argv[]){
       h2_nb_down[ihist]->SetBinError(4, h2_down->GetBinError(25*ihist+14)); 
       if(ihist>0) 
       {
-        h2_nb_down[ihist]->SetBinContent(5, h2_down->GetBinContent(25*ihist+14)); 
-        h2_nb_down[ihist]->SetBinError(5, h2_down->GetBinError(25*ihist+14)); 
+        h2_nb_down[ihist]->SetBinContent(5, h2_down->GetBinContent(25*ihist+16)); 
+        h2_nb_down[ihist]->SetBinError(5, h2_down->GetBinError(25*ihist+16)); 
       }
     }
 
@@ -255,10 +267,13 @@ int main(int argc, char *argv[]){
       h1_nb_down[ihist]->Draw("hist same");  
 
       h1_nb_up[ihist]->Fit("fit");
-      for(unsigned int inb=0; inb<5; inb++)
+      for(unsigned int inb=0; inb<5; inb++){
          h1_nb_fit_up[ihist]->SetBinContent(inb+1, 
              return_y(inb, func->GetParameter(0), func->GetParameter(1))); 
-      
+	 cout << func->GetParameter(0) << " 1 : " << func->GetParameter(1) << endl;
+	 cout << return_y(inb, func->GetParameter(0), func->GetParameter(1)) << endl;
+	 cout << h1_nb_fit_up[ihist]->GetBinContent(inb+1) << endl;
+      }
       h1_nb_down[ihist]->Fit("fit");
       for(unsigned int inb=0; inb<5; inb++)
          h1_nb_fit_down[ihist]->SetBinContent(inb+1, 
@@ -299,10 +314,16 @@ int main(int argc, char *argv[]){
       h2_nb_fit_down[ihist]->Draw("hist same");
 
       // copy to summary hists
-      h1_nb_fit_summary_up[isyst][ihist]    = h1_nb_fit_up[ihist]; 
-      h1_nb_fit_summary_down[isyst][ihist]  = h1_nb_fit_down[ihist]; 
-      h2_nb_fit_summary_up[isyst][ihist]    = h2_nb_fit_up[ihist]; 
-      h2_nb_fit_summary_down[isyst][ihist]  = h2_nb_fit_down[ihist]; 
+      h1_nb_fit_summary_up[isyst][ihist]    = dynamic_cast<TH1F*>(h1_nb_fit_up[ihist]->Clone());
+      h1_nb_fit_summary_down[isyst][ihist]    = dynamic_cast<TH1F*>(h1_nb_fit_down[ihist]->Clone());
+      h2_nb_fit_summary_up[isyst][ihist]    = dynamic_cast<TH1F*>(h2_nb_fit_up[ihist]->Clone());
+      h2_nb_fit_summary_down[isyst][ihist]    = dynamic_cast<TH1F*>(h2_nb_fit_down[ihist]->Clone());
+
+
+//      h1_nb_fit_summary_up[isyst][ihist]    = h1_nb_fit_up[ihist]; 
+//      h1_nb_fit_summary_down[isyst][ihist]  = h1_nb_fit_down[ihist]; 
+//      h2_nb_fit_summary_up[isyst][ihist]    = h2_nb_fit_up[ihist]; 
+//      h2_nb_fit_summary_down[isyst][ihist]  = h2_nb_fit_down[ihist]; 
    
       // normalize such that first bin content is 1
       h1_nb_fit_summary_up[isyst][ihist]->Scale(1./h1_nb_fit_summary_up[isyst][ihist]->GetBinContent(1)); 

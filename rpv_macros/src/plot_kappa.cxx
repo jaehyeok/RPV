@@ -206,10 +206,11 @@ int main(int argc, char *argv[])
 
     TFile *infile;
     if(argc>6) infile = TFile::Open(filename,"READ");
-    else infile = TFile::Open("variations/output_"+year+".root", "READ");
+//    else infile = TFile::Open("variations/output_"+year+".root", "READ");
 
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;
+    cout << "HIHIHIHIHIHIHIHIHIHIHI" << endl;
 
     //
     TH1F *h1_mj_data[52], *h1_mj_qcd[52], *h1_mj_ttbar[52], *h1_mj_wjets[52], *h1_mj_other[52], *h1_mj_mc[52];
@@ -245,6 +246,19 @@ int main(int argc, char *argv[])
         h1_mj_data[ibin]  = static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin))); 
       }
       else if(syst!="nominal"){
+      //(murf, mur, and muf have different name from other systs in output file) FIXME
+//	if(syst.find("mu")!=std::string::npos){
+	if(syst=="murf"||syst=="mur"||syst=="muf"){
+          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_qcd_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_ttbar_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_wjets_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+          h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s_other_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+          h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
+          h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
+          h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
+          h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);
+	}
+	else {
         h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
         h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
         h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
@@ -254,6 +268,7 @@ int main(int argc, char *argv[])
         h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
         h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
         h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);
+	}
       }
       h1_mj_qcd[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin))); 
       h1_mj_ttbar[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin))); 

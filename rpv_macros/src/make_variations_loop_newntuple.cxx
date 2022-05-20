@@ -690,8 +690,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     // 
     // Central weights
     // 
-    float nominalweight = lumi*tree.weight();
-    //float nominalweight = lumi*tree.weight()*tree.frac1718(); // FIXME for 2017+2018 merging
+    float nominalweight = lumi*tree.weight()*tree.pass(); //FIXME 20220118
+//    float nominalweight = lumi*tree.weight()*tree.frac1718(); // FIXME for 2017+2018 merging
     //cout<<nominalweight<<endl;
     //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
 
@@ -834,7 +834,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     }
     if(variations=="pileup") 
     {
-      if(procname.Contains("signal")){
+//      if(procname.Contains("signal")){
 	if(tree.w_pu()!=0){
           upweight    = upweight*tree.sys_pu()[0]/tree.w_pu();
           downweight  = downweight*tree.sys_pu()[1]/tree.w_pu();
@@ -842,8 +842,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 	else if(tree.w_pu()==0){
 	  upweight    = 0;
           downweight  = 0;
-	}// */
-      }
+        }
+//	}// */
       else{
         upweight    = upweight;
         downweight  = downweight;
@@ -1295,10 +1295,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       if(str_year==""){ // for 2017+2018 merging FIXME
         upname = procname+"_"+variations+"_"+procnamemu+"_"+year+"Up";
         downname = procname+"_"+variations+"_"+procnamemu+"_"+year+"Down";
+//BJ_220322        upname = procname+"_"+variations+"_"+year+"Up";
+//BJ_220322        downname = procname+"_"+variations+"_"+year+"Down";
       }
       else{
         upname = procname+"_"+variations+"_"+procnamemu+"_"+str_year+"Up";
         downname = procname+"_"+variations+"_"+procnamemu+"_"+str_year+"Down";
+//BJ_220322        upname = procname+"_"+variations+"_"+str_year+"Up";
+//BJ_220322        downname = procname+"_"+variations+"_"+str_year+"Down";
       }// */
 
       h1up[ibin]->SetTitle(upname.Data());
@@ -1310,14 +1314,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     }
     else 
     {
-      /*if(str_year==""){ // for 2017+2018 merging FIXME
+      if(str_year==""){ // for 2017+2018 merging FIXME
         upname = procname+"_"+variations+"_"+year+"Up";
         downname = procname+"_"+variations+"_"+year+"Down";
       }
       else{
         upname = procname+"_"+variations+"_"+str_year+"Up";
         downname = procname+"_"+variations+"_"+str_year+"Down";
-      }// */
+      }//*/
 
       h1up[ibin]->SetTitle(upname.Data());
       h1up[ibin]->SetName(upname.Data());

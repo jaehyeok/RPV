@@ -592,13 +592,6 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       if(Samples[isam].style>0) leg[ileg].AddEntry(histo[1][var][sam], leghisto, "l");
       else leg[ileg].AddEntry(histo[1][var][sam], leghisto, "p");
       legcount++;
-      // lumi labels
-      TLatex *TexEnergyLumi = new TLatex(0.95, 0.92, Form("#font[42]{%.1f fb^{-1}}", luminosity.Atof()));
-      TexEnergyLumi->SetNDC();
-      TexEnergyLumi->SetTextSize(0.04);
-      TexEnergyLumi->SetTextAlign(31);
-      TexEnergyLumi->SetLineWidth(2);
-      TexEnergyLumi->Draw("same");
     } // Loop over samples
     for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Draw(); 
     if(vars[var].cut>0) line.DrawLine(vars[var].cut, 0, vars[var].cut, maxhisto*1.05);

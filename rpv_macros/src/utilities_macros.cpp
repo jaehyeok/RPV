@@ -145,7 +145,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 
     bool someBands = false;
     // Generating vector of histograms
-    title = cuts2title(vars[var].cuts); 
+    title = cuts2title(vars[var].cuts);
     if(namestyle.Contains("CMSPaper") && !showcuts) title = "";
     for(unsigned his(0); his < 2; his++){
       varhisto.resize(0);
@@ -170,8 +170,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       int isam = vars[var].samples[sam];
       if(!Samples[isam].isSig && !Samples[isam].isData) nbkg++;
       samVariable = Samples[isam].samVariable;
-      //totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
-      totCut = Samples[isam].factor+"*"+luminosity+"*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; 
+      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
+//FIXME      totCut = Samples[isam].factor+"*"+luminosity+"*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; 
       if(Samples[isam].isData) totCut= vars[var].cuts+"&&"+Samples[isam].cut;
       if(vars[var].PU_reweight && !Samples[isam].isData) totCut = Samples[isam].factor+"*"+luminosity+"*weight*wpu*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
       //cout<<totCut<<endl;
@@ -560,16 +560,22 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	  if (!variableBins) ytitle += ("/("+RoundNumber(binwidth,digits) +" "+vars[var].unit+")");
 	}	
         histo[1][var][sam]->SetYTitle(ytitle);
-        if(Samples[isam].style>0) histo[1][var][sam]->Draw("hist");
-        else histo[1][var][sam]->Draw("e0 x0");
+        if(Samples[isam].style>0) histo[1][var][sam]->Draw("hist E"); //220727 draw error bar
+        else histo[1][var][sam]->Draw("E");
       } else {
-        if(Samples[isam].style>0) histo[1][var][sam]->Draw("hist same");
-        else histo[1][var][sam]->Draw("e0 x0 same");
+        if(Samples[isam].style>0) histo[1][var][sam]->Draw("hist E same"); //220727 draw error bar
+        else histo[1][var][sam]->Draw("E same");
       }
       leghisto = Samples[isam].label;
       unsigned ileg = (Nsam<=3?0:legcount>=(Nsam+1)/2);
       if(!namestyle.Contains("CMSPaper") || showcuts){
         if(vars[var].nevents.at(sam)<0){
+	  leg[ileg].SetX1NDC(0.23); leg[ileg].SetX2NDC(0.43); //220727 make plot look pretty
+	  leg[ileg].SetY1NDC(0.2); leg[ileg].SetY2NDC(0.35);
+	  if(sam>1) {
+	    leg[ileg].SetX1NDC(0.5); leg[ileg].SetX2NDC(0.7); //220727 make plot look pretty
+	    leg[ileg].SetY1NDC(0.7); leg[ileg].SetY2NDC(0.85);
+	  }
           leghisto += " [#mu=";
           int digits(0);
           if(histo[1][var][sam]->GetMean()<30) digits = 1;
@@ -586,6 +592,13 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       if(Samples[isam].style>0) leg[ileg].AddEntry(histo[1][var][sam], leghisto, "l");
       else leg[ileg].AddEntry(histo[1][var][sam], leghisto, "p");
       legcount++;
+      // lumi labels
+      TLatex *TexEnergyLumi = new TLatex(0.95, 0.92, Form("#font[42]{%.1f fb^{-1}}", luminosity.Atof()));
+      TexEnergyLumi->SetNDC();
+      TexEnergyLumi->SetTextSize(0.04);
+      TexEnergyLumi->SetTextAlign(31);
+      TexEnergyLumi->SetLineWidth(2);
+      TexEnergyLumi->Draw("same");
     } // Loop over samples
     for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Draw(); 
     if(vars[var].cut>0) line.DrawLine(vars[var].cut, 0, vars[var].cut, maxhisto*1.05);

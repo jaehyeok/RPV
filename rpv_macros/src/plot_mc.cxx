@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
   Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}=2", rpv::c_wjets, 1, cutandweight("stitch_ht*pass*(nbm==2)",extraweight)));
   Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}#geq3", rpv::c_other, 1, cutandweight("stitch_ht*pass*(nbm>=3)",extraweight)));
   // ttbar
-  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=0", rpv::c_tt,    1, cutandweight("stitch_ht*pass*(nbm==0)",extraweight)));
+//  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=0", rpv::c_tt,    1, cutandweight("stitch_ht*pass*(nbm==0)",extraweight)));
   Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=1", rpv::c_qcd,   1, cutandweight("stitch_ht*pass*(nbm==1)",extraweight)));
   Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=2", rpv::c_wjets, 1, cutandweight("stitch_ht*pass*(nbm==2)",extraweight)));
   Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}#geq3", rpv::c_other, 1, cutandweight("stitch_ht*pass*(nbm>=3)",extraweight)));

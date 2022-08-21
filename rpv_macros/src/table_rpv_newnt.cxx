@@ -12,7 +12,7 @@
 
 using namespace std;
 
-bool formatLatex=false;
+bool formatLatex=true;
 
 float addInQuad(float a, float b);
 void printOneLine(int nb, 
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=2",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=2",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=2",    
-	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}=3",    
+	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}\\geq3",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},6\\leq N_{jets}\\leq7,N_{b}=3",    
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV}, N_{jets}\\geq8,N_{b}=3",
 	"N_{leps}=1,H_{T}>1200~\\textrm{GeV},4\\leq N_{jets}\\leq5,N_{b}\\geq4",//bin34
@@ -517,12 +517,14 @@ int main(int argc, char* argv[])
     int tablebin_1lep[30]={22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51};
     cout << "\\begin{table}" << endl;
     cout << "\\centering" << endl;
+    cout << "\\resizebox{\\textwidth}{!}{%" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
-    cout << "$Mj$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1700\\textrm{GeV}$\\\\"  << endl;
+    cout << "$M_{J}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1900\,\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
-    for(int ibin=22; ibin<nbins; ibin++)
+//    for(int ibin=22; ibin<nbins; ibin++)
+    for(int ibin=22; ibin<37; ibin++) // for only Nlep=1 bins
     { 
 	if(ibin==34) continue;//exclude bin34
         int tablebin=tablebin_1lep[ibin-22];
@@ -536,23 +538,40 @@ int main(int argc, char* argv[])
 
         cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$} \\\\" << endl;
         cout << "\\hline" << endl;
-        for(int inb=0; inb<3; inb++)
+        for(int inb=0; inb<3; inb++) {
+	  if(ibin==32 || ibin==33 || ibin==35 || ibin==36) {
+	    string imj;
+	    if(inb==0) imj="$500 ~ 800$";
+	    else if(inb==1) imj="$800 ~ 1100$";
+	    else if(inb==2) imj="$1100 ~$";
+	    cout << imj << " & "
+		 << 0 << " & "
+		 << 0 << " & "
+		 << 0 << " & "
+		 << 0 << " & "
+		 << 0 << " & "
+		 << 0 << " & "
+		 << 0 << " \\\\ " << endl;
+	    }
+	  else
             printYieldBin(inb,
                     data[tablebin][inb],
                     qcd[tablebin][inb],
                     ttbar[tablebin][inb],
                     wjets[tablebin][inb],
                     other[tablebin][inb],
-                    sig1700[tablebin][inb],
+                    sig1900[tablebin][inb],
                     err[0][tablebin][inb],//*qcd[tablebin][inb],
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],
                     err[2][tablebin][inb],//*wjets[tablebin][inb],
                     err[3][tablebin][inb],//*other[tablebin][inb],
                     databin/mcbin, false /*renormalize to data*/, true);
+	}
         cout << "\\hline" << endl;
     }
     cout<< "\\hline" << endl;
-    cout << "\\end{tabular}"<<endl;
+    cout << "\\end{tabular}" << endl;
+    cout << "}" << endl;
     cout << "\\end{table}\n"<< endl;
 
     infile->Close();

@@ -1046,10 +1046,10 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
 
 void outputLognormalSystematics(std::ofstream &file)
 {
-  // luminosity uncertainty is 2.6% for 2016 data
+  // luminosity uncertainty is 2.6% for 2016 data    ->    1.2% for 2016UL data (NanoAODv9)  (ref:https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun2) 230104
   file << "lumi  lnN  ";
   for(unsigned int ibin=0; ibin<nbins; ibin++) {
-    file << "1.106 - - - 1.106 ";
+    file << "1.012 - - - 1.012 ";
   }
   file << std::endl;
 

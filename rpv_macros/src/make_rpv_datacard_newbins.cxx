@@ -1202,12 +1202,12 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
   void outputLognormalSystematics(std::ofstream &file, TString year)
   {
-    // luminosity uncertainty is 2.6% for 2016 data
+    // luminosity uncertainty is 2.6% for 2016 data    ->    1.2% for 2016UL data (NanoAODv9)  (ref:https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun2) 230104
     // luminosity uncertainty is 2.3% for 2017 data
     // luminosity uncertainty is 2.5% for 2018 data
     file << "lumi  lnN  ";
     for(unsigned int ibin=0; ibin<nbins; ibin++) {
-      if(year == "2016") file << "1.026 - - - 1.026 ";
+      if(year == "2016") file << "1.012 - - - 1.012 ";
       if(year == "2017") file << "1.023 - - - 1.023 ";
       if(year == "2018") file << "1.025 - - - 1.025 ";
     }

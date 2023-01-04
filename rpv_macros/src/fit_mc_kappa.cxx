@@ -427,7 +427,7 @@ int main(int argc, char *argv[]){
 
       h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetRangeUser(-0.5, 0.5); 
       h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitle("N_{b}"); 
-      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitle("1-#kappa^{MC}_{1}"); 
+      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitle("#kappa^{MC}_{1}-1"); 
       h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitleSize(0.05); 
       h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitleSize(0.05); 
       h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitleOffset(0.8); 
@@ -506,7 +506,7 @@ int main(int argc, char *argv[]){
 
       h2_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetRangeUser(-0.5, 0.5); 
       h2_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitle("N_{b}"); 
-      h2_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitle("1-#kappa^{MC}_{2}"); 
+      h2_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitle("#kappa^{MC}_{2}-1"); 
       h2_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitleSize(0.05); 
       h2_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitleSize(0.05); 
       h2_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitleOffset(0.8); 

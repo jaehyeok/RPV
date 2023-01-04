@@ -43,7 +43,7 @@ void printYieldBin(int bin, int nb, float data,
 void printYieldBin(int mjbin, float data,
 		   float qcd, float ttbar, float wjets, float other, float sig,
 		   float qcd_err, float ttbar_err, float wjets_err, float other_err,
-		   bool printErr); 
+		   float allbkg_err, bool printErr); 
 //
 // h1 cosmetics
 //
@@ -86,7 +86,7 @@ TH1D* changeHistogram(TH1D* h){
     return hist;
 }
 
-void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
+void plotresult(TString step="step1", TString year="2016",int gluinoMass=1800)
 {
   float lumi = 35.9;
   if(year=="2017") lumi = 41.5;
@@ -156,7 +156,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
 //    binnumber = {2};
   
   // for yield table  
-  float data[31][3], qcd[31][3], ttbar[31][3], wjets[31][3], other[31][3], sig1700[31][3], sig1900[31][3]; 
+  float data[31][3], qcd[31][3], ttbar[31][3], wjets[31][3], other[31][3], sig1700[31][3], sig1800[31][3]; 
   float err[5][31][4]; // first index : qcd, ttbar, wjets, other, all bkg
   
   for(int ibin=22; ibin<31; ibin++)
@@ -169,7 +169,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
           wjets[ibin][inb] = 0;
           other[ibin][inb] = 0;
           sig1700[ibin][inb] = 0;
-          sig1900[ibin][inb] = 0;
+          sig1800[ibin][inb] = 0;
           err[0][ibin][inb] = 0;
           err[1][ibin][inb] = 0;
           err[2][ibin][inb] = 0;
@@ -181,7 +181,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
   
   // Get prefit signal  
   TH1D* h1_prefit_sig1700[31]; 
-  TH1D* h1_prefit_sig1900[31]; 
+  TH1D* h1_prefit_sig1800[31]; 
   TH1D* h1_prefit_data[31]; 
   //TFile* infile  = TFile::Open("variations/output_tdatcard10_M1700.root", "READ");
 //  TFile* infile  = TFile::Open(Form("output_tdatcard11_%s.root", year.Data()), "READ");
@@ -193,8 +193,8 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
     h1_prefit_sig1700[i] = new TH1D(Form("h1_prefit_sig1700_bin%i",ibin), 
                                    Form("h1_prefit_sig1700_bin%i",ibin), 
                                    3, 500, 1400); 
-    h1_prefit_sig1900[i] = new TH1D(Form("h1_prefit_sig1900_bin%i",ibin), 
-                                   Form("h1_prefit_sig1900_bin%i",ibin), 
+    h1_prefit_sig1800[i] = new TH1D(Form("h1_prefit_sig1800_bin%i",ibin), 
+                                   Form("h1_prefit_sig1800_bin%i",ibin), 
                                    3, 500, 1400); 
     h1_prefit_data[i] = new TH1D(Form("h1_prefit_data_bin%i",ibin), 
                                    Form("h1_prefit_data_bin%i",ibin), 
@@ -204,8 +204,8 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
     {
         sig1700[i][inb-1]= (static_cast<TH1D*>(infile->Get(Form("bin%i/signal_M1700", ibin))))->GetBinContent(inb);  
         h1_prefit_sig1700[i]->SetBinContent(inb, sig1700[i][inb-1]);
-        sig1900[i][inb-1]= (static_cast<TH1D*>(infile->Get(Form("bin%i/signal_M%i", ibin, gluinoMass))))->GetBinContent(inb);  
-        h1_prefit_sig1900[i]->SetBinContent(inb, sig1900[i][inb-1]);
+        sig1800[i][inb-1]= (static_cast<TH1D*>(infile->Get(Form("bin%i/signal_M%i", ibin, gluinoMass))))->GetBinContent(inb);  
+        h1_prefit_sig1800[i]->SetBinContent(inb, sig1800[i][inb-1]);
         data[i][inb-1]= (static_cast<TH1D*>(infile->Get(Form("bin%i/data_obs", ibin))))->GetBinContent(inb);  
         h1_prefit_data[i]->SetBinContent(inb, data[i][inb-1]);
     }  
@@ -215,7 +215,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
 
   cout << "Pre or postfit Uncertatinty " << endl;
   // Get post-fit uncertainty 
-  TFile* errfile  = TFile::Open(Form("rpv_postfit_err_%s_%s.root",step.Data(),year.Data()),"READ");
+  TFile* errfile  = TFile::Open(Form("rpv_postfit_err_%s_%s_no_rateParam.root",step.Data(),year.Data()),"READ");
   for(int i=22; i<22+binname.size(); i++) {   
       int ibin = binnumber.at(i-22);
       
@@ -323,7 +323,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
         h1_ttbar->Scale(sf);
         h1_wjets->Scale(sf);
         h1_other->Scale(sf);
-        if(plotSPlusB) h1_signal =  h1_prefit_sig1900[i]; 
+        if(plotSPlusB) h1_signal =  h1_prefit_sig1800[i]; 
     }
     /*
     else if(plotSPlusB)
@@ -332,7 +332,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
         h1_ttbar =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/ttbar", ibin)));
         h1_wjets =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/wjets", ibin)));
         h1_other =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/other", ibin)));
-        if(plotSPlusB) h1_signal =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/signal_M1900", ibin)));
+        if(plotSPlusB) h1_signal =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_s/bin%i/signal_M1800", ibin)));
     }
     */
     else 
@@ -341,7 +341,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
         h1_ttbar =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/ttbar", ibin)));
         h1_wjets =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/wjets", ibin)));
         h1_other =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/other", ibin)));
-        if(plotSPlusB) h1_signal =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/signal_M1900", ibin)));
+        if(plotSPlusB) h1_signal =  changeHistogram((TH1D*) fResults->Get(Form("shapes_fit_b/bin%i/signal_M1800", ibin)));
     }
 
     //fill yields 
@@ -362,8 +362,8 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
     h1cosmetic(h1_other,         Form("other bin%i", ibin),              kBlack, 2, kGray+1,     "M_{J}");
     if(plotSPlusB) h1cosmetic(h1_signal,        Form("signal bin%i", ibin),             kBlack,   3, kRed,           "M_{J}");
     h1cosmetic(h1_prefit_sig1700[i],        Form("prefit signal 1700 bin%i", ibin),             kRed,   3, 0,           "M_{J}");
-    h1cosmetic(h1_prefit_sig1900[i],        Form("prefit signal 1500 bin%i", ibin),             kRed,   3, 0,           "M_{J}");
-    h1_prefit_sig1900[i]->SetLineStyle(2); 
+    h1cosmetic(h1_prefit_sig1800[i],        Form("prefit signal 1500 bin%i", ibin),             kRed,   3, 0,           "M_{J}");
+    h1_prefit_sig1800[i]->SetLineStyle(2); 
 
     // uncertainty band 
     TH1D *h1_mc = (TH1D*)h1_qcd->Clone("h1_qcd");
@@ -399,7 +399,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
     st->GetXaxis()->SetTitle("M_{J}");
     st->GetYaxis()->SetLabelSize(0.06);
     
-    if(!doPrefit) h1_prefit_sig1900[i]->Draw("hist same"); 
+    if(!doPrefit) h1_prefit_sig1800[i]->Draw("hist same"); 
     
     // legend
     TLegend *leg = new TLegend(0.55, 0.55, 0.85, 0.87);
@@ -423,10 +423,10 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
         //leg->AddEntry(h1_signal, Form("m_{#tilde{g}}=%i GeV",gluinoMass), "F");
         //leg->AddEntry(h1_prefit_sig1700[i], Form("Expected m_{#tilde{g}}=%i GeV",gluinoMass), "L");
         leg->AddEntry(h1_prefit_sig1700[i], Form("Expected m_{#tilde{g}}=%i GeV",1700), "L");
-        leg->AddEntry(h1_prefit_sig1900[i], Form("Expected m_{#tilde{g}}=%i GeV",gluinoMass) , "L");
+        leg->AddEntry(h1_prefit_sig1800[i], Form("Expected m_{#tilde{g}}=%i GeV",gluinoMass) , "L");
     }
     //leg->AddEntry(h1_mc,    "Post-fit uncertainty",    "F");
-    leg->AddEntry(h1_prefit_sig1900[i], Form("m_{#tilde{g}}=%i GeV",gluinoMass) , "L");
+    leg->AddEntry(h1_prefit_sig1800[i], Form("m_{#tilde{g}}=%i GeV",gluinoMass) , "L");
     leg->Draw();
 
     // CMS and lumi labels
@@ -654,13 +654,14 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
   int tablebin_1lep[15]={22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
   cout << "\\begin{table}" << endl;
   cout << "\\centering" << endl;
+  cout << "\\vspace{1mm}" << endl;
   cout << "\\resizebox{\\textwidth}{!}{%" << endl;
   cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
   cout << "\\hline" << endl;
-  cout << "$M_{J}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1900\,\\textrm{GeV}$\\\\"  << endl;
+  cout << "$M_{J}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1800$ $\\textrm{GeV}$\\\\"  << endl;
   cout << "\\hline\\hline" << endl;
 
-  for(int ibin=22; ibin<37; ibin++) 
+  for(int ibin=22; ibin<32; ibin++) //FIXME when unblinding
   {
     if(ibin==34) continue;//exclude bin34
     int tablebin=tablebin_1lep[ibin-22]; 
@@ -668,35 +669,19 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1900)
     cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin-22].Data() << "$} \\\\" << endl;
     cout << "\\hline" << endl;
     for(int inb=0; inb<3; inb++) { 
-      if(ibin==32 || ibin==33 || ibin==35 || ibin==36) {
-        string imj;
-        if(inb==0) imj="$500 ~ 800$";
-	else if(inb==1) imj="$800 ~ 1100$";
-	else if(inb==2) imj="$1100 ~$";
-        cout << imj << " & "
-	   << 0 << " & "
-	   << 0 << " & "
-	   << 0 << " & "
-	   << 0 << " & "
-	   << 0 << " & "
-	   << 0 << " & "
-	   << 0 << " \\\\ " << endl;
-      }
-      else
       printYieldBin(inb,  
 		data[tablebin][inb], 
 		qcd[tablebin][inb], 
 		ttbar[tablebin][inb], 
 		wjets[tablebin][inb], 
 		other[tablebin][inb],
-		sig1900[tablebin][inb],
-		err[0][tablebin][inb], 
-		err[1][tablebin][inb], 
-		err[2][tablebin][inb], 
-		err[3][tablebin][inb],
-//		err[4][tablebin][inb]*(qcd[tablebin][inb]+ttbar[tablebin][inb]+wjets[tablebin][inb]+other[tablebin][inb])
-		//true,
-		false);
+		sig1800[tablebin][inb],
+		err[0][tablebin][inb]*qcd[tablebin][inb], 
+		err[1][tablebin][inb]*ttbar[tablebin][inb], 
+		err[2][tablebin][inb]*wjets[tablebin][inb], 
+		err[3][tablebin][inb]*other[tablebin][inb],
+		err[4][tablebin][inb]*(qcd[tablebin][inb]+ttbar[tablebin][inb]+wjets[tablebin][inb]+other[tablebin][inb]),
+		true);
     }  
     cout << "\\hline" << endl;
   }
@@ -771,7 +756,7 @@ void printYieldBin(int bin, int nb, float data, float qcd, float ttbar, float wj
 void printYieldBin(int mjbin, float data,
          float qcd, float ttbar, float wjets, float other, float sig,
 	 float qcd_err, float ttbar_err, float wjets_err, float other_err,
-	 bool printErr)	 
+	 float allbkg_err, bool printErr)	 
 {
   if(qcd==0) qcd_err=0;
   if(ttbar==0) ttbar_err=0;
@@ -782,16 +767,20 @@ void printYieldBin(int mjbin, float data,
   if(mjbin==0) imj="$500 ~ 800$";
   if(mjbin==1) imj="$800 ~ 1100$";
   if(mjbin==2) imj="$1100 ~$";
-  float allbkg_err = TMath::Sqrt(qcd_err*qcd_err + ttbar_err*ttbar_err + wjets_err*wjets_err + other_err*other_err);
+//  float allbkg_err = TMath::Sqrt(qcd_err*qcd_err + ttbar_err*ttbar_err + wjets_err*wjets_err + other_err*other_err);
 
   if(printErr)
   {
     cout << imj << " & "
-	<< Form("$%.1f \\pm %.1f$", qcd, qcd_err*qcd) << " & "
-	<< Form("$%.1f \\pm %.1f$", ttbar, ttbar_err*ttbar) << " & "
-	<< Form("$%.1f \\pm %.1f$", wjets, wjets_err*wjets) << " & "
-	<< Form("$%.1f \\pm %.1f$", other, other_err*other) << " & "
-	<< Form("$%.1f \\pm %.1f$", qcd+ttbar+wjets+other, allbkg_err*(qcd+ttbar+wjets+other)) << " & "
+//	<< Form("$%.1f \\pm %.1f$", qcd, qcd_err) << " & "
+//	<< Form("$%.1f \\pm %.1f$", ttbar, ttbar_err) << " & "
+//	<< Form("$%.1f \\pm %.1f$", wjets, wjets_err) << " & "
+//	<< Form("$%.1f \\pm %.1f$", other, other_err) << " & "
+	<< Form("$%.1f$", qcd) << " & "
+	<< Form("$%.1f$", ttbar) << " & "
+	<< Form("$%.1f$", wjets) << " & "
+	<< Form("$%.1f$", other) << " & "
+	<< Form("$%.1f \\pm %.1f$", qcd+ttbar+wjets+other, allbkg_err) << " & "
 	<< Form("$%.0f$", data) << " & "
 	<< Form("$%.1f$", sig) << " \\\\ " << endl;
   }

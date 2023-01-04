@@ -87,9 +87,9 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
   float lumi = 36.3;
   if(year=="2017") lumi = 41.5;
   if(year=="2017_20178") lumi = 41.5;
-  if(year=="2018") lumi = 59.7;
-  if(year=="2018_20178") lumi = 59.7;
-  if(year=="20178") lumi = 101.2;
+  if(year=="2018") lumi = 59.8;
+  if(year=="2018_20178") lumi = 59.8;
+  if(year=="20178") lumi = 101.3;
   if(year=="fullrun2") lumi =138;
   bool doPrefit=false;
   bool plotSPlusB=false;
@@ -431,11 +431,11 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1700)
     if(year=="2017_20178") lumi = 41.5;
     if(year=="vr_2017_20178") lumi = 41.5;
     if(year=="cr_2017_20178") lumi = 41.5;
-    if(year=="2018") lumi = 59.7;
-    if(year=="2018_20178") lumi = 59.7;
-    if(year=="vr_2018_20178") lumi = 59.7;
-    if(year=="cr_2018_20178") lumi = 59.7;
-    if(year=="20178") lumi = 101.2;
+    if(year=="2018") lumi = 59.8;
+    if(year=="2018_20178") lumi = 59.8;
+    if(year=="vr_2018_20178") lumi = 59.8;
+    if(year=="cr_2018_20178") lumi = 59.8;
+    if(year=="20178") lumi = 101.3;
     TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", lumi));
     TexEnergyLumi->SetNDC();
     TexEnergyLumi->SetTextSize(textSize);
@@ -840,8 +840,8 @@ void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std:
   TString lumi;
   if(year=="2016") lumi = "36.3";
   if(year=="2017") lumi = "41.5";
-  if(year=="2018") lumi = "59.7";
-  if(year=="20178") lumi = "101.2";
+  if(year=="2018") lumi = "59.8";
+  if(year=="20178") lumi = "101.3";
   TString cmslabel = "#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}";
   TString lumilabel = TString::Format("%1.1f", lumi.Atof())+" fb^{-1}, 13 TeV";
 

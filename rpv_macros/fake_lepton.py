@@ -17,7 +17,7 @@ def eventloop(ch,TH2_FLR,year,dat,cores,itr):
 	if dat : lumi=1.0
 	elif year=="2016" : lumi=36.3
 	elif year=="2017" : lumi=41.5
-	elif year=="2018" : lumi=59.7
+	elif year=="2018" : lumi=59.8
         for iety in range(ety_start,ety_end):
 		reg_nj=999;
 		perc=""

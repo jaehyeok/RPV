@@ -129,7 +129,7 @@ int main(int argc, char *argv[]){
     if(argc==5||argc==1){
       if(iyear=="2016") lumi = 36.3;
       else if(iyear=="2017") lumi = 41.5;
-      else if(iyear=="2018") lumi = 59.7;
+      else if(iyear=="2018") lumi = 59.8;
     }
     cout<<argc<<endl;
 

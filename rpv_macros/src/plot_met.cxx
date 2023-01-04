@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
   int nthreads = 10;
   ROOT::EnableImplicitMT(nthreads);
   TString year;
-  TString lumi = "59.7";
+  TString lumi = "59.8";
   //TString lumi = "36.3";
   //TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
   TString trigger = " trig_ht1050 "; // PFHT800 OR PFHT900 OR PFJet450 */
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
   /*TString lumi = "41.5";
   TString trigger = "trig_ht1050";// */
 
-  /*TString lumi = "59.7";
+  /*TString lumi = "59.8";
   TString trigger = "trig_ht1050";// */
 
   year = argv[1];
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
     trigger = "trig_ht1050";
   }
   else if(year == "2018"){
-    lumi = "59.7";
+    lumi = "59.8";
     trigger = "trig_ht1050";
   }//
 

@@ -17,7 +17,7 @@
 #include "utilities_macros_rpv.hpp"
 
 namespace {
-  TString lumi = "59.7";
+  TString lumi = "59.8";
   TString plot_type=".pdf";
   TString plot_style="CMSPaper";//"CMSPaper_Preliminary";
 }

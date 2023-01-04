@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
     cout<<"./run/plot_rpv [year] !!!!"<<endl;
   }
   
-  TString lumi = "35.9";
+  TString lumi = "36.3";
   TString trigger = "(trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
   if(year.Contains("2017"))   {lumi = "41.5";   trigger = "trig_ht1050";}
   if(year.Contains("2018"))   {lumi = "59.7";   trigger = "trig_ht1050";}

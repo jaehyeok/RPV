@@ -88,13 +88,13 @@ TH1D* changeHistogram(TH1D* h){
 
 void plotresult(TString step="step1", TString year="2016",int gluinoMass=1800)
 {
-  float lumi = 35.9;
+  float lumi = 36.3;
   if(year=="2017") lumi = 41.5;
   if(year=="2017_20178") lumi = 41.5;
   if(year=="2018") lumi = 59.7;
   if(year=="2018_20178") lumi = 59.7;
   if(year=="20178") lumi = 101.2;
-  if(year=="fullrun2") lumi =137;
+  if(year=="fullrun2") lumi =138;
   bool doPrefit=false;
   bool plotSPlusB=false;
   bool doControl=true;
@@ -431,7 +431,7 @@ void plotresult(TString step="step1", TString year="2016",int gluinoMass=1800)
 
     // CMS and lumi labels
     float textSize = 0.05;
-    float lumi = 35.9;
+    float lumi = 36.3;
     if(year=="2017") lumi = 41.5;
     if(year=="2017_20178") lumi = 41.5;
     if(year=="vr_2017_20178") lumi = 41.5;
@@ -897,7 +897,7 @@ void plotFitPulls(const RooArgList &pulls, const TString &pullString, const std:
   std::cout << "pull chi2/ndof: " << sumChi2 << "/" << iGood << std::endl;
 
   TString lumi;
-  if(year=="2016") lumi = "35.9";
+  if(year=="2016") lumi = "36.3";
   if(year=="2017") lumi = "41.5";
   if(year=="2018") lumi = "59.7";
   if(year=="20178") lumi = "101.2";

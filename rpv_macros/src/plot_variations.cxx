@@ -187,7 +187,7 @@ void drawUpDown(int bin, vector<TString> variations)
     
             // CMS and lumi labels
             float textSize = 0.05;
-            TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", 35.9));
+            TLatex *TexEnergyLumi = new TLatex(0.9,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", 36.3));
             TexEnergyLumi->SetNDC();
             TexEnergyLumi->SetTextSize(textSize);
             TexEnergyLumi->SetTextAlign (31);

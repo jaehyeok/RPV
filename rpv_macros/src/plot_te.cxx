@@ -172,7 +172,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		h1eff[ibin]->Write();
 
 		TString lumi;
-		if(year=="2016") lumi = "35.9";
+		if(year=="2016") lumi = "36.3";
 		if(year=="2017") lumi = "41.5";
 		if(year=="2018") lumi = "59.7";
 

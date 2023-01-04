@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
   ROOT::EnableImplicitMT(nthreads);
   TString year;
   TString lumi = "59.7";
-  //TString lumi = "35.9";
+  //TString lumi = "36.3";
   //TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
   TString trigger = " trig_ht1050 "; // PFHT800 OR PFHT900 OR PFJet450 */
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
   }*/
  // cout << "./run/plot_rpv.exe [year]" << endl;
   if(year == "2016"){
-    lumi = "35.9";
+    lumi = "36.3";
     trigger = "(trig_ht900 || trig_jet450)";
   }
   else if(year == "2017"){

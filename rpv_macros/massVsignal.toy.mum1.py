@@ -53,7 +53,8 @@ for mass in list(range(1500,2300,100)):
 	list_val_r =[]
 	for seed in list(range(1,1000)):
 		if seed%100==0 : print(str(mass)+" GeV, "+str(seed)+"th loop")
-		fitresult = "out_injection/higgsCombine_M"+str(mass)+"_"+str(seed)+".FitDiagnostics.mH120."+str(seed)+".root"
+#		fitresult = "out_injection/higgsCombine_M"+str(mass)+"_"+str(seed)+".FitDiagnostics.mH120."+str(seed)+".root"
+		fitresult = "out_injection/higgsCombine_M"+str(mass)+".FitDiagnostics.mH120."+str(seed)+".root"
 		file = ROOT.TFile(fitresult)
 		if file == None : raise RuntimeError, "Cannot open file %s" % fitresult
 		limit_t = file.Get("limit"); 

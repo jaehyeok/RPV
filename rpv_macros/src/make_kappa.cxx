@@ -49,7 +49,7 @@ bool debug = true;
 bool debug_unc = true;
 bool mconly = true;
 
-float lumi = 35.9;
+float lumi = 36.3;
 
 vector<int> bins = {0, 1, 2, 
                     3, 4, 5,  
@@ -124,7 +124,7 @@ int main(int argc, char *argv[]){
   for(auto iyear : years){
 
     if(argc==5||argc==1){
-      if(iyear=="2016") lumi = 35.9;
+      if(iyear=="2016") lumi = 36.3;
       else if(iyear=="2017") lumi = 41.5;
       else if(iyear=="2018") lumi = 59.7;
     }

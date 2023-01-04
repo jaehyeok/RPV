@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
       mjmax=atof(argv[3]);
       year =argv[4];
       cout<<year<<endl;
-      if(year=="2016") lumi = 35.9;
+      if(year=="2016") lumi = 36.3;
       else if(year=="2017") lumi = 41.5;
       else if(year=="2018") lumi = 59.7;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
       mjmin=atof(argv[3]);
       mjmax=atof(argv[4]);
       year = argv[5];
-      if(year=="2016") lumi = 35.9;
+      if(year=="2016") lumi = 36.3;
       else if(year=="2017") lumi = 41.5;
       else if(year=="2018") lumi = 59.7;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
       mjmax=atof(argv[4]);
       year = argv[5];
       str_year = argv[6];
-      if(year=="2016") lumi = 35.9;
+      if(year=="2016") lumi = 36.3;
       else if(year=="2017") lumi = 41.5;
       else if(year=="2018") lumi = 59.7;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;

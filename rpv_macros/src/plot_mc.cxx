@@ -29,7 +29,7 @@ int main(int argc, char *argv[]){
     cout<<"./run/plot_mc.exe [year] !!!!"<<endl;
   }
   string lumi;
-  if(year=="2016") lumi="35.9";
+  if(year=="2016") lumi="36.3";
   else if(year=="2017") lumi="41.5";
   else if(year=="2018") lumi="59.7";
 

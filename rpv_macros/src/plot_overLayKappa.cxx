@@ -34,7 +34,7 @@ void drawHeader(){
   lat->SetTextSize(0.053);
   lat->DrawLatexNDC(0.12, 0.93, "CMS #scale[0.8]{#font[52]{Work In Progress}}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.78, 0.93, "35.9 fb^{-1} (13 TeV)");//FIXME
+  lat->DrawLatexNDC(0.78, 0.93, "36.3 fb^{-1} (13 TeV)");//FIXME
 }
 
 int main(int argc, char *argv[]){

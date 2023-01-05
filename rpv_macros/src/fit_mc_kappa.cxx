@@ -17,6 +17,7 @@
 #include "THStack.h"
 #include "TLatex.h"
 #include "TF1.h"
+#include "TLine.h"
 
 using namespace std;
 
@@ -106,8 +107,8 @@ int main(int argc, char *argv[]){
 
 
   vector<TString> syst_list; 
-  syst_list = {"murf", "mur", "muf", 
-               "jec", "jer", 
+  syst_list = {"jec", "jer", 
+	       "murf", "mur", "muf",
                "lep_eff", "pileup", "gs", 
  	       "btag_bc", "btag_udsg"}; 
   if(year == "2016") syst_list.push_back("isr");
@@ -125,8 +126,13 @@ int main(int argc, char *argv[]){
   // combined 
   TH1F *h1_nb_fit_combined_up[3], *h2_nb_fit_combined_up[3]; 
   TH1F *h1_nb_fit_combined_down[3], *h2_nb_fit_combined_down[3]; 
+  // jec, jer
+  TH1F *h1_nb_fit_jec_up[3], *h2_nb_fit_jec_up[3]; 
+  TH1F *h1_nb_fit_jec_down[3], *h2_nb_fit_jec_down[3]; 
+  TH1F *h1_nb_fit_jer_up[3], *h2_nb_fit_jer_up[3]; 
+  TH1F *h1_nb_fit_jer_down[3], *h2_nb_fit_jer_down[3]; 
   for(unsigned int ihist=0; ihist<3; ihist++)
-  { 
+  { // combined
     h1_nb_fit_combined_up[ihist]   = new TH1F(Form("h1_nb_fit_combined_up%d", ihist),   
                                               Form("Kappa1 Up, Njets %d", ihist*2+4),    5, -0.5, 4.5);
     h1_nb_fit_combined_down[ihist]   = new TH1F(Form("h1_nb_fit_combined_down%d", ihist),   
@@ -134,6 +140,24 @@ int main(int argc, char *argv[]){
     h2_nb_fit_combined_up[ihist]   = new TH1F(Form("h2_nb_fit_combined_up%d", ihist),   
                                               Form("Kappa2 Up, Njets %d", ihist*2+4),    5, -0.5, 4.5);
     h2_nb_fit_combined_down[ihist]   = new TH1F(Form("h2_nb_fit_combined_down%d", ihist),   
+                                              Form("Kappa2 Down, Njets %d", ihist*2+4),    5, -0.5, 4.5);
+    // jec
+    h1_nb_fit_jec_up[ihist]   = new TH1F(Form("h1_nb_fit_jec_up%d", ihist),   
+                                              Form("Kappa1 Up, Njets %d", ihist*2+4),    5, -0.5, 4.5);
+    h1_nb_fit_jec_down[ihist]   = new TH1F(Form("h1_nb_fit_jec_down%d", ihist),   
+                                              Form("Kappa1 Down, Njets %d", ihist*2+4),    5, -0.5, 4.5);
+    h2_nb_fit_jec_up[ihist]   = new TH1F(Form("h2_nb_fit_jec_up%d", ihist),   
+                                              Form("Kappa2 Up, Njets %d", ihist*2+4),    5, -0.5, 4.5);
+    h2_nb_fit_jec_down[ihist]   = new TH1F(Form("h2_nb_fit_jec_down%d", ihist),   
+                                              Form("Kappa2 Down, Njets %d", ihist*2+4),    5, -0.5, 4.5);
+    // jer
+    h1_nb_fit_jer_up[ihist]   = new TH1F(Form("h1_nb_fit_jer_up%d", ihist),   
+                                              Form("Kappa1 Up, Njets %d", ihist*2+4),    5, -0.5, 4.5);
+    h1_nb_fit_jer_down[ihist]   = new TH1F(Form("h1_nb_fit_jer_down%d", ihist),   
+                                              Form("Kappa1 Down, Njets %d", ihist*2+4),    5, -0.5, 4.5);
+    h2_nb_fit_jer_up[ihist]   = new TH1F(Form("h2_nb_fit_jer_up%d", ihist),   
+                                              Form("Kappa2 Up, Njets %d", ihist*2+4),    5, -0.5, 4.5);
+    h2_nb_fit_jer_down[ihist]   = new TH1F(Form("h2_nb_fit_jer_down%d", ihist),   
                                               Form("Kappa2 Down, Njets %d", ihist*2+4),    5, -0.5, 4.5);
   } 
   THStack *st1[3], *st2[3];
@@ -410,100 +434,248 @@ int main(int argc, char *argv[]){
     }
     c->SaveAs("plots/kappa/"+year+"/fit_kappa"+"_"+syst_list.at(isyst)+"_"+year+".pdf");
   }
-  
-
-  TCanvas *c_summary = new TCanvas;
-  c_summary->Divide(3,2); 
+ 
+  //summary plot
   // kappa1
+  TCanvas *c_summary_up = new TCanvas; TCanvas *c_summary_down = new TCanvas;
+  TCanvas *c_summary_jec = new TCanvas;
+  TCanvas *c_summary_jer = new TCanvas;
+  TLine *line = new TLine(-0.5,0,4.5,0);
+  c_summary_up->Divide(3,2); c_summary_down->Divide(3,2);
+  c_summary_jec->Divide(3,2);
+  c_summary_jer->Divide(3,2);
+
   for(unsigned int ihist=0; ihist<3; ++ihist) 
   {
-    c_summary->cd(ihist+1);
-    c_summary->cd(ihist+1)->SetLeftMargin(0.125);  //0.1 is defalut
+    // Up syst
+    c_summary_up->cd(ihist+1)->SetLeftMargin(0.125);  //0.1 is defalut
+    c_summary_jec->cd(ihist+1)->SetLeftMargin(0.125);  //0.1 is defalut
+    c_summary_jer->cd(ihist+1)->SetLeftMargin(0.125);  //0.1 is defalut
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
-      if(ihist==0) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-      else if(ihist==1) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-      else if(ihist==2) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
-
-      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetRangeUser(-0.5, 0.5); 
-      h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitle("N_{b}"); 
-      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitle("#kappa^{MC}_{1}-1"); 
-      h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitleSize(0.05); 
-      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitleSize(0.05); 
-      h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitleOffset(0.8); 
-      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitleOffset(1.2); 
-      h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetNdivisions(5,true);
-      h1_nb_fit_summary_up[isyst][ihist]->SetLineStyle(11); 
-      h1_nb_fit_summary_down[isyst][ihist]->SetLineStyle(12);
-      h1_nb_fit_summary_up[isyst][ihist]->SetLineColor(linecolor(isyst));
-      h1_nb_fit_summary_down[isyst][ihist]->SetLineColor(linecolor(isyst)); 
-      h1_nb_fit_summary_up[isyst][ihist]->Draw("same hist"); 
-      h1_nb_fit_summary_down[isyst][ihist]->Draw("same hist"); 
-
+      if(isyst==0 || isyst==1) {
+        if(ihist==0) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      }
+      else {
+        if(ihist==0) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      }
       // sum in quad 
       for(unsigned int inb=0; inb<5; inb++) 
       { 
+	if(inb==4 && ihist==0) h1_nb_fit_summary_up[isyst][ihist]->SetBinContent(inb+1, h1_nb_fit_summary_up[isyst][ihist]->GetBinContent(inb)); // low Njets, Nb=4
         float bin_content=-1;
         float bin_content_to_add = 0; 
         float new_bin_content = -0.5; 
-        // up
         bin_content = h1_nb_fit_summary_up[isyst][ihist]->GetBinContent(inb+1); 
         bin_content_to_add = h1_nb_fit_combined_up[ihist]->GetBinContent(inb+1); 
-        new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 
-        if(inb==4 && ihist==0) // low Njets, Nb=4
-          h1_nb_fit_combined_up[ihist]->SetBinContent(inb+1, h1_nb_fit_combined_up[ihist]->GetBinContent(inb));  
-        else
+        if(isyst==0) {
+	  h1_nb_fit_jec_up[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
+	  h1_nb_fit_summary_up[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h1_nb_fit_summary_up[isyst][ihist]->GetBinContent(inb+1))); // Abs(jec)
+	} 
+	else if(isyst==1) {
+	  h1_nb_fit_jer_up[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
+	  h1_nb_fit_summary_up[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h1_nb_fit_summary_up[isyst][ihist]->GetBinContent(inb+1))); // Abs(jer)
+	  }
+	else {
+          new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 
           h1_nb_fit_combined_up[ihist]->SetBinContent(inb+1, new_bin_content);  
-        //down 
+	}
+      } 
+      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetRangeUser(-0.5, 0.5);
+      h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitle("N_{b}");
+      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitle("#kappa^{MC}_{1}-1");
+      h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitleSize(0.05);
+      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitleSize(0.05);
+      h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitleOffset(0.8);
+      h1_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitleOffset(1.2);
+      h1_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetNdivisions(5,true);
+      h1_nb_fit_summary_up[isyst][ihist]->SetLineStyle(11);
+      h1_nb_fit_summary_up[isyst][ihist]->SetLineColor(linecolor(isyst));
+      line->SetLineStyle(11);
+
+      if(isyst==0) { // jec (isyst==0)
+	c_summary_jec->cd(ihist+1);
+        h1_nb_fit_summary_up[isyst][ihist]->SetLineStyle(1);
+        h1_nb_fit_summary_up[isyst][ihist]->SetLineColor(kRed);
+	h1_nb_fit_summary_up[isyst][ihist]->Draw("same hist");
+	line->Draw("same");
+      }
+      else if(isyst==1) { //jer (jsyst==1)
+	c_summary_jer->cd(ihist+1);
+        h1_nb_fit_summary_up[isyst][ihist]->SetLineStyle(1);
+        h1_nb_fit_summary_up[isyst][ihist]->SetLineColor(kRed);
+	h1_nb_fit_summary_up[isyst][ihist]->Draw("same hist");
+	line->Draw("same");
+      }
+      else{
+	c_summary_up->cd(ihist+1);
+        h1_nb_fit_summary_up[isyst][ihist]->Draw("same hist"); 
+      }
+
+    }
+    // Down syst
+    c_summary_down->cd(ihist+1)->SetLeftMargin(0.125);  //0.1 is defalut
+    for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
+    {
+      if(isyst==0 || isyst==1) {
+        if(ihist==0) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      }
+      else {
+        if(ihist==0) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      }
+      // sum in quad 
+      for(unsigned int inb=0; inb<5; inb++) 
+      { 
+	if(inb==4 && ihist==0) h1_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, h1_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb)); // low Njets, Nb=4
+        float bin_content=-1;
+        float bin_content_to_add = 0; 
+        float new_bin_content = -0.5; 
         bin_content = h1_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1); 
         bin_content_to_add = h1_nb_fit_combined_down[ihist]->GetBinContent(inb+1); 
-        new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 
-        if(inb==4 && ihist==0) // low Njets, Nb=4
-          h1_nb_fit_combined_down[ihist]->SetBinContent(inb+1, h1_nb_fit_combined_down[ihist]->GetBinContent(inb));  
-        else
+	if(isyst==0) { // jec
+	  h1_nb_fit_jec_down[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
+	  h1_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h1_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jec)
+	}
+	else if(isyst==1) { // jer
+	  h1_nb_fit_jer_down[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
+	  h1_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h1_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jer)
+	}
+	else {
+          new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 
           h1_nb_fit_combined_down[ihist]->SetBinContent(inb+1, new_bin_content);  
+	}
       } 
+      h1_nb_fit_summary_down[isyst][ihist]->GetYaxis()->SetRangeUser(-0.5, 0.5);
+      h1_nb_fit_summary_down[isyst][ihist]->GetXaxis()->SetTitle("N_{b}");
+      h1_nb_fit_summary_down[isyst][ihist]->GetYaxis()->SetTitle("#kappa^{MC}_{1}-1");
+      h1_nb_fit_summary_down[isyst][ihist]->GetXaxis()->SetTitleSize(0.05);
+      h1_nb_fit_summary_down[isyst][ihist]->GetYaxis()->SetTitleSize(0.05);
+      h1_nb_fit_summary_down[isyst][ihist]->GetXaxis()->SetTitleOffset(0.8);
+      h1_nb_fit_summary_down[isyst][ihist]->GetYaxis()->SetTitleOffset(1.2);
+      h1_nb_fit_summary_down[isyst][ihist]->GetXaxis()->SetNdivisions(5,true);
+      h1_nb_fit_summary_down[isyst][ihist]->SetLineStyle(11);
+      h1_nb_fit_summary_down[isyst][ihist]->SetLineColor(linecolor(isyst));
+      if(isyst==0) { // jec (isyst==0)
+	c_summary_jec->cd(ihist+1);
+        h1_nb_fit_summary_down[isyst][ihist]->SetLineStyle(1);
+        h1_nb_fit_summary_down[isyst][ihist]->SetLineColor(kBlue);
+        h1_nb_fit_summary_down[isyst][ihist]->Draw("same hist"); 
+	line->Draw("same");
+      }
+      else if(isyst==1) { // jer (isyst==1)
+	c_summary_jer->cd(ihist+1);
+        h1_nb_fit_summary_down[isyst][ihist]->SetLineStyle(1);
+        h1_nb_fit_summary_down[isyst][ihist]->SetLineColor(kBlue);
+        h1_nb_fit_summary_down[isyst][ihist]->Draw("same hist"); 
+	line->Draw("same");
+      }
+      else {
+	c_summary_down->cd(ihist+1);
+        h1_nb_fit_summary_down[isyst][ihist]->Draw("same hist"); 
+      }
     }
     h1_nb_fit_combined_up[ihist]->SetLineStyle(1); 
     h1_nb_fit_combined_up[ihist]->SetLineColor(kRed); 
     h1_nb_fit_combined_down[ihist]->SetLineStyle(1); 
     h1_nb_fit_combined_down[ihist]->SetLineColor(kBlue); 
+
+    c_summary_up->cd(ihist+1);
     h1_nb_fit_combined_up[ihist]->Draw("hist same"); 
+    c_summary_down->cd(ihist+1);
     h1_nb_fit_combined_down[ihist]->Draw("hist same"); 
 
     // Define Legend 
         // kappa1
-    TLegend *l3_1, *l3_2, *l3_3;
-    l3_1 = new TLegend(0.15,0.12,0.5,0.42);
-    l3_2 = new TLegend(0.15,0.6,0.5,0.88);
-    l3_3 = new TLegend(0.5,0.75,0.8,0.89);
+    TLegend *l3_summary_up_1; TLegend *l3_summary_up_2; TLegend *l3_summary_up_3;
+    TLegend *l3_summary_down_1; TLegend *l3_summary_down_2; TLegend *l3_summary_down_3;
+    TLegend *l3_jec; TLegend *l3_jer;
+    l3_summary_up_1 = new TLegend(0.15,0.12,0.5,0.42); l3_summary_up_2 = new TLegend(0.15,0.6,0.5,0.88); l3_summary_up_3 = new TLegend(0.5,0.75,0.8,0.89);
+    l3_summary_down_1 = new TLegend(0.15,0.12,0.5,0.42); l3_summary_down_2 = new TLegend(0.15,0.6,0.5,0.88); l3_summary_down_3 = new TLegend(0.5,0.75,0.8,0.89);
+    l3_jec = new TLegend(0.45,0.70,0.75,0.85);
+    l3_jer = new TLegend(0.42,0.70,0.72,0.85);
 
-    c_summary->cd(ihist+1);
-    set_legend_style(l3_1);
-    set_legend_style(l3_2);
-    set_legend_style(l3_3);
+    set_legend_style(l3_summary_up_1); set_legend_style(l3_summary_up_2); set_legend_style(l3_summary_up_3);
+    set_legend_style(l3_summary_down_1); set_legend_style(l3_summary_down_2); set_legend_style(l3_summary_down_3);
+    set_legend_style(l3_jer);
+    set_legend_style(l3_jec);
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst) {
-      if(isyst<=5) l3_1->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst]),"l");
-      else if(isyst>5) l3_2->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst]),"l");
+      if(isyst==0) {
+	l3_jec->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
+	l3_jec->AddEntry(h1_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
+	c_summary_jec->cd(ihist+1); l3_jec->Draw();
+      }
+      else if(isyst==1) {
+	l3_jer->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
+	l3_jer->AddEntry(h1_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
+	c_summary_jer->cd(ihist+1); l3_jer->Draw();
+      }
+      else if(isyst>=2 && isyst<=5) {
+	l3_summary_up_1->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
+	l3_summary_down_1->AddEntry(h1_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
+      }
+      else if(isyst>=6) {
+	l3_summary_up_2->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
+	l3_summary_down_2->AddEntry(h1_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
+      }
     }
-    l3_3->AddEntry(h1_nb_fit_combined_up[ihist], "#splitline{Combined systematics}{1#sigma up}", "l");
-    l3_3->AddEntry(h1_nb_fit_combined_down[ihist], "#splitline{Combined systematics}{1#sigma down}", "l");
-    l3_1->Draw();
-    l3_2->Draw();
-    l3_3->Draw();
+    l3_summary_up_3->AddEntry(h1_nb_fit_combined_up[ihist], "#splitline{Combined systematics}{1#sigma up}", "l");
+    l3_summary_down_3->AddEntry(h1_nb_fit_combined_down[ihist], "#splitline{Combined systematics}{1#sigma down}", "l");
+
+    c_summary_up->cd(ihist+1);
+    l3_summary_up_1->Draw(); l3_summary_up_2->Draw(); l3_summary_up_3->Draw();
+    c_summary_down->cd(ihist+1);
+    l3_summary_down_1->Draw(); l3_summary_down_2->Draw(); l3_summary_down_3->Draw();
   }
 
   // kappa2
   for(unsigned int ihist=0; ihist<3; ++ihist) 
   {
-    c_summary->cd(ihist+4);
-    c_summary->cd(ihist+4)->SetLeftMargin(0.125);  //0.1 is defalut
+    // Up syst
+    c_summary_up->cd(ihist+4)->SetLeftMargin(0.125);  //0.1 is defalut
+    c_summary_jec->cd(ihist+4)->SetLeftMargin(0.125);  //0.1 is defalut
+    c_summary_jer->cd(ihist+4)->SetLeftMargin(0.125);  //0.1 is defalut
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
-      if(ihist==0) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-      else if(ihist==1) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-      else if(ihist==2) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
-
+      if(isyst==0 || isyst==1) {
+        if(ihist==0) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      }
+      else {
+        if(ihist==0) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      }
+      // sum in quad 
+      for(unsigned int inb=0; inb<5; inb++) 
+      { 
+	if(inb==4 && ihist==0) h2_nb_fit_summary_up[isyst][ihist]->SetBinContent(inb+1, h2_nb_fit_summary_up[isyst][ihist]->GetBinContent(inb)); // low Njets, Nb=4
+        float bin_content=-1;
+        float bin_content_to_add = -1; 
+        float new_bin_content = -0.5; 
+        bin_content = h2_nb_fit_summary_up[isyst][ihist]->GetBinContent(inb+1); 
+        bin_content_to_add = h2_nb_fit_combined_up[ihist]->GetBinContent(inb+1); 
+	if(isyst==0) { // jec
+	  h2_nb_fit_jec_up[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
+	  h2_nb_fit_summary_up[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h2_nb_fit_summary_up[isyst][ihist]->GetBinContent(inb+1))); // Abs(jec)
+	}
+	else if(isyst==1) { // jer
+	  h2_nb_fit_jer_up[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
+	  h2_nb_fit_summary_up[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h2_nb_fit_summary_up[isyst][ihist]->GetBinContent(inb+1))); // Abs(jer)
+	}
+	else {
+	  new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 
+          h2_nb_fit_combined_up[ihist]->SetBinContent(inb+1, new_bin_content);  
+	}
+      } 
       h2_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetRangeUser(-0.5, 0.5); 
       h2_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetTitle("N_{b}"); 
       h2_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitle("#kappa^{MC}_{2}-1"); 
@@ -513,64 +685,149 @@ int main(int argc, char *argv[]){
       h2_nb_fit_summary_up[isyst][ihist]->GetYaxis()->SetTitleOffset(1.2); 
       h2_nb_fit_summary_up[isyst][ihist]->GetXaxis()->SetNdivisions(5,true);
       h2_nb_fit_summary_up[isyst][ihist]->SetLineStyle(11); 
-      h2_nb_fit_summary_down[isyst][ihist]->SetLineStyle(12);
       h2_nb_fit_summary_up[isyst][ihist]->SetLineColor(linecolor(isyst)); 
-      h2_nb_fit_summary_down[isyst][ihist]->SetLineColor(linecolor(isyst)); 
-      h2_nb_fit_summary_up[isyst][ihist]->Draw("same hist"); 
-      h2_nb_fit_summary_down[isyst][ihist]->Draw("same hist"); 
-      
+      if(isyst==0) { //jec (isyst==0)
+	c_summary_jec->cd(ihist+4);
+	h2_nb_fit_summary_up[isyst][ihist]->SetLineStyle(1);
+	h2_nb_fit_summary_up[isyst][ihist]->SetLineColor(kRed);
+	h2_nb_fit_summary_up[isyst][ihist]->Draw("same hist");
+	line->Draw("same");
+      }
+      else if(isyst==1) { // jer (isyst==1)
+	c_summary_jer->cd(ihist+4);
+	h2_nb_fit_summary_up[isyst][ihist]->SetLineStyle(1);
+	h2_nb_fit_summary_up[isyst][ihist]->SetLineColor(kRed);
+	h2_nb_fit_summary_up[isyst][ihist]->Draw("same hist");
+	line->Draw("same");
+      }
+      else {
+	c_summary_up->cd(ihist+4);
+        h2_nb_fit_summary_up[isyst][ihist]->Draw("same hist"); 
+      }
+    }
+    // Down syst
+    c_summary_down->cd(ihist+4)->SetLeftMargin(0.125);  //0.1 is defalut
+    c_summary_jec->cd(ihist+4)->SetLeftMargin(0.125);  //0.1 is defalut
+    c_summary_jer->cd(ihist+4)->SetLeftMargin(0.125);  //0.1 is defalut
+    for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
+    {
+      if(isyst==0 || isyst==1) {
+        if(ihist==0) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      }
+      else {
+        if(ihist==0) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      }
       // sum in quad 
       for(unsigned int inb=0; inb<5; inb++) 
       { 
+	if(inb==4 && ihist==0) h2_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, h2_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb)); // low Njets, Nb=4
         float bin_content=-1;
         float bin_content_to_add = -1; 
         float new_bin_content = -0.5; 
-        // up
-        bin_content = h2_nb_fit_summary_up[isyst][ihist]->GetBinContent(inb+1); 
-        bin_content_to_add = h2_nb_fit_combined_up[ihist]->GetBinContent(inb+1); 
-        new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 
-        if(inb==4 && ihist==0) // low Njets, Nb=4
-          h2_nb_fit_combined_up[ihist]->SetBinContent(inb+1, h2_nb_fit_combined_up[ihist]->GetBinContent(inb));  
-        else
-          h2_nb_fit_combined_up[ihist]->SetBinContent(inb+1, new_bin_content);  
-        //down 
         bin_content = h2_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1); 
         bin_content_to_add = h2_nb_fit_combined_down[ihist]->GetBinContent(inb+1); 
-        new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 
-        if(inb==4 && ihist==0) // low Njets, Nb=4
-          h2_nb_fit_combined_down[ihist]->SetBinContent(inb+1, h2_nb_fit_combined_down[ihist]->GetBinContent(inb));  
-        else
+	if(isyst==0) { // jec
+	  h2_nb_fit_jec_down[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
+	  h2_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h2_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jec)
+	}
+	else if(isyst==1) { // jer
+	  h2_nb_fit_jer_down[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content)); // jer
+	  h2_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h2_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jer)
+	}
+	else {
+	  new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 
           h2_nb_fit_combined_down[ihist]->SetBinContent(inb+1, new_bin_content);  
+	}	  
       } 
+      h2_nb_fit_summary_down[isyst][ihist]->GetYaxis()->SetRangeUser(-0.5, 0.5);
+      h2_nb_fit_summary_down[isyst][ihist]->GetXaxis()->SetTitle("N_{b}");
+      h2_nb_fit_summary_down[isyst][ihist]->GetYaxis()->SetTitle("#kappa^{MC}_{2}-1");
+      h2_nb_fit_summary_down[isyst][ihist]->GetXaxis()->SetTitleSize(0.05);
+      h2_nb_fit_summary_down[isyst][ihist]->GetYaxis()->SetTitleSize(0.05);
+      h2_nb_fit_summary_down[isyst][ihist]->GetXaxis()->SetTitleOffset(0.8);
+      h2_nb_fit_summary_down[isyst][ihist]->GetYaxis()->SetTitleOffset(1.2);
+      h2_nb_fit_summary_down[isyst][ihist]->GetXaxis()->SetNdivisions(5,true);
+      h2_nb_fit_summary_down[isyst][ihist]->SetLineStyle(11);
+      h2_nb_fit_summary_down[isyst][ihist]->SetLineColor(linecolor(isyst));
+      if(isyst==0) { //jec (isyst==0)
+	c_summary_jec->cd(ihist+4);
+	h2_nb_fit_summary_down[isyst][ihist]->SetLineStyle(1);
+	h2_nb_fit_summary_down[isyst][ihist]->SetLineColor(kBlue);
+	h2_nb_fit_summary_down[isyst][ihist]->Draw("same hist");
+	line->Draw("same");
+      }
+      else if(isyst==1) { // jer (isyst==1)
+	c_summary_jer->cd(ihist+4);
+	h2_nb_fit_summary_down[isyst][ihist]->SetLineStyle(1);
+	h2_nb_fit_summary_down[isyst][ihist]->SetLineColor(kBlue);
+	h2_nb_fit_summary_down[isyst][ihist]->Draw("same hist");
+	line->Draw("same");
+      }
+      else {
+	c_summary_down->cd(ihist+4);
+        h2_nb_fit_summary_down[isyst][ihist]->Draw("same hist"); 
+      }
     }
     h2_nb_fit_combined_up[ihist]->SetLineStyle(1); 
     h2_nb_fit_combined_down[ihist]->SetLineStyle(1); 
     h2_nb_fit_combined_up[ihist]->SetLineColor(kRed); 
     h2_nb_fit_combined_down[ihist]->SetLineColor(kBlue); 
-    h2_nb_fit_combined_up[ihist]->Draw("hist same"); 
-    h2_nb_fit_combined_down[ihist]->Draw("hist same"); 
 
+    c_summary_up->cd(ihist+4);
+    h2_nb_fit_combined_up[ihist]->Draw("hist same"); 
+    c_summary_down->cd(ihist+4);
+    h2_nb_fit_combined_down[ihist]->Draw("hist same"); 
+    
     // Define Legend 
-        // kappa2
-    TLegend *l4_1, *l4_2, *l4_3;
-    l4_1 = new TLegend(0.15,0.12,0.5,0.42);
-    l4_2 = new TLegend(0.15,0.6,0.5,0.88);
-    l4_3 = new TLegend(0.5,0.75,0.8,0.89);
-    c_summary->cd(ihist+4);
-    set_legend_style(l4_1);
-    set_legend_style(l4_2);
-    set_legend_style(l4_3);
+	// kappa2
+    TLegend *l4_summary_up_1; TLegend *l4_summary_up_2; TLegend *l4_summary_up_3;
+    TLegend *l4_summary_down_1; TLegend *l4_summary_down_2; TLegend *l4_summary_down_3;
+    TLegend *l4_jec; TLegend *l4_jer;
+    l4_summary_up_1 = new TLegend(0.15,0.12,0.5,0.42); l4_summary_up_2 = new TLegend(0.15,0.6,0.5,0.88); l4_summary_up_3 = new TLegend(0.5,0.75,0.8,0.89);
+    l4_summary_down_1 = new TLegend(0.15,0.12,0.5,0.42); l4_summary_down_2 = new TLegend(0.15,0.6,0.5,0.88); l4_summary_down_3 = new TLegend(0.5,0.75,0.8,0.89);
+    l4_jec = new TLegend(0.45,0.70,0.75,0.85);
+    l4_jer = new TLegend(0.42,0.70,0.72,0.85);
+
+    set_legend_style(l4_summary_up_1); set_legend_style(l4_summary_up_2); set_legend_style(l4_summary_up_3);
+    set_legend_style(l4_summary_down_1); set_legend_style(l4_summary_down_2); set_legend_style(l4_summary_down_3);
+    set_legend_style(l4_jer);
+    set_legend_style(l4_jec);
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst) {
-      if(isyst<=5) l4_1->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst]),"l");
-      else if(isyst>5) l4_2->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst]),"l");
+      if(isyst==0) {
+	l4_jec->AddEntry(h2_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
+	l4_jec->AddEntry(h2_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
+	c_summary_jec->cd(ihist+4); l4_jec->Draw();
+      }
+      else if(isyst==1) {
+	l4_jer->AddEntry(h2_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
+	l4_jer->AddEntry(h2_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
+	c_summary_jer->cd(ihist+4); l4_jer->Draw();
+      }
+      else if(isyst>=2 && isyst<=5) {
+	l4_summary_up_1->AddEntry(h2_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
+	l4_summary_down_1->AddEntry(h2_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
+      }
+      else if(isyst>=6) {
+	l4_summary_up_2->AddEntry(h2_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
+	l4_summary_down_2->AddEntry(h2_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
+      }
     }
-    l4_3->AddEntry(h1_nb_fit_combined_up[ihist], "#splitline{Combined systematics}{1#sigma up}", "l");
-    l4_3->AddEntry(h1_nb_fit_combined_down[ihist], "#splitline{Combined systematics}{1#sigma down}", "l");
-    l4_1->Draw();
-    l4_2->Draw();
-    l4_3->Draw();
+    l4_summary_up_3->AddEntry(h2_nb_fit_combined_up[ihist], "#splitline{Combined systematics}{1#sigma up}", "l");
+    l4_summary_down_3->AddEntry(h2_nb_fit_combined_down[ihist], "#splitline{Combined systematics}{1#sigma down}", "l");
+
+    c_summary_up->cd(ihist+4);
+    l4_summary_up_1->Draw(); l4_summary_up_2->Draw(); l4_summary_up_3->Draw();
+    c_summary_down->cd(ihist+4);
+    l4_summary_down_1->Draw(); l4_summary_down_2->Draw(); l4_summary_down_3->Draw();
   }
-  c_summary->SaveAs("plots/kappa/"+year+"/fit_kappa_summary_"+year+".pdf");
+  c_summary_up->SaveAs("plots/kappa/"+year+"/fit_kappa_summary_up_"+year+".pdf");
+  c_summary_down->SaveAs("plots/kappa/"+year+"/fit_kappa_summary_down_"+year+".pdf");
+  c_summary_jer->SaveAs("plots/kappa/"+year+"/fit_kappa_summary_jer_"+year+".pdf");
+  c_summary_jec->SaveAs("plots/kappa/"+year+"/fit_kappa_summary_jec_"+year+".pdf");
   
   // Write in file 
   TFile *f = new TFile("plots/kappa/"+year+"/fit_kappa_summary_"+year+".root","recreate");
@@ -580,6 +837,14 @@ int main(int argc, char *argv[]){
     h1_nb_fit_combined_down[ihist]->Write(); 
     h2_nb_fit_combined_up[ihist]->Write(); 
     h2_nb_fit_combined_down[ihist]->Write(); 
+    h1_nb_fit_jec_up[ihist]->Write();
+    h1_nb_fit_jec_down[ihist]->Write();
+    h2_nb_fit_jec_up[ihist]->Write();
+    h2_nb_fit_jec_down[ihist]->Write();
+    h1_nb_fit_jer_up[ihist]->Write();
+    h1_nb_fit_jer_down[ihist]->Write();
+    h2_nb_fit_jer_up[ihist]->Write();
+    h2_nb_fit_jer_down[ihist]->Write();
   }
   f->Close();  
 }

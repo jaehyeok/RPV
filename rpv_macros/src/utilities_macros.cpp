@@ -567,21 +567,24 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
         else histo[1][var][sam]->Draw("E same");
       }
       leghisto = Samples[isam].label;
-      unsigned ileg = (Nsam<=3?0:legcount>=(Nsam+1)/2);
+      unsigned ileg = (Nsam<=5?0:legcount>=(Nsam+1)/2);
       if(!namestyle.Contains("CMSPaper") || showcuts){
         if(vars[var].nevents.at(sam)<0){
 	  leg[ileg].SetX1NDC(0.23); leg[ileg].SetX2NDC(0.43); //220727 make plot look pretty
 	  leg[ileg].SetY1NDC(0.2); leg[ileg].SetY2NDC(0.35);
 	  if(sam>1) {
-	    leg[ileg].SetX1NDC(0.5); leg[ileg].SetX2NDC(0.7); //220727 make plot look pretty
-	    leg[ileg].SetY1NDC(0.7); leg[ileg].SetY2NDC(0.85);
+	    leg[ileg].SetX1NDC(0.6); leg[ileg].SetX2NDC(0.8); //220727 make plot look pretty
+	    leg[ileg].SetY1NDC(0.55); leg[ileg].SetY2NDC(0.9);  //230109 make plot look pretty (Nb bin: 4 -> 5)
+            leg[ileg].SetTextSize(0.75*style.LegendSize);
 	  }
           leghisto += " [#mu=";
           int digits(0);
           if(histo[1][var][sam]->GetMean()<30) digits = 1;
           leghisto += RoundNumber(histo[1][var][sam]->GetMean(),digits) + "]";
         } else{
-          leg[ileg].SetX1NDC(0.24); leg[ileg].SetX2NDC(0.7);
+	    leg[ileg].SetX1NDC(0.5); leg[ileg].SetX2NDC(0.7); //220727 make plot look pretty
+	    leg[ileg].SetY1NDC(0.5); leg[ileg].SetY2NDC(0.7);
+//          leg[ileg].SetX1NDC(0.24); leg[ileg].SetX2NDC(0.7);
           //leg[ileg].SetTextSize(0.75*style.LegendSize);
           leg[ileg].SetTextSize(0.5*style.LegendSize);
 	  if(vars[var].varname.Contains("tks")) leghisto +=  "[N_{tks} = " + RoundNumber(nentries[sam],1) + ", from N_{events} = "

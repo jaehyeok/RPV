@@ -48,9 +48,9 @@ int main(int argc, char *argv[]){
   
   // ntuple folders
 
-  TString folder_dat = "/data4/babies/210910/"+year+"/JetHTRun_rpvfitnbge0_step3/";
-  TString folder_bkg = "/data4/babies/210910/"+year+"/merged_norm_JER_0903/";
-  TString folder_sig = "/data4/babies/210910/"+year+"/merged_norm_sig_pu/";
+  TString folder_dat = "/mnt/data3/babies/210910/"+year+"/JetHTRun_rpvfitnbge0_step3/";
+  TString folder_bkg = "/mnt/data3/babies/210910/"+year+"/merged_norm_JER_0903/";
+  TString folder_sig = "/mnt/data3/babies/210910/"+year+"/merged_norm_sig_pu/";
   
   cout << folder_dat << endl;
   cout << folder_bkg << endl;
@@ -79,9 +79,9 @@ int main(int argc, char *argv[]){
   }
   else if(year=="20178") 
   {
-    folder_dat = "/data4/babies/210910/2017/JetHTRun_rpvfitnbge0_step3/";
-    folder_bkg = "/data4/babies/210910/2017/merged_norm_JER_0903/";
-    folder_sig = "/data4/babies/210910/2017/merged_norm_sig_pu/";
+    folder_dat = "/mnt/data3/babies/210910/2017/JetHTRun_rpvfitnbge0_step3/";
+    folder_bkg = "/mnt/data3/babies/210910/2017/merged_norm_JER_0903/";
+    folder_sig = "/mnt/data3/babies/210910/2017/merged_norm_sig_pu/";
     
     s_data      = getRPVProcess(folder_dat,"data");
     s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");
@@ -91,9 +91,9 @@ int main(int argc, char *argv[]){
     s_wjets     = getRPVProcess(folder_bkg,"wjets");
     s_other     = getRPVProcess(folder_bkg,"other_public");
     
-    folder_dat = "/data4/babies/210910/2018/JetHTRun_rpvfitnbge0_step3/";
-    folder_bkg = "/data4/babies/210910/2018/merged_norm_JER_0903/";
-    folder_sig = "/data4/babies/210910/2018/merged_norm_sig_pu/";
+    folder_dat = "/mnt/data3/babies/210910/2018/JetHTRun_rpvfitnbge0_step3/";
+    folder_bkg = "/mnt/data3/babies/210910/2018/merged_norm_JER_0903/";
+    folder_sig = "/mnt/data3/babies/210910/2018/merged_norm_sig_pu/";
     
     vector<TString> s18_data      = getRPVProcess(folder_dat,"data");
     vector<TString> s18_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");

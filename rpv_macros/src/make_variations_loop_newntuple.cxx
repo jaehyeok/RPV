@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
       cout<<year<<endl;
       if(year=="2016") lumi = 36.3;
       else if(year=="2017") lumi = 41.5;
-      else if(year=="2018") lumi = 59.8;
+      else if(year=="2018") lumi = 59.7;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "There are only 5 arguments! 0 Lepton shape is entered as on..." << endl;
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
       year = argv[5];
       if(year=="2016") lumi = 36.3;
       else if(year=="2017") lumi = 41.5;
-      else if(year=="2018") lumi = 59.8;
+      else if(year=="2018") lumi = 59.7;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
       str_year = argv[6];
       if(year=="2016") lumi = 36.3;
       else if(year=="2017") lumi = 41.5;
-      else if(year=="2018") lumi = 59.8;
+      else if(year=="2018") lumi = 59.7;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -691,6 +691,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     // Central weights
     // 
     float nominalweight = lumi*tree.weight()*tree.pass(); //FIXME 20220118
+//    if(procname=="wjets"){
+//       	cout<<"WEIGHT: " << tree.weight()<<endl;
+//       	cout<<"LUMI  : " << lumi <<endl;
+//       	cout<<"PASS  : " << tree.pass()<<endl;
+//    }
 //    float nominalweight = lumi*tree.weight()*tree.frac1718(); // FIXME for 2017+2018 merging
     //cout<<nominalweight<<endl;
     //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
@@ -1100,6 +1105,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 	  }
 */	}
       }
+//      if((procname=="wjets")&&(ibin==35)&&nominalweight<0){
+//	  cout<< " WJETS_NOMINAL :: " << nominalweight<<endl;
+//      }
       //if(procname!="data_obs") cout<<nominalweight<<endl;
       if(ibin<22)
       {

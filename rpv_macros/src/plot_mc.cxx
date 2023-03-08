@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
   string lumi;
   if(year=="2016") lumi="36.3";
   else if(year=="2017") lumi="41.5";
-  else if(year=="2018") lumi="59.8";
+  else if(year=="2018") lumi="59.7";
 
   // ntuple folders
   TString folder_bkg = "/mnt/data3/babies/210910/"+year+"/merged_norm_JER_0903/";

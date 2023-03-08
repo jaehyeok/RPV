@@ -174,7 +174,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		TString lumi;
 		if(year=="2016") lumi = "36.3";
 		if(year=="2017") lumi = "41.5";
-		if(year=="2018") lumi = "59.8";
+		if(year=="2018") lumi = "59.7";
 
 		TString cmslabel = "#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}";
 		TString lumilabel = TString::Format("%1.1f", lumi.Atof())+" fb^{-1}, 13 TeV";

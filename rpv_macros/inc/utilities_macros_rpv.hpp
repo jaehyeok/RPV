@@ -4,7 +4,7 @@ namespace rpv
 {
 	TString luminosity="36.3";//FIXME
 	//TString luminosity="41.5";//FIXME
-	//TString luminosity="59.8";//FIXME
+	//TString luminosity="59.7";//FIXME
 }
 
 TString filestring(TString dataset, bool isSkimmed=true)
@@ -132,7 +132,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"WWZ_*"); 
 		files.push_back(folder+"ZZZ_*"); 
 		files.push_back(folder+"WWW_*"); 
-//		files.push_back(folder+"ttHTobb_*"); // */  221111
+		files.push_back(folder+"ttHJetTobb_*"); //
 	}
   else if(process=="DY"){
     files.push_back(folder+"DYJetsToLL_M-50_HT*");
@@ -149,7 +149,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"WWZ_*"); 
 		files.push_back(folder+"ZZZ_*"); 
 		files.push_back(folder+"WWW_*"); 
-//		files.push_back(folder+"ttHTobb_*"); // */     221111
+		files.push_back(folder+"ttHJetTobb_*"); //
   }
 	//Contains all processes except for QCD, ttbar, and wjets. Typically used for public plots. Recursive so only need to change samples in one place
 	else if(process=="other_public"){

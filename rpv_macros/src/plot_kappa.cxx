@@ -27,7 +27,8 @@ void drawHeader()
   lat->SetTextSize(0.053);
   lat->DrawLatexNDC(0.12, 0.93, "CMS #scale[0.8]{#font[52]{Work In Progress}}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.78, 0.93, "101.3 fb^{-1} (13 TeV)");//FIXME
+  lat->DrawLatexNDC(0.78, 0.93, "36.3 fb^{-1} (13 TeV)");//FIXME
+//  lat->DrawLatexNDC(0.78, 0.93, "101.2 fb^{-1} (13 TeV)");//FIXME
 }
 
 void drawSyst(TLatex *lat1){
@@ -222,23 +223,23 @@ int main(int argc, char *argv[])
       h1_mj_qcd[ibin]        = new TH1F(Form("h1_mj_qcd_bin%i", ibin), Form("h1_mj_qcd_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_ttbar[ibin]      = new TH1F(Form("h1_mj_ttbar_bin%i", ibin), Form("h1_mj_ttbar_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_wjets[ibin]      = new TH1F(Form("h1_mj_wjets_bin%i", ibin), Form("h1_mj_wjets_bin%i", ibin), 3, mjmin, mjmax);
-      h1_mj_other[ibin]      = new TH1F(Form("h1_mj_other_bin%i", ibin), Form("h1_mj_other_bin%i", ibin), 3, mjmin, mjmax);
+//      h1_mj_other[ibin]      = new TH1F(Form("h1_mj_other_bin%i", ibin), Form("h1_mj_other_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_mc[ibin]         = new TH1F(Form("h1_mj_mc_bin%i", ibin), Form("h1_mj_mc_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_qcd_syst[ibin]   = new TH1F(Form("h1_mj_qcd_syst_bin%i", ibin), Form("h1_mj_qcd_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_ttbar_syst[ibin] = new TH1F(Form("h1_mj_ttbar_syst_bin%i", ibin), Form("h1_mj_ttbar_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_wjets_syst[ibin] = new TH1F(Form("h1_mj_wjets_syst_bin%i", ibin), Form("h1_mj_wjets_syst_bin%i", ibin), 3, mjmin, mjmax);
-      h1_mj_other_syst[ibin] = new TH1F(Form("h1_mj_other_syst_bin%i", ibin), Form("h1_mj_other_syst_bin%i", ibin), 3, mjmin, mjmax);
+//      h1_mj_other_syst[ibin] = new TH1F(Form("h1_mj_other_syst_bin%i", ibin), Form("h1_mj_other_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_mc_syst[ibin]    = new TH1F(Form("h1_mj_mc_syst_bin%i", ibin), Form("h1_mj_mc_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_data[ibin]->Sumw2(); 
       h1_mj_qcd[ibin]->Sumw2(); 
       h1_mj_ttbar[ibin]->Sumw2(); 
       h1_mj_wjets[ibin]->Sumw2(); 
-      h1_mj_other[ibin]->Sumw2(); 
+//      h1_mj_other[ibin]->Sumw2(); 
       h1_mj_mc[ibin]->Sumw2(); 
       h1_mj_qcd_syst[ibin]->Sumw2(); 
       h1_mj_ttbar_syst[ibin]->Sumw2(); 
       h1_mj_wjets_syst[ibin]->Sumw2(); 
-      h1_mj_other_syst[ibin]->Sumw2(); 
+//      h1_mj_other_syst[ibin]->Sumw2(); 
       h1_mj_mc_syst[ibin]->Sumw2(); 
 
       // Get histograms from root file
@@ -252,33 +253,33 @@ int main(int argc, char *argv[])
           h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_qcd_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
           h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_ttbar_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
           h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_wjets_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
-          h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s_other_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+//          h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s_other_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
           h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
           h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
           h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
-          h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);
+//          h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);
 	}
 	else {
         h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
         h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
         h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
         //h1_mj_wjets[ibin]->Scale(1.53); //FIXME
-        h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+//        h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
         h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
         h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
         h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
-        h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);
+//        h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);
 	}
       }
       h1_mj_qcd[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin))); 
       h1_mj_ttbar[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin))); 
       h1_mj_wjets[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin))); 
       //h1_mj_wjets[ibin]->Scale(1.53); //FIXME
-      h1_mj_other[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin))); 
+//      h1_mj_other[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin))); 
       h1_mj_mc[ibin] = static_cast<TH1F*>(h1_mj_qcd[ibin]->Clone(Form("h1_mj_mc_bin%i", ibin))); 
       h1_mj_mc[ibin]->Add(h1_mj_ttbar[ibin]);
       h1_mj_mc[ibin]->Add(h1_mj_wjets[ibin]);
-      h1_mj_mc[ibin]->Add(h1_mj_other[ibin]);
+//      h1_mj_mc[ibin]->Add(h1_mj_other[ibin]);
     } 
 
     cout << "\\begin{table}[h]" << endl;
@@ -559,7 +560,7 @@ vector<float> calculateR(TH1F* h1, int mjbin)
   float r = h1->GetBinContent(mjbin+1)/h1->GetBinContent(1);//mjbin);
   if(h1->GetBinContent(mjbin)==0) r=-1.;
   float r_err = r * TMath::Sqrt(h1->GetBinError(mjbin+1)*h1->GetBinError(mjbin+1)/h1->GetBinContent(mjbin+1)/h1->GetBinContent(mjbin+1) 
-                              + h1->GetBinError(1/*mjbin*/)*h1->GetBinError(1/*mjbin*/)/h1->GetBinContent(1)/h1->GetBinContent(1));
+                              + h1->GetBinError(1/*mjbin*/)*h1->GetBinError(1/*mjbin*/)/h1->GetBinContent(1)/h1->GetBinContent(1));        // It works well! a*a/b/b = a^2/b^2
   vector<float> results; 
   results.push_back(r);
   results.push_back(r_err);

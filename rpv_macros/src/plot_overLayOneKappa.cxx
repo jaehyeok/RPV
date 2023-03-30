@@ -29,13 +29,15 @@ void set_legend_style(TLegend *l){
 	l->SetTextSize(0.07);
 }
 
-void drawHeader(){
+void drawHeader(TString year){
   TLatex *lat = new TLatex;
   lat->SetTextSize(0.053);
   lat->DrawLatexNDC(0.12, 0.83, "CMS #scale[0.8]{#font[52]{Work In Progress}}");
   lat->SetTextFont(42);
-//  lat->DrawLatexNDC(0.76, 0.83, "101.3 fb^{-1} (13 TeV)");//FIXME
-  lat->DrawLatexNDC(0.76, 0.83, "36.3 fb^{-1} (13 TeV)");//FIXME
+  if(year=="2016") lat->DrawLatexNDC(0.76, 0.83, "36.3 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="2017") lat->DrawLatexNDC(0.76, 0.83, "41.5 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="2018") lat->DrawLatexNDC(0.76, 0.83, "59.7 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="20178") lat->DrawLatexNDC(0.76, 0.83, "101.2 fb^{-1} (13 TeV)");//FIXME
 }
 
 int main(int argc, char *argv[]){
@@ -171,7 +173,7 @@ int main(int argc, char *argv[]){
 	hn1->Draw("e2");
 	h1->Draw("same hist p");
 	h2->Draw("same hist p");
-	drawHeader();
+	drawHeader(year);
 	l1->Draw();
 
 	c->cd(2);
@@ -179,7 +181,7 @@ int main(int argc, char *argv[]){
 	hn2->Draw("e2");
 	h3->Draw("same hist p");
 	h4->Draw("same hist p");
-	drawHeader();
+	drawHeader(year);
 	l2->Draw();
 
 	c->SaveAs("plots/kappa/"+year+"/overlay_one_kappa"+Systematic+"_"+year+".pdf");

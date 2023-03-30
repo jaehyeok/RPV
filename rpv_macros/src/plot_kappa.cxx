@@ -15,14 +15,13 @@
 
 using namespace std;
 
-TString year;
 bool formatLatex=false;
 
 float addInQuad(float a, float b);
 vector<float> ratioError(float a, float a_err, float b, float b_err); // a/b
 vector<float> calculateR(TH1F* h1, int mjbin);
 
-void drawHeader()
+void drawHeader(TString year)
 {
   TLatex *lat = new TLatex;
   lat->SetTextSize(0.053);
@@ -330,16 +329,16 @@ int main(int argc, char *argv[])
 
       cout << "        & "<< binLatex[ibin]<<" \\\\ \\hline" << endl;
       //cout << ".... " << bin[ibin] << endl; 
-      /*
+      
       cout << "r1 data: " << r1_data[0] << " +- " << r1_data[1] <<  endl;
       cout << "r2 data: " << r2_data[0] << " +- " << r2_data[1] << endl;
       cout << "r1 mc:   " << r1_mc[0] << " +- " << r1_mc[1] << endl;
-      cout << "r2 mc:   " << r2_mc[0] << " +- " << r2_mc[1] << endl;// */
+      cout << "r2 mc:   " << r2_mc[0] << " +- " << r2_mc[1] << endl;// 
 
       //kappa1.push_back(ratioError(r1_data[0], r1_data[1], r1_mc[0], r1_mc[1]));
       //kappa2.push_back(ratioError(r2_data[0], r2_data[1], r2_mc[0], r2_mc[1]));//
       kappa1.push_back(ratioError(r1_data[0], 0, r1_mc[0], r1_mc[1]));//FIXME //r1_data[1], r2_data[1]
-      kappa2.push_back(ratioError(r2_data[0], 0, r2_mc[0], r2_mc[1]));// */
+      kappa2.push_back(ratioError(r2_data[0], 0, r2_mc[0], r2_mc[1])); 
       cout << "$\\kappa$1  &  " << Form("%.2f",kappa1.at(ibin-22).at(0)) << " $\\pm$ " <<  Form("%.2f",kappa1.at(ibin-22).at(1)) << " \\\\ \\cline{1-1}" << endl;
       cout << "$\\kappa$2  &  " << Form("%.2f",kappa2.at(ibin-22).at(0)) << " $\\pm$ " <<  Form("%.2f",kappa2.at(ibin-22).at(1)) << " \\\\ \\hline" << endl;
 
@@ -456,7 +455,7 @@ int main(int argc, char *argv[])
     drawSyst(lat_1);
     if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
     else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
-    drawHeader();
+    drawHeader(year);
     h1_1l_summary1->Write();
     c->cd(2);
     h1_1l_summary2->SetTitle("#kappa ("+s_mj3+"-inf/"+s_mj1+"-"+s_mj2+" GeV)");
@@ -476,7 +475,7 @@ int main(int argc, char *argv[])
     drawSyst(lat_1);
     if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
     else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
-    drawHeader();
+    drawHeader(year);
     h1_1l_summary2->Write();
     c->cd(3);
     h1_0l_summary1->SetTitle("#kappa ("+s_mj2+"-"+s_mj3+"/"+s_mj1+"-"+s_mj2+" GeV)");
@@ -490,7 +489,7 @@ int main(int argc, char *argv[])
     drawSyst(lat_1);
     if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
     else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
-    drawHeader();
+    drawHeader(year);
     h1_0l_summary1->Write();
     c->cd(4);
     h1_0l_summary2->SetTitle("#kappa ("+s_mj3+"-inf/"+s_mj1+"-"+s_mj2+" GeV)");
@@ -504,7 +503,7 @@ int main(int argc, char *argv[])
     drawSyst(lat_1);
     if(syst=="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst);
     else if(syst!="nominal") lat_1->DrawLatexNDC(0.78, 0.8, syst+" "+updo);
-    drawHeader();
+    drawHeader(year);
     h1_0l_summary2->Write();
     c->Print("plots/kappa/"+year+"/kappa_summary_"+syst+updo+"_"+year+".pdf");
     c->Print("plots/kappa/"+year+"/kappa_summary_"+syst+updo+"_"+year+".png");

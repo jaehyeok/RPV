@@ -15,6 +15,7 @@
 
 using namespace std;
 
+TString year;
 bool formatLatex=false;
 
 float addInQuad(float a, float b);
@@ -27,8 +28,10 @@ void drawHeader()
   lat->SetTextSize(0.053);
   lat->DrawLatexNDC(0.12, 0.93, "CMS #scale[0.8]{#font[52]{Work In Progress}}");
   lat->SetTextFont(42);
-  lat->DrawLatexNDC(0.78, 0.93, "36.3 fb^{-1} (13 TeV)");//FIXME
-//  lat->DrawLatexNDC(0.78, 0.93, "101.2 fb^{-1} (13 TeV)");//FIXME
+  if(year=="2016") lat->DrawLatexNDC(0.76, 0.83, "36.3 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="2017") lat->DrawLatexNDC(0.76, 0.83, "41.5 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="2018") lat->DrawLatexNDC(0.76, 0.83, "59.7 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="20178") lat->DrawLatexNDC(0.76, 0.83, "101.2 fb^{-1} (13 TeV)");//FIXME
 }
 
 void drawSyst(TLatex *lat1){
@@ -216,10 +219,14 @@ int main(int argc, char *argv[])
     //
     TH1F *h1_mj_data[52], *h1_mj_qcd[52], *h1_mj_ttbar[52], *h1_mj_wjets[52], *h1_mj_other[52], *h1_mj_mc[52];
     TH1F *h1_mj_qcd_syst[52], *h1_mj_ttbar_syst[52], *h1_mj_wjets_syst[52], *h1_mj_other_syst[52], *h1_mj_mc_syst[52];
+    TH1F *h1_mj_data_qcd[52], *h1_mj_data_ttbar[52], *h1_mj_data_wjets[52];
     for(int ibin=22; ibin<52; ibin++)  
     { 
       // define histograms
       h1_mj_data[ibin]       = new TH1F(Form("h1_mj_data_bin%i", ibin), Form("h1_mj_data_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_data_qcd[ibin]       = new TH1F(Form("h1_mj_data_qcd_bin%i", ibin), Form("h1_mj_data_qcd_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_data_ttbar[ibin]       = new TH1F(Form("h1_mj_data_ttbar_bin%i", ibin), Form("h1_mj_data_ttbar_bin%i", ibin), 3, mjmin, mjmax);
+      h1_mj_data_wjets[ibin]       = new TH1F(Form("h1_mj_data_wjets_bin%i", ibin), Form("h1_mj_data_wjets_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_qcd[ibin]        = new TH1F(Form("h1_mj_qcd_bin%i", ibin), Form("h1_mj_qcd_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_ttbar[ibin]      = new TH1F(Form("h1_mj_ttbar_bin%i", ibin), Form("h1_mj_ttbar_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_wjets[ibin]      = new TH1F(Form("h1_mj_wjets_bin%i", ibin), Form("h1_mj_wjets_bin%i", ibin), 3, mjmin, mjmax);
@@ -231,6 +238,9 @@ int main(int argc, char *argv[])
 //      h1_mj_other_syst[ibin] = new TH1F(Form("h1_mj_other_syst_bin%i", ibin), Form("h1_mj_other_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_mc_syst[ibin]    = new TH1F(Form("h1_mj_mc_syst_bin%i", ibin), Form("h1_mj_mc_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_data[ibin]->Sumw2(); 
+      h1_mj_data_qcd[ibin]->Sumw2(); 
+      h1_mj_data_ttbar[ibin]->Sumw2(); 
+      h1_mj_data_wjets[ibin]->Sumw2(); 
       h1_mj_qcd[ibin]->Sumw2(); 
       h1_mj_ttbar[ibin]->Sumw2(); 
       h1_mj_wjets[ibin]->Sumw2(); 
@@ -244,7 +254,14 @@ int main(int argc, char *argv[])
 
       // Get histograms from root file
       if(syst=="nominal"){
-        h1_mj_data[ibin]  = static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin))); 
+//        h1_mj_data[ibin]  = static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin))); 
+        //FIXME
+        h1_mj_data_qcd[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin))); 
+        h1_mj_data_ttbar[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin))); 
+        h1_mj_data_wjets[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin))); 
+	h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_data_qcd[ibin]->Clone(Form("h1_mj_data_bin%d", ibin)));
+	h1_mj_data[ibin]->Add(h1_mj_data_ttbar[ibin]);
+	h1_mj_data[ibin]->Add(h1_mj_data_wjets[ibin]);
       }
       else if(syst!="nominal"){
       //(murf, mur, and muf have different name from other systs in output file) FIXME
@@ -313,14 +330,14 @@ int main(int argc, char *argv[])
 
       cout << "        & "<< binLatex[ibin]<<" \\\\ \\hline" << endl;
       //cout << ".... " << bin[ibin] << endl; 
-
-      /*cout << "r1 data: " << r1_data[0] << " +- " << r1_data[1] <<  endl;
+      /*
+      cout << "r1 data: " << r1_data[0] << " +- " << r1_data[1] <<  endl;
       cout << "r2 data: " << r2_data[0] << " +- " << r2_data[1] << endl;
       cout << "r1 mc:   " << r1_mc[0] << " +- " << r1_mc[1] << endl;
       cout << "r2 mc:   " << r2_mc[0] << " +- " << r2_mc[1] << endl;// */
 
-      /*kappa1.push_back(ratioError(r1_data[0], r1_data[1], r1_mc[0], r1_mc[1]));
-      kappa2.push_back(ratioError(r2_data[0], r2_data[1], r2_mc[0], r2_mc[1]));// */
+      //kappa1.push_back(ratioError(r1_data[0], r1_data[1], r1_mc[0], r1_mc[1]));
+      //kappa2.push_back(ratioError(r2_data[0], r2_data[1], r2_mc[0], r2_mc[1]));//
       kappa1.push_back(ratioError(r1_data[0], 0, r1_mc[0], r1_mc[1]));//FIXME //r1_data[1], r2_data[1]
       kappa2.push_back(ratioError(r2_data[0], 0, r2_mc[0], r2_mc[1]));// */
       cout << "$\\kappa$1  &  " << Form("%.2f",kappa1.at(ibin-22).at(0)) << " $\\pm$ " <<  Form("%.2f",kappa1.at(ibin-22).at(1)) << " \\\\ \\cline{1-1}" << endl;
@@ -360,6 +377,8 @@ int main(int argc, char *argv[])
       {
         if(ibin<37)
         {
+	  cout << "Content: kappa1.at("<<ibin-22<<").at(0): "<<kappa1.at(ibin-22).at(0)<<endl;
+	  cout << "Err:     kappa1.at("<<ibin-22<<").at(1): "<<kappa1.at(ibin-22).at(1)<<endl;
           h1_1l_summary1->SetBinContent(bin_index, kappa1.at(ibin-22).at(0));
           h1_1l_summary1->SetBinError(bin_index, kappa1.at(ibin-22).at(1));
         }

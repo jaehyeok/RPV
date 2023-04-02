@@ -300,9 +300,9 @@ int main(int argc, char *argv[]){
       c->cd(ihist+1);
       c->cd(ihist+1)->SetLeftMargin(0.125);  //0.1 is defalut
     
-      if(ihist==0) h1_nb_up[ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"  "+year);     //Use string() Because there is no definition of operator "+" that takes two char*s.
-      else if(ihist==1) h1_nb_up[ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"  "+year);
-      else if(ihist==2) h1_nb_up[ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      if(ihist==0) h1_nb_up[ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"  "+year);     //Use string() Because there is no definition of operator "+" that takes two char*s.
+      else if(ihist==1) h1_nb_up[ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"  "+year);
+      else if(ihist==2) h1_nb_up[ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       h1_nb_up[ihist]->GetYaxis()->SetRangeUser(0,1.3);
       h1_nb_up[ihist]->SetLineColor(kRed);
       h1_nb_down[ihist]->SetLineColor(kBlue);
@@ -346,9 +346,9 @@ int main(int argc, char *argv[]){
       h2_nb_up[ihist]->SetMaximum(1.3);
       h2_nb_up[ihist]->SetLineColor(kRed);
       h2_nb_down[ihist]->SetLineColor(kBlue);
-      if(ihist==0) h2_nb_up[ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"  "+year);
-      else if(ihist==1) h2_nb_up[ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"  "+year);
-      else if(ihist==2) h2_nb_up[ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+      if(ihist==0) h2_nb_up[ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"  "+year);
+      else if(ihist==1) h2_nb_up[ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"  "+year);
+      else if(ihist==2) h2_nb_up[ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       h2_nb_up[ihist]->GetXaxis()->SetTitle("N_{b}");
       h2_nb_up[ihist]->GetYaxis()->SetTitle("#kappa^{MC}_{2}");
       h2_nb_up[ihist]->GetXaxis()->SetTitleSize(0.05);
@@ -454,14 +454,14 @@ int main(int argc, char *argv[]){
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
       if(isyst==0 || isyst==1) {
-        if(ihist==0) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-        else if(ihist==1) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-        else if(ihist==2) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+        if(ihist==0) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       }
       else {
-        if(ihist==0) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-        else if(ihist==1) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-        else if(ihist==2) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+        if(ihist==0) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #kappa_{1}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       }
       // sum in quad 
       for(unsigned int inb=0; inb<5; inb++) 
@@ -522,14 +522,14 @@ int main(int argc, char *argv[]){
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
       if(isyst==0 || isyst==1) {
-        if(ihist==0) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-        else if(ihist==1) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-        else if(ihist==2) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+        if(ihist==0) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       }
       else {
-        if(ihist==0) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-        else if(ihist==1) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-        else if(ihist==2) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{1}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+        if(ihist==0) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #kappa_{1}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       }
       // sum in quad 
       for(unsigned int inb=0; inb<5; inb++) 
@@ -542,11 +542,11 @@ int main(int argc, char *argv[]){
         bin_content_to_add = h1_nb_fit_combined_down[ihist]->GetBinContent(inb+1); 
 	if(isyst==0) { // jec
 	  h1_nb_fit_jec_down[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
-	  h1_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h1_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jec)
+	  h1_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, (-1)*TMath::Abs(h1_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jec)
 	}
 	else if(isyst==1) { // jer
 	  h1_nb_fit_jer_down[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
-	  h1_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h1_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jer)
+	  h1_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, (-1)*TMath::Abs(h1_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jer)
 	}
 	else {
           new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 
@@ -645,14 +645,14 @@ int main(int argc, char *argv[]){
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
       if(isyst==0 || isyst==1) {
-        if(ihist==0) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-        else if(ihist==1) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-        else if(ihist==2) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+        if(ihist==0) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       }
       else {
-        if(ihist==0) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-        else if(ihist==1) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-        else if(ihist==2) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+        if(ihist==0) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("summary of  #kappa_{2}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       }
       // sum in quad 
       for(unsigned int inb=0; inb<5; inb++) 
@@ -712,14 +712,14 @@ int main(int argc, char *argv[]){
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
       if(isyst==0 || isyst==1) {
-        if(ihist==0) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-        else if(ihist==1) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-        else if(ihist==2) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+        if(ihist==0) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       }
       else {
-        if(ihist==0) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
-        else if(ihist==1) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
-        else if(ihist==2) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #scale[1.4]{#kappa_{2}}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
+        if(ihist==0) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
+        else if(ihist==1) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
+        else if(ihist==2) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("summary of  #kappa_{2}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
       }
       // sum in quad 
       for(unsigned int inb=0; inb<5; inb++) 
@@ -732,11 +732,11 @@ int main(int argc, char *argv[]){
         bin_content_to_add = h2_nb_fit_combined_down[ihist]->GetBinContent(inb+1); 
 	if(isyst==0) { // jec
 	  h2_nb_fit_jec_down[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content));
-	  h2_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h2_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jec)
+	  h2_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, (-1)*TMath::Abs(h2_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jec)
 	}
 	else if(isyst==1) { // jer
 	  h2_nb_fit_jer_down[ihist]->SetBinContent(inb+1, TMath::Abs(bin_content)); // jer
-	  h2_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, TMath::Abs(h2_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jer)
+	  h2_nb_fit_summary_down[isyst][ihist]->SetBinContent(inb+1, (-1)*TMath::Abs(h2_nb_fit_summary_down[isyst][ihist]->GetBinContent(inb+1))); // Abs(jer)
 	}
 	else {
 	  new_bin_content = TMath::Sqrt(bin_content*bin_content+bin_content_to_add*bin_content_to_add); 

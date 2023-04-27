@@ -5,18 +5,21 @@ from ROOT import TLegend, TChain, TCanvas, TLorentzVector, TH1D, TH1, THStack, T
 from ROOT import kGreen, kBlue, kBlack, kAzure, kRed, kYellow, kViolet, kGray
 
 #totpath = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm_njets3nleps2/"
-lumi = {'2016':35.9,'2017':41.5,'2018':59.7,'Run2':137,'20178':101.2}
+lumi = {'2016':36.3,'2017':41.5,'2018':59.7,'Run2':138,'20178':101.2}
 #lumi = {'2016':35.9,'2017':41.5,'2018':59.7,'20178':101.2}
 
 def totpath(year):
 	ret = []
 	if year=="Run2" :
 		for y in ["2016","2017","2018"]:
-			ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/") 
+			#ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/") 
+			ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/") 
 	elif year == "20178":
 		for y in ["2017","2018"]:
-			ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/")
-	else : ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_dy0923/")
+			#ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/")
+			ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/")
+	#else : ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_dy0923/")
+	else : ret.append("/mnt/data3/babies/210910/"+year+"/merged_norm_dy0923/")
 	print(ret)
 	return ret
 
@@ -74,8 +77,8 @@ cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 		mom2.SetPtEtaPhiM(ch.leps_pt.at(1), ch.leps_eta.at(1), ch.leps_phi.at(1), mass)
 		momtot = mom1+mom2
 		mll = momtot.M()
-		if not mll < 100 : continue
-		if not mll > 80 : continue
+		if not mll < 101 : continue
+		if not mll > 81 : continue
 		if "MC" in histname :
 			h_int.Fill(min(ch.njets,7.99),ch.weight*lumi[year])
 			if ch.nbm==nbmcut:
@@ -113,7 +116,7 @@ def DY(pathlist, njcut, year):
 		process_list = ['qcd','others','ttbar','wjets','dyjet']
 		process_name = {'qcd':'QCD', 'others':'Others', 'ttbar':'ttbar', 'wjets':'W+jets', 'dyjet':'DY'}
 		#process_list = ['dyjet']
-		process_det = {'qcd':['QCD_*'],'dyjet':['DYJets*'],'others':['ST_*','TTTT*','TTW*','TTZ*','WW_*','WWW*','WWZ*','WZ_*','WZZ*','ZZ_*','ZZZ*'],'ttbar':['TTJets_*'],'wjets':['WJets*']}
+		process_det = {'qcd':['QCD_*'],'dyjet':['DYJets*'],'others':['ttHJet*','ST_*','TTTT*','TTW*','TTZ*','WW_*','WWW*','WWZ*','WZ_*','WZZ*','ZZ_*','ZZZ*'],'ttbar':['TTJets_*'],'wjets':['WJets*']}
 		#process_det = {'qcd':['*QCD_*'],'dyjet':['*DYJetsTo*'],'others':['*ST_*','*TTTT*','*TTW*','*TTZ*','WW_*','*WWW*','*WWZ*','WZ_*','*WZZ*','ZZ_*','*ZZZ*'],'ttbar':['*TTJets_*'],'wjets':['*WJetsTo*']}
 		process_color = {'qcd':kBlue-4,'dyjet':kViolet-9,'ttbar':kAzure+7,'wjets':kGreen+2,'others':kGray}
 		MC_Stack0 = THStack("MC_Stack0","MC_Stack0")

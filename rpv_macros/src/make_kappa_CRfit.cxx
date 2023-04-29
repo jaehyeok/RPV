@@ -187,8 +187,8 @@ int main(int argc, char *argv[]){
     for(auto iother_kwj : s_other_kwj) other_kwj.Add((static_cast<std::string>(iother_kwj)));
     //getKappa(data, iyear, f, "data_obs");
     
-    vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig, "rpv_m1900");
-    small_tree_rpv rpv_m1900(static_cast<std::string>(s_rpv_m1900.at(0)));
+    vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig, "rpv_m1800");
+    small_tree_rpv rpv_m1800(static_cast<std::string>(s_rpv_m1800.at(0)));
 
     if(!(mconly)) genKappaRegions( data, iyear, f, false, "data_obs");
 
@@ -206,7 +206,7 @@ int main(int argc, char *argv[]){
     genKappaRegions(   DY_kwj, iyear, f, true,    "DY");  
     genKappaRegions(other_kwj, iyear, f, true, "other");
 
-    genKappaRegions(rpv_m1900, iyear, f, false, "signal_M1900");
+    genKappaRegions(rpv_m1800, iyear, f, false, "signal_M1800");
   } 
 
   genMConly(f, mconly);
@@ -462,21 +462,33 @@ void genKappaFactors(TFile *f, TString year){
         cout<<"temp_mc_          : "<<temp_mc_<<endl;
       }
       float unc_dy_2016[3][2]={
-	      {0.20, 0.19},
-	      {0.15, 0.19},
-	      {0.12, 0.11}};
+	      {0.28, 0.27},
+	      {0.21, 0.27},
+	      {0.18, 0.17}};
+	     // {0.20, 0.19},
+	     // {0.15, 0.19},
+	     // {0.12, 0.11}};
       float unc_dy_20178[3][2]={
-	      {0.13, 0.15},
-	      {0.14, 0.12},
-	      {0.10, 0.05}};
+	      {0.18, 0.20},
+	      {0.19, 0.15},
+	      {0.13, 0.02}};
+	     // {0.13, 0.15},
+	     // {0.14, 0.12},
+	     // {0.10, 0.05}};
       float unc_dy_2017[3][2]={
-	      {0.13, 0.16},
-	      {0.14, 0.15},
-	      {0.10, 0.10}};
+	      {0.17, 0.21},
+	      {0.19, 0.21},
+	      {0.13, 0.07}};
+	     // {0.13, 0.16},
+	     // {0.14, 0.15},
+	     // {0.10, 0.10}};
       float unc_dy_2018[3][2]={
-	      {0.14, 0.14},
-	      {0.13, 0.08},
-	      {0.10, 0.01}};
+	      {0.18, 0.19},
+	      {0.18, 0.11},
+	      {0.13, 0.01}};
+	     // {0.14, 0.14},
+	     // {0.13, 0.08},
+	     // {0.10, 0.01}};
       if(ind_proc==1){
 	if(year=="2016"){
 	  unc_dy=unc_dy_2016[ind_ibin][i];
@@ -602,6 +614,7 @@ void genKappaFactors(TFile *f, TString year){
   TBox *b3 = new TBox(6.,-1.99, 8.99, 1.99*c->GetUymax());
   b3->SetFillColor(kBlue-7);
   hist_kappa1->Draw("e0 x0");
+  //hist_kappa1->Draw("");
   TGaxis *ax1 = static_cast<TGaxis*>(hist_kappa1->GetXaxis()->Clone());
   TGaxis *ay1 = static_cast<TGaxis*>(hist_kappa1->GetYaxis()->Clone());
   //b1->SetFillStyle(3254);
@@ -612,6 +625,7 @@ void genKappaFactors(TFile *f, TString year){
   b3->Draw("same");
   hist_kappa1->SetFillStyle(4000);
   hist_kappa1->Draw("same e0 x0");
+  //hist_kappa1->Draw("same");
   hist_kappa1_mc->SetFillStyle(3254);
   hist_kappa1_mc->SetFillColor(kRed);
   hist_kappa1_mc->SetLineWidth(2);
@@ -619,6 +633,10 @@ void genKappaFactors(TFile *f, TString year){
   hist_kappa1_mc->SetMarkerStyle(40);
   hist_kappa1_mc->SetMarkerSize(1.2);
   hist_kappa1_mc->Draw("same x0 e0");
+//  hist_kappa1_mc->Draw("same e0");
+  cout << "Xaxis Min: " << hist_kappa1->GetXaxis()->GetXmin() << endl;
+  cout << "Xaxis Max: " << hist_kappa1->GetXaxis()->GetXmax() << endl;
+  cout << "Xaxis Nbin: " << hist_kappa1->GetXaxis()->GetNbins() << endl;
   ax1->Draw("same");
   ay1->Draw("same");
   c->cd(1)->RedrawAxis("F");

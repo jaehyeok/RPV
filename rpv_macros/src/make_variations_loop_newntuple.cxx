@@ -583,7 +583,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       //cout << procname << " " << ibin << " " << njbin << " " << iproc << " " <<  njbin+3*iproc+1 << " " << kappa1_err << " "<< kappa1_cont << " " << kappa2_err << " " << kappa2_cont << endl; // FIXME
       kappa_syst[0][ibin][njbin][iproc] = TMath::Sqrt(kappa1_err*kappa1_err + (1-kappa1_cont)*(1-kappa1_cont));
       kappa_syst[1][ibin][njbin][iproc] = TMath::Sqrt(kappa2_err*kappa2_err + (1-kappa2_cont)*(1-kappa2_cont));
-      //cout << kappa_syst[0][ibin][njbin][iproc] << " " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
+      cout << "procname: " << procname << " / ibin: " << ibin << endl;
+      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
       kappa_wgt[0][njbin][iproc] = 1;
       kappa_wgt[1][njbin][iproc] = 1;
       if(procname=="qcd") 
@@ -593,21 +594,33 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       }
       float unc_dy(0);
       float unc_dy_2016[3][2]={
-	      {0.20, 0.19},
-	      {0.15, 0.19},
-	      {0.12, 0.11}};
+	      {0.28, 0.27},
+	      {0.21, 0.27},
+	      {0.18, 0.17}};
+	     // {0.20, 0.19},
+	     // {0.15, 0.19},
+	     // {0.12, 0.11}};
       float unc_dy_20178[3][2]={
-	      {0.13, 0.15},
-	      {0.14, 0.12},
-	      {0.10, 0.05}};
+	      {0.18, 0.20},
+	      {0.19, 0.15},
+	      {0.13, 0.02}};
+	     // {0.13, 0.15},
+	     // {0.14, 0.12},
+	     // {0.10, 0.05}};
       float unc_dy_2017[3][2]={
-	      {0.13, 0.16},
-	      {0.14, 0.15},
-	      {0.10, 0.10}};
+	      {0.17, 0.21},
+	      {0.19, 0.21},
+	      {0.13, 0.07}};
+	     // {0.13, 0.16},
+	     // {0.14, 0.15},
+	     // {0.10, 0.10}};
       float unc_dy_2018[3][2]={
-	      {0.14, 0.14},
-	      {0.13, 0.08},
-	      {0.10, 0.01}};
+	      {0.18, 0.19},
+	      {0.18, 0.11},
+	      {0.13, 0.01}};
+	     // {0.14, 0.14},
+	     // {0.13, 0.08},
+	     // {0.10, 0.01}};
       for(int ihb=0; ihb<2; ihb++){
         if(iproc==1){
           if(year=="2016"){

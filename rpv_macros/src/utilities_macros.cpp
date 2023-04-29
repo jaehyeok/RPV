@@ -170,11 +170,11 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       int isam = vars[var].samples[sam];
       if(!Samples[isam].isSig && !Samples[isam].isData) nbkg++;
       samVariable = Samples[isam].samVariable;
-      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
-//FIXME      totCut = Samples[isam].factor+"*"+luminosity+"*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; 
+//      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
+      totCut = Samples[isam].factor+"*"+luminosity+"*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; //FIXME
       if(Samples[isam].isData) totCut= vars[var].cuts+"&&"+Samples[isam].cut;
       if(vars[var].PU_reweight && !Samples[isam].isData) totCut = Samples[isam].factor+"*"+luminosity+"*weight*wpu*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
-      //cout<<totCut<<endl;
+      cout<<"total cut: " << totCut<<endl;
       //histo[0][var][sam]->Sumw2();
       histo[0][var][sam]->SetBinErrorOption(TH1::kPoisson);
       if(samVariable=="noPlot") chain[isam]->Project(histo[0][var][sam]->GetName(), variable, totCut);
@@ -292,7 +292,10 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	if(title.Contains("mus")) maxbin = 10;	
 	maxbin =2 ;
         cout<< Samples[isam].label << " : " << "first bin content :" <<histo[0][var][sam]->Integral(1,1)  << endl;
-	cout<< Samples[isam].label << " : " << "bin 2 to max content :"  <<histo[0][var][sam]->Integral(2,maxbin) << endl;
+        //cout<< Samples[isam].label << " : " << "first bin content :" <<histo[0][var][sam]->GetBinContent(1)  << endl;
+        cout<< Samples[isam].label << " : " << "second bin content :" <<histo[0][var][sam]->Integral(2,2)  << endl;
+        cout<< Samples[isam].label << " : " << "third bin content :" <<histo[0][var][sam]->Integral(3,3)  << endl;
+	//cout<< Samples[isam].label << " : " << "bin 2 to max content :"  <<histo[0][var][sam]->Integral(2,maxbin) << endl;
 	double error1(0), errorother(0);
 	double quad=0;
 	for(unsigned int ibin=1 ; ibin<maxbin ; ibin++){
@@ -572,7 +575,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
         if(vars[var].nevents.at(sam)<0){
 	  leg[ileg].SetX1NDC(0.23); leg[ileg].SetX2NDC(0.43); //220727 make plot look pretty
 	  leg[ileg].SetY1NDC(0.2); leg[ileg].SetY2NDC(0.35);
-	  if(sam>1) {
+	  if(sam>1) {     //230330 make plot look pretty, for Figure22~24 (mjsyst)
+	  //if(sam>3) {    //230330 make plot look pretty, for Figure16 (nbm=0 plots)
 	    leg[ileg].SetX1NDC(0.6); leg[ileg].SetX2NDC(0.8); //220727 make plot look pretty
 	    leg[ileg].SetY1NDC(0.55); leg[ileg].SetY2NDC(0.9);  //230109 make plot look pretty (Nb bin: 4 -> 5)
             leg[ileg].SetTextSize(0.75*style.LegendSize);

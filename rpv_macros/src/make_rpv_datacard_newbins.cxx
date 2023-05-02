@@ -1065,20 +1065,28 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     }
     TString mednjcon_, highnjcon_;
     if(year=="2016"){
-      mednjcon_ = "1.25";
-      highnjcon_ = "1.35";
+      //mednjcon_ = "1.25";
+      //highnjcon_ = "1.35";
+      mednjcon_ = "1.20";
+      highnjcon_ = "1.19";
     }
     if(year=="2017"){
-      mednjcon_ = "1.35";
-      highnjcon_ = "1.33";
+      //mednjcon_ = "1.35";
+      //highnjcon_ = "1.33";
+      mednjcon_ = "1.27";
+      highnjcon_ = "1.09";
     }
     if(year=="2018"){
-      mednjcon_ = "1.26";
-      highnjcon_ = "1.30";
+      //mednjcon_ = "1.26";
+      //highnjcon_ = "1.30";
+      mednjcon_ = "1.18";
+      highnjcon_ = "1.25";
     }
     if(year=="20178"){
-      mednjcon_ = "1.25";
-      highnjcon_ = "1.10"; 
+      //mednjcon_ = "1.25";
+      //highnjcon_ = "1.10"; 
+      mednjcon_ = "1.18";
+      highnjcon_ = "1.08"; 
     }
     //create map between bin name and bin index
     map<string, int> bindex;

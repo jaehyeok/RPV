@@ -14,11 +14,14 @@ def totpath(year):
 		for y in ["2016","2017","2018"]:
 			#ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/") 
 			ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/") 
+			#ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_JER_0903/") 
 	elif year == "20178":
 		for y in ["2017","2018"]:
 			#ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/")
+			#ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_JER_0903/")
 			ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/")
 	#else : ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_dy0923/")
+	#else : ret.append("/mnt/data3/babies/210910/"+year+"/merged_norm_JER_0903/")
 	else : ret.append("/mnt/data3/babies/210910/"+year+"/merged_norm_dy0923/")
 	print(ret)
 	return ret
@@ -164,6 +167,7 @@ def DY(pathlist, njcut, year):
 			chMC.Reset()
 		for path in pathlist :
 			chData.Add(path+"JetHT*")
+			#chData.Add("/mnt/data3/babies/210910/"+year+"/JetHTRun_rpvfitnbge0_step3/*")
 		histRatio, histData0, histData1, histllData0, histllData1, h_intData = getDYHist(chData,0,njcut, "Data0", year)
 		kappa1, kappa2 = getKappa(histData0, histMC0) 
 		SF_1bin = histData1.GetBinContent(1)/MC_Stack1p.GetBinContent(1)
@@ -297,9 +301,9 @@ def DY(pathlist, njcut, year):
 		#histRatio.GetXaxis().SetTitle("M_{J} [GeV]")
 		histRatio.GetXaxis().SetTitleSize(0.12)
 		histRatio.GetXaxis().SetTitleOffset(1.3)
-		histRatio.GetXaxis().SetBinLabel(1,"4 \leq N_{jets} \leq 5")#FIXME
-		histRatio.GetXaxis().SetBinLabel(2,"6 \leq N_{jets} \leq 7")
-		histRatio.GetXaxis().SetBinLabel(3,"N_{jets} \geq 8")
+		histRatio.GetXaxis().SetBinLabel(1,"3 \leq N_{jets} \leq 4")#FIXME
+		histRatio.GetXaxis().SetBinLabel(2,"5 \leq N_{jets} \leq 6")
+		histRatio.GetXaxis().SetBinLabel(3,"N_{jets} \geq 7")
 		#histRatio.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV")#FIXME
 		#histRatio.GetXaxis().SetBinLabel(2,"800 \leq M_{J} \leq 1100 GeV")#FIXME
 		#histRatio.GetXaxis().SetBinLabel(3,"M_{J} \geq 1100 GeV")#FIXME

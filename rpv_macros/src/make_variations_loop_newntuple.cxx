@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
       cout<<year<<endl;
       if(year=="2016") lumi = 36.3;
       else if(year=="2017") lumi = 41.5;
-      else if(year=="2018") lumi = 59.7;
+      else if(year=="2018") lumi = 59.8;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "There are only 5 arguments! 0 Lepton shape is entered as on..." << endl;
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
       year = argv[5];
       if(year=="2016") lumi = 36.3;
       else if(year=="2017") lumi = 41.5;
-      else if(year=="2018") lumi = 59.7;
+      else if(year=="2018") lumi = 59.8;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
       str_year = argv[6];
       if(year=="2016") lumi = 36.3;
       else if(year=="2017") lumi = 41.5;
-      else if(year=="2018") lumi = 59.7;
+      else if(year=="2018") lumi = 59.8;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -584,7 +584,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       kappa_syst[0][ibin][njbin][iproc] = TMath::Sqrt(kappa1_err*kappa1_err + (1-kappa1_cont)*(1-kappa1_cont));
       kappa_syst[1][ibin][njbin][iproc] = TMath::Sqrt(kappa2_err*kappa2_err + (1-kappa2_cont)*(1-kappa2_cont));
       cout << "procname: " << procname << " / ibin: " << ibin << endl;
-      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
+//      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
       kappa_wgt[0][njbin][iproc] = 1;
       kappa_wgt[1][njbin][iproc] = 1;
       if(procname=="qcd") 
@@ -636,6 +636,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             unc_dy=unc_dy_2018[njbin][ihb];
           }
           kappa_syst[ihb][ibin][njbin][iproc]=TMath::Sqrt(kappa_syst[ihb][ibin][njbin][iproc]*kappa_syst[ihb][ibin][njbin][iproc]+unc_dy*unc_dy);
+	  cout << "PROCNAME: " << procname << endl;
+	  cout << "kappa_unc: " << kappa_syst[ihb][ibin][njbin][iproc] << endl;
         }
       }
     }
@@ -703,7 +705,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     // 
     // Central weights
     // 
-    float nominalweight = lumi*tree.weight()*tree.pass(); //FIXME 20220118
+    //float nominalweight = lumi*tree.weight()*tree.pass(); //FIXME 20220118
+    float nominalweight = lumi*tree.weight()*tree.frac16()*tree.pass(); //FIXME 20231001, add frac16
+    //float nominalweight = lumi*tree.w_lumi()*tree.frac16()*tree.pass(); //for testing only w_lumi
 //    if(procname=="wjets"){
 //       	cout<<"WEIGHT: " << tree.weight()<<endl;
 //       	cout<<"LUMI  : " << lumi <<endl;
@@ -717,7 +721,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if (procname=="data_obs" && year=="2016") nominalweight = tree.pass() * (tree.trig_ht900()||tree.trig_jet450());
     else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
     //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
-    else if (procname=="signal") nominalweight = nominalweight * 1;
+    //else if (procname=="signal") nominalweight = nominalweight * 1;
+    else if (procname.Contains("signal")) nominalweight = lumi*tree.weight()*tree.pass();  //FIXME 20231001, there is no frac16 in sig
     //else if ((tree.nbm()==0||tree.nbm()==1) && tree.mj12()>1100 && tree.njets()>=4 && tree.njets()<=5) nominalweight=lumi*tree.weight()*0.4;//FIXME HEM issue
 /*
     int nb_csv=0;
@@ -1091,7 +1096,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
       flag=false;
 
-      if(procname!="data_obs"&&procname!="other"&&ibin>22){
+      if(procname!="data_obs"&&procname!="other"&&ibin>21){
         if(ihb!=999){
           float kappa_w = kappa_wgt[ihb][njbin][iproc];
           nominalweight = temp_nominal*kappa_w;

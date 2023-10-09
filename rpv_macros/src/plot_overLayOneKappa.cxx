@@ -36,8 +36,8 @@ void drawHeader(TString year){
   lat->SetTextFont(42);
   if(year=="2016") lat->DrawLatexNDC(0.76, 0.83, "36.3 fb^{-1} (13 TeV)");//FIXME
   else if(year=="2017") lat->DrawLatexNDC(0.76, 0.83, "41.5 fb^{-1} (13 TeV)");//FIXME
-  else if(year=="2018") lat->DrawLatexNDC(0.76, 0.83, "59.7 fb^{-1} (13 TeV)");//FIXME
-  else if(year=="20178") lat->DrawLatexNDC(0.76, 0.83, "101.2 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="2018") lat->DrawLatexNDC(0.76, 0.83, "59.8 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="20178") lat->DrawLatexNDC(0.76, 0.83, "101.3 fb^{-1} (13 TeV)");//FIXME
 }
 
 int main(int argc, char *argv[]){

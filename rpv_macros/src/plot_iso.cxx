@@ -34,15 +34,15 @@ int main(int argc, char *argv[]){
   int nthreads = 10;
   ROOT::EnableImplicitMT(nthreads);
   TString year;
-  TString lumi = "59.7";
-  //TString lumi = "36.3";
-  //TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
-  TString trigger = " trig_ht1050 "; // PFHT800 OR PFHT900 OR PFJet450 */
+  //TString lumi = "59.8";
+  TString lumi = "36.3";
+  TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
+  //TString trigger = " trig_ht1050 "; // PFHT800 OR PFHT900 OR PFJet450 */
 
   /*TString lumi = "41.5";
   TString trigger = "trig_ht1050";// */
 
-  /*TString lumi = "59.7";
+  /*TString lumi = "59.8";
   TString trigger = "trig_ht1050";// */
 
   year = argv[1];
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
     trigger = "trig_ht1050";
   }
   else if(year == "2018"){
-    lumi = "59.7";
+    lumi = "59.8";
     trigger = "trig_ht1050";
   }//
 
@@ -83,7 +83,7 @@ int main(int argc, char *argv[]){
   // Get file lists
   vector<TString> s_data = getRPVProcess(folder_dat,"data");
   vector<TString> s_rpv_m1600 = getRPVProcess(folder_sig,"rpv_m1600");
-  vector<TString> s_rpv_m1900 = getRPVProcess(folder_sig,"rpv_m1900");
+  vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");
 
   vector<TString> s_ttbar = getRPVProcess(folder_bkg,"ttbar");
   vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]){
 
   string extraweight = "1";
   //Samples.push_back(sfeats(s_rpv_m1600, "m1600", kRed, 1, cutandweight("pass",extraweight)));
-  Samples.push_back(sfeats(s_rpv_m1900, "m1900", kNeon, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
+  Samples.push_back(sfeats(s_rpv_m1800, "m1800", kNeon, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
   Samples.back().isSig = true;
   
   Samples.push_back(sfeats(s_qcd, "QCD", rpv::c_qcd, 1, cutandweight("pass",extraweight)));
@@ -126,7 +126,8 @@ int main(int argc, char *argv[]){
   // Make analysis regions plots
   if(makeNm1==true){
     // Set cuts
-    TString basecut = "mj12>1100&&ht>1200";
+    //TString basecut = "mj12>1100&&ht>1200";
+    TString basecut = "mj12<500&&ht>1200";
     TString lepcuts = "nleps==1";
     vector<TString> nbcuts = {"nbm==0","nbm==1"};
     vector<TString> njetcuts = {"(njets>=4&&njets<=5)","(njets>=6&&njets<=7)","njets>=8"};//&&njets<=9","njets>=10"};

@@ -20,8 +20,8 @@ namespace {
   //TString luminosity="138";
   //TString luminosity="36.3";
   //TString luminosity="41.5";
-  //TString luminosity="59.7";
-  TString luminosity="101.2";
+  //TString luminosity="59.8";
+  TString luminosity="101.3";
   //TString luminosity="1.";// when drawing data
   TString plot_type=".pdf";
   TString plot_style="CMSPaper_Preliminary";

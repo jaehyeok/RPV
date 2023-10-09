@@ -17,13 +17,13 @@
 
 namespace {
 
-  TString lumi = "35.9"; //FIXME
+  TString lumi = "36.3"; //FIXME
   TString trigger = "( trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
 
   /*TString lumi = "41.5";
   TString trigger = "trig_ht1050";// */
 
-  /*TString lumi = "59.7";
+  /*TString lumi = "59.8";
   TString trigger = "trig_ht1050";// */
   
   bool showData = true; // Draw with/wihout data
@@ -43,6 +43,7 @@ int main(){
   for(unsigned int iyear=2016; iyear<2019; iyear++)
   {
     TString year = Form("%d", iyear);
+    cout << year << endl;
 
     if(year=="2017")
     {
@@ -51,15 +52,15 @@ int main(){
     }
     if(year=="2018")
     {
-      lumi = "59.7";
+      lumi = "59.8";
       trigger = "trig_ht1050";
     }
 
     // ntuple folders
-    TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
-    TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
-    TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
-    TString folder_dy = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_rpvfitnbge0_njets3nleps2/";
+    TString folder_bkg = "/mnt/data3/babies/210910/"+year+"/merged_norm_JER_0903/";
+    TString folder_dat = "/mnt/data3/babies/210910/"+year+"/JetHTRun_rpvfitnbge0_step3/";
+    TString folder_sig = "/mnt/data3/babies/210910/"+year+"/merged_norm_sig_pu/";
+    TString folder_dy = "/mnt/data1/babies/20210702/"+year+"/merged_norm_njets3nleps2/";
 
     // Get file lists
     vector<TString> s_data = getRPVProcess(folder_dat,"data");

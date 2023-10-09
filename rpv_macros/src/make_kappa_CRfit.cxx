@@ -129,7 +129,7 @@ int main(int argc, char *argv[]){
     if(argc==5||argc==1){
       if(iyear=="2016") lumi = 36.3;
       else if(iyear=="2017") lumi = 41.5;
-      else if(iyear=="2018") lumi = 59.7;
+      else if(iyear=="2018") lumi = 59.8;
     }
     cout<<argc<<endl;
 
@@ -337,7 +337,8 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
       mll = momtot.M();
     }
     else mll=0;
-    float weight = lumi*tree.weight();
+    //float weight = lumi*tree.weight();
+    float weight = lumi*tree.weight()*tree.pass()*tree.frac16();
     if(procname=="data_obs") weight = 1;
     for(auto ibin : bins){
       if(tree.mj12()>0 && passKapBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm(), mll)) 
@@ -623,17 +624,18 @@ void genKappaFactors(TFile *f, TString year){
   b1->Draw("same");
   b2->Draw("same");
   b3->Draw("same");
-  hist_kappa1->SetFillStyle(4000);
+  //hist_kappa1->SetFillStyle(4000);
+  hist_kappa1->SetFillStyle(3254);
+  hist_kappa1->SetMarkerStyle(40);
+  hist_kappa1->SetMarkerSize(1.2);
   hist_kappa1->Draw("same e0 x0");
-  //hist_kappa1->Draw("same");
-  hist_kappa1_mc->SetFillStyle(3254);
-  hist_kappa1_mc->SetFillColor(kRed);
-  hist_kappa1_mc->SetLineWidth(2);
-  hist_kappa1_mc->SetLineColor(kRed);
-  hist_kappa1_mc->SetMarkerStyle(40);
-  hist_kappa1_mc->SetMarkerSize(1.2);
-  hist_kappa1_mc->Draw("same x0 e0");
-//  hist_kappa1_mc->Draw("same e0");
+  //hist_kappa1_mc->SetFillStyle(3254);
+  //hist_kappa1_mc->SetFillColor(kRed);
+  //hist_kappa1_mc->SetLineWidth(2);
+  //hist_kappa1_mc->SetLineColor(kRed);
+  //hist_kappa1_mc->SetMarkerStyle(40);
+  //hist_kappa1_mc->SetMarkerSize(1.2);
+  //hist_kappa1_mc->Draw("same x0 e0");
   cout << "Xaxis Min: " << hist_kappa1->GetXaxis()->GetXmin() << endl;
   cout << "Xaxis Max: " << hist_kappa1->GetXaxis()->GetXmax() << endl;
   cout << "Xaxis Nbin: " << hist_kappa1->GetXaxis()->GetNbins() << endl;
@@ -658,15 +660,17 @@ void genKappaFactors(TFile *f, TString year){
   b4->Draw("same");
   b5->Draw("same");
   b6->Draw("same");
-  hist_kappa1->SetFillStyle(4000);
+  hist_kappa2->SetFillStyle(3254);
+  hist_kappa2->SetMarkerStyle(40);
+  hist_kappa2->SetMarkerSize(1.2);
   hist_kappa2->Draw("same e0 x0");
-  hist_kappa2_mc->SetFillStyle(3254);
-  hist_kappa2_mc->SetFillColor(kRed);
-  hist_kappa2_mc->SetLineWidth(2);
-  hist_kappa2_mc->SetLineColor(kRed);
-  hist_kappa2_mc->SetMarkerStyle(40);
-  hist_kappa2_mc->SetMarkerSize(1.2);
-  hist_kappa2_mc->Draw("same x0 e0");
+  //hist_kappa2_mc->SetFillStyle(3254);
+  //hist_kappa2_mc->SetFillColor(kRed);
+  //hist_kappa2_mc->SetLineWidth(2);
+  //hist_kappa2_mc->SetLineColor(kRed);
+  //hist_kappa2_mc->SetMarkerStyle(40);
+  //hist_kappa2_mc->SetMarkerSize(1.2);
+  //hist_kappa2_mc->Draw("same x0 e0");
   ax2->Draw("same"); 
   ay2->Draw("same"); 
   c->cd(2)->RedrawAxis("F");

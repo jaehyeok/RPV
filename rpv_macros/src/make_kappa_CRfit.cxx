@@ -463,33 +463,33 @@ void genKappaFactors(TFile *f, TString year){
         cout<<"temp_mc_          : "<<temp_mc_<<endl;
       }
       float unc_dy_2016[3][2]={
-	      {0.28, 0.27},
-	      {0.21, 0.27},
-	      {0.18, 0.17}};
-	     // {0.20, 0.19},
-	     // {0.15, 0.19},
-	     // {0.12, 0.11}};
+	      {0.31, 0.34},
+              {0.29, 0.29},
+              {0.27, 0.21}};
+	      //{0.28, 0.27},
+	      //{0.21, 0.27},
+	      //{0.18, 0.17}};
       float unc_dy_20178[3][2]={
-	      {0.18, 0.20},
-	      {0.19, 0.15},
-	      {0.13, 0.02}};
-	     // {0.13, 0.15},
-	     // {0.14, 0.12},
-	     // {0.10, 0.05}};
+	      {0.30, 0.31},
+              {0.31, 0.30},
+              {0.28, 0.21}};
+	      //{0.18, 0.20},
+	      //{0.19, 0.15},
+	      //{0.13, 0.02}};
       float unc_dy_2017[3][2]={
-	      {0.17, 0.21},
-	      {0.19, 0.21},
-	      {0.13, 0.07}};
-	     // {0.13, 0.16},
-	     // {0.14, 0.15},
-	     // {0.10, 0.10}};
+	      {0.30, 0.30},
+              {0.32, 0.32},
+              {0.29, 0.19}};
+	      //{0.17, 0.21},
+	      //{0.19, 0.21},
+	      //{0.13, 0.07}};
       float unc_dy_2018[3][2]={
-	      {0.18, 0.19},
-	      {0.18, 0.11},
-	      {0.13, 0.01}};
-	     // {0.14, 0.14},
-	     // {0.13, 0.08},
-	     // {0.10, 0.01}};
+	      {0.30, 0.32},
+              {0.30, 0.28},
+              {0.28, 0.24}};
+	      //{0.18, 0.19},
+	      //{0.18, 0.11},
+	      //{0.13, 0.01}};
       if(ind_proc==1){
 	if(year=="2016"){
 	  unc_dy=unc_dy_2016[ind_ibin][i];
@@ -505,7 +505,7 @@ void genKappaFactors(TFile *f, TString year){
 	}
       }
       else unc_dy==0;
-      unc_dy=0;
+      unc_dy=0; // because kappa plots do not include unc_dy. It should be included in make_variations_loop_newntuple.cxx.
       unc_stat = data_obs->GetBinError(i+1);
       unc_mc   = mc_kap_->GetBinError(i+1);
       kappa_unc[i-1][ind_ibin][ind_proc] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc+unc_dy*unc_dy)/temp_mc_; 

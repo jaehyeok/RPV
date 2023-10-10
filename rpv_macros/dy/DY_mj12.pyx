@@ -4,17 +4,20 @@ import sys
 from ROOT import TLegend, TChain, TCanvas, TLorentzVector, TH1D, TH1, THStack, TColor, TPad, TGaxis, TLine, TLatex, TBox
 from ROOT import kGreen, kBlue, kBlack, kAzure, kRed, kYellow, kViolet, kGray
 
-lumi = {'2016':36.3,'2017':41.5,'2018':59.7,'Run2':138,'20178':101.2}
+lumi = {'2016':36.3,'2017':41.5,'2018':59.8,'Run2':138,'20178':101.3}
 
 def totpath(year):
 	ret = []
 	if year=="Run2" :
 		for y in ["2016","2017","2018"]:
-			ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/") 
+			#ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/") 
+			ret.append("/mnt/data3/babies/231001/"+y+"/merged_norm_njets3nleps2/") 
 	elif year == "20178":
 		for y in ["2017","2018"]:
-			ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/")
-	else : ret.append("/mnt/data3/babies/210910/"+year+"/merged_norm_dy0923/")
+			#ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/")
+			ret.append("/mnt/data3/babies/231001/"+y+"/merged_norm_njets3nleps2/")
+	#else : ret.append("/mnt/data3/babies/210910/"+year+"/merged_norm_dy0923/")
+	else : ret.append("/mnt/data3/babies/231001/"+year+"/merged_norm_njets3nleps2/")
 	print(ret)
 	return ret
 
@@ -71,14 +74,24 @@ cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 		if not mll < 101 : continue
 		if not mll > 81 : continue
 		if "MC" in histname :
-			h_int.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac1718*lumi[year])
-			if ch.nbm==nbmcut:
-				h.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac1718*lumi[year])
-				hll.Fill(mll,ch.weight*ch.frac1718*lumi[year])
-			elif ch.nbm==nbmcut+1:
-				h2.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac1718*lumi[year])
-				hll2.Fill(mll,ch.weight*ch.frac1718*lumi[year])
-			else : continue
+			if year=="20178" :
+				h_int.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac1718*lumi[year])
+				if ch.nbm==nbmcut:
+					h.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac1718*lumi[year])
+					hll.Fill(mll,ch.weight*ch.frac1718*lumi[year])
+				elif ch.nbm==nbmcut+1:
+					h2.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac1718*lumi[year])
+					hll2.Fill(mll,ch.weight*ch.frac1718*lumi[year])
+				else : continue
+			else :
+				h_int.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac16*lumi[year])
+				if ch.nbm==nbmcut:
+					h.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac16*lumi[year])
+					hll.Fill(mll,ch.weight*ch.frac16*lumi[year])
+				elif ch.nbm==nbmcut+1:
+					h2.Fill(min(ch.mj12,1399.99),ch.weight*ch.frac16*lumi[year])
+					hll2.Fill(mll,ch.weight*ch.frac16*lumi[year])
+				else : continue
 		else : 
 			h_int.Fill(min(ch.mj12,1399.99),1)
 			if ch.nbm==nbmcut:

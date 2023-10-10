@@ -5,24 +5,21 @@ from ROOT import TLegend, TChain, TCanvas, TLorentzVector, TH1D, TH1, THStack, T
 from ROOT import kGreen, kBlue, kBlack, kAzure, kRed, kYellow, kViolet, kGray
 
 #totpath = "/xrootd_user/yjeong/xrootd/nanoprocessing/2016/merged_norm_njets3nleps2/"
-lumi = {'2016':36.3,'2017':41.5,'2018':59.7,'Run2':138,'20178':101.2}
+lumi = {'2016':36.3,'2017':41.5,'2018':59.8,'Run2':138,'20178':101.3}
 #lumi = {'2016':35.9,'2017':41.5,'2018':59.7,'20178':101.2}
 
 def totpath(year):
 	ret = []
 	if year=="Run2" :
 		for y in ["2016","2017","2018"]:
-			#ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/") 
-			ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/") 
-			#ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_JER_0903/") 
+			ret.append("/mnt/data3/babies/231001/"+y+"/merged_norm_njets3nleps2/") 
+			#ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/") 
 	elif year == "20178":
 		for y in ["2017","2018"]:
-			#ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+y+"/merged_norm_dy0923/")
-			#ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_JER_0903/")
-			ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/")
-	#else : ret.append("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_dy0923/")
-	#else : ret.append("/mnt/data3/babies/210910/"+year+"/merged_norm_JER_0903/")
-	else : ret.append("/mnt/data3/babies/210910/"+year+"/merged_norm_dy0923/")
+			ret.append("/mnt/data3/babies/231001/"+y+"/merged_norm_njets3nleps2/")
+			#ret.append("/mnt/data3/babies/210910/"+y+"/merged_norm_dy0923/")
+	else : ret.append("/mnt/data3/babies/231001/"+year+"/merged_norm_njets3nleps2/")
+	#else : ret.append("/mnt/data3/babies/210910/"+year+"/merged_norm_dy0923/")
 	print(ret)
 	return ret
 
@@ -82,15 +79,25 @@ cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 		mll = momtot.M()
 		if not mll < 101 : continue
 		if not mll > 81 : continue
-		if "MC" in histname :
-			h_int.Fill(min(ch.njets,7.99),ch.weight*lumi[year])
-			if ch.nbm==nbmcut:
-				h.Fill(min(ch.njets,7.99),ch.weight*lumi[year])
-				hll.Fill(mll,ch.weight*lumi[year])
-			elif ch.nbm==nbmcut+1:
-				h2.Fill(min(ch.njets,7.99),ch.weight*lumi[year])
-				hll2.Fill(mll,ch.weight*lumi[year])
-			else : continue
+		if "MC" in histname:
+			if year=="20178":
+				h_int.Fill(min(ch.njets,7.99),ch.frac1718*ch.weight*lumi[year])
+				if ch.nbm==nbmcut:
+					h.Fill(min(ch.njets,7.99),ch.frac1718*ch.weight*lumi[year])
+					hll.Fill(mll,ch.frac1718*ch.weight*lumi[year])
+				elif ch.nbm==nbmcut+1:
+					h2.Fill(min(ch.njets,7.99),ch.frac1718*ch.weight*lumi[year])
+					hll2.Fill(mll,ch.frac1718*ch.weight*lumi[year])
+				else : continue
+			else :
+				h_int.Fill(min(ch.njets,7.99),ch.frac16*ch.weight*lumi[year])
+				if ch.nbm==nbmcut:
+					h.Fill(min(ch.njets,7.99),ch.frac16*ch.weight*lumi[year])
+					hll.Fill(mll,ch.frac16*ch.weight*lumi[year])
+				elif ch.nbm==nbmcut+1:
+					h2.Fill(min(ch.njets,7.99),ch.frac16*ch.weight*lumi[year])
+					hll2.Fill(mll,ch.frac16*ch.weight*lumi[year])
+				else : continue
 		else : 
 			h_int.Fill(min(ch.njets,7.99),1)
 			if ch.nbm==nbmcut:

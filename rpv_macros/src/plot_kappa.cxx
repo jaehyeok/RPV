@@ -211,9 +211,8 @@ int main(int argc, char *argv[])
     if(argc>6) infile = TFile::Open(filename,"READ");
 //    else infile = TFile::Open("variations/output_"+year+".root", "READ");
 
-    TString year_str;
+    TString year_str = year;
     if(year=="2017" || year=="2018") year_str="20178";
-    else if(year=="2016") year_str="2016";
     // 2017_20178, 2018_20178 should be used for applying appropriate QCD kappa correction.
 
     vector<vector<float>> kappa1;

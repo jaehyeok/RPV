@@ -92,7 +92,9 @@ int main(int argc, char *argv[])
   }
   if(year == "2016"){
       //BJ_220314 change members of shapeSysts
-	shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","isr","gs","lep_eff","pileup"};
+      //BJ_231012 remove isr from shapeSysts
+	//shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","isr","gs","lep_eff","pileup"};
+	shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","pileup"};
   }
   else if(year != "2016"){
 	shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","pileup"};
@@ -1067,25 +1069,25 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     if(year=="2016"){
       //mednjcon_ = "1.20";
       //highnjcon_ = "1.19";
-      mednjcon_ = "1.59";
-      highnjcon_ = "1.19";
+      mednjcon_ = "1.60";
+      highnjcon_ = "1.14";
     }
     if(year=="2017"){
       //mednjcon_ = "1.27";
       //highnjcon_ = "1.09";
       mednjcon_ = "1.32";
-      highnjcon_ = "1.16";
+      highnjcon_ = "1.14";
     }
     if(year=="2018"){
       //mednjcon_ = "1.18";
       //highnjcon_ = "1.25";
-      mednjcon_ = "1.19";
+      mednjcon_ = "1.20";
       highnjcon_ = "1.40";
     }
     if(year=="20178"){
       //mednjcon_ = "1.18";
       //highnjcon_ = "1.08"; 
-      mednjcon_ = "1.14";
+      mednjcon_ = "1.25";
       highnjcon_ = "1.29"; 
     }
     //create map between bin name and bin index

@@ -594,30 +594,30 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       }
       float unc_dy(0);
       float unc_dy_2016[3][2]={
-	      {0.31, 0.34},
-	      {0.29, 0.29},
-	      {0.27, 0.21}};
+	      {0.28, 0.26},
+	      {0.27, 0.23},
+	      {0.25, 0.18}};
 	      //{0.28, 0.27},
 	      //{0.21, 0.27},
 	      //{0.18, 0.17}};
       float unc_dy_20178[3][2]={
-	      {0.30, 0.31},
-	      {0.31, 0.30},
-	      {0.28, 0.21}};
+	      {0.27, 0.24},
+	      {0.29, 0.25},
+	      {0.27, 0.20}};
 	      //{0.18, 0.20},
 	      //{0.19, 0.15},
 	      //{0.13, 0.02}};
       float unc_dy_2017[3][2]={
-	      {0.30, 0.30},
-	      {0.32, 0.32},
-	      {0.29, 0.19}};
+	      {0.26, 0.22},
+	      {0.29, 0.29},
+	      {0.28, 0.18}};
 	      //{0.17, 0.21},
 	      //{0.19, 0.21},
 	      //{0.13, 0.07}};
       float unc_dy_2018[3][2]={
-	      {0.30, 0.32},
-	      {0.30, 0.28},
-	      {0.28, 0.24}};
+	      {0.27, 0.25},
+	      {0.28, 0.23},
+	      {0.26, 0.21}};
 	      //{0.18, 0.19},
 	      //{0.18, 0.11},
 	      //{0.13, 0.01}};
@@ -636,8 +636,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             unc_dy=unc_dy_2018[njbin][ihb];
           }
           kappa_syst[ihb][ibin][njbin][iproc]=TMath::Sqrt(kappa_syst[ihb][ibin][njbin][iproc]*kappa_syst[ihb][ibin][njbin][iproc]+unc_dy*unc_dy);
-	  cout << "PROCNAME: " << procname << endl;
-	  cout << "kappa_unc: " << kappa_syst[ihb][ibin][njbin][iproc] << endl;
+//	  cout << "PROCNAME: " << procname << endl;
+//	  cout << "kappa_unc: " << kappa_syst[ihb][ibin][njbin][iproc] << endl;
         }
       }
     }
@@ -1252,6 +1252,23 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
             h1nominal[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), nominalweight);  // nominal  
             h1up[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), upweight);            // up  
             h1down[ibin]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), downweight);        // down 
+
+	    ///
+	    //if(procname=="other" && !(upweight < 200 && upweight > -200)) {
+	    if(!(upweight < 200 && upweight > -200)) {
+	      cout << " " << endl;
+	      cout << "upweight          : " << upweight << endl;
+	      cout << "nominalweight     : " << nominalweight << endl;
+	      cout << "tree.sys_mur()[0] : " << tree.sys_mur()[0] << endl;
+	      cout << "tree.sys_mur()[1] : " << tree.sys_mur()[1] << endl;
+	      cout << "tree.sys_muf()[0] : " << tree.sys_muf()[0] << endl;
+	      cout << "tree.sys_muf()[1] : " << tree.sys_muf()[1] << endl;
+	      cout << "tree.sys_murf()[0]: " << tree.sys_murf()[0] << endl;
+	      cout << "tree.sys_murf()[1]: " << tree.sys_murf()[1] << endl;
+	      cout << "bin               : " << ibin << endl;
+	    }
+
+	    ///
           }
         }
       }

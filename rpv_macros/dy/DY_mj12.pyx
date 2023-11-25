@@ -1,7 +1,7 @@
 import ROOT
 import os
 import sys
-from ROOT import TLegend, TChain, TCanvas, TLorentzVector, TH1D, TH1, THStack, TColor, TPad, TGaxis, TLine, TLatex, TBox
+from ROOT import TLegend, TChain, TCanvas, TLorentzVector, TH1D, TH1, THStack, TColor, TPad, TGaxis, TLine, TLatex, TBox, TTree
 from ROOT import kGreen, kBlue, kBlack, kAzure, kRed, kYellow, kViolet, kGray
 
 lumi = {'2016':36.3,'2017':41.5,'2018':59.8,'Run2':138,'20178':101.3}
@@ -54,7 +54,9 @@ cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 	cdef float mll
 	for entry in range(0,ch.GetEntries()):
 		mass=0
+		pas=True
 		ch.GetEntry(entry)
+		ch.SetAlias("pass_weight", "pass")
 		if(entry%(ch.GetEntries()/10)==0) : Progress(entry, ch.GetEntries())
 		if not ch.stitch_ht : continue
 		if not (ch.njets>njetscut-1 and ch.njets<njetscut_up) : continue #FIXME
@@ -62,6 +64,7 @@ cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 		if not ch.nbm<=2 : continue #FIXME
 		if not ch.ht > 1200 : continue 
 		if not ch.mj12 > 500 : continue
+		if not ch.pass_weight==1 : continue
 		if ch.leps_pdgid.at(1)*ch.leps_pdgid.at(0) == -121 : mass = 0.510*pow(10,-3) 
 		elif ch.leps_pdgid.at(1)*ch.leps_pdgid.at(0) == -169 : mass = 105.66*pow(10,-3) 
 		else : continue

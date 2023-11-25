@@ -61,6 +61,7 @@ cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 	for entry in range(0,ch.GetEntries()):
 		mass=0
 		ch.GetEntry(entry)
+		ch.SetAlias("pass_weight", "pass")
 		if(entry%(ch.GetEntries()/10)==0) : Progress(entry, ch.GetEntries())
 		if not ch.stitch_ht : continue
 		#if not (ch.njets>njetscut-1 and ch.njets<njetscut_up) : continue #FIXME
@@ -68,6 +69,7 @@ cpdef getDYHist( ch, nbmcut, njetscut, histname, year):
 		if not ch.nbm<=2 : continue #FIXME
 		if not ch.ht > 1200 : continue 
 		if not ch.mj12 > 500 : continue
+		if not ch.pass_weight==1 : continue
 		if ch.leps_pdgid.at(1)*ch.leps_pdgid.at(0) == -121 : mass = 0.510*pow(10,-3) 
 		elif ch.leps_pdgid.at(1)*ch.leps_pdgid.at(0) == -169 : mass = 105.66*pow(10,-3) 
 		else : continue

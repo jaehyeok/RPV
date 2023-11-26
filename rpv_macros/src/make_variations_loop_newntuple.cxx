@@ -1051,8 +1051,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     { 
       if(variations=="other_muf") 
       { 
-        upweight    = upweight*tree.sys_mur()[0];
-        downweight  = downweight*tree.sys_mur()[1];
+        upweight    = upweight*tree.sys_muf()[0];
+        downweight  = downweight*tree.sys_muf()[1];
       }
       if(variations=="other_mur") 
       { 

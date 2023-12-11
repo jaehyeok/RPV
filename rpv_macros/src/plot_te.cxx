@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
 	TString folder;
 	vector<TString> s_proc;
 	if(procname == "data"){ 
-		folder = folder_year(year,true).at(1);
+		//folder = folder_year(year,true).at(1);
+		folder = "/mnt/data3/babies/merged_231126_singlemu_data/"+year+"/";
 		vector<TString> s_singlemuon = getRPVProcess(folder,"data_te");
 		vector<TString> s_jetht = getRPVProcess(folder,"data");
 		s_proc = s_singlemuon; 
@@ -154,13 +155,20 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 			if(procname=="mc") nomweight=tree.weight();
 			else if(procname=="data") nomweight=tree.pass();
 			float trig;
-			if(year=="2016") trig=(tree.trig_ht900()||tree.trig_jet450());
-			else if(year=="2017"||year=="2018") trig=(tree.trig_ht1050());
+			float trig_mu; // I didn't apply this cut when nanoprocessing
+			if(year=="2016") {
+				trig=(tree.trig_ht900()||tree.trig_jet450());
+				trig_mu=(tree.trig_isomu24());
+			}
+			else if(year=="2017"||year=="2018") {
+				trig=(tree.trig_ht1050());
+				trig_mu=(tree.trig_isomu27());
+			}
 			if(ibin==0) nomweight = nomweight;
 			else nomweight = (tree.ht()>1200)*nomweight;
-			h1den[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight);
-			h1num[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight*trig);
-			h1innum[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight*(1-trig));
+			h1den[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight*trig_mu);
+			h1num[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight*trig_mu*trig);
+			h1innum[ibin]->Fill(var_p>max[ibin]?max[ibin]:var_p,nomweight*trig_mu*(1-trig));
 		}
 	}
 	for(unsigned int ibin=0; ibin<4; ibin++){

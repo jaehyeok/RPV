@@ -376,7 +376,7 @@ int main(int argc, char *argv[])
   //output the W+jet normalization and Njets connection
   outputWjets(file, bins.at(ipair), cardType, year);
 
-  //output the W+jet normalization and Njets connection
+  //output the QCD normalization and Nleps connection
   outputQCD(file, bins.at(ipair), cardType, year);
   
   // output MC kappa systematics
@@ -384,7 +384,9 @@ int main(int argc, char *argv[])
   outputMCkappaJECSystematics(file, bins.at(ipair), filename, year);   //JEC
   outputMCkappaJERSystematics(file, bins.at(ipair), filename, year);   //JER
   outputMCkappaMURSystematics(file, bins.at(ipair), filename, year);   //MURF
-  outputMCkappaMURFSystematics(file, bins.at(ipair), filename, year);   //MUR
+  outputMCkappaMURFSystematics(file, bins.at(ipair), filename, year);  //MUR
+
+  // output MJ systematics
   outputMJSystematics(file, bins.at(ipair), filename, year);
 
   // output kappa systematics
@@ -1066,9 +1068,10 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   }
   // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
   void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
-    if(merge_78=="on"){
-      year = "20178";
-    }
+
+    //if(merge_78=="on"){
+    //  year = "20178";
+    //}
     TString mednjcon_, highnjcon_;
     if(year=="2016"){
       mednjcon_ = "1.62";

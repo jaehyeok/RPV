@@ -111,7 +111,7 @@ int main(int argc, char *argv[]){
 	       "murf", "mur", "muf",
                "lep_eff", "pileup", "gs", 
  	       "btag_bc", "btag_udsg"}; 
-  if(year == "2016") syst_list.push_back("isr");
+  //if(year == "2016") syst_list.push_back("isr");
 
   const int nsysts = syst_list.size();
   
@@ -453,7 +453,7 @@ int main(int argc, char *argv[]){
     c_summary_jer->cd(ihist+1)->SetLeftMargin(0.125);  //0.1 is defalut
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
-      if(isyst==0 || isyst==1) {
+      if(isyst==0 || isyst==1 || isyst==2 || isyst==3) {
         if(ihist==0) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
         else if(ihist==1) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
         else if(ihist==2) h1_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
@@ -504,7 +504,7 @@ int main(int argc, char *argv[]){
 	h1_nb_fit_summary_up[isyst][ihist]->Draw("same hist");
 	line->Draw("same");
       }
-      else if(isyst==1) { //jer (jsyst==1)
+      else if(isyst==1) { //jer (isyst==1)
 	c_summary_jer->cd(ihist+1);
         h1_nb_fit_summary_up[isyst][ihist]->SetLineStyle(1);
         h1_nb_fit_summary_up[isyst][ihist]->SetLineColor(kRed);
@@ -521,7 +521,7 @@ int main(int argc, char *argv[]){
     c_summary_down->cd(ihist+1)->SetLeftMargin(0.125);  //0.1 is defalut
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
-      if(isyst==0 || isyst==1) {
+      if(isyst==0 || isyst==1 || isyst==2 || isyst==3) {
         if(ihist==0) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
         else if(ihist==1) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
         else if(ihist==2) h1_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{1}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
@@ -644,7 +644,7 @@ int main(int argc, char *argv[]){
     c_summary_jer->cd(ihist+4)->SetLeftMargin(0.125);  //0.1 is defalut
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
-      if(isyst==0 || isyst==1) {
+      if(isyst==0 || isyst==1 || isyst==2 || isyst==3) {
         if(ihist==0) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
         else if(ihist==1) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
         else if(ihist==2) h2_nb_fit_summary_up[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);
@@ -711,7 +711,7 @@ int main(int argc, char *argv[]){
     c_summary_jer->cd(ihist+4)->SetLeftMargin(0.125);  //0.1 is defalut
     for(unsigned int isyst=0; isyst<syst_list.size(); ++isyst)
     {
-      if(isyst==0 || isyst==1) {
+      if(isyst==0 || isyst==1 || isyst==2 || isyst==3) {
         if(ihist==0) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+4, ihist+5)+"   "+year);
         else if(ihist==1) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet} #leq %d",ihist+5, ihist+6)+"   "+year);
         else if(ihist==2) h2_nb_fit_summary_down[isyst][ihist]->SetTitle(string("#kappa_{2}^{MC}  ")+Form("%d #leq N_{jet}", ihist+6)+"  "+year);

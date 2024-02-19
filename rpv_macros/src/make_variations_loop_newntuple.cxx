@@ -875,8 +875,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if(variations=="muf")
     {
       if(((year == "2017" || year == "2018") && procname == "ttbar")){
-        upweight   = lumi*tree.weight();
-        downweight   = lumi*tree.weight();
+        upweight    = upweight*tree.sys_muf()[0];
+        downweight  = downweight*tree.sys_muf()[1];
+        //upweight   = lumi*tree.weight();
+        //downweight   = lumi*tree.weight();
       }
       else {// procname!="other" //-->2016
         upweight    = upweight*tree.sys_muf()[0];
@@ -886,8 +888,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if(variations=="mur")
     {
       if(procname=="ttbar"){
-        upweight   = lumi*tree.weight();
-        downweight   = lumi*tree.weight();
+        //upweight   = lumi*tree.weight();
+        //downweight   = lumi*tree.weight();
+        upweight = upweight*tree.sys_mur()[0];
+        downweight = downweight*tree.sys_mur()[1];
       }
       else {
         upweight = upweight*tree.sys_mur()[0];
@@ -897,8 +901,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     if(variations=="murf")
     {
       if(procname == "ttbar"){
-        upweight   = lumi*tree.weight();
-        downweight   = lumi*tree.weight();
+        //upweight   = lumi*tree.weight();
+        //downweight   = lumi*tree.weight();
+        upweight    = upweight*tree.sys_murf()[0];
+        downweight  = downweight*tree.sys_murf()[1];
       }
       else {
         upweight    = upweight*tree.sys_murf()[0];

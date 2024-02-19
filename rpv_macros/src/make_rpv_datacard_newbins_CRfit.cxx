@@ -15,7 +15,13 @@ void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, cons
 void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bins, TString year);
-void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts, TString year);
+void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts, const std::vector<std::string> &bins, TString year);
+void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
+void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
+void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
+void outputMCkappaMURFSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
+void outputMCkappaMURSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
+void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
 void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
 void outputLognormalSystematics(std::ofstream &file, TString year);
 void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> &bins, const std::string & signalBinName, TString year);
@@ -55,7 +61,6 @@ int main(int argc, char *argv[])
 					                     "other_muf", "other_mur", "other_murf",
 					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
   std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
-  shapeSysts = {"GS"};
 
   std::string gluinoMass;
   std::string signalBinName;
@@ -83,6 +88,15 @@ int main(int argc, char *argv[])
     inputname = argv[3];
     merge_78  = argv[5];
     sig_onoff = argv[6];
+  }
+  if(year == "2016"){
+      //BJ_220314 change members of shapeSysts
+      //BJ_231012 remove isr from shapeSysts
+        //shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","isr","gs","lep_eff","pileup"};
+        shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","pileup"};
+  }
+  else if(year != "2016"){
+        shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","pileup"};
   }
 
   nprocesses=processes.size();
@@ -356,13 +370,23 @@ int main(int argc, char *argv[])
   //output the W+jet normalization and Njets connection
   outputWjets(file, bins.at(ipair), cardType, year);
 
-  //output the W+jet normalization and Njets connection
+  //output the QCD normalization and Nleps connection
   outputQCD(file, bins.at(ipair), cardType, year);
+
+  // output MC kappa systematics
+  outputMCkappaSystematics(file, bins.at(ipair), filename, year);
+  outputMCkappaJECSystematics(file, bins.at(ipair), filename, year);   //JEC
+  outputMCkappaJERSystematics(file, bins.at(ipair), filename, year);   //JER
+  //outputMCkappaMURSystematics(file, bins.at(ipair), filename, year);   //MURF
+  //outputMCkappaMURFSystematics(file, bins.at(ipair), filename, year);  //MUR
+
+  // output MJ systematics
+  outputMJSystematics(file, bins.at(ipair), filename, year);
   
   // output kappa systematics
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
-  //outputShapeSystematics(file, shapeSysts, year);
+  outputShapeSystematics(file, shapeSysts, bins.at(ipair), year);
 
   if(sig_onoff=="on"){
   // output shape systematics
@@ -379,7 +403,7 @@ int main(int argc, char *argv[])
   
   }
   file << "\n------------------------------------" << std::endl;
-  //outputautoMCStats(file, bins.at(ipair));
+  outputautoMCStats(file, bins.at(ipair));
 
   outputrateParam(file, bins.at(ipair), year);
 
@@ -483,7 +507,6 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
     }
 
   }
-  cout<<"5"<<endl;
   for(auto jbin:bins){ // ttbar 
     tmpLine = line;
     /*
@@ -1040,9 +1063,9 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
   void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
 
-    if(merge_78=="on"){
-      year = "20178";
-    }
+    //if(merge_78=="on"){
+    //  year = "20178";
+    //}
     TString mednjcon_, highnjcon_;
     if(year=="2016"){
       mednjcon_ = "1.62";
@@ -1201,8 +1224,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
   }
 
-  void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, TString year)
+  void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, const std::vector<std::string> &bins, TString year)
   {
+    map<string, int> bindex;
+    for(uint ibin=0; ibin<nbins; ibin++) bindex[bins[ibin]]=ibin;
+
     if(merge_78=="on"){
       year = "20178";
     }
@@ -1214,10 +1240,1544 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         //for(unsigned int index=0; index<nbins; index++) file << " 0.1 - - - 0.1 ";//accept systematics to signal and other
       }
       else {
-        for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";// one sigma
-        //for(unsigned int index=0; index<nbins; index++) file << " 1 - - - 1 ";//accept systematics to signal and other
+        //for(unsigned int index=0; index<nbins*nprocesses; index++) file << 1.0 << " ";// one sigma
+        for(unsigned int index=0; index<nbins; index++){
+          std::string temp = bins.at(index);
+          int binnumber = atoi(temp.erase(0,3).c_str());
+          if(binnumber<37){
+            if(shapesysts.at(isyst).find("mu") != std::string::npos && shapesysts.at(isyst).find("other") != std::string::npos ) file << " - - - - 1 ";
+            else if(shapesysts.at(isyst).find("mu") != std::string::npos && shapesysts.at(isyst).find("sig") != std::string::npos ) file << " 1 - - - - ";
+            else file << " 1 - - - 1 ";//accept systematics to signal and other
+          }
+          else file << " - - - - - ";//accept systematics to signal and other
+        }
       }
       file << "\n";
+    }
+    file << "trigeff_" << year << "       lnN ";
+    for(unsigned int index=0; index<nbins; index++){
+          std::string temp = bins.at(index);
+          int binnumber = atoi(temp.erase(0,3).c_str());
+          if(binnumber<37) file << " 1.01 - - - 1.01 ";//accept systematics to signal and other
+          else file << " - - - - - ";//accept systematics to signal and other
+    }
+    file << "\n";
+  }
+
+void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year)
+  {
+    map<string, int> bindex;
+    map<TString, int> procind;
+    vector<TString> process = {"qcd","ttbar","wjets"};
+    TString par_shape;
+    TString par_value;
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+    for(uint iproc=0; iproc<3; iproc++){
+      procind[process.at(iproc)]=iproc+1;
+    }
+    for(uint ibin=22; ibin<52; ibin++){
+      if(bindex.find(Form("bin%d",ibin))==bindex.end()){
+        bindex[Form("bin%d",ibin)]=99999;
+      }
+      else{
+        continue;
+      }
+    }
+
+    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
+    else if(merge_78=="on"){
+      year = "20178";
+      cout<< "2017-2018 merged : 20178"  << endl;
+    }
+    par_shape="shape";
+    par_value="1.00";
+    if(filename.find("lownjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("mednjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("highnjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else{  
+      bool iproc_check=true;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",22)]){
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",25)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",28)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",31)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",34)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",23)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",26)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",29)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",32)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",35)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){  
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",24)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",27)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",30)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",33)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",36)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+      }
+    }
+}
+
+void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year)
+  {
+    map<string, int> bindex;
+    map<TString, int> procind;
+    vector<TString> process = {"qcd","ttbar","wjets"};
+    TString par_shape;
+    TString par_value;
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+    for(uint iproc=0; iproc<3; iproc++){
+      procind[process.at(iproc)]=iproc+1;
+    }
+    for(uint ibin=22; ibin<52; ibin++){
+      if(bindex.find(Form("bin%d",ibin))==bindex.end()){
+        bindex[Form("bin%d",ibin)]=99999;
+      }
+      else{
+        continue;
+      }
+    }
+
+    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
+    else if(merge_78=="on"){
+      year = "20178";
+      cout<< "2017-2018 merged : 20178"  << endl;
+    }
+    par_shape="shape";
+    par_value="1.00";
+    if(filename.find("lownjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_jec_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("mednjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_jec_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("highnjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_jec_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else{  
+      bool iproc_check=true;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_jec_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",22)]){
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",25)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",28)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",31)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",34)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_jec_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",23)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",26)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",29)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",32)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",35)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_jec_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){  
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",24)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",27)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",30)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",33)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",36)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+      }
+    }
+}
+
+void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year)
+  {
+    map<string, int> bindex;
+    map<TString, int> procind;
+    vector<TString> process = {"qcd","ttbar","wjets"};
+    TString par_shape;
+    TString par_value;
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+    for(uint iproc=0; iproc<3; iproc++){
+      procind[process.at(iproc)]=iproc+1;
+    }
+    for(uint ibin=22; ibin<52; ibin++){
+      if(bindex.find(Form("bin%d",ibin))==bindex.end()){
+        bindex[Form("bin%d",ibin)]=99999;
+      }
+      else{
+        continue;
+      }
+    }
+
+    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
+    else if(merge_78=="on"){
+      year = "20178";
+      cout<< "2017-2018 merged : 20178"  << endl;
+    }
+    par_shape="shape";
+    par_value="1.00";
+    if(filename.find("lownjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_jer_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("mednjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_jer_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("highnjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_jer_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else{  
+      bool iproc_check=true;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_jer_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",22)]){
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",25)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",28)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",31)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",34)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_jer_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",23)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",26)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",29)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",32)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",35)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_jer_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){  
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",24)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",27)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",30)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",33)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",36)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+      }
+    }
+}
+
+void outputMCkappaMURFSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year)
+  {
+    map<string, int> bindex;
+    map<TString, int> procind;
+    vector<TString> process = {"qcd","ttbar","wjets"};
+    TString par_shape;
+    TString par_value;
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+    for(uint iproc=0; iproc<3; iproc++){
+      procind[process.at(iproc)]=iproc+1;
+    }
+    for(uint ibin=22; ibin<52; ibin++){
+      if(bindex.find(Form("bin%d",ibin))==bindex.end()){
+        bindex[Form("bin%d",ibin)]=99999;
+      }
+      else{
+        continue;
+      }
+    }
+
+    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
+    else if(merge_78=="on"){
+      year = "20178";
+      cout<< "2017-2018 merged : 20178"  << endl;
+    }
+    par_shape="shape";
+    par_value="1.00";
+    if(filename.find("lownjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_murf_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("mednjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_murf_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("highnjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_murf_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else{  
+      bool iproc_check=true;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_murf_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",22)]){
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",25)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",28)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",31)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",34)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_murf_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",23)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",26)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",29)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",32)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",35)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_murf_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){  
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",24)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",27)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",30)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",33)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",36)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+      }
+    }
+}
+
+void outputMCkappaMURSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year)
+  {
+    map<string, int> bindex;
+    map<TString, int> procind;
+    vector<TString> process = {"qcd","ttbar","wjets"};
+    TString par_shape;
+    TString par_value;
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+    for(uint iproc=0; iproc<3; iproc++){
+      procind[process.at(iproc)]=iproc+1;
+    }
+    for(uint ibin=22; ibin<52; ibin++){
+      if(bindex.find(Form("bin%d",ibin))==bindex.end()){
+        bindex[Form("bin%d",ibin)]=99999;
+      }
+      else{
+        continue;
+      }
+    }
+
+    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
+    else if(merge_78=="on"){
+      year = "20178";
+      cout<< "2017-2018 merged : 20178"  << endl;
+    }
+    par_shape="shape";
+    par_value="1.00";
+    if(filename.find("lownjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_mur_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("mednjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_mur_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("highnjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_mur_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else{  
+      bool iproc_check=true;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("MC_kappa%d_mur_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",22)]){
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",25)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",28)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",31)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",34)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_mur_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",23)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",26)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",29)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",32)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",35)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("MC_kappa%d_mur_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){  
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",24)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",27)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",30)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",33)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",36)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+      }
+    }
+}
+
+void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year)
+  {
+    map<string, int> bindex;
+    map<TString, int> procind;
+    vector<TString> process = {"qcd","ttbar","wjets"};
+//    vector<TString> process = {"ttbar","wjets"};
+    TString par_shape;
+    TString par_value;
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+    for(uint iproc=0; iproc<3; iproc++){
+//    for(uint iproc=0; iproc<2; iproc++){
+      procind[process.at(iproc)]=iproc+1;
+    }
+    for(uint ibin=22; ibin<52; ibin++){
+      if(bindex.find(Form("bin%d",ibin))==bindex.end()){
+        bindex[Form("bin%d",ibin)]=99999;
+      }
+      else{
+        continue;
+      }
+    }
+
+    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
+    else if(merge_78=="on"){
+      year = "20178";
+      cout<< "2017-2018 merged : 20178"  << endl;
+    }
+    par_shape="shape";
+    par_value="1.00";
+    if(filename.find("lownjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("mjsyst_r%d_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+//	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  for(auto iproc : process) {
+	    flag_procind = flag_procind || int(index%5) == procind[iproc];
+	    if(iproc=="qcd") flag_procind=false;
+	  }
+	  if(index%nprocesses==0) file << "-    ";   // this line is for signal, and it is a background-systematic uncert.
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("mednjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("mjsyst_r%d_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+//	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  for(auto iproc : process) {
+	    flag_procind = flag_procind || int(index%5) == procind[iproc];
+	    if(iproc=="qcd") flag_procind=false;
+	  }
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else if(filename.find("highnjets")!=std::string::npos){
+      bool flag_procind=false;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("mjsyst_r%d_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+//	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
+	  for(auto iproc : process) {
+	    flag_procind = flag_procind || int(index%5) == procind[iproc];
+	    if(iproc=="qcd") flag_procind=false;
+	  }
+	  if(index%nprocesses==0) file << "-    ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&flag_procind)file << par_value << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&flag_procind)file << "1.00" << " ";
+	  else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&flag_procind)file << "1.00" << " ";
+	  else file << "-    ";
+	  flag_procind = false;
+	}
+	file << "\n";
+      }
+    }
+    else{  
+      bool iproc_check=true;
+      for(int i_kap=1; i_kap<3; i_kap++){
+        file << Form("mjsyst_r%d_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",22)]){
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}    //
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",25)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",28)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",31)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",34)]){ 
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("mjsyst_r%d_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",23)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",26)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",29)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",32)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",35)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+
+        file << Form("mjsyst_r%d_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        for(unsigned int index=0; index<nbins*nprocesses; index++){  
+	  iproc_check = true;
+          if(index%nprocesses==0) file << "-    ";
+          else if(int(index/nprocesses)==bindex[Form("bin%d",24)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",27)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",30)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",33)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else if(int(index/nprocesses)==bindex[Form("bin%d",36)]){  
+            for(auto iproc : process){
+      	      if(int(index%5)==procind[iproc]){ 
+	        if(iproc=="qcd") {iproc_check=true; continue;}
+		file << "1.00" << " ";
+		iproc_check = false;
+	      }
+            }
+	    if(iproc_check) file << "-    ";
+          }
+          else file << "-    ";
+        }
+        file << "\n";
+      }
     }
   }
 
@@ -1249,14 +2809,17 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       cout<< "2017-2018 merged : 20178"  << endl;
     }
     for(auto iproc : process){
+      if(iproc=="ttbar") continue;     // skip ttbar cuz this code makes datacards to measure kappa of ttbar
       par_shape="shape";
       par_value="1.00";
+
       if(iproc=="ttbar"){
-	par_value="-";
+	par_value="-    ";
       }
       else{
 	par_value="1.00";
       }
+
       if(filename.find("lownjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){
           file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
@@ -1376,6 +2939,9 @@ void outputMCStatisticsSyst(std::ofstream &file, const std::vector<std::string> 
 void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins){
  int threshold = 5;// Gaussian approximation threshold
  for(auto ibin : bins){
+   std::string temp = ibin;
+   int binnumber = atoi(temp.erase(0,3).c_str());
+   if(binnumber>36) continue;
    file << ibin << " autoMCStats " << threshold << "\n";
  }
 }

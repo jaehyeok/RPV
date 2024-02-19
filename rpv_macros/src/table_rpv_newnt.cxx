@@ -520,7 +520,7 @@ int main(int argc, char* argv[])
     cout << "\\resizebox{\\textwidth}{!}{%" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
-    cout << "$M_{J}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1900\,\\textrm{GeV}$\\\\"  << endl;
+    cout << "$M_{J}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1800$ $\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
 //    for(int ibin=22; ibin<nbins; ibin++)
@@ -540,27 +540,15 @@ int main(int argc, char* argv[])
         cout << "\\hline" << endl;
         for(int inb=0; inb<3; inb++) {
 	  if(ibin==32 || ibin==33 || ibin==35 || ibin==36) {
-	    string imj;
-	    if(inb==0) imj="$500 ~ 800$";
-	    else if(inb==1) imj="$800 ~ 1100$";
-	    else if(inb==2) imj="$1100 ~$";
-	    cout << imj << " & "
-		 << 0 << " & "
-		 << 0 << " & "
-		 << 0 << " & "
-		 << 0 << " & "
-		 << 0 << " & "
-		 << 0 << " & "
-		 << 0 << " \\\\ " << endl;
-	    }
-	  else
+	    data[tablebin][inb]=0;  //FIXME when unblinding
+	  }
             printYieldBin(inb,
                     data[tablebin][inb],
                     qcd[tablebin][inb],
                     ttbar[tablebin][inb],
                     wjets[tablebin][inb],
                     other[tablebin][inb],
-                    sig1900[tablebin][inb],
+                    sig1800[tablebin][inb],
                     err[0][tablebin][inb],//*qcd[tablebin][inb],
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],
                     err[2][tablebin][inb],//*wjets[tablebin][inb],

@@ -50,8 +50,6 @@ if __name__=="__main__":
             wjets_mc_r1_down    = h_mc_wjets.Clone("wjets_mjsyst_r1_njets"+str(ind_njets)+"_"+year+"Down")
             wjets_mc_r2_up    = h_mc_wjets.Clone("wjets_mjsyst_r2_njets"+str(ind_njets)+"_"+year+"Up")
             wjets_mc_r2_down    = h_mc_wjets.Clone("wjets_mjsyst_r2_njets"+str(ind_njets)+"_"+year+"Down")
-#            if (i<25): continue
-#            elif (i>=25 and i<28):
 
             if(i>36): continue;
             else:
@@ -63,20 +61,17 @@ if __name__=="__main__":
                 wjets_mc_r1_down.SetBinContent(2, wjets_mc_r1_down.GetBinContent(2)+wjets_mc_r1_down.GetBinContent(2)*(1-cor_wjets_r1));
                 wjets_mc_r2_up.SetBinContent(3, wjets_mc_r2_up.GetBinContent(3)+wjets_mc_r2_up.GetBinContent(3)*(cor_wjets_r2-1));
                 wjets_mc_r2_down.SetBinContent(3, wjets_mc_r2_down.GetBinContent(3)+wjets_mc_r2_down.GetBinContent(3)*(1-cor_wjets_r2));
-
-#                ttbar_mc_r1_up.SetBinContent(2, ttbar_mc_r1_up.GetBinContent(2)*cor_ttbar_r1);
-#                ttbar_mc_r1_down.SetBinContent(2, ttbar_mc_r1_down.GetBinContent(2)/cor_ttbar_r1);
-#                ttbar_mc_r2_up.SetBinContent(3, ttbar_mc_r2_up.GetBinContent(3)*cor_ttbar_r2);
-#                ttbar_mc_r2_down.SetBinContent(3, ttbar_mc_r2_down.GetBinContent(3)/cor_ttbar_r2);
-#                wjets_mc_r1_up.SetBinContent(2, wjets_mc_r1_up.GetBinContent(2)*cor_wjets_r1);
-#                wjets_mc_r1_down.SetBinContent(2, wjets_mc_r1_down.GetBinContent(2)/cor_wjets_r1);
-#                wjets_mc_r2_up.SetBinContent(3, wjets_mc_r2_up.GetBinContent(3)*cor_wjets_r2);
-#                wjets_mc_r2_down.SetBinContent(3, wjets_mc_r2_down.GetBinContent(3)/cor_wjets_r2);
-
-
+                # The lines below are needed to prevent that the yields of ttbar and wjets are negative values
+                if(ttbar_mc_r1_down.GetBinContent(2) < 0):
+                    ttbar_mc_r1_down.SetBinContent(2, 0)
+                if(ttbar_mc_r2_down.GetBinContent(3) < 0):
+                    ttbar_mc_r2_down.SetBinContent(3, 0)
+                if(wjets_mc_r1_down.GetBinContent(2) < 0):
+                    wjets_mc_r1_down.SetBinContent(2, 0)
+                if(wjets_mc_r2_down.GetBinContent(3) < 0):
+                    wjets_mc_r2_down.SetBinContent(3, 0)
 
             print("bin "+str(i))
-#            print("cor_ttbar_r1: "+str(cor_ttbar_r1))
             print("ttbar_mc_r1_up: "+str(ttbar_mc_r1_up.GetBinContent(2)))
             print("ttbar_mc_r1_down: "+str(ttbar_mc_r1_down.GetBinContent(2)))
             print("ttbar_mc_r2_up: "+str(ttbar_mc_r2_up.GetBinContent(3)))

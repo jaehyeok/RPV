@@ -383,8 +383,8 @@ int main(int argc, char *argv[])
   outputMCkappaSystematics(file, bins.at(ipair), filename, year);
   outputMCkappaJECSystematics(file, bins.at(ipair), filename, year);   //JEC
   outputMCkappaJERSystematics(file, bins.at(ipair), filename, year);   //JER
-  outputMCkappaMURSystematics(file, bins.at(ipair), filename, year);   //MURF
-  outputMCkappaMURFSystematics(file, bins.at(ipair), filename, year);  //MUR
+  //outputMCkappaMURSystematics(file, bins.at(ipair), filename, year);   //MURF
+  //outputMCkappaMURFSystematics(file, bins.at(ipair), filename, year);  //MUR
 
   // output MJ systematics
   outputMJSystematics(file, bins.at(ipair), filename, year);

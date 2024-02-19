@@ -310,11 +310,32 @@ vector<TString> folder_year(TString year, bool te){
     //ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
   }
   else{
+//UL
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_JER_0903/");
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/JetHTRun_rpvfitnbge0_step3/");
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_sig_pu/");
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_njets3nleps2/");
+/*
+//PL
     ret.push_back("/mnt/data3/babies/210910/"+year+"/merged_norm_JER_0903/");
     ret.push_back("/mnt/data3/babies/210910/"+year+"/JetHTRun_rpvfitnbge0_step3/");
     ret.push_back("/mnt/data3/babies/210910/"+year+"/merged_norm_sig_pu/");
     ret.push_back("/mnt/data1/babies/20210702/"+year+"/merged_norm_njets3nleps2/");
-//    ret.push_back("/data2/babies/20210702/"+year+"/merged_norm_njets3nleps2/");
+*/
+/*
+//UL2016_preVFP
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_JER_0903_UL2016_preVFP/");
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/JetHTRun_rpvfitnbge0_step3_UL2016_preVFP/");
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_sig_pu_UL2016_preVFP/");
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_njets3nleps2_UL2016_preVFP/");
+*/
+/*
+//UL2016
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_JER_0903_UL2016/");
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/JetHTRun_rpvfitnbge0_step3_UL2016/");
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_sig_pu_UL2016/");
+    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_njets3nleps2_UL2016/");
+*/
 /*
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_JER_0903/");
     ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/skim_rpvfitnbge0_nbm2/");

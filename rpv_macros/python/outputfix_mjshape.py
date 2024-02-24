@@ -62,14 +62,15 @@ if __name__=="__main__":
                 wjets_mc_r2_up.SetBinContent(3, wjets_mc_r2_up.GetBinContent(3)+wjets_mc_r2_up.GetBinContent(3)*(cor_wjets_r2-1));
                 wjets_mc_r2_down.SetBinContent(3, wjets_mc_r2_down.GetBinContent(3)+wjets_mc_r2_down.GetBinContent(3)*(1-cor_wjets_r2));
                 # The lines below are needed to prevent that the yields of ttbar and wjets are negative values
+                # Given that kappa in make_variations_loop.cxx is set to 0.01, cor_ttbar (or cor_wjets) is likewise set to 0.01
                 if(ttbar_mc_r1_down.GetBinContent(2) < 0):
-                    ttbar_mc_r1_down.SetBinContent(2, 0)
+                    ttbar_mc_r1_down.SetBinContent(2, h_mc_ttbar.GetBinContent(2)+h_mc_ttbar.GetBinContent(2)*(0.01-1))
                 if(ttbar_mc_r2_down.GetBinContent(3) < 0):
-                    ttbar_mc_r2_down.SetBinContent(3, 0)
+                    ttbar_mc_r2_down.SetBinContent(3, h_mc_ttbar.GetBinContent(3)+h_mc_ttbar.GetBinContent(3)*(0.01-1))
                 if(wjets_mc_r1_down.GetBinContent(2) < 0):
-                    wjets_mc_r1_down.SetBinContent(2, 0)
+                    wjets_mc_r1_down.SetBinContent(2, h_mc_wjets.GetBinContent(2)+h_mc_wjets.GetBinContent(2)*(0.01-1))
                 if(wjets_mc_r2_down.GetBinContent(3) < 0):
-                    wjets_mc_r2_down.SetBinContent(3, 0)
+                    wjets_mc_r2_down.SetBinContent(3, h_mc_wjets.GetBinContent(3)+h_mc_wjets.GetBinContent(3)*(0.01-1))
 
             print("bin "+str(i))
             print("ttbar_mc_r1_up: "+str(ttbar_mc_r1_up.GetBinContent(2)))

@@ -61,15 +61,9 @@ void getOtherMuSyst(TString year, TString inputfile)
 
   TFile *f_input = new TFile(inputfile, "Update");
 
-  TH1F *qcd[52],   	*qcd_jer_up[52],   	*qcd_jer_down[52];
-  TH1F *wjets[52], 	*wjets_jer_up[52], 	*wjets_jer_down[52];
-  TH1F *ttbar[52], 	*ttbar_jer_up[52], 	*ttbar_jer_down[52];
   TH1F *other[52],      *other_jer_up[52], 	*other_jer_down[52];
   TH1F *signal[13][52], *signal_jer_up[13][52], *signal_jer_down[13][52];
 
-  TH1F *clone_qcd[52],        *clone_qcd_jer_up[52],        *clone_qcd_jer_down[52];
-  TH1F *clone_wjets[52],      *clone_wjets_jer_up[52],      *clone_wjets_jer_down[52];
-  TH1F *clone_ttbar[52],      *clone_ttbar_jer_up[52],      *clone_ttbar_jer_down[52];
   TH1F *clone_other[52],      *clone_other_jer_up[52],      *clone_other_jer_down[52];
   TH1F *clone_signal[13][52], *clone_signal_jer_up[13][52], *clone_signal_jer_down[13][52];
 
@@ -78,15 +72,6 @@ void getOtherMuSyst(TString year, TString inputfile)
   for(int ibin=22; ibin<52; ibin++) {
     gDirectory->cd(Form("/bin%d", ibin));
     // Get the histograms
-    qcd[ibin] 	  	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/qcd", ibin)));
-    qcd_jer_up[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/qcd_jer_%sUp", ibin, yr.Data())));
-    qcd_jer_down[ibin]    = static_cast<TH1F*>(f_input->Get(Form("/bin%d/qcd_jer_%sDown", ibin, yr.Data())));
-    wjets[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/wjets", ibin)));
-    wjets_jer_up[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/wjets_jer_%sUp", ibin, yr.Data())));
-    wjets_jer_down[ibin]  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/wjets_jer_%sDown", ibin, yr.Data())));
-    ttbar[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/ttbar", ibin)));
-    ttbar_jer_up[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/ttbar_jer_%sUp", ibin, yr.Data())));
-    ttbar_jer_down[ibin]  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/ttbar_jer_%sDown", ibin, yr.Data())));
     other[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/other", ibin)));
     other_jer_up[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/other_jer_%sUp", ibin, yr.Data())));
     other_jer_down[ibin]  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/other_jer_%sDown", ibin, yr.Data())));
@@ -97,15 +82,6 @@ void getOtherMuSyst(TString year, TString inputfile)
     }
 
     // Clone the histograms
-    clone_qcd[ibin] 		= static_cast<TH1F*>(qcd[ibin]->Clone());
-    clone_qcd_jer_up[ibin] 	= static_cast<TH1F*>(qcd_jer_up[ibin]->Clone(Form("ratio_qcd_jer_%sUp", year.Data())));
-    clone_qcd_jer_down[ibin] 	= static_cast<TH1F*>(qcd_jer_down[ibin]->Clone(Form("ratio_qcd_jer_%sDown", year.Data())));
-    clone_wjets[ibin] 		= static_cast<TH1F*>(wjets[ibin]->Clone());
-    clone_wjets_jer_up[ibin] 	= static_cast<TH1F*>(wjets_jer_up[ibin]->Clone(Form("ratio_wjets_jer_%sUp", year.Data())));
-    clone_wjets_jer_down[ibin] 	= static_cast<TH1F*>(wjets_jer_down[ibin]->Clone(Form("ratio_wjets_jer_%sDown", year.Data())));
-    clone_ttbar[ibin] 		= static_cast<TH1F*>(ttbar[ibin]->Clone());
-    clone_ttbar_jer_up[ibin] 	= static_cast<TH1F*>(ttbar_jer_up[ibin]->Clone(Form("ratio_ttbar_jer_%sUp", year.Data())));
-    clone_ttbar_jer_down[ibin] 	= static_cast<TH1F*>(ttbar_jer_down[ibin]->Clone(Form("ratio_ttbar_jer_%sDown", year.Data())));
     clone_other[ibin] 		= static_cast<TH1F*>(other[ibin]->Clone());
     clone_other_jer_up[ibin] 	= static_cast<TH1F*>(other_jer_up[ibin]->Clone(Form("ratio_other_jer_%sUp", year.Data())));
     clone_other_jer_down[ibin] 	= static_cast<TH1F*>(other_jer_down[ibin]->Clone(Form("ratio_other_jer_%sDown", year.Data())));
@@ -116,12 +92,6 @@ void getOtherMuSyst(TString year, TString inputfile)
     }
 
     // Get the ratio of jer
-    clone_qcd_jer_up[ibin]->Divide(clone_qcd[ibin]);
-    clone_qcd_jer_down[ibin]->Divide(clone_qcd[ibin]);
-    clone_wjets_jer_up[ibin]->Divide(clone_wjets[ibin]);
-    clone_wjets_jer_down[ibin]->Divide(clone_wjets[ibin]);
-    clone_ttbar_jer_up[ibin]->Divide(clone_ttbar[ibin]);
-    clone_ttbar_jer_down[ibin]->Divide(clone_ttbar[ibin]);
     clone_other_jer_up[ibin]->Divide(clone_other[ibin]);
     clone_other_jer_down[ibin]->Divide(clone_other[ibin]);
     for(int imass=0; imass<13; imass++) {
@@ -131,116 +101,38 @@ void getOtherMuSyst(TString year, TString inputfile)
 
   }
 
-  // FIXME: Need to make the following lines neat
-  // QCD
+  // Make JER symmetric
+    // other
   for(int ibin=22; ibin<52; ibin++) {
     gDirectory->cd(Form("/bin%d", ibin));
     cout << "bin: " << ibin << endl;
     for(int imj=0; imj<3; imj++) {
-      if(clone_qcd_jer_up[ibin]->GetBinContent(imj+1)>1 && clone_qcd_jer_down[ibin]->GetBinContent(imj+1)<1) {
-	continue;
-      }
-      else if(clone_qcd_jer_up[ibin]->GetBinContent(imj+1)>1 && clone_qcd_jer_down[ibin]->GetBinContent(imj+1)>1) {
-	qcd_jer_up[ibin]->SetBinContent(imj+1, qcd[ibin]->GetBinContent(imj+1) + qcd[ibin]->GetBinContent(imj+1)*(clone_qcd_jer_up[ibin]->GetBinContent(imj+1)-1));
-	qcd_jer_down[ibin]->SetBinContent(imj+1, qcd[ibin]->GetBinContent(imj+1) - qcd[ibin]->GetBinContent(imj+1)*(clone_qcd_jer_up[ibin]->GetBinContent(imj+1)-1));
-      }
-      else {
-	qcd_jer_up[ibin]->SetBinContent(imj+1, qcd[ibin]->GetBinContent(imj+1) + qcd[ibin]->GetBinContent(imj+1)*(1-clone_qcd_jer_up[ibin]->GetBinContent(imj+1)));
-	qcd_jer_down[ibin]->SetBinContent(imj+1, qcd[ibin]->GetBinContent(imj+1) - qcd[ibin]->GetBinContent(imj+1)*(1-clone_qcd_jer_up[ibin]->GetBinContent(imj+1)));
-      }
-
-    }
-    qcd_jer_up[ibin]->Write(Form("qcd_jer_%sUp", yr.Data()), TObject::kOverwrite);
-    qcd_jer_down[ibin]->Write(Form("qcd_jer_%sDown", yr.Data()), TObject::kOverwrite);
-  }
-
-  // W+jets
-  for(int ibin=22; ibin<52; ibin++) {
-    gDirectory->cd(Form("/bin%d", ibin));
-    cout << "bin: " << ibin << endl;
-    for(int imj=0; imj<3; imj++) {
-      if(clone_wjets_jer_up[ibin]->GetBinContent(imj+1)>1 && clone_wjets_jer_down[ibin]->GetBinContent(imj+1)<1) {
-	continue;
-      }
-      else if(clone_wjets_jer_up[ibin]->GetBinContent(imj+1)>1 && clone_wjets_jer_down[ibin]->GetBinContent(imj+1)>1) {
-	wjets_jer_up[ibin]->SetBinContent(imj+1, wjets[ibin]->GetBinContent(imj+1) + wjets[ibin]->GetBinContent(imj+1)*(clone_wjets_jer_up[ibin]->GetBinContent(imj+1)-1));
-	wjets_jer_down[ibin]->SetBinContent(imj+1, wjets[ibin]->GetBinContent(imj+1) - wjets[ibin]->GetBinContent(imj+1)*(clone_wjets_jer_up[ibin]->GetBinContent(imj+1)-1));
-      }
-      else {
-	wjets_jer_up[ibin]->SetBinContent(imj+1, wjets[ibin]->GetBinContent(imj+1) + wjets[ibin]->GetBinContent(imj+1)*(1-clone_wjets_jer_up[ibin]->GetBinContent(imj+1)));
-	wjets_jer_down[ibin]->SetBinContent(imj+1, wjets[ibin]->GetBinContent(imj+1) - wjets[ibin]->GetBinContent(imj+1)*(1-clone_wjets_jer_up[ibin]->GetBinContent(imj+1)));
-      }
-
-    }
-    wjets_jer_up[ibin]->Write(Form("wjets_jer_%sUp", yr.Data()), TObject::kOverwrite);
-    wjets_jer_down[ibin]->Write(Form("wjets_jer_%sDown", yr.Data()), TObject::kOverwrite);
-  }
-
-  // ttbar
-  for(int ibin=22; ibin<52; ibin++) {
-    gDirectory->cd(Form("/bin%d", ibin));
-    cout << "bin: " << ibin << endl;
-    for(int imj=0; imj<3; imj++) {
-      if(clone_ttbar_jer_up[ibin]->GetBinContent(imj+1)>1 && clone_ttbar_jer_down[ibin]->GetBinContent(imj+1)<1) {
-	continue;
-      }
-      else if(clone_ttbar_jer_up[ibin]->GetBinContent(imj+1)>1 && clone_ttbar_jer_down[ibin]->GetBinContent(imj+1)>1) {
-	ttbar_jer_up[ibin]->SetBinContent(imj+1, ttbar[ibin]->GetBinContent(imj+1) + ttbar[ibin]->GetBinContent(imj+1)*(clone_ttbar_jer_up[ibin]->GetBinContent(imj+1)-1));
-	ttbar_jer_down[ibin]->SetBinContent(imj+1, ttbar[ibin]->GetBinContent(imj+1) - ttbar[ibin]->GetBinContent(imj+1)*(clone_ttbar_jer_up[ibin]->GetBinContent(imj+1)-1));
-      }
-      else {
-	ttbar_jer_up[ibin]->SetBinContent(imj+1, ttbar[ibin]->GetBinContent(imj+1) + ttbar[ibin]->GetBinContent(imj+1)*(1-clone_ttbar_jer_up[ibin]->GetBinContent(imj+1)));
-	ttbar_jer_down[ibin]->SetBinContent(imj+1, ttbar[ibin]->GetBinContent(imj+1) - ttbar[ibin]->GetBinContent(imj+1)*(1-clone_ttbar_jer_up[ibin]->GetBinContent(imj+1)));
-      }
-
-    }
-    ttbar_jer_up[ibin]->Write(Form("ttbar_jer_%sUp", yr.Data()), TObject::kOverwrite);
-    ttbar_jer_down[ibin]->Write(Form("ttbar_jer_%sDown", yr.Data()), TObject::kOverwrite);
-  }
-
-  // other
-  for(int ibin=22; ibin<52; ibin++) {
-    gDirectory->cd(Form("/bin%d", ibin));
-    cout << "bin: " << ibin << endl;
-    for(int imj=0; imj<3; imj++) {
-      if(clone_other_jer_up[ibin]->GetBinContent(imj+1)>1 && clone_other_jer_down[ibin]->GetBinContent(imj+1)<1) {
-	continue;
-      }
-      else if(clone_other_jer_up[ibin]->GetBinContent(imj+1)>1 && clone_other_jer_down[ibin]->GetBinContent(imj+1)>1) {
-	other_jer_up[ibin]->SetBinContent(imj+1, other[ibin]->GetBinContent(imj+1) + other[ibin]->GetBinContent(imj+1)*(clone_other_jer_up[ibin]->GetBinContent(imj+1)-1));
-	other_jer_down[ibin]->SetBinContent(imj+1, other[ibin]->GetBinContent(imj+1) - other[ibin]->GetBinContent(imj+1)*(clone_other_jer_up[ibin]->GetBinContent(imj+1)-1));
-      }
-      else {
-	other_jer_up[ibin]->SetBinContent(imj+1, other[ibin]->GetBinContent(imj+1) + other[ibin]->GetBinContent(imj+1)*(1-clone_other_jer_up[ibin]->GetBinContent(imj+1)));
-	other_jer_down[ibin]->SetBinContent(imj+1, other[ibin]->GetBinContent(imj+1) - other[ibin]->GetBinContent(imj+1)*(1-clone_other_jer_up[ibin]->GetBinContent(imj+1)));
-      }
+      other_jer_up[ibin]->SetBinContent(imj+1, other[ibin]->GetBinContent(imj+1) + other[ibin]->GetBinContent(imj+1)*TMath::Abs((clone_other_jer_up[ibin]->GetBinContent(imj+1)-1)));
+      other_jer_down[ibin]->SetBinContent(imj+1, other[ibin]->GetBinContent(imj+1) - other[ibin]->GetBinContent(imj+1)*TMath::Abs((clone_other_jer_up[ibin]->GetBinContent(imj+1)-1)));
 
     }
     other_jer_up[ibin]->Write(Form("other_jer_%sUp", yr.Data()), TObject::kOverwrite);
     other_jer_down[ibin]->Write(Form("other_jer_%sDown", yr.Data()), TObject::kOverwrite);
+//    cout << Form("MJ[1]  %3.1f : %3.1f : %3.1f", other_jer_down[ibin]->GetBinContent(1), other[ibin]->GetBinContent(1), other_jer_up[ibin]->GetBinContent(1)) << endl;
+//    cout << Form("MJ[2]  %3.1f : %3.1f : %3.1f", other_jer_down[ibin]->GetBinContent(2), other[ibin]->GetBinContent(2), other_jer_up[ibin]->GetBinContent(2)) << endl;
+//    cout << Form("MJ[3]  %3.1f : %3.1f : %3.1f", other_jer_down[ibin]->GetBinContent(3), other[ibin]->GetBinContent(3), other_jer_up[ibin]->GetBinContent(3)) << endl;
   }
 
-  // signal
+    // signal
   for(int ibin=22; ibin<52; ibin++) {
     gDirectory->cd(Form("/bin%d", ibin));
     for(int imass=0; imass<13; imass++) {
       cout << "bin: " << ibin << endl;
       for(int imj=0; imj<3; imj++) {
-        if(clone_signal_jer_up[imass][ibin]->GetBinContent(imj+1)>1 && clone_signal_jer_down[imass][ibin]->GetBinContent(imj+1)<1) {
-  	  continue;
-        }
-        else if(clone_signal_jer_up[imass][ibin]->GetBinContent(imj+1)>1 && clone_signal_jer_down[imass][ibin]->GetBinContent(imj+1)>1) {
-  	  signal_jer_up[imass][ibin]->SetBinContent(imj+1, signal[imass][ibin]->GetBinContent(imj+1) + signal[imass][ibin]->GetBinContent(imj+1)*(clone_signal_jer_up[imass][ibin]->GetBinContent(imj+1)-1));
-  	  signal_jer_down[imass][ibin]->SetBinContent(imj+1, signal[imass][ibin]->GetBinContent(imj+1) - signal[imass][ibin]->GetBinContent(imj+1)*(clone_signal_jer_up[imass][ibin]->GetBinContent(imj+1)-1));
-        }
-        else {
-  	  signal_jer_up[imass][ibin]->SetBinContent(imj+1, signal[imass][ibin]->GetBinContent(imj+1) + signal[imass][ibin]->GetBinContent(imj+1)*(1-clone_signal_jer_up[imass][ibin]->GetBinContent(imj+1)));
-  	  signal_jer_down[imass][ibin]->SetBinContent(imj+1, signal[imass][ibin]->GetBinContent(imj+1) - signal[imass][ibin]->GetBinContent(imj+1)*(1-clone_signal_jer_up[imass][ibin]->GetBinContent(imj+1)));
-        }
+  	signal_jer_up[imass][ibin]->SetBinContent(imj+1, signal[imass][ibin]->GetBinContent(imj+1) + signal[imass][ibin]->GetBinContent(imj+1)*TMath::Abs((clone_signal_jer_up[imass][ibin]->GetBinContent(imj+1)-1)));
+  	signal_jer_down[imass][ibin]->SetBinContent(imj+1, signal[imass][ibin]->GetBinContent(imj+1) - signal[imass][ibin]->GetBinContent(imj+1)*TMath::Abs((clone_signal_jer_up[imass][ibin]->GetBinContent(imj+1)-1)));
   
       }
       signal_jer_up[imass][ibin]->Write(Form("signal_M%d_jer_%sUp", 1000+imass*100, yr.Data()), TObject::kOverwrite);
       signal_jer_down[imass][ibin]->Write(Form("signal_M%d_jer_%sDown", 1000+imass*100, yr.Data()), TObject::kOverwrite);
+//      cout << Form("MJ[1]  %3.1f : %3.1f : %3.1f", signal_jer_down[imass][ibin]->GetBinContent(1), signal[imass][ibin]->GetBinContent(1), signal_jer_up[imass][ibin]->GetBinContent(1)) << endl;
+//      cout << Form("MJ[2]  %3.1f : %3.1f : %3.1f", signal_jer_down[imass][ibin]->GetBinContent(2), signal[imass][ibin]->GetBinContent(2), signal_jer_up[imass][ibin]->GetBinContent(2)) << endl;
+//      cout << Form("MJ[3]  %3.1f : %3.1f : %3.1f", signal_jer_down[imass][ibin]->GetBinContent(3), signal[imass][ibin]->GetBinContent(3), signal_jer_up[imass][ibin]->GetBinContent(3)) << endl;
     }
   }
 

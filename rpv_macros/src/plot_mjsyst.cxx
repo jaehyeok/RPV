@@ -97,8 +97,6 @@ int main(int argc, char *argv[])
       }
       else {
 	h1_qcd_shape[ibin]->SetBinContent(jbin, h1_qcd_clone[ibin]->GetBinContent(jbin)/h1_qcd_clone[ibin]->GetBinContent(1));
-	if(jbin==1) h1_qcd_shape[ibin]->SetBinError(jbin, h1_qcd_clone[ibin]->GetBinError(1)/h1_qcd_clone[ibin]->GetBinContent(1));
-	else h1_qcd_shape[ibin]->SetBinError(jbin, GetShapeError(h1_qcd_clone[ibin], jbin));
       }
     }
       //ttbar
@@ -109,9 +107,10 @@ int main(int argc, char *argv[])
 	h1_ttbar_shape[ibin]->SetBinError(jbin, 0);
       }
       else {
-	h1_ttbar_shape[ibin]->SetBinContent(jbin, h1_ttbar_clone[ibin]->GetBinContent(jbin)/h1_ttbar_clone[ibin]->GetBinContent(1));
-	if(jbin==1) h1_ttbar_shape[ibin]->SetBinError(jbin, h1_ttbar_clone[ibin]->GetBinError(1)/h1_ttbar_clone[ibin]->GetBinContent(1));
-	else h1_ttbar_shape[ibin]->SetBinError(jbin, GetShapeError(h1_ttbar_clone[ibin], jbin));
+	if(ibin==32) h1_ttbar_shape[ibin]->SetBinContent(jbin, (h1_ttbar_clone[32]->GetBinContent(jbin)+h1_ttbar_clone[35]->GetBinContent(jbin))/(h1_ttbar_clone[32]->GetBinContent(1)+h1_ttbar_clone[35]->GetBinContent(1)));
+	else if(ibin==33) h1_ttbar_shape[ibin]->SetBinContent(jbin, (h1_ttbar_clone[33]->GetBinContent(jbin)+h1_ttbar_clone[36]->GetBinContent(jbin))/(h1_ttbar_clone[33]->GetBinContent(1)+h1_ttbar_clone[36]->GetBinContent(1)));
+	else h1_ttbar_shape[ibin]->SetBinContent(jbin, h1_ttbar_clone[ibin]->GetBinContent(jbin)/h1_ttbar_clone[ibin]->GetBinContent(1));
+	//h1_ttbar_shape[ibin]->SetBinContent(jbin, h1_ttbar_clone[ibin]->GetBinContent(jbin)/h1_ttbar_clone[ibin]->GetBinContent(1));
       }
     }
       //wjets
@@ -122,9 +121,10 @@ int main(int argc, char *argv[])
 	h1_wjets_shape[ibin]->SetBinError(jbin, 0);
       }
       else {
-	h1_wjets_shape[ibin]->SetBinContent(jbin, h1_wjets_clone[ibin]->GetBinContent(jbin)/h1_wjets_clone[ibin]->GetBinContent(1));
-	if(jbin==1) h1_wjets_shape[ibin]->SetBinError(jbin, h1_wjets_clone[ibin]->GetBinError(1)/h1_wjets_clone[ibin]->GetBinContent(1));
-	else h1_wjets_shape[ibin]->SetBinError(jbin, GetShapeError(h1_wjets_clone[ibin], jbin));
+	if(ibin==32) h1_wjets_shape[ibin]->SetBinContent(jbin, (h1_wjets_clone[32]->GetBinContent(jbin)+h1_wjets_clone[35]->GetBinContent(jbin))/(h1_wjets_clone[32]->GetBinContent(1)+h1_wjets_clone[35]->GetBinContent(1)));
+	else if(ibin==33) h1_wjets_shape[ibin]->SetBinContent(jbin, (h1_wjets_clone[33]->GetBinContent(jbin)+h1_wjets_clone[36]->GetBinContent(jbin))/(h1_wjets_clone[33]->GetBinContent(1)+h1_wjets_clone[36]->GetBinContent(1)));
+	else h1_wjets_shape[ibin]->SetBinContent(jbin, h1_wjets_clone[ibin]->GetBinContent(jbin)/h1_wjets_clone[ibin]->GetBinContent(1));
+	//h1_wjets_shape[ibin]->SetBinContent(jbin, h1_wjets_clone[ibin]->GetBinContent(jbin)/h1_wjets_clone[ibin]->GetBinContent(1));
       }
     }
 
@@ -177,73 +177,69 @@ int main(int argc, char *argv[])
       //njet45
   for(int ibin=1; ibin<6; ibin++) {
     h1_qcd_njet45_r1->SetBinContent(ibin, h1_qcd_shape[22+3*(ibin-1)]->GetBinContent(2));
-    h1_qcd_njet45_r1->SetBinError(ibin, h1_qcd_shape[22+3*(ibin-1)]->GetBinError(2));
     h1_ttbar_njet45_r1->SetBinContent(ibin, h1_ttbar_shape[22+3*(ibin-1)]->GetBinContent(2));
-    h1_ttbar_njet45_r1->SetBinError(ibin, h1_ttbar_shape[22+3*(ibin-1)]->GetBinError(2));
     h1_wjets_njet45_r1->SetBinContent(ibin, h1_wjets_shape[22+3*(ibin-1)]->GetBinContent(2));
-    h1_wjets_njet45_r1->SetBinError(ibin, h1_wjets_shape[22+3*(ibin-1)]->GetBinError(2));
-    if(ibin==5) {
+    if(ibin==5) {  // bin31 and bin34 have the same value
       h1_qcd_njet45_r1->SetBinContent(ibin, h1_qcd_shape[22+3*(ibin-2)]->GetBinContent(2));
-      h1_qcd_njet45_r1->SetBinError(ibin, h1_qcd_shape[22+3*(ibin-2)]->GetBinError(2));
       h1_ttbar_njet45_r1->SetBinContent(ibin, h1_ttbar_shape[22+3*(ibin-2)]->GetBinContent(2));
-      h1_ttbar_njet45_r1->SetBinError(ibin, h1_ttbar_shape[22+3*(ibin-2)]->GetBinError(2));
       h1_wjets_njet45_r1->SetBinContent(ibin, h1_wjets_shape[22+3*(ibin-2)]->GetBinContent(2));
-      h1_wjets_njet45_r1->SetBinError(ibin, h1_wjets_shape[22+3*(ibin-2)]->GetBinError(2));
     }
   }
       //njet67
   for(int ibin=1; ibin<6; ibin++) {
     h1_qcd_njet67_r1->SetBinContent(ibin, h1_qcd_shape[23+3*(ibin-1)]->GetBinContent(2));
-    h1_qcd_njet67_r1->SetBinError(ibin, h1_qcd_shape[23+3*(ibin-1)]->GetBinError(2));
     h1_ttbar_njet67_r1->SetBinContent(ibin, h1_ttbar_shape[23+3*(ibin-1)]->GetBinContent(2));
-    h1_ttbar_njet67_r1->SetBinError(ibin, h1_ttbar_shape[23+3*(ibin-1)]->GetBinError(2));
     h1_wjets_njet67_r1->SetBinContent(ibin, h1_wjets_shape[23+3*(ibin-1)]->GetBinContent(2));
-    h1_wjets_njet67_r1->SetBinError(ibin, h1_wjets_shape[23+3*(ibin-1)]->GetBinError(2));
+    if(ibin==5) {  // bin32 and bin35 have the same value
+      h1_qcd_njet67_r1->SetBinContent(ibin, h1_qcd_shape[23+3*(ibin-2)]->GetBinContent(2));
+      h1_ttbar_njet67_r1->SetBinContent(ibin, h1_ttbar_shape[23+3*(ibin-2)]->GetBinContent(2));
+      h1_wjets_njet67_r1->SetBinContent(ibin, h1_wjets_shape[23+3*(ibin-2)]->GetBinContent(2));
+    }
   }
       //njet8
   for(int ibin=1; ibin<6; ibin++) {
     h1_qcd_njet8_r1->SetBinContent(ibin, h1_qcd_shape[24+3*(ibin-1)]->GetBinContent(2));
-    h1_qcd_njet8_r1->SetBinError(ibin, h1_qcd_shape[24+3*(ibin-1)]->GetBinError(2));
     h1_ttbar_njet8_r1->SetBinContent(ibin, h1_ttbar_shape[24+3*(ibin-1)]->GetBinContent(2));
-    h1_ttbar_njet8_r1->SetBinError(ibin, h1_ttbar_shape[24+3*(ibin-1)]->GetBinError(2));
     h1_wjets_njet8_r1->SetBinContent(ibin, h1_wjets_shape[24+3*(ibin-1)]->GetBinContent(2));
-    h1_wjets_njet8_r1->SetBinError(ibin, h1_wjets_shape[24+3*(ibin-1)]->GetBinError(2));
+    if(ibin==5) {  // bin33 and bin36 have the same value
+      h1_qcd_njet8_r1->SetBinContent(ibin, h1_qcd_shape[24+3*(ibin-2)]->GetBinContent(2));
+      h1_ttbar_njet8_r1->SetBinContent(ibin, h1_ttbar_shape[24+3*(ibin-2)]->GetBinContent(2));
+      h1_wjets_njet8_r1->SetBinContent(ibin, h1_wjets_shape[24+3*(ibin-2)]->GetBinContent(2));
+    }
   }
     //r2
       //njet45
   for(int ibin=1; ibin<6; ibin++) {
     h1_qcd_njet45_r2->SetBinContent(ibin, h1_qcd_shape[22+3*(ibin-1)]->GetBinContent(3));
-    h1_qcd_njet45_r2->SetBinError(ibin, h1_qcd_shape[22+3*(ibin-1)]->GetBinError(3));
     h1_ttbar_njet45_r2->SetBinContent(ibin, h1_ttbar_shape[22+3*(ibin-1)]->GetBinContent(3));
-    h1_ttbar_njet45_r2->SetBinError(ibin, h1_ttbar_shape[22+3*(ibin-1)]->GetBinError(3));
     h1_wjets_njet45_r2->SetBinContent(ibin, h1_wjets_shape[22+3*(ibin-1)]->GetBinContent(3));
-    h1_wjets_njet45_r2->SetBinError(ibin, h1_wjets_shape[22+3*(ibin-1)]->GetBinError(3));
-    if(ibin==5) {
+    if(ibin==5) {  // bin31 and bin34 have the same value
       h1_qcd_njet45_r2->SetBinContent(ibin, h1_qcd_shape[22+3*(ibin-2)]->GetBinContent(3));
-      h1_qcd_njet45_r2->SetBinError(ibin, h1_qcd_shape[22+3*(ibin-2)]->GetBinError(3));
       h1_ttbar_njet45_r2->SetBinContent(ibin, h1_ttbar_shape[22+3*(ibin-2)]->GetBinContent(3));
-      h1_ttbar_njet45_r2->SetBinError(ibin, h1_ttbar_shape[22+3*(ibin-2)]->GetBinError(3));
       h1_wjets_njet45_r2->SetBinContent(ibin, h1_wjets_shape[22+3*(ibin-2)]->GetBinContent(3));
-      h1_wjets_njet45_r2->SetBinError(ibin, h1_wjets_shape[22+3*(ibin-2)]->GetBinError(3));
     }
   }
       //njet67
   for(int ibin=1; ibin<6; ibin++) {
     h1_qcd_njet67_r2->SetBinContent(ibin, h1_qcd_shape[23+3*(ibin-1)]->GetBinContent(3));
-    h1_qcd_njet67_r2->SetBinError(ibin, h1_qcd_shape[23+3*(ibin-1)]->GetBinError(3));
     h1_ttbar_njet67_r2->SetBinContent(ibin, h1_ttbar_shape[23+3*(ibin-1)]->GetBinContent(3));
-    h1_ttbar_njet67_r2->SetBinError(ibin, h1_ttbar_shape[23+3*(ibin-1)]->GetBinError(3));
     h1_wjets_njet67_r2->SetBinContent(ibin, h1_wjets_shape[23+3*(ibin-1)]->GetBinContent(3));
-    h1_wjets_njet67_r2->SetBinError(ibin, h1_wjets_shape[23+3*(ibin-1)]->GetBinError(3));
+    if(ibin==5) {  // bin32 and bin35 have the same value
+      h1_qcd_njet67_r2->SetBinContent(ibin, h1_qcd_shape[23+3*(ibin-2)]->GetBinContent(3));
+      h1_ttbar_njet67_r2->SetBinContent(ibin, h1_ttbar_shape[23+3*(ibin-2)]->GetBinContent(3));
+      h1_wjets_njet67_r2->SetBinContent(ibin, h1_wjets_shape[23+3*(ibin-2)]->GetBinContent(3));
+    }
   }
       //njet8
   for(int ibin=1; ibin<6; ibin++) {
     h1_qcd_njet8_r2->SetBinContent(ibin, h1_qcd_shape[24+3*(ibin-1)]->GetBinContent(3));
-    h1_qcd_njet8_r2->SetBinError(ibin, h1_qcd_shape[24+3*(ibin-1)]->GetBinError(3));
     h1_ttbar_njet8_r2->SetBinContent(ibin, h1_ttbar_shape[24+3*(ibin-1)]->GetBinContent(3));
-    h1_ttbar_njet8_r2->SetBinError(ibin, h1_ttbar_shape[24+3*(ibin-1)]->GetBinError(3));
     h1_wjets_njet8_r2->SetBinContent(ibin, h1_wjets_shape[24+3*(ibin-1)]->GetBinContent(3));
-    h1_wjets_njet8_r2->SetBinError(ibin, h1_wjets_shape[24+3*(ibin-1)]->GetBinError(3));
+    if(ibin==5) {  // bin33 and bin36 have the same value
+      h1_qcd_njet8_r2->SetBinContent(ibin, h1_qcd_shape[24+3*(ibin-2)]->GetBinContent(3));
+      h1_ttbar_njet8_r2->SetBinContent(ibin, h1_ttbar_shape[24+3*(ibin-2)]->GetBinContent(3));
+      h1_wjets_njet8_r2->SetBinContent(ibin, h1_wjets_shape[24+3*(ibin-2)]->GetBinContent(3));
+    }
   }
 
   //define normalized r1 and r2 histogram

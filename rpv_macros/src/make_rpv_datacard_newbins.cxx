@@ -2543,69 +2543,51 @@ void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bi
       par_shape="shape";
       par_value="1.00";
       if(filename.find("lownjets")!=std::string::npos){
-        bool flag_procind=false;
+	if(iproc=="qcd") continue;    // Regarding MJSyst, QCD is not considered. Only are ttbar and W+jets considered.
         for(int i_kap=1; i_kap<3; i_kap++){
           file << Form("mjsyst_r%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
-  //	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
-  	  for(auto iproc : process) {
-  	    flag_procind = flag_procind || int(index%5) == procind[iproc];
-  	    if(iproc=="qcd") flag_procind=false;
+  	    if(index%nprocesses==0) file << "-    ";   // this line is for signal, and it is a background-systematic uncert.
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&int(index%5)==procind[iproc]) file << par_value << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else file << "-    ";
   	  }
-  	  if(index%nprocesses==0) file << "-    ";   // this line is for signal, and it is a background-systematic uncert.
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&flag_procind)file << "1.00" << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",25)]&&flag_procind)file << par_value << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",28)]&&flag_procind)file << "1.00" << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",31)]&&flag_procind)file << "1.00" << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",34)]&&flag_procind)file << "1.00" << " ";
-  	  else file << "-    ";
-  	  flag_procind = false;
-  	}
-  	file << "\n";
+  	  file << "\n";
         }
       }
       else if(filename.find("mednjets")!=std::string::npos){
-        bool flag_procind=false;
+	if(iproc=="qcd") continue;    // Regarding MJSyst, QCD is not considered. Only are ttbar and W+jets considered.
         for(int i_kap=1; i_kap<3; i_kap++){
           file << Form("mjsyst_r%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
-  //	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
-  	  for(auto iproc : process) {
-  	    flag_procind = flag_procind || int(index%5) == procind[iproc];
-  	    if(iproc=="qcd") flag_procind=false;
+  	    if(index%nprocesses==0) file << "-    ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&int(index%5)==procind[iproc]) file << par_value << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else file << "-    ";
   	  }
-  	  if(index%nprocesses==0) file << "-    ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&flag_procind)file << "1.00" << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",26)]&&flag_procind)file << par_value << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",29)]&&flag_procind)file << "1.00" << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",32)]&&flag_procind)file << "1.00" << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",35)]&&flag_procind)file << "1.00" << " ";
-  	  else file << "-    ";
-  	  flag_procind = false;
-  	}
-  	file << "\n";
+  	  file << "\n";
         }
       }
       else if(filename.find("highnjets")!=std::string::npos){
-        bool flag_procind=false;
+	if(iproc=="qcd") continue;    // Regarding MJSyst, QCD is not considered. Only are ttbar and W+jets considered.
         for(int i_kap=1; i_kap<3; i_kap++){
           file << Form("mjsyst_r%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
-  //	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
-  	  for(auto iproc : process) {
-  	    flag_procind = flag_procind || int(index%5) == procind[iproc];
-  	    if(iproc=="qcd") flag_procind=false;
+  	    if(index%nprocesses==0) file << "-    ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&int(index%5)==procind[iproc]) file << par_value << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
+  	    else file << "-    ";
   	  }
-  	  if(index%nprocesses==0) file << "-    ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&flag_procind)file << "1.00" << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",27)]&&flag_procind)file << par_value << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",30)]&&flag_procind)file << "1.00" << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",33)]&&flag_procind)file << "1.00" << " ";
-  	  else if(int(index/nprocesses)==bindex[Form("bin%d",36)]&&flag_procind)file << "1.00" << " ";
-  	  else file << "-    ";
-  	  flag_procind = false;
-  	}
-  	file << "\n";
+  	  file << "\n";
         }
       }
       else{  

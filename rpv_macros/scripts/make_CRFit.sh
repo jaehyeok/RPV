@@ -14,9 +14,17 @@ for year in ${years[@]}
 		then
 		./run/make_variations_loop_newntuple.exe nominal off 500 1400 ${year} 20178
 		./run/make_variations_loop_newntuple.exe kappa off 500 1400 ${year} 20178
+		rm variations/output_syst_${year}_20178.root
+		for syst in {kappa,jer,jec,btag_bc,btag_udsg,mur,murf,muf,gs,lep_eff,pileup}; do
+    			hadd -a -f variations/output_syst_${year}_20178.root variations/output_${syst}_newnt_${year}_20178.root
+  		done
 	else
 		./run/make_variations_loop_newntuple.exe nominal off 500 1400 ${year}
 		./run/make_variations_loop_newntuple.exe kappa off 500 1400 ${year}
+		rm variations/output_syst_${year}.root
+		for syst in {kappa,mur,murf,muf,lep_eff,btag_udsg,btag_bc,jec,jer,gs,pileup}; do
+          	      hadd -f -a variations/output_syst_${year}.root variations/output_${syst}_newnt_${year}.root
+  	        done
 	fi
 	if [ ${mconly} = "on" ]
 		then
@@ -35,12 +43,14 @@ for year in ${years[@]}
 		if [ $1 = "20178" ]
 			then
 			#hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}_20178.root variations/output_kappa_newnt_${year}_20178.root
+			rm variations/output_CRFit_${year}.root
 			hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}_20178.root variations/output_syst_${year}_20178.root variations/output_${year}_mckappa.root variations/output_${year}_mjsyst.root
 			./run/make_jer_symm.exe ${year} variations/output_CRFit_${year}.root
 		else
 			#hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}.root variations/output_kappa_newnt_${year}.root
+			rm variations/output_CRFit_${year}.root
 			hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}.root variations/output_syst_${year}.root variations/output_${year}_mckappa.root variations/output_${year}_mjsyst.root
-			./run/make_jer_symm.exe 2016 variations/output_CRFit_${year}.root
+			./run/make_jer_symm.exe ${year} variations/output_CRFit_${year}.root
 		fi
 	fi
 	cp variations/output_CRFit_${year}.root datacards/variations/output_CRFit_${year}.root

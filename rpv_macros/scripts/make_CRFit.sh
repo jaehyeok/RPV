@@ -44,12 +44,12 @@ for year in ${years[@]}
 			then
 			#hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}_20178.root variations/output_kappa_newnt_${year}_20178.root
 			rm variations/output_CRFit_${year}.root
-			hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}_20178.root variations/output_syst_${year}_20178.root variations/output_${year}_mckappa.root variations/output_${year}_mjsyst.root
+			hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}_20178.root variations/output_syst_${year}_20178.root variations/output_${year}_mckappa.root variations/output_${year}_mjsyst.root variations/output_${year}_unc_dy.root
 			./run/make_jer_symm.exe ${year} variations/output_CRFit_${year}.root
 		else
 			#hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}.root variations/output_kappa_newnt_${year}.root
 			rm variations/output_CRFit_${year}.root
-			hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}.root variations/output_syst_${year}.root variations/output_${year}_mckappa.root variations/output_${year}_mjsyst.root
+			hadd -f variations/output_CRFit_${year}.root variations/output_nominal_newnt_${year}.root variations/output_syst_${year}.root variations/output_${year}_mckappa.root variations/output_${year}_mjsyst.root variations/output_${year}_unc_dy.root
 			./run/make_jer_symm.exe ${year} variations/output_CRFit_${year}.root
 		fi
 	fi

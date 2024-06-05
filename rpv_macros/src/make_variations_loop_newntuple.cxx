@@ -581,13 +581,14 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       kappa2_err  = h_kap2->GetBinError(njbin+3*iproc+1); 
       kappa2_cont = h_kap2->GetBinContent(njbin+3*iproc+1); 
       //cout << procname << " " << ibin << " " << njbin << " " << iproc << " " <<  njbin+3*iproc+1 << " " << kappa1_err << " "<< kappa1_cont << " " << kappa2_err << " " << kappa2_cont << endl; // FIXME
-      kappa_syst[0][ibin][njbin][iproc] = TMath::Sqrt(kappa1_err*kappa1_err + (1-kappa1_cont)*(1-kappa1_cont));
-      kappa_syst[1][ibin][njbin][iproc] = TMath::Sqrt(kappa2_err*kappa2_err + (1-kappa2_cont)*(1-kappa2_cont));
-      // for Mario's comment
-//      kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err , TMath::Abs((1-kappa1_cont)));
-//      kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err , TMath::Abs((1-kappa2_cont)));
-      cout << "procname: " << procname << " / ibin: " << ibin << endl;
-      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
+//      kappa_syst[0][ibin][njbin][iproc] = TMath::Sqrt(kappa1_err*kappa1_err + (1-kappa1_cont)*(1-kappa1_cont));
+//      kappa_syst[1][ibin][njbin][iproc] = TMath::Sqrt(kappa2_err*kappa2_err + (1-kappa2_cont)*(1-kappa2_cont));
+
+      // Apply Mario's comment
+      kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err , TMath::Abs(1-kappa1_cont));
+      kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err , TMath::Abs(1-kappa2_cont));
+//      cout << "procname: " << procname << " / ibin: " << ibin << endl;
+//      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
       kappa_wgt[0][njbin][iproc] = 1;
       kappa_wgt[1][njbin][iproc] = 1;
       if(procname=="qcd") 

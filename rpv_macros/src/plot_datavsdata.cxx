@@ -18,10 +18,10 @@
 
 namespace {
   //TString luminosity="138";
-  TString luminosity="36.3";
+  //TString luminosity="36.3";
   //TString luminosity="41.5";
   //TString luminosity="59.8";
-  //TString luminosity="101.3";
+  TString luminosity="101.3";
   //TString luminosity="1.";// when drawing data
   TString plot_type=".pdf";
   TString plot_style="CMSPaper_Preliminary";
@@ -194,11 +194,11 @@ int main(){
   sig_2000.push_back(17);
 
   //2016
-  Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kGreen+2,1,cutandweight("pass*frac16*(nleps==1&&njets>=4&&njets<=5)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_DY_2016, "2016 DYjets", kGray+2,1,cutandweight("pass*frac16*(nleps==2&&njets>=3&&njets<=4)","1.")));
+  //Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=4&&njets<=5)","frac16"))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  //Samples.push_back(sfeats(s_DY_2016, "2016 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=3&&njets<=4)","frac16")));
   //20178
-  //Samples.push_back(sfeats(s_wjets_20178, "2017+18 W+jets", kGreen+2,1,cutandweight("pass*frac1718*(nleps==1&&njets>=4&&njets<=5)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  //Samples.push_back(sfeats(s_DY_20178, "2017+18 DYjets", kGray+2,1,cutandweight("pass*frac1718*(nleps==2&&njets>=3&&njets<=4)","1.")));
+  Samples.push_back(sfeats(s_wjets_20178, "2017+18 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=4&&njets<=5)","frac1718"))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_DY_20178, "2017+18 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=3&&njets<=4)","frac1718")));
   //2017
   //Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=4&&njets<=5)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
   //Samples.push_back(sfeats(s_DY_2017, "2017 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=3&&njets<=4)","1.")));
@@ -211,11 +211,11 @@ int main(){
   dy_njet_45.push_back(19);
 
   //2016
-  Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kGreen+2,1,cutandweight("pass*frac16*(nleps==1&&njets>=6&&njets<=7)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_DY_2016, "2016 DYjets", kGray+2,1,cutandweight("pass*frac16*(nleps==2&&njets>=5&&njets<=6)","1.")));
+  //Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=6&&njets<=7)","frac16"))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  //Samples.push_back(sfeats(s_DY_2016, "2016 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=5&&njets<=6)","frac16")));
   //20178
-  //Samples.push_back(sfeats(s_wjets_20178, "2017+18 W+jets", kGreen+2,1,cutandweight("pass*frac1718*(nleps==1&&njets>=6&&njets<=7)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  //Samples.push_back(sfeats(s_DY_20178, "2017+18 DYjets", kGray+2,1,cutandweight("pass*frac1718*(nleps==2&&njets>=5&&njets<=6)","1.")));
+  Samples.push_back(sfeats(s_wjets_20178, "2017+18 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=6&&njets<=7)","frac1718"))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_DY_20178, "2017+18 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=5&&njets<=6)","frac1718")));
   //2017
   //Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=6&&njets<=7)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
   //Samples.push_back(sfeats(s_DY_2017, "2017 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=5&&njets<=6)","1.")));
@@ -228,11 +228,11 @@ int main(){
   dy_njet_67.push_back(21);
 
   //2016
-  Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kGreen+2,1,cutandweight("pass*frac16*(nleps==1&&njets>=8)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  Samples.push_back(sfeats(s_DY_2016, "2016 DYjets", kGray+2,1,cutandweight("pass*frac16*(nleps==2&&njets>=7)","1.")));
+  //Samples.push_back(sfeats(s_wjets_2016, "2016 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=8)","frac16"))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  //Samples.push_back(sfeats(s_DY_2016, "2016 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=7)","frac16")));
   //20178
-  //Samples.push_back(sfeats(s_wjets_20178, "2017+18 W+jets", kGreen+2,1,cutandweight("pass*frac1718*(nleps==1&&njets>=8)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
-  //Samples.push_back(sfeats(s_DY_20178, "2017+18 DYjets", kGray+2,1,cutandweight("pass*frac1718*(nleps==2&&njets>=7)","1.")));
+  Samples.push_back(sfeats(s_wjets_20178, "2017+18 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=8)","frac1718"))); Samples.back().mcerr=true;Samples.back().isSig=true;
+  Samples.push_back(sfeats(s_DY_20178, "2017+18 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=7)","frac1718")));
   //2017
   //Samples.push_back(sfeats(s_wjets_2017, "2017 W+jets", kGreen+2,1,cutandweight("pass*(nleps==1&&njets>=8)","1."))); Samples.back().mcerr=true;Samples.back().isSig=true;
   //Samples.push_back(sfeats(s_DY_2017, "2017 DYjets", kGray+2,1,cutandweight("pass*(nleps==2&&njets>=7)","1.")));

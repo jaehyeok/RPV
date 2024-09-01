@@ -520,7 +520,7 @@ int main(int argc, char* argv[])
     cout << "\\resizebox{\\textwidth}{!}{%" << endl;
     cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
-    cout << "$M_{J}$ & QCD & $t\\bar{t}$ & W+jets & Other & All bkg. & Data & $m_{\\tilde{g}}=1800$ $\\textrm{GeV}$\\\\"  << endl;
+    cout << "$\\MJ$ $(\\textrm{GeV})$ & QCD & $t\\bar{t}$ & $\\wjets$ & Other & All bkg. & Data & $m_{\\tilde{g}}=1.8$ $\\textrm{TeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
 //    for(int ibin=22; ibin<nbins; ibin++)
@@ -659,9 +659,9 @@ void printYieldBin(int nb, float data,
     if(other==0) other_err=0;
 
     string nbbin;
-    if(nb==0) nbbin="$500 ~ 800$";
-    if(nb==1) nbbin="$800 ~ 1100$";
-    if(nb==2) nbbin="$1100 ~$";
+    if(nb==0) nbbin="$500 - 800$";
+    if(nb==1) nbbin="$800 - 1100$";
+    if(nb==2) nbbin="$1100 \\le$";
    
     if(doNorm)  
     { 

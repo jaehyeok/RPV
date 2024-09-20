@@ -14,6 +14,7 @@ float w_isr
 float w_toppt
 float w_lep
 float frac1718
+float frac16
 std::vector<float> w_pdf
 float eff_trig
 int npv
@@ -35,6 +36,8 @@ bool fromGS
 bool trig_ht1050
 bool trig_ht900
 bool trig_jet450
+bool trig_isomu24
+bool trig_isomu27
 
 ##################   MC   ################
 int ntruleps

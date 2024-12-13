@@ -127,8 +127,10 @@ std::vector<int> fjets08_btags
 std::vector<int> fjets08_nconst
 
 ################  syst   ##################
-std::vector<float> sys_bctag
-std::vector<float> sys_udsgtag
+std::vector<float> sys_bctag_uncor
+std::vector<float> sys_bctag_cor
+std::vector<float> sys_udsgtag_uncor
+std::vector<float> sys_udsgtag_cor
 std::vector<float> sys_pu
 std::vector<float> sys_lep
 std::vector<float> sys_mur

@@ -587,8 +587,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       // Apply Mario's comment
       kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err , TMath::Abs(1-kappa1_cont));
       kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err , TMath::Abs(1-kappa2_cont));
-//      cout << "procname: " << procname << " / ibin: " << ibin << endl;
-//      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
+      cout << "procname: " << procname << " / ibin: " << ibin << endl;
+      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
       kappa_wgt[0][njbin][iproc] = 1;
       kappa_wgt[1][njbin][iproc] = 1;
       if(procname=="qcd") 
@@ -728,7 +728,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
     //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
     //else if (procname=="signal") nominalweight = nominalweight * 1;
-    else if (procname.Contains("signal")) nominalweight = lumi*tree.weight()*tree.pass();  //FIXME 20231001, there is no frac16 in sig
+    else if (procname.Contains("signal")) nominalweight = lumi*tree.weight()*tree.pass();  // 20231001, there is no frac16 in sig -> now, there is frac16 in sig
     //else if ((tree.nbm()==0||tree.nbm()==1) && tree.mj12()>1100 && tree.njets()>=4 && tree.njets()<=5) nominalweight=lumi*tree.weight()*0.4;//FIXME HEM issue
 /*
     int nb_csv=0;
@@ -810,18 +810,25 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     //
     // variations that are common in all processes
     //
-    if(variations=="btag_bc") 
+    if(variations=="btag_bc_uncor") 
     { 
-      //cout<<tree.sys_bctag()[0]<<"::"<<tree.sys_bctag()[1]<<endl;
-      upweight    = upweight*tree.sys_bctag()[0]/tree.w_btag_dcsv();
-      downweight  = downweight*tree.sys_bctag()[1]/tree.w_btag_dcsv();
-      //cout<<tree.sys_bctag()[0]<<"::"<<tree.sys_bctag()[1]<<endl;
-      //cout<<upweight<<"::"<<downweight<<"::"<<nominalweight<<endl;
+      upweight    = upweight*tree.sys_bctag_uncor()[0]/tree.w_btag_dcsv();
+      downweight  = downweight*tree.sys_bctag_uncor()[1]/tree.w_btag_dcsv();
     }
-    if(variations=="btag_udsg") 
+    if(variations=="btag_bc_cor") 
     { 
-      upweight    = upweight*tree.sys_udsgtag()[0]/tree.w_btag_dcsv();
-      downweight  = downweight*tree.sys_udsgtag()[1]/tree.w_btag_dcsv();
+      upweight    = upweight*tree.sys_bctag_cor()[0]/tree.w_btag_dcsv();
+      downweight  = downweight*tree.sys_bctag_cor()[1]/tree.w_btag_dcsv();
+    }
+    if(variations=="btag_udsg_uncor") 
+    { 
+      upweight    = upweight*tree.sys_udsgtag_uncor()[0]/tree.w_btag_dcsv();
+      downweight  = downweight*tree.sys_udsgtag_uncor()[1]/tree.w_btag_dcsv();
+    }
+    if(variations=="btag_udsg_cor") 
+    { 
+      upweight    = upweight*tree.sys_udsgtag_cor()[0]/tree.w_btag_dcsv();
+      downweight  = downweight*tree.sys_udsgtag_cor()[1]/tree.w_btag_dcsv();
     }
     if(variations=="gs") 
     {

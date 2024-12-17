@@ -33,6 +33,7 @@ using namespace std;
 
 struct winsize w;
 
+void appendTree(vector<TString> s_process, small_tree &tree_in);
 void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj, TString procname);
 void genKappaFactors(TFile *f, TString year);
 void genKappaForTTJets(TFile *f_CRFit, float kappa[2][3][3], float kappa_unc[2][3][3], float mc_unc[2][3][3]);
@@ -156,45 +157,48 @@ int main(int argc, char *argv[]){
 
     cout<<folder_bkg<<endl;
 
+    // rpvfitnbge0
     vector<TString> s_jetht = getRPVProcess(folder_dat, "data");
-
     vector<TString> s_qcd   = getRPVProcess(folder_bkg, "qcd");
     vector<TString> s_ttbar = getRPVProcess(folder_bkg, "ttbar");
     vector<TString> s_wjets = getRPVProcess(folder_bkg, "wjets");
     vector<TString> s_other = getRPVProcess(folder_bkg, "other_public");
 
     small_tree_rpv data((static_cast<std::string>(s_jetht.at(0))));
-
     small_tree_rpv qcd((static_cast<std::string>(s_qcd.at(0))));
-    for(auto iqcd : s_qcd) qcd.Add((static_cast<std::string>(iqcd)));
     small_tree_rpv ttbar((static_cast<std::string>(s_ttbar.at(0))));
-    for(auto ittbar : s_ttbar) ttbar.Add((static_cast<std::string>(ittbar)));
     small_tree_rpv wjets((static_cast<std::string>(s_wjets.at(0))));
-    for(auto iwjets : s_wjets) wjets.Add((static_cast<std::string>(iwjets)));
     small_tree_rpv other((static_cast<std::string>(s_other.at(0))));
-    for(auto iother : s_other) other.Add((static_cast<std::string>(iother)));
 
+    appendTree(s_jetht, data);
+    appendTree(s_qcd, qcd);
+    appendTree(s_ttbar, ttbar);
+    appendTree(s_wjets, wjets);
+    appendTree(s_other, other);
+
+    // DY
     vector<TString> s_jetht_kwj = getRPVProcess(folder_kwj_dat, "data");
-
     vector<TString> s_qcd_kwj   = getRPVProcess(folder_kwj_mc, "qcd");
     vector<TString> s_ttbar_kwj = getRPVProcess(folder_kwj_mc, "ttbar");
     vector<TString> s_DY_kwj    = getRPVProcess(folder_kwj_mc, "DY");
     vector<TString> s_other_kwj = getRPVProcess(folder_kwj_mc, "other_DY"); // including W+jets
 
     small_tree_rpv data_kwj((static_cast<std::string>(s_jetht_kwj.at(0))));
-
     small_tree_rpv qcd_kwj((static_cast<std::string>(s_qcd_kwj.at(0))));
-    for(auto iqcd_kwj : s_qcd_kwj) qcd.Add((static_cast<std::string>(iqcd_kwj)));
     small_tree_rpv ttbar_kwj((static_cast<std::string>(s_ttbar_kwj.at(0))));
-    for(auto ittbar_kwj : s_ttbar_kwj) ttbar_kwj.Add((static_cast<std::string>(ittbar_kwj)));
     small_tree_rpv DY_kwj((static_cast<std::string>(s_DY_kwj.at(0))));
-    for(auto iDY_kwj : s_DY_kwj) DY_kwj.Add((static_cast<std::string>(iDY_kwj)));
     small_tree_rpv other_kwj((static_cast<std::string>(s_other_kwj.at(0))));
-    for(auto iother_kwj : s_other_kwj) other_kwj.Add((static_cast<std::string>(iother_kwj)));
-    //getKappa(data, iyear, f, "data_obs");
     
+    appendTree(s_jetht_kwj, data_kwj);
+    appendTree(s_qcd_kwj, qcd_kwj);
+    appendTree(s_ttbar_kwj, ttbar_kwj);
+    appendTree(s_DY_kwj, DY_kwj);
+    appendTree(s_other_kwj, other_kwj);
+
+    // signal
     vector<TString> s_rpv_m1800 = getRPVProcess(folder_sig, "rpv_m1800");
     small_tree_rpv rpv_m1800(static_cast<std::string>(s_rpv_m1800.at(0)));
+    appendTree(s_rpv_m1800, rpv_m1800);
 
     if(!(mconly)) genKappaRegions( data, iyear, f, false, "data_obs");
 
@@ -221,6 +225,18 @@ int main(int argc, char *argv[]){
   genKappaFactors(f_,year); 
 
   f_->Close();
+}
+
+void appendTree(vector<TString> s_process, small_tree &tree_in)
+{
+  cout << "flist of s_process: " << s_process.at(0) << endl;
+  if(s_process.size()>1) {
+    for(int i=1; i<s_process.size(); i++) {
+      tree_in.Add((static_cast<std::string>(s_process.at(i))));
+      cout << "       " << s_process.at(i) << " is appended" << endl;
+    }
+  }
+  cout << endl;
 }
 
 void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj, TString procname){

@@ -38,7 +38,7 @@ namespace {
 
 using namespace std;
 
-TString merge_78;
+TString flag_merge;
 
 int main(int argc, char *argv[])
 {
@@ -51,21 +51,8 @@ int main(int argc, char *argv[])
   TString sig_onoff;
   // signal is added later
   std::vector<std::string> processes = { "qcd", "ttbar", "wjets", "other"};
-  /*std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg", //"kappa"
-					                     "gs45", "gs67", "gs89", "gs10Inf",
-					                     //"jes", "jer",
-					                     "pileup", "lep_eff", "ttbar_pt",
-					                     "qcd_flavor",
-					                     "qcd_muf", "qcd_mur", "qcd_murf", 
-					                     //"isr",
-					                     "ttbar_muf", "ttbar_mur", "ttbar_murf",
-					                     "wjets_muf", "wjets_mur", "wjets_murf",
-					                     "other_muf", "other_mur", "other_murf",
-					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
-
-  //std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","lep_eff","ISR"};//FIXME
-  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
-//  shapeSysts = {};
+  //BJ_231012 remove isr from shapeSysts
+  std::vector<std::string> shapeSysts = {"jec","jer","btag_bc_uncor","btag_bc_cor","btag_udsg_uncor","btag_udsg_cor","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","pileup"};
   std::string gluinoMass;
   std::string signalBinName;
   std::string cardType;
@@ -89,20 +76,10 @@ int main(int argc, char *argv[])
       return 1;
     }
     inputname = argv[3];
-    merge_78  = argv[5];
+    flag_merge = argv[5];
     sig_onoff = argv[6];
     cout<<"year : "<< year <<endl;
   }
-  if(year == "2016"){
-      //BJ_220314 change members of shapeSysts
-      //BJ_231012 remove isr from shapeSysts
-	//shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","isr","gs","lep_eff","pileup"};
-	shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","pileup"};
-  }
-  else if(year != "2016"){
-	shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","pileup"};
-  }
-//  if(!othersyst) shapeSysts = {};
 
   nprocesses=processes.size();
 
@@ -979,17 +956,22 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
   void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
     TString lownjcon_, mednjcon_, highnjcon_;
-    if(year=="2016"){
+    if(year=="UL2016_preVFP"){
       lownjcon_ = "1.29";
       mednjcon_ = "1.19";
       highnjcon_ = "1.29";
     }
-    if(year=="2017"){
+    else if(year=="UL2016_postVFP"){
+      lownjcon_ = "1.29";
+      mednjcon_ = "1.19";
+      highnjcon_ = "1.29";
+    }
+    else if(year=="UL2017"){
       lownjcon_ = "1.29";
       mednjcon_ = "1.11";
       highnjcon_ = "1.33";
     }
-    if(year=="2018"){
+    else if(year=="UL2018"){
       lownjcon_ = "1.28";
       mednjcon_ = "1.12";
       highnjcon_ = "1.29";
@@ -1073,23 +1055,24 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
   void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
 
-    //if(merge_78=="on"){
-    //  year = "20178";
-    //}
     TString mednjcon_, highnjcon_;
-    if(year=="2016"){
+    if(year=="UL2016_preVFP"){
       mednjcon_ = "1.62";
       highnjcon_ = "1.33";
     }
-    if(year=="2017"){
+    else if(year=="UL2016_postVFP"){
+      mednjcon_ = "1.62";
+      highnjcon_ = "1.33";
+    }
+    else if(year=="UL2017"){
       mednjcon_ = "1.34";
       highnjcon_ = "1.20";
     }
-    if(year=="2018"){
+    else if(year=="UL2018"){
       mednjcon_ = "1.23";
       highnjcon_ = "1.22";
     }
-    if(year=="20178"){
+    else if(year=="UL20178"){
       mednjcon_ = "1.27";
       highnjcon_ = "1.10"; 
     }
@@ -1221,14 +1204,14 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
   void outputLognormalSystematics(std::ofstream &file, TString year)
   {
-    // luminosity uncertainty is 2.6% for 2016 data    ->    1.2% for 2016UL data (NanoAODv9)  (ref:https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun2) 230104
-    // luminosity uncertainty is 2.3% for 2017 data
-    // luminosity uncertainty is 2.5% for 2018 data
+    // luminosity uncertainty is 2.6% for UL2016 data    ->    1.2% for 2016UL data (NanoAODv9)  (ref:https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun2) 230104
+    // luminosity uncertainty is 2.3% for UL2017 data
+    // luminosity uncertainty is 2.5% for UL2018 data
     file << "lumi  lnN  ";
     for(unsigned int ibin=0; ibin<nbins; ibin++) {
-      if(year == "2016") file << "1.012 - - - 1.012 ";
-      if(year == "2017") file << "1.023 - - - 1.023 ";
-      if(year == "2018") file << "1.025 - - - 1.025 ";
+      if(year=="UL2016_preVFP" || year=="UL2016_postVFP") file << "1.012 - - - 1.012 ";
+      if(year=="UL2017") file << "1.023 - - - 1.023 ";
+      if(year=="UL2018") file << "1.025 - - - 1.025 ";
     }
     file << std::endl;
 
@@ -1237,13 +1220,21 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, const std::vector<std::string> &bins, TString year)
   {
     map<string, int> bindex;
+    TString yr;
     for(uint ibin=0; ibin<nbins; ibin++) bindex[bins[ibin]]=ibin;
 
-    if(merge_78=="on"){
-      year = "20178";
+    if(flag_merge=="UL2016"){
+      yr = "UL2016";
     }
+    else if(flag_merge=="UL20178"){
+      yr = "UL20178";
+    }
+    else yr = year;
+
     for(unsigned int isyst=0; isyst<shapesysts.size(); isyst++) {
-      file << shapesysts.at(isyst) << "_" << year << "     shape     ";
+      if((shapesysts.at(isyst)=="btag_bc_uncor") || (shapesysts.at(isyst)=="btag_udsg_uncor") || 
+	 (shapesysts.at(isyst)=="jec") || (shapesysts.at(isyst)=="jer")) file << shapesysts.at(isyst) << "_" << yr << "     shape     ";
+      else file << shapesysts.at(isyst) << "_" << yr << "     shape     ";
       if(shapesysts.at(isyst).find("pdf")!=std::string::npos) {
         // there are 100 nnpdf variations and so each needs to be scaled down by a factor 1/sqrt(100)
         for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
@@ -1264,7 +1255,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
       file << "\n";
     }
-    file << "trigeff_" << year << "       lnN ";
+    file << "trigeff_" << yr << "       lnN ";
     for(unsigned int index=0; index<nbins; index++){
 	  std::string temp = bins.at(index);
 	  int binnumber = atoi(temp.erase(0,3).c_str());
@@ -1296,10 +1287,14 @@ void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      year = "UL2016";
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+    }
+    else if(flag_merge=="UL20178"){
+      year = "UL20178";
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
     }
     par_shape="shape";
     par_value="1.00";
@@ -1544,10 +1539,14 @@ void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::str
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      year = "UL2016";
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+    }
+    else if(flag_merge=="UL20178"){
+      year = "UL20178";
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
     }
     par_shape="shape";
     par_value="1.00";
@@ -1792,10 +1791,14 @@ void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::str
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      year = "UL2016";
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+    }
+    else if(flag_merge=="UL20178"){
+      year = "UL20178";
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
     }
     par_shape="shape";
     par_value="1.00";
@@ -2040,10 +2043,14 @@ void outputMCkappaMURFSystematics(std::ofstream &file, const std::vector<std::st
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      year = "UL2016";
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+    }
+    else if(flag_merge=="UL20178"){
+      year = "UL20178";
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
     }
     par_shape="shape";
     par_value="1.00";
@@ -2288,10 +2295,14 @@ void outputMCkappaMURSystematics(std::ofstream &file, const std::vector<std::str
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      year = "UL2016";
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+    }
+    else if(flag_merge=="UL20178"){
+      year = "UL20178";
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
     }
     par_shape="shape";
     par_value="1.00";
@@ -2538,10 +2549,14 @@ void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bi
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      year = "UL2016";
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+    }
+    else if(flag_merge=="UL20178"){
+      year = "UL20178";
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
     }
     for(auto iproc : process) {
       par_shape="shape";
@@ -2659,10 +2674,14 @@ void outputkappaDYUncSystematics(std::ofstream &file, const std::vector<std::str
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      year = "UL2016";
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+    }
+    else if(flag_merge=="UL20178"){
+      year = "UL20178";
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
     }
     for(auto iproc : process) {
       par_shape="shape";
@@ -2785,10 +2804,14 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      year = "UL2016";
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+    }
+    else if(flag_merge=="UL20178"){
+      year = "UL20178";
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
     }
     for(auto iproc : process){
       par_shape="shape";
@@ -2928,8 +2951,11 @@ void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins
 }
 
 void outputrateParam( std::ofstream &file, const std::vector<std::string> &bins, TString year ){
-  if(merge_78=="on"){
-    year = "20178";
+  if(flag_merge=="UL2016"){
+    year = "UL2016";
+  }
+  else if(flag_merge=="UL20178"){
+    year = "UL20178";
   }
   file << Form("normwjets_%s",year.Data()) << " rateParam * wjets 1.0 [0,20]  ";
   file << "\n";

@@ -47,7 +47,8 @@ int nbins = 18;
 float mjmin = 500;
 float mjmax = 1400;
 
-bool debug = true;
+bool debug = false;
+//bool debug = true;
 bool debug_unc = true;
 bool mconly = true;
 
@@ -73,7 +74,7 @@ int main(int argc, char *argv[]){
   ioctl(0, TIOCGWINSZ, &w);
   int cols = w.ws_col;
 
-  TString year="2016";
+  TString year="UL2016_preVFP";
 
   temp_eval_=argv[1];
   temp_help_=argv[1];
@@ -110,26 +111,30 @@ int main(int argc, char *argv[]){
     return 0;
   }
 
-  if(!(year=="2016"||year=="2017"||year=="2018"||year=="20178")) return 0;
+  if(!(year=="UL2016_preVFP"||year=="UL2016_postVFP"||year=="UL2017"||year=="UL2018"||year=="UL2016"||year=="UL20178")) return 0;
 
   vector<TString> years;
-
-  if(year=="20178"){
-    years.push_back("2017");
-    years.push_back("2018");
+  if(year=="UL2016"){
+    years.push_back("UL2016_preVFP");
+    years.push_back("UL2016_postVFP");
+  }
+  else if(year=="UL20178"){
+    years.push_back("UL2017");
+    years.push_back("UL2018");
   }
   else years.push_back(year);
+
   ifstream chf;
   chf.open("variations/output_kappa_regions_"+year+".root");
   if(!chf) remove("variations/output_kappa_regions_"+year+".root");
   TFile *f = new TFile("variations/output_kappa_regions_"+year+".root", "recreate");
 
   for(auto iyear : years){
-
     if(argc==5||argc==1){
-      if(iyear=="2016") lumi = 36.3;
-      else if(iyear=="2017") lumi = 41.5;
-      else if(iyear=="2018") lumi = 59.8;
+      if(iyear=="UL2016_preVFP")  lumi = 19.5;
+      if(iyear=="UL2016_postVFP") lumi = 16.8;
+      else if(iyear=="UL2017")    lumi = 41.5;
+      else if(iyear=="UL2018")    lumi = 59.8;
     }
     cout<<argc<<endl;
 
@@ -146,13 +151,14 @@ int main(int argc, char *argv[]){
     TString folder_bkg = folder_year(iyear,false).at(0);
     TString folder_dat = folder_year(iyear,false).at(1);
     TString folder_sig = folder_year(iyear,false).at(2);
-    TString folder_kwj = folder_year(iyear,false).at(3);
+    TString folder_kwj_mc  = folder_year(iyear,false).at(3);
+    TString folder_kwj_dat = folder_year(iyear,false).at(4);
 
     cout<<folder_bkg<<endl;
 
     vector<TString> s_jetht = getRPVProcess(folder_dat, "data");
 
-    vector<TString> s_qcd = getRPVProcess(folder_bkg, "qcd");
+    vector<TString> s_qcd   = getRPVProcess(folder_bkg, "qcd");
     vector<TString> s_ttbar = getRPVProcess(folder_bkg, "ttbar");
     vector<TString> s_wjets = getRPVProcess(folder_bkg, "wjets");
     vector<TString> s_other = getRPVProcess(folder_bkg, "other_public");
@@ -168,12 +174,12 @@ int main(int argc, char *argv[]){
     small_tree_rpv other((static_cast<std::string>(s_other.at(0))));
     for(auto iother : s_other) other.Add((static_cast<std::string>(iother)));
 
-    vector<TString> s_jetht_kwj = getRPVProcess(folder_kwj, "data");
+    vector<TString> s_jetht_kwj = getRPVProcess(folder_kwj_dat, "data");
 
-    vector<TString> s_qcd_kwj   = getRPVProcess(folder_kwj, "qcd");
-    vector<TString> s_ttbar_kwj = getRPVProcess(folder_kwj, "ttbar");
-    vector<TString> s_DY_kwj = getRPVProcess(folder_kwj, "DY");
-    vector<TString> s_other_kwj = getRPVProcess(folder_kwj, "other_DY");
+    vector<TString> s_qcd_kwj   = getRPVProcess(folder_kwj_mc, "qcd");
+    vector<TString> s_ttbar_kwj = getRPVProcess(folder_kwj_mc, "ttbar");
+    vector<TString> s_DY_kwj    = getRPVProcess(folder_kwj_mc, "DY");
+    vector<TString> s_other_kwj = getRPVProcess(folder_kwj_mc, "other_DY"); // including W+jets
 
     small_tree_rpv data_kwj((static_cast<std::string>(s_jetht_kwj.at(0))));
 
@@ -198,8 +204,6 @@ int main(int argc, char *argv[]){
     genKappaRegions(other, iyear, f, false, "other");
 
     if(!(mconly)) genKappaRegions( data_kwj, iyear, f, true, "data_obs");
-//    if(!(mconly)) genKappaRegions( "/data2/babies/20210702/"+iyear+"/merged_norm_njets3nleps2/", iyear, f, true, "data_obs");
-//    data_kwj="/data2/babies/20210702/"+iyear+"/merged_norm_njets3nleps2/"
 
     genKappaRegions(  qcd_kwj, iyear, f, true,   "qcd");
     genKappaRegions(ttbar_kwj, iyear, f, true, "ttbar");
@@ -224,6 +228,7 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
   int cols = w.ws_col;
 
 
+  // bin 0,1,2: for QCD (ref: inc/utilities_macros_rpv.hpp)
   vector<int> bins = {0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
   if(flag_kwj) bins = {3, 4, 5};
 
@@ -338,8 +343,9 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
     }
     else mll=0;
     //float weight = lumi*tree.weight();
-    float weight = lumi*tree.weight()*tree.pass()*tree.frac16();
-    if(procname=="data_obs") weight = 1;
+    //float weight = lumi*tree.weight()*tree.pass()*tree.frac16();
+    float weight = lumi*tree.weight()*tree.pass()*tree.stitch_ht();  // After 241201, 2016 is divided into UL2016_preVFP and UL2016_postVFP, and treated as 20178. frac16 is unnecessary.
+    if(procname=="data_obs") weight = 1*tree.pass();
     for(auto ibin : bins){
       if(tree.mj12()>0 && passKapBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm(), mll)) 
       {
@@ -424,7 +430,7 @@ void genKappaFactors(TFile *f, TString year){
   f->cd();
 
   for(auto ibin : bins){
-    if(ibin>5) continue;
+    if(ibin>5) continue;             // Consider qcd and wjets (ttbar in genKappaForTTJets)
     int ind_ibin    = ibin%3;        // ind_ibin = 0 : Low Njets, ind_ibin = 1 : Med Njets, ind_ibin = 2 : High Njets
     int ind_proc    = int(ibin/3);   // ind_proc = 0 : qcd, ind_proc = 1 : wjets, ind_proc = 2 : ttbar
     float ratio[3];
@@ -445,11 +451,55 @@ void genKappaFactors(TFile *f, TString year){
     cout<<"ind_bin : "<<ind_ibin<<endl;
     cout<<"ind_iproc : "<<ind_ibin<<endl;
 
+    // test_genKappaFactors
+    cout << endl;
+    cout << "ApplyKappaFactor (2)" << endl;
+    cout << "[before applying SF twice]" << endl;
+    cout << "data_obs: " << data_obs->GetBinContent(1) << " / " << data_obs->GetBinContent(2) << " / " << data_obs->GetBinContent(3) << endl;
+    cout << "data_obs: " << data_obs->GetBinError(1) << " / " << data_obs->GetBinError(2) << " / " << data_obs->GetBinError(3) << endl;
+    cout << "mc_kap:   " << mc_kap->GetBinContent(1) << " / " << mc_kap->GetBinContent(2) << " / " << mc_kap->GetBinContent(3) << endl;
+    cout << "mc_kap:   " << mc_kap->GetBinError(1) << " / " << mc_kap->GetBinError(2) << " / " << mc_kap->GetBinError(3) << endl;
+    cout << endl;
+    if(1) {
+      float kap_test1=0, unc_kap_test1=0;
+      float kap_test2=0, unc_kap_test2=0;
+      kap_test1 = (data_obs->GetBinContent(2)/mc_kap->GetBinContent(2))/(data_obs->GetBinContent(1)/mc_kap->GetBinContent(1));
+      unc_kap_test1 = kap_test1*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(2)/data_obs->GetBinContent(2),2) + TMath::Power(mc_kap->GetBinError(1)/mc_kap->GetBinContent(1),2) + TMath::Power(mc_kap->GetBinError(2)/mc_kap->GetBinContent(2),2));
+      kap_test2 = (data_obs->GetBinContent(3)/mc_kap->GetBinContent(3))/(data_obs->GetBinContent(1)/mc_kap->GetBinContent(1));
+      unc_kap_test2 = kap_test2*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(3)/data_obs->GetBinContent(3),2) + TMath::Power(mc_kap->GetBinError(1)/mc_kap->GetBinContent(1),2) + TMath::Power(mc_kap->GetBinError(3)/mc_kap->GetBinContent(3),2));
+      cout << endl;
+      cout << "kap1:     " << kap_test1 << endl;
+      cout << "unc_kap1: " << unc_kap_test1 << endl;
+      cout << "kap2:     " << kap_test2 << endl;
+      cout << "unc_kap2: " << unc_kap_test2 << endl;
+    }
+    // test end
     TH1F *mc_kap_ = static_cast<TH1F*>(mc_kap->Clone("mc_kap_"));
     for(int j=1 ; j<3 ; j++){
       float BinCont = mc_kap_->GetBinContent(j+1);
       mc_kap_->SetBinContent(j+1, BinCont*kappa[j-1][ind_ibin][ind_proc]);
     }
+    // test
+    cout << "[after applying SF twice]" << endl;
+    cout << "data_obs: " << data_obs->GetBinContent(1) << " / " << data_obs->GetBinContent(2) << " / " << data_obs->GetBinContent(3) << endl;
+    cout << "data_obs: " << data_obs->GetBinError(1) << " / " << data_obs->GetBinError(2) << " / " << data_obs->GetBinError(3) << endl;
+    cout << "mc_kap_:   " << mc_kap_->GetBinContent(1) << " / " << mc_kap_->GetBinContent(2) << " / " << mc_kap_->GetBinContent(3) << endl;
+    cout << "mc_kap_:   " << mc_kap_->GetBinError(1) << " / " << mc_kap_->GetBinError(2) << " / " << mc_kap_->GetBinError(3) << endl;
+    cout << endl;
+    if(1) {
+    float kap_test1=0, unc_kap_test1=0;
+    float kap_test2=0, unc_kap_test2=0;
+    kap_test1 = (data_obs->GetBinContent(2)/mc_kap_->GetBinContent(2))/(data_obs->GetBinContent(1)/mc_kap_->GetBinContent(1));
+    unc_kap_test1 = kap_test1*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(2)/data_obs->GetBinContent(2),2) + TMath::Power(mc_kap_->GetBinError(1)/mc_kap_->GetBinContent(1),2) + TMath::Power(mc_kap_->GetBinError(2)/mc_kap_->GetBinContent(2),2));
+    kap_test2 = (data_obs->GetBinContent(3)/mc_kap_->GetBinContent(3))/(data_obs->GetBinContent(1)/mc_kap_->GetBinContent(1));
+    unc_kap_test2 = kap_test2*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(3)/data_obs->GetBinContent(3),2) + TMath::Power(mc_kap_->GetBinError(1)/mc_kap_->GetBinContent(1),2) + TMath::Power(mc_kap_->GetBinError(3)/mc_kap_->GetBinContent(3),2));
+    cout << endl;
+    cout << "kap1:     " << kap_test1 << endl;
+    cout << "unc_kap1: " << unc_kap_test1 << endl;
+    cout << "kap2:     " << kap_test2 << endl;
+    cout << "unc_kap2: " << unc_kap_test2 << endl;
+  }
+    // test end
     for(int i=1 ; i<3 ; i++){
       float unc_diff(0), unc_stat(0), unc_mc(0), unc_dy(0), temp_mc_(0);
       temp_mc_ = mc_kap_->GetBinContent(i+1);
@@ -462,57 +512,78 @@ void genKappaFactors(TFile *f, TString year){
         cout<<"kappa uncertainty   : "<<unc_diff<<endl;
         cout<<"temp_mc_          : "<<temp_mc_<<endl;
       }
-      float unc_dy_2016[3][2]={
+      float unc_dy_UL2016_preVFP[3][2]={
 	      {0.31, 0.34},
               {0.29, 0.29},
               {0.27, 0.21}};
-	      //{0.28, 0.27},
-	      //{0.21, 0.27},
-	      //{0.18, 0.17}};
-      float unc_dy_20178[3][2]={
-	      {0.30, 0.31},
-              {0.31, 0.30},
-              {0.28, 0.21}};
-	      //{0.18, 0.20},
-	      //{0.19, 0.15},
-	      //{0.13, 0.02}};
-      float unc_dy_2017[3][2]={
+      float unc_dy_UL2016_postVFP[3][2]={
+	      {0.31, 0.34},
+              {0.29, 0.29},
+              {0.27, 0.21}};
+      float unc_dy_UL2017[3][2]={
 	      {0.30, 0.30},
               {0.32, 0.32},
               {0.29, 0.19}};
-	      //{0.17, 0.21},
-	      //{0.19, 0.21},
-	      //{0.13, 0.07}};
-      float unc_dy_2018[3][2]={
+      float unc_dy_UL2018[3][2]={
 	      {0.30, 0.32},
               {0.30, 0.28},
               {0.28, 0.24}};
-	      //{0.18, 0.19},
-	      //{0.18, 0.11},
-	      //{0.13, 0.01}};
+      float unc_dy_UL2016[3][2]={
+	      {0.30, 0.31},
+              {0.31, 0.30},
+              {0.28, 0.21}};
+      float unc_dy_UL20178[3][2]={
+	      {0.30, 0.31},
+              {0.31, 0.30},
+              {0.28, 0.21}};
       if(ind_proc==1){
-	if(year=="2016"){
-	  unc_dy=unc_dy_2016[ind_ibin][i];
+	if(year=="UL2016_preVFP"){
+	  unc_dy=unc_dy_UL2016_preVFP[ind_ibin][i];
 	}
-	if(year=="20178"){
-	  unc_dy=unc_dy_20178[ind_ibin][i];
+	if(year=="UL2016_postVFP"){
+	  unc_dy=unc_dy_UL2016_postVFP[ind_ibin][i];
 	}
-	if(year=="2017"){
-	  unc_dy=unc_dy_2017[ind_ibin][i];
+	if(year=="UL2017"){
+	  unc_dy=unc_dy_UL2017[ind_ibin][i];
 	}
-	if(year=="2018"){
-	  unc_dy=unc_dy_2018[ind_ibin][i];
+	if(year=="UL2018"){
+	  unc_dy=unc_dy_UL2018[ind_ibin][i];
+	}
+	if(year=="UL2016"){
+	  unc_dy=unc_dy_UL2016[ind_ibin][i];
+	}
+	if(year=="UL20178"){
+	  unc_dy=unc_dy_UL20178[ind_ibin][i];
 	}
       }
-      else unc_dy==0;
-      unc_dy=0; // because kappa plots do not include unc_dy. It should be included in make_variations_loop_newntuple.cxx.
+      else unc_dy=0;
+      unc_dy=0; // because kappa plots should not include unc_dy. It will be included by running python/outputfix_unc_dy.py.
       unc_stat = data_obs->GetBinError(i+1);
       unc_mc   = mc_kap_->GetBinError(i+1);
-      kappa_unc[i-1][ind_ibin][ind_proc] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc+unc_dy*unc_dy)/temp_mc_; 
+//      kappa_unc[i-1][ind_ibin][ind_proc] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc+unc_dy*unc_dy)/temp_mc_;  //FIXME
+      // test
+      float kap_test1=0, unc_kap_test1=0;
+      float kap_test2=0, unc_kap_test2=0;
+      kap_test1 = (data_obs->GetBinContent(2)/mc_kap_->GetBinContent(2))/(data_obs->GetBinContent(1)/mc_kap_->GetBinContent(1));
+      unc_kap_test1 = kap_test1*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(2)/data_obs->GetBinContent(2),2) + TMath::Power(mc_kap_->GetBinError(1)/mc_kap_->GetBinContent(1),2) + TMath::Power(mc_kap_->GetBinError(2)/mc_kap_->GetBinContent(2),2));
+      kap_test2 = (data_obs->GetBinContent(3)/mc_kap_->GetBinContent(3))/(data_obs->GetBinContent(1)/mc_kap_->GetBinContent(1));
+      unc_kap_test2 = kap_test2*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(3)/data_obs->GetBinContent(3),2) + TMath::Power(mc_kap_->GetBinError(1)/mc_kap_->GetBinContent(1),2) + TMath::Power(mc_kap_->GetBinError(3)/mc_kap_->GetBinContent(3),2));
+      kappa_unc[0][ind_ibin][ind_proc] = unc_kap_test1/kap_test1;
+      kappa_unc[1][ind_ibin][ind_proc] = unc_kap_test2/kap_test2;
+      // test end
       mc_unc[i-1][ind_ibin][ind_proc] = unc_mc/temp_mc_;
+      // test
+      cout << endl;
+      cout << "Fraction of kappa uncertainty" << endl;
+      cout << "temp_mc_: " << temp_mc_ << endl;
+      cout << "1. unc_diff: " << unc_diff/temp_mc_ << endl;
+      cout << "2. unc_stat: " << unc_stat/temp_mc_ << endl;
+      cout << "3. unc_mc:   " << unc_mc/temp_mc_ << endl;
+      cout << endl;
+      // test end
     }
   }
- TH1F *hist_kappa1 = new TH1F("hist_kappa1", "hist_kappa1", 9, 0, 9);
+  TH1F *hist_kappa1 = new TH1F("hist_kappa1", "hist_kappa1", 9, 0, 9);
   TH1F *hist_kappa1_mc = new TH1F("hist_kappa1_mc", "hist_kappa1_mc", 9, 0, 9);
   TH1F *hist_kappa2 = new TH1F("hist_kappa2", "hist_kappa2", 9, 0, 9);
   TH1F *hist_kappa2_mc = new TH1F("hist_kappa2_mc", "hist_kappa2_mc", 9, 0, 9);
@@ -614,7 +685,8 @@ void genKappaFactors(TFile *f, TString year){
   b2->SetFillColor(kGreen-6);
   TBox *b3 = new TBox(6.,-1.99, 8.99, 1.99*c->GetUymax());
   b3->SetFillColor(kBlue-7);
-  hist_kappa1->Draw("e0 x0");
+  //hist_kappa1->Draw("e0 x0");
+  hist_kappa1->Draw("ex0");
   //hist_kappa1->Draw("");
   TGaxis *ax1 = static_cast<TGaxis*>(hist_kappa1->GetXaxis()->Clone());
   TGaxis *ay1 = static_cast<TGaxis*>(hist_kappa1->GetYaxis()->Clone());
@@ -628,7 +700,8 @@ void genKappaFactors(TFile *f, TString year){
   hist_kappa1->SetFillStyle(3254);
   hist_kappa1->SetMarkerStyle(40);
   hist_kappa1->SetMarkerSize(1.2);
-  hist_kappa1->Draw("same e0 x0");
+  //hist_kappa1->Draw("same e0 x0");
+  hist_kappa1->Draw("same ex0");
   //hist_kappa1_mc->SetFillStyle(3254);
   //hist_kappa1_mc->SetFillColor(kRed);
   //hist_kappa1_mc->SetLineWidth(2);
@@ -651,7 +724,8 @@ void genKappaFactors(TFile *f, TString year){
   b5->SetFillColor(kGreen-6);
   TBox *b6 = new TBox(6.,-1.99, 8.99, 1.99*c->GetUymax());
   b6->SetFillColor(kBlue-7);
-  hist_kappa2->Draw("e0 x0");
+  //hist_kappa2->Draw("e0 x0");
+  hist_kappa2->Draw("ex0");
   TGaxis *ax2 = static_cast<TGaxis*>(hist_kappa2->GetXaxis()->Clone());
   TGaxis *ay2 = static_cast<TGaxis*>(hist_kappa2->GetYaxis()->Clone());
   //b4->SetFillStyle(3254);
@@ -663,7 +737,8 @@ void genKappaFactors(TFile *f, TString year){
   hist_kappa2->SetFillStyle(3254);
   hist_kappa2->SetMarkerStyle(40);
   hist_kappa2->SetMarkerSize(1.2);
-  hist_kappa2->Draw("same e0 x0");
+  //hist_kappa2->Draw("same e0 x0");
+  hist_kappa2->Draw("same ex0");
   //hist_kappa2_mc->SetFillStyle(3254);
   //hist_kappa2_mc->SetFillColor(kRed);
   //hist_kappa2_mc->SetLineWidth(2);
@@ -698,9 +773,28 @@ void genKappaForTTJets(TFile *f_CRFit, float kappa[2][3][3], float kappa_unc[2][
     ttbar = static_cast<TH1F*>(f_CRFit->Get(Form("shapes_fit_b/bin%d/ttbar",ibin)));
     other = static_cast<TH1F*>(f_CRFit->Get(Form("shapes_fit_b/bin%d/other",ibin)));
     bkg = static_cast<TH1F*>(f_CRFit->Get(Form("shapes_fit_b/bin%d/total_background",ibin)));
-    float datbc = dat->GetBinContent(1);
-    float bkgbc = bkg->GetBinContent(1);
+    //float datbc = dat->GetBinContent(1); //FIXME
+    //float bkgbc = bkg->GetBinContent(1); //FIXME
+    // test
+    float datbc = dat->Integral(1,3);
+    float bkgbc = bkg->Integral(1,3);
+    // test end
     float SF = datbc/bkgbc;
+    // test_genKappaForTTJets (3)
+    cout << "ApplyKappaFactor for TTJets (3)" << endl;
+    cout << "[before applying SF]" << endl;
+    cout << "data_obs: " << dat->GetBinContent(1) << " / " << dat->GetBinContent(2) << " / " << dat->GetBinContent(3) << endl;
+    cout << "data_obs: " << dat->GetBinError(1) << " / " << dat->GetBinError(2) << " / " << dat->GetBinError(3) << endl;
+    cout << "qcd:      " << qcd->GetBinContent(1) << " / " << qcd->GetBinContent(2) << " / " << qcd->GetBinContent(3) << endl;
+    cout << "wjets:    " << wjets->GetBinContent(1) << " / " << wjets->GetBinContent(2) << " / " << wjets->GetBinContent(3) << endl;
+    cout << "ttbar:    " << ttbar->GetBinContent(1) << " / " << ttbar->GetBinContent(2) << " / " << ttbar->GetBinContent(3) << endl;
+    cout << "ttbar:    " << ttbar->GetBinError(1) << " / " << ttbar->GetBinError(2) << " / " << ttbar->GetBinError(3) << endl;
+    cout << "other:    " << other->GetBinContent(1) << " / " << other->GetBinContent(2) << " / " << other->GetBinContent(3) << endl;
+    cout << "totbkg:   " << bkg->GetBinContent(1) << " / " << bkg->GetBinContent(2) << " / " << bkg->GetBinContent(3) << endl;
+    cout << "SF:       " << SF << endl;
+    cout << "kappa1:   " << (dat->GetBinContent(2)/ttbar->GetBinContent(2))/(dat->GetBinContent(1)/ttbar->GetBinContent(1)) << endl;
+    cout << "kappa2:   " << (dat->GetBinContent(3)/ttbar->GetBinContent(3))/(dat->GetBinContent(1)/ttbar->GetBinContent(1)) << endl;
+    // test end
     qcd->Scale(SF);
     wjets->Scale(SF);
     other->Scale(SF);
@@ -709,6 +803,31 @@ void genKappaForTTJets(TFile *f_CRFit, float kappa[2][3][3], float kappa_unc[2][
     dat->Add(other,-1);
     float ratio[3];
     for(int j=0 ; j<3 ; j++) ratio[j] = dat->GetBinContent(j+1)/ttbar->GetBinContent(j+1);
+    // test
+    cout << "ApplyKappaFactor for TTJets (3)" << endl;
+    cout << "[after subtracting others]" << endl;
+    cout << "data_obs: " << dat->GetBinContent(1) << " / " << dat->GetBinContent(2) << " / " << dat->GetBinContent(3) << endl;
+    cout << "data_obs: " << dat->GetBinError(1) << " / " << dat->GetBinError(2) << " / " << dat->GetBinError(3) << endl;
+    cout << "ttbar:    " << ttbar->GetBinContent(1) << " / " << ttbar->GetBinContent(2) << " / " << ttbar->GetBinContent(3) << endl;
+    cout << "ttbar:    " << ttbar->GetBinError(1) << " / " << ttbar->GetBinError(2) << " / " << ttbar->GetBinError(3) << endl;
+    cout << "kappa1:   " << (dat->GetBinContent(2)/ttbar->GetBinContent(2))/(dat->GetBinContent(1)/ttbar->GetBinContent(1)) << endl;
+    cout << "kappa2:   " << (dat->GetBinContent(3)/ttbar->GetBinContent(3))/(dat->GetBinContent(1)/ttbar->GetBinContent(1)) << endl;
+    if(1) {
+      float kap_test1=0, unc_kap_test1=0;
+      float kap_test2=0, unc_kap_test2=0;
+      kap_test1 = (dat->GetBinContent(2)/ttbar->GetBinContent(2))/(dat->GetBinContent(1)/ttbar->GetBinContent(1));
+      unc_kap_test1 = kap_test1*TMath::Sqrt(TMath::Power(dat->GetBinError(1)/dat->GetBinContent(1),2) + TMath::Power(dat->GetBinError(2)/dat->GetBinContent(2),2) + TMath::Power(ttbar->GetBinError(1)/ttbar->GetBinContent(1),2) + TMath::Power(ttbar->GetBinError(2)/ttbar->GetBinContent(2),2));
+      kap_test2 = (dat->GetBinContent(3)/ttbar->GetBinContent(3))/(dat->GetBinContent(1)/ttbar->GetBinContent(1));
+      unc_kap_test2 = kap_test2*TMath::Sqrt(TMath::Power(dat->GetBinError(1)/dat->GetBinContent(1),2) + TMath::Power(dat->GetBinError(3)/dat->GetBinContent(3),2) + TMath::Power(ttbar->GetBinError(1)/ttbar->GetBinContent(1),2) + TMath::Power(ttbar->GetBinError(3)/ttbar->GetBinContent(3),2));
+      cout << endl;
+      cout << "kap1:     " << kap_test1 << endl;
+      cout << "unc_kap1: " << unc_kap_test1 << endl;
+      cout << "unc_kap1: " << unc_kap_test1/kap_test1 << endl;
+      cout << "kap2:     " << kap_test2 << endl;
+      cout << "unc_kap2: " << unc_kap_test2 << endl;
+      cout << "unc_kap2: " << unc_kap_test2/kap_test2 << endl;
+    }
+    // test end
     int ind_ibin = (ibin+2)%3;
     kappa[0][ind_ibin][2] = ratio[1]/ratio[0];
     kappa[1][ind_ibin][2] = ratio[2]/ratio[0];
@@ -718,8 +837,27 @@ void genKappaForTTJets(TFile *f_CRFit, float kappa[2][3][3], float kappa_unc[2][
       unc_diff = abs(dat->GetBinContent(i+1)-ttbar->GetBinContent(i+1));
       unc_stat = dat->GetBinError(i+1);
       unc_mc   = ttbar->GetBinError(i+1);
-      kappa_unc[i-1][ind_ibin][2] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc)/temp_mc_; 
+      //kappa_unc[i-1][ind_ibin][2] = TMath::Sqrt(unc_diff*unc_diff+unc_stat*unc_stat+unc_mc*unc_mc)/temp_mc_;  //FIXME
+      // test
+      float kap_test1=0, unc_kap_test1=0;
+      float kap_test2=0, unc_kap_test2=0;
+      kap_test1 = (dat->GetBinContent(2)/ttbar->GetBinContent(2))/(dat->GetBinContent(1)/ttbar->GetBinContent(1));
+      unc_kap_test1 = kap_test1*TMath::Sqrt(TMath::Power(dat->GetBinError(1)/dat->GetBinContent(1),2) + TMath::Power(dat->GetBinError(2)/dat->GetBinContent(2),2) + TMath::Power(ttbar->GetBinError(1)/ttbar->GetBinContent(1),2) + TMath::Power(ttbar->GetBinError(2)/ttbar->GetBinContent(2),2));
+      kap_test2 = (dat->GetBinContent(3)/ttbar->GetBinContent(3))/(dat->GetBinContent(1)/ttbar->GetBinContent(1));
+      unc_kap_test2 = kap_test2*TMath::Sqrt(TMath::Power(dat->GetBinError(1)/dat->GetBinContent(1),2) + TMath::Power(dat->GetBinError(3)/dat->GetBinContent(3),2) + TMath::Power(ttbar->GetBinError(1)/ttbar->GetBinContent(1),2) + TMath::Power(ttbar->GetBinError(3)/ttbar->GetBinContent(3),2));
+      kappa_unc[0][ind_ibin][2] = unc_kap_test1/kap_test1;
+      kappa_unc[1][ind_ibin][2] = unc_kap_test2/kap_test2;
+      // test end
       mc_unc[i-1][ind_ibin][2] = unc_mc/temp_mc_;
+      // test
+      cout << endl;
+      cout << "Fraction of kappa uncertainty" << endl;
+      cout << "temp_mc_: " << temp_mc_ << endl;
+      cout << "1. unc_diff: " << unc_diff/temp_mc_ << endl;
+      cout << "2. unc_stat: " << unc_stat/temp_mc_ << endl;
+      cout << "3. unc_mc:   " << unc_mc/temp_mc_ << endl;
+      cout << endl;
+      // test end
     }
   }
 }
@@ -760,16 +898,45 @@ vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]){
     if(iproc=="wjets") temp_ind = 1;
     if(iproc=="ttbar") temp_ind = 2;
     if(iproc=="other") continue;
-    if(procname == "ttbar"){
+    if(procname == "ttbar"){  // meaningless due to considering only ibin<6 (qcd, wjets)
       for(int j=1 ; j<3 ; j++){
         float BinCont = mc_other[i]->GetBinContent(j+1);
         mc_other_kap[i]->SetBinContent(j+1, BinCont*kappa[j-1][ind_ibin][temp_ind]);
+	cout << "kappa[" << j-1 << "][" << ind_ibin << "][" << temp_ind <<"]: " << kappa[j-1][ind_ibin][temp_ind] << endl;
       }
     }
   }
+  // test_ApplyKappaFactor
+  cout << "ApplyKappaFactor (1)" << endl;
+  cout << "[before subtracting others and applying SF]" << endl;
+  cout << "data_obs: " << data_obs->GetBinContent(1) << " / " << data_obs->GetBinContent(2) << " / " << data_obs->GetBinContent(3) << endl;
+  cout << "data_obs: " << data_obs->GetBinError(1) << " / " << data_obs->GetBinError(2) << " / " << data_obs->GetBinError(3) << endl;
+  cout << "mc_tot:   " << mc_tot->GetBinContent(1) << " / " << mc_tot->GetBinContent(2) << " / " << mc_tot->GetBinContent(3) << endl;
+  cout << "mc_tot:   " << mc_tot->GetBinError(1) << " / " << mc_tot->GetBinContent(2) << " / " << mc_tot->GetBinContent(3) << endl;
+  cout << "mc_kap:   " << mc_kap->GetBinContent(1) << " / " << mc_kap->GetBinContent(2) << " / " << mc_kap->GetBinContent(3) << endl;
+  cout << "mc_kap:   " << mc_kap->GetBinError(1) << " / " << mc_kap->GetBinContent(2) << " / " << mc_kap->GetBinContent(3) << endl;
+  if(1) {
+    float kap_test1=0, unc_kap_test1=0;
+    float kap_test2=0, unc_kap_test2=0;
+    kap_test1 = (data_obs->GetBinContent(2)/mc_kap->GetBinContent(2))/(data_obs->GetBinContent(1)/mc_kap->GetBinContent(1));
+    unc_kap_test1 = kap_test1*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(2)/data_obs->GetBinContent(2),2) + TMath::Power(mc_kap->GetBinError(1)/mc_kap->GetBinContent(1),2) + TMath::Power(mc_kap->GetBinError(2)/mc_kap->GetBinContent(2),2));
+    kap_test2 = (data_obs->GetBinContent(3)/mc_kap->GetBinContent(3))/(data_obs->GetBinContent(1)/mc_kap->GetBinContent(1));
+    unc_kap_test2 = kap_test2*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(3)/data_obs->GetBinContent(3),2) + TMath::Power(mc_kap->GetBinError(1)/mc_kap->GetBinContent(1),2) + TMath::Power(mc_kap->GetBinError(3)/mc_kap->GetBinContent(3),2));
+    cout << endl;
+    cout << "kap1:     " << kap_test1 << endl;
+    cout << "unc_kap1: " << unc_kap_test1 << endl;
+    cout << "kap2:     " << kap_test2 << endl;
+    cout << "unc_kap2: " << unc_kap_test2 << endl;
+  }
+  cout << endl;
+  // test end
 
-  float num = data_obs->GetBinContent(1);
-  float den = mc_tot->GetBinContent(1);
+  //float num = data_obs->GetBinContent(1);   //FIXME
+  //float den = mc_tot->GetBinContent(1);     //FIXME
+  // test
+  float num = data_obs->Integral(1,3);
+  float den = mc_tot->Integral(1,3);
+  // test end
   SF = num/den;
   if(debug){
     cout<<SF<<endl;
@@ -779,10 +946,54 @@ vector<TH1F*> ApplyKappaFactor(TFile *f, int ibin, float kappa[2][3][3]){
     mc_other_kap[i]->Scale(SF);
     data_obs->Add(mc_other_kap[i],-1);
   }
+  // test
+  cout << "[after subtracting  others]" << endl;
+  cout << "data_obs: " << data_obs->GetBinContent(1) << " / " << data_obs->GetBinContent(2) << " / " << data_obs->GetBinContent(3) << endl;
+  cout << "data_obs: " << data_obs->GetBinError(1) << " / " << data_obs->GetBinError(2) << " / " << data_obs->GetBinError(3) << endl;
+  cout << "mc_kap:   " << mc_kap->GetBinContent(1) << " / " << mc_kap->GetBinContent(2) << " / " << mc_kap->GetBinContent(3) << endl;
+  cout << "mc_kap:   " << mc_kap->GetBinError(1) << " / " << mc_kap->GetBinError(2) << " / " << mc_kap->GetBinError(3) << endl;
+  cout << endl;
+  if(1) {
+    float kap_test1=0, unc_kap_test1=0;
+    float kap_test2=0, unc_kap_test2=0;
+    kap_test1 = (data_obs->GetBinContent(2)/mc_kap->GetBinContent(2))/(data_obs->GetBinContent(1)/mc_kap->GetBinContent(1));
+    unc_kap_test1 = kap_test1*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(2)/data_obs->GetBinContent(2),2) + TMath::Power(mc_kap->GetBinError(1)/mc_kap->GetBinContent(1),2) + TMath::Power(mc_kap->GetBinError(2)/mc_kap->GetBinContent(2),2));
+    kap_test2 = (data_obs->GetBinContent(3)/mc_kap->GetBinContent(3))/(data_obs->GetBinContent(1)/mc_kap->GetBinContent(1));
+    unc_kap_test2 = kap_test2*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(3)/data_obs->GetBinContent(3),2) + TMath::Power(mc_kap->GetBinError(1)/mc_kap->GetBinContent(1),2) + TMath::Power(mc_kap->GetBinError(3)/mc_kap->GetBinContent(3),2));
+    cout << endl;
+    cout << "kap1:     " << kap_test1 << endl;
+    cout << "unc_kap1: " << unc_kap_test1 << endl;
+    cout << "unc_kap1: " << unc_kap_test1/kap_test1 << endl;
+    cout << "kap2:     " << kap_test2 << endl;
+    cout << "unc_kap2: " << unc_kap_test2 << endl;
+    cout << "unc_kap2: " << unc_kap_test2/kap_test2 << endl;
+  }
+  // test end
   mc_kap->Scale(SF);
   vector<TH1F*> ret;
   ret.push_back(data_obs);
   ret.push_back(mc_kap);
+  // test
+  cout << "[after applying SF]" << endl;
+  cout << "data_obs: " << data_obs->GetBinContent(1) << " / " << data_obs->GetBinContent(2) << " / " << data_obs->GetBinContent(3) << endl;
+  cout << "data_obs: " << data_obs->GetBinError(1) << " / " << data_obs->GetBinError(2) << " / " << data_obs->GetBinError(3) << endl;
+  cout << "mc_kap:   " << mc_kap->GetBinContent(1) << " / " << mc_kap->GetBinContent(2) << " / " << mc_kap->GetBinContent(3) << endl;
+  cout << "mc_kap:   " << mc_kap->GetBinError(1) << " / " << mc_kap->GetBinError(2) << " / " << mc_kap->GetBinError(3) << endl;
+  cout << endl;
+  if(1) {
+    float kap_test1=0, unc_kap_test1=0;
+    float kap_test2=0, unc_kap_test2=0;
+    kap_test1 = (data_obs->GetBinContent(2)/mc_kap->GetBinContent(2))/(data_obs->GetBinContent(1)/mc_kap->GetBinContent(1));
+    unc_kap_test1 = kap_test1*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(2)/data_obs->GetBinContent(2),2) + TMath::Power(mc_kap->GetBinError(1)/mc_kap->GetBinContent(1),2) + TMath::Power(mc_kap->GetBinError(2)/mc_kap->GetBinContent(2),2));
+    kap_test2 = (data_obs->GetBinContent(3)/mc_kap->GetBinContent(3))/(data_obs->GetBinContent(1)/mc_kap->GetBinContent(1));
+    unc_kap_test2 = kap_test2*TMath::Sqrt(TMath::Power(data_obs->GetBinError(1)/data_obs->GetBinContent(1),2) + TMath::Power(data_obs->GetBinError(3)/data_obs->GetBinContent(3),2) + TMath::Power(mc_kap->GetBinError(1)/mc_kap->GetBinContent(1),2) + TMath::Power(mc_kap->GetBinError(3)/mc_kap->GetBinContent(3),2));
+    cout << endl;
+    cout << "kap1:     " << kap_test1 << endl;
+    cout << "unc_kap1: " << unc_kap_test1 << endl;
+    cout << "kap2:     " << kap_test2 << endl;
+    cout << "unc_kap2: " << unc_kap_test2 << endl;
+  }
+  // test end
   return ret;
 }
 

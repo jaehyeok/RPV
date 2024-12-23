@@ -1059,8 +1059,8 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       highnjcon_ = "1.75";
     }
     else if(year=="UL2016_postVFP"){
-      mednjcon_ = "1.23";
-      highnjcon_ = "1.25";
+      mednjcon_ = "1.24";
+      highnjcon_ = "1.26";
     }
     else if(year=="UL2017"){
       mednjcon_ = "1.22";

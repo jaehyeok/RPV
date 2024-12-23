@@ -361,7 +361,10 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
     //float weight = lumi*tree.weight();
     //float weight = lumi*tree.weight()*tree.pass()*tree.frac16();
     float weight = lumi*tree.weight()*tree.pass()*tree.stitch_ht();  // After 241201, 2016 is divided into UL2016_preVFP and UL2016_postVFP, and treated as 20178. frac16 is unnecessary.
-    if(procname=="data_obs") weight = 1*tree.pass();
+    if(procname=="data_obs") {
+      if(year=="UL2016" || year=="UL2016_preVFP" || year=="UL2016_postVFP") weight = 1*tree.pass()*(tree.trig_ht900()||tree.trig_jet450());
+      else if(year=="UL20178" || year=="UL2017" || year=="UL2018") weight = 1*tree.pass()*tree.trig_ht1050();
+    }
     for(auto ibin : bins){
       if(tree.mj12()>0 && passKapBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm(), mll)) 
       {

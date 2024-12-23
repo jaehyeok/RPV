@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
   bool includePDFUncert = false;
   bool includeLowMJ = false;
   bool nocrvr = false;
-  bool othersyst = false; 
 //  bool includeSignalRegion = true;
   TString year;
   TString sig_onoff;
@@ -58,7 +57,7 @@ int main(int argc, char *argv[])
   std::string cardType;
   TString inputname;
   if(argc<3) {
-    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename] [year] [20178 on/off] [signal Systematics on/off]" << std::endl;
+    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename] [year] [flag for merge: UL2016 or UL20178] [signal Systematics on/off]" << std::endl;
     return 1;
   }
   else {
@@ -122,7 +121,6 @@ int main(int argc, char *argv[])
   if(nocrvr){
     bins_all = {};
   }
-
   if(cardType=="default" || cardType=="mconly"){
     bins_all.push_back("bin46");
     bins_all.push_back("bin31");
@@ -957,24 +955,24 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
   void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
     TString lownjcon_, mednjcon_, highnjcon_;
     if(year=="UL2016_preVFP"){
-      lownjcon_ = "1.29";
-      mednjcon_ = "1.19";
-      highnjcon_ = "1.29";
+      lownjcon_ = "1.28";
+      mednjcon_ = "1.23";
+      highnjcon_ = "2.21";
     }
     else if(year=="UL2016_postVFP"){
-      lownjcon_ = "1.29";
-      mednjcon_ = "1.19";
-      highnjcon_ = "1.29";
+      lownjcon_ = "1.28";
+      mednjcon_ = "1.20";
+      highnjcon_ = "1.35";
     }
     else if(year=="UL2017"){
-      lownjcon_ = "1.29";
-      mednjcon_ = "1.11";
-      highnjcon_ = "1.33";
+      lownjcon_ = "1.24";
+      mednjcon_ = "1.12";
+      highnjcon_ = "1.31";
     }
     else if(year=="UL2018"){
-      lownjcon_ = "1.28";
-      mednjcon_ = "1.12";
-      highnjcon_ = "1.29";
+      lownjcon_ = "1.21";
+      mednjcon_ = "1.11";
+      highnjcon_ = "1.22";
     }
 
     map<string, int> bindex;
@@ -1057,24 +1055,20 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
     TString mednjcon_, highnjcon_;
     if(year=="UL2016_preVFP"){
-      mednjcon_ = "1.62";
-      highnjcon_ = "1.33";
+      mednjcon_ = "1.73";
+      highnjcon_ = "1.75";
     }
     else if(year=="UL2016_postVFP"){
-      mednjcon_ = "1.62";
-      highnjcon_ = "1.33";
+      mednjcon_ = "1.23";
+      highnjcon_ = "1.25";
     }
     else if(year=="UL2017"){
-      mednjcon_ = "1.34";
-      highnjcon_ = "1.20";
+      mednjcon_ = "1.22";
+      highnjcon_ = "1.36";
     }
     else if(year=="UL2018"){
-      mednjcon_ = "1.23";
-      highnjcon_ = "1.22";
-    }
-    else if(year=="UL20178"){
-      mednjcon_ = "1.27";
-      highnjcon_ = "1.10"; 
+      mednjcon_ = "1.24";
+      highnjcon_ = "1.49";
     }
     //create map between bin name and bin index
     map<string, int> bindex;
@@ -1233,7 +1227,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
     for(unsigned int isyst=0; isyst<shapesysts.size(); isyst++) {
       if((shapesysts.at(isyst)=="btag_bc_uncor") || (shapesysts.at(isyst)=="btag_udsg_uncor") || 
-	 (shapesysts.at(isyst)=="jec") || (shapesysts.at(isyst)=="jer")) file << shapesysts.at(isyst) << "_" << yr << "     shape     ";
+	 (shapesysts.at(isyst)=="jec") || (shapesysts.at(isyst)=="jer")) file << shapesysts.at(isyst) << "_" << year << "     shape     ";
       else file << shapesysts.at(isyst) << "_" << yr << "     shape     ";
       if(shapesysts.at(isyst).find("pdf")!=std::string::npos) {
         // there are 100 nnpdf variations and so each needs to be scaled down by a factor 1/sqrt(100)

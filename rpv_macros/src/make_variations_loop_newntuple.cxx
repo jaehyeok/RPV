@@ -577,13 +577,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       TH1F *h_other_up;
       TH1F *h_other_down;
       if(variations=="muf"||variations=="mur"||variations=="murf"){
-//241214        h_other_up = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Up",ibin)));
-//241214        h_other_down = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Down",ibin)));
+        h_other_up = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Up",ibin)));
+        h_other_down = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Down",ibin)));
         for(int iratio=0 ; iratio<3 ; iratio++){
-	 // cout<<" up weight iratio : " << iratio << " / ibin : " << ibin << " :: " <<other_wgt_up[iratio][ibin]<<endl;
-	 // cout<<" down weight iratio : " << iratio << " / ibin : " << ibin << " :: " <<other_wgt_down[iratio][ibin]<<endl;
-	 other_wgt_up[iratio][ibin]=1;
-	 other_wgt_down[iratio][ibin]=1;
+	 other_wgt_up[iratio][ibin]=h_other_up->GetBinContent(iratio+1);
+	 other_wgt_down[iratio][ibin]=h_other_down->GetBinContent(iratio+1);
 	}
       }
 
@@ -610,8 +608,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       // Apply Mario's comment
       kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err , TMath::Abs(1-kappa1_cont));
       kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err , TMath::Abs(1-kappa2_cont));
-//      cout << "procname: " << procname << " / ibin: " << ibin << endl;
-//      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
+      cout << "procname: " << procname << " / ibin: " << ibin << endl;
+      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
       kappa_wgt[0][njbin][iproc] = 1;
       kappa_wgt[1][njbin][iproc] = 1;
       if(procname=="qcd") 
@@ -1375,7 +1373,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       h1up[ibin]->Write();
       h1down[ibin]->Write();
     }
-    else if((variations=="btag_bc_uncor") || (variations=="btag_udgs_uncor") || (variations=="jec") || (variations=="jer"))
+    else if((variations=="btag_bc_uncor") || (variations=="btag_udsg_uncor") || (variations=="jec") || (variations=="jer"))
     {
       upname = procname+"_"+variations+"_"+year+"Up";
       downname = procname+"_"+variations+"_"+year+"Down";

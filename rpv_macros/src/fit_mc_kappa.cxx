@@ -36,8 +36,10 @@ TString convert_systname(TString systname){
   TString real_systname;
   if(systname=="gs") real_systname="gluon splitting";
   else if(systname=="pileup") real_systname="pileup";
-  else if(systname=="btag_bc") real_systname="b,c jet b-tag SF";
-  else if(systname=="btag_udsg") real_systname="u,d,s,g jet b-tag SF";
+  else if(systname=="btag_bc_uncor") real_systname="b,c jet b-tag SF";
+  else if(systname=="btag_bc_cor") real_systname="correlated b,c jet b-tag SF";
+  else if(systname=="btag_udsg_uncor") real_systname="u,d,s,g jet b-tag SF";
+  else if(systname=="btag_udsg_cor") real_systname="correlated u,d,s,g jet b-tag SF";
   else if(systname=="jec") real_systname="jet energy scale";
   else if(systname=="jer") real_systname="jet energy resolution";
   else if(systname=="lep_eff") real_systname="lepton efficiency";
@@ -61,6 +63,7 @@ int linecolor(unsigned int isyst){
   else if(isyst==8) icolor=51;
   else if(isyst==9) icolor=87;
   else if(isyst==10) icolor=95;
+  else if(isyst==11) icolor=3;
   return icolor;
 }
 
@@ -100,7 +103,7 @@ int main(int argc, char *argv[]){
     cout << "" <<endl;
     cout << "./run/fit_mc_kappa.exe [year]" << endl;
     cout << "" <<endl;
-    cout << "year: 2016, 2017, 2018" << endl;
+    cout << "year: UL2016_preVFP, UL2016_postVFP, UL2017, UL2018" << endl;
     cout << "" << endl;
     return 1;
   }
@@ -108,9 +111,10 @@ int main(int argc, char *argv[]){
 
   vector<TString> syst_list; 
   syst_list = {"jec", "jer", 
+	       "pileup", "lep_eff",
 	       "murf", "mur", "muf",
-               "lep_eff", "pileup", "gs", 
- 	       "btag_bc", "btag_udsg"}; 
+               "gs", 
+ 	       "btag_bc_uncor", "btag_bc_cor", "btag_udsg_uncor", "btag_udsg_cor"}; 
   //if(year == "2016") syst_list.push_back("isr");
 
   const int nsysts = syst_list.size();
@@ -597,8 +601,8 @@ int main(int argc, char *argv[]){
     TLegend *l3_summary_up_1; TLegend *l3_summary_up_2; TLegend *l3_summary_up_3;
     TLegend *l3_summary_down_1; TLegend *l3_summary_down_2; TLegend *l3_summary_down_3;
     TLegend *l3_jec; TLegend *l3_jer;
-    l3_summary_up_1 = new TLegend(0.15,0.12,0.5,0.42); l3_summary_up_2 = new TLegend(0.15,0.6,0.5,0.88); l3_summary_up_3 = new TLegend(0.5,0.75,0.8,0.89);
-    l3_summary_down_1 = new TLegend(0.15,0.12,0.5,0.42); l3_summary_down_2 = new TLegend(0.15,0.6,0.5,0.88); l3_summary_down_3 = new TLegend(0.5,0.75,0.8,0.89);
+    l3_summary_up_1 = new TLegend(0.15,0.12,0.5,0.42); l3_summary_up_2 = new TLegend(0.15,0.6,0.5,0.88); l3_summary_up_3 = new TLegend(0.52,0.75,0.82,0.89);
+    l3_summary_down_1 = new TLegend(0.15,0.12,0.5,0.42); l3_summary_down_2 = new TLegend(0.15,0.6,0.5,0.88); l3_summary_down_3 = new TLegend(0.52,0.75,0.82,0.89);
     l3_jec = new TLegend(0.45,0.70,0.75,0.85);
     l3_jer = new TLegend(0.42,0.70,0.72,0.85);
 
@@ -617,11 +621,11 @@ int main(int argc, char *argv[]){
 	l3_jer->AddEntry(h1_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
 	c_summary_jer->cd(ihist+1); l3_jer->Draw();
       }
-      else if(isyst>=2 && isyst<=5) {
+      else if(isyst>=2 && isyst<=6) {
 	l3_summary_up_1->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
 	l3_summary_down_1->AddEntry(h1_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
       }
-      else if(isyst>=6) {
+      else if(isyst>=7) {
 	l3_summary_up_2->AddEntry(h1_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
 	l3_summary_down_2->AddEntry(h1_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
       }
@@ -787,8 +791,8 @@ int main(int argc, char *argv[]){
     TLegend *l4_summary_up_1; TLegend *l4_summary_up_2; TLegend *l4_summary_up_3;
     TLegend *l4_summary_down_1; TLegend *l4_summary_down_2; TLegend *l4_summary_down_3;
     TLegend *l4_jec; TLegend *l4_jer;
-    l4_summary_up_1 = new TLegend(0.15,0.12,0.5,0.42); l4_summary_up_2 = new TLegend(0.15,0.6,0.5,0.88); l4_summary_up_3 = new TLegend(0.5,0.75,0.8,0.89);
-    l4_summary_down_1 = new TLegend(0.15,0.12,0.5,0.42); l4_summary_down_2 = new TLegend(0.15,0.6,0.5,0.88); l4_summary_down_3 = new TLegend(0.5,0.75,0.8,0.89);
+    l4_summary_up_1 = new TLegend(0.15,0.12,0.5,0.42); l4_summary_up_2 = new TLegend(0.15,0.6,0.5,0.88); l4_summary_up_3 = new TLegend(0.52,0.75,0.82,0.89);
+    l4_summary_down_1 = new TLegend(0.15,0.12,0.5,0.42); l4_summary_down_2 = new TLegend(0.15,0.6,0.5,0.88); l4_summary_down_3 = new TLegend(0.52,0.75,0.82,0.89);
     l4_jec = new TLegend(0.45,0.70,0.75,0.85);
     l4_jer = new TLegend(0.42,0.70,0.72,0.85);
 
@@ -807,11 +811,11 @@ int main(int argc, char *argv[]){
 	l4_jer->AddEntry(h2_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
 	c_summary_jer->cd(ihist+4); l4_jer->Draw();
       }
-      else if(isyst>=2 && isyst<=5) {
+      else if(isyst>=2 && isyst<=6) {
 	l4_summary_up_1->AddEntry(h2_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
 	l4_summary_down_1->AddEntry(h2_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
       }
-      else if(isyst>=6) {
+      else if(isyst>=7) {
 	l4_summary_up_2->AddEntry(h2_nb_fit_summary_up[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma up","l");
 	l4_summary_down_2->AddEntry(h2_nb_fit_summary_down[isyst][ihist], convert_systname(syst_list[isyst])+" 1#sigma down","l");
       }

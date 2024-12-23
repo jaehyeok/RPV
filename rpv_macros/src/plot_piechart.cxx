@@ -36,19 +36,20 @@ void set_piechart(TPie *p_opt){
 
 int main(int argc, char *argv[])
 {
-	TString inputdir, outputdir, year;
+	TString inputdir, outputdir, year, infile;
 	year = argv[1];
 	TString test = argv[1];
+	infile = argv[2];
+
 	inputdir = "variations/";
 	outputdir = "plots/pie_"+year+"/";
 	gSystem->mkdir(outputdir);
 
 	if(test == "--help" || argc<1){
-		cout<<"./run/plot_piechart.exe [year]"<<endl;
+		cout<<"./run/plot_piechart.exe [year] [infile]"<<endl;
 	}
 
-	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_"+year+".root", "READ"); // for QCD kappa factor region
-//	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_"+year+".root", "READ");
+	TFile* f = TFile::Open(infile.Data(), "READ"); // for QCD kappa factor region
 
 	const int nbins = 52;
 
@@ -65,11 +66,11 @@ int main(int argc, char *argv[])
 
 	for(int ibin=22; ibin<nbins; ibin++){
 		for(int iMj=0; iMj<3; iMj++){
-			qcd[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinContent(iMj+1);
-			ttbar[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(iMj+1);
-			wjets[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinContent(iMj+1);
-			other[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinContent(iMj+1);
-			sig1800[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinContent(iMj+1);
+			qcd[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/qcd", ibin)))->GetBinContent(iMj+1);
+			ttbar[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(iMj+1);
+			wjets[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/wjets", ibin)))->GetBinContent(iMj+1);
+			other[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/other", ibin)))->GetBinContent(iMj+1);
+			sig1800[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/signal_M1800", ibin)))->GetBinContent(iMj+1);
 		}
 	}
 

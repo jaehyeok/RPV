@@ -34,12 +34,10 @@ std::string cutandweight(std::string cut, std::string weight)
 std::vector<TString> getRPVProcess(TString folder, TString process){
 	std::vector<TString> files;
 	if(process=="data"){
-		//files.push_back(folder+"*JetHT*");
 		files.push_back(folder+"*Run201*");
 	}
 	else if(process=="data_te"){
-		//files.push_back(folder+"SingleMuon*");
-		files.push_back(folder+"*SingleMu*");
+		files.push_back(folder+"*Run201*");
 	}
 	else if(process.Contains("rpv")){
 		if(process=="rpv_m1000") files.push_back(folder+"*mGluino*1000*");
@@ -153,6 +151,19 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"WWW_*"); 
 		files.push_back(folder+"ttHJetTobb_*"); //
   }
+  else if(process=="other_DY_without_wjets"){
+		files.push_back(folder+"TTTT*");
+		files.push_back(folder+"TTW*");
+		files.push_back(folder+"TTZ*"); 
+		files.push_back(folder+"WZ_*");
+		files.push_back(folder+"ZZ_*"); 
+		files.push_back(folder+"WW_*");   
+		files.push_back(folder+"WZZ_*"); 
+		files.push_back(folder+"WWZ_*"); 
+		files.push_back(folder+"ZZZ_*"); 
+		files.push_back(folder+"WWW_*"); 
+		files.push_back(folder+"ttHJetTobb_*"); //
+  }
 	//Contains all processes except for QCD, ttbar, and wjets. Typically used for public plots. Recursive so only need to change samples in one place
 	else if(process=="other_public"){
 		std::vector<TString> tmp_other;
@@ -161,6 +172,15 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		tmp_other = getRPVProcess(folder,"zjets");
 		files.insert(files.end(),tmp_other.begin(),tmp_other.end());
 		tmp_other = getRPVProcess(folder,"other");
+		files.insert(files.end(),tmp_other.begin(),tmp_other.end());
+	}
+	else if(process=="other_public_DY_without_wjets"){
+		std::vector<TString> tmp_other;
+		tmp_other = getRPVProcess(folder,"singlet");
+		files.insert(files.end(),tmp_other.begin(),tmp_other.end());
+		tmp_other = getRPVProcess(folder,"zjets");
+		files.insert(files.end(),tmp_other.begin(),tmp_other.end());
+		tmp_other = getRPVProcess(folder,"other_DY_without_wjets");
 		files.insert(files.end(),tmp_other.begin(),tmp_other.end());
 	}
 	// For all background processes
@@ -770,8 +790,10 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
 	const float nbVHighCut = 4;
 	const float nbInfCut   = 999;
 
-  const float mllLowCut  = 80;
-  const float mllHighCut = 105;
+  //const float mllLowCut  = 80;
+  //const float mllHighCut = 105;
+  const float mllLowCut  = 81;
+  const float mllHighCut = 101;
 
   // Region Binning For QCD Kappa Factors //
   if(bin==0){
@@ -805,7 +827,8 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
 		njetsLow    = njetsVLowCut-1;
 		njetsHigh   = njetsVLowCut;
 		nbLow       = nbVLowCut;
-		nbHigh      = nbInfCut;
+		//nbHigh      = nbInfCut;
+		nbHigh      = nbHighCut;
     mllLow      = mllLowCut;
     mllHigh     = mllHighCut;
   }              
@@ -815,7 +838,8 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
 		njetsLow    = njetsLowCut-1;
 		njetsHigh   = njetsLowCut;
 		nbLow       = nbVLowCut;
-		nbHigh      = nbInfCut;
+		//nbHigh      = nbInfCut;
+		nbHigh      = nbHighCut;
     mllLow      = mllLowCut;
     mllHigh     = mllHighCut;
   }             
@@ -825,7 +849,8 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
 		njetsLow    = njetsMedCut-1;
 		njetsHigh   = njetsInfCut;
 		nbLow       = nbVLowCut;
-		nbHigh      = nbInfCut;
+		//nbHigh      = nbInfCut;
+		nbHigh      = nbHighCut;
     mllLow      = mllLowCut;
     mllHigh     = mllHighCut;
   }              
@@ -945,6 +970,7 @@ bool passKapBinCut(int bin, int nleps_, float ht_, int njets_, float mj_, int nb
 		std::cout << "[Debug] bin " << bin << " :: " 
 			<< "htCut    : " << ht << ", "  
 			<< "njetsCut : " << njetsLow << "-" << njetsHigh << ", " 
+			<< "nbLow    : " << nbLow    << "-" << nbHigh << ", "
 			<< "mjCut    : " << mjLow << "-" << mjHigh << " " 
 			<< std::endl;
 	}

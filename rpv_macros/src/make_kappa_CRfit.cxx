@@ -528,6 +528,7 @@ void genKappaFactors(TFile *f, TString year){
         cout<<"kappa uncertainty   : "<<unc_diff<<endl;
         cout<<"temp_mc_          : "<<temp_mc_<<endl;
       }
+      /*
       float unc_dy_UL2016_preVFP[3][2]={
 	      {0.31, 0.34},
               {0.29, 0.29},
@@ -573,6 +574,7 @@ void genKappaFactors(TFile *f, TString year){
 	}
       }
       else unc_dy=0;
+      */
       unc_dy=0; // because kappa plots should not include unc_dy. It will be included by running python/outputfix_unc_dy.py.
       unc_stat = data_obs->GetBinError(i+1);
       unc_mc   = mc_kap_->GetBinError(i+1);
@@ -730,7 +732,7 @@ void genKappaFactors(TFile *f, TString year){
   cout << "Xaxis Nbin: " << hist_kappa1->GetXaxis()->GetNbins() << endl;
   ax1->Draw("same");
   ay1->Draw("same");
-  c->cd(1)->RedrawAxis("F");
+  c->cd(1)->RedrawAxis();
   c->cd(1)->Modified();
   c->cd(1)->Update();
   c->cd(2);
@@ -764,7 +766,7 @@ void genKappaFactors(TFile *f, TString year){
   //hist_kappa2_mc->Draw("same x0 e0");
   ax2->Draw("same"); 
   ay2->Draw("same"); 
-  c->cd(2)->RedrawAxis("F");
+  c->cd(2)->RedrawAxis();
   c->cd(2)->Modified();
   c->cd(2)->Update();
   c->Print("kappa_result_"+year+".pdf");

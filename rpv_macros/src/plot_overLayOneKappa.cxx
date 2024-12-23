@@ -34,9 +34,10 @@ void drawHeader(TString year){
   lat->SetTextSize(0.053);
   lat->DrawLatexNDC(0.12, 0.83, "CMS #scale[0.8]{#font[52]{Work In Progress}}");
   lat->SetTextFont(42);
-  if(year=="2016") lat->DrawLatexNDC(0.76, 0.83, "36.3 fb^{-1} (13 TeV)");//FIXME
-  else if(year=="2017") lat->DrawLatexNDC(0.76, 0.83, "41.5 fb^{-1} (13 TeV)");//FIXME
-  else if(year=="2018") lat->DrawLatexNDC(0.76, 0.83, "59.8 fb^{-1} (13 TeV)");//FIXME
+  if(year=="UL2016_preVFP") lat->DrawLatexNDC(0.76, 0.83, "19.5 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="UL2016_postVFP") lat->DrawLatexNDC(0.76, 0.83, "16.8 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="UL2017") lat->DrawLatexNDC(0.76, 0.83, "41.5 fb^{-1} (13 TeV)");//FIXME
+  else if(year=="UL2018") lat->DrawLatexNDC(0.76, 0.83, "59.8 fb^{-1} (13 TeV)");//FIXME
   else if(year=="20178") lat->DrawLatexNDC(0.76, 0.83, "101.3 fb^{-1} (13 TeV)");//FIXME
 }
 
@@ -58,8 +59,8 @@ int main(int argc, char *argv[]){
 		cout << "" <<endl;
 		cout << "./run/plot_overLayKappa.exe [Systematic] [year]" << endl;
 		cout << "" <<endl;
-		cout << "Systematic: jec,btag_bc,btag_udsg,mur,muf,murf,isr,leps_eff" << endl;
-		cout << "year: 2016, 2017, 2018" << endl;
+		cout << "Systematic: jec,btag_bc_uncor,btag_bc_cor,btag_udsg_uncor,btag_udsg_cor,mur,muf,murf,isr,lep_eff" << endl;
+		cout << "year: UL2016_preVFP, UL2016_postVFP, UL2017, UL2018" << endl;
 		cout << "" << endl;
 		return 1;
 	}

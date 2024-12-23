@@ -42,27 +42,28 @@ int main(int argc, char *argv[]){
   cout << year << endl;
   cout << argc << endl;
 
-  if(year == "2016"){
-    lumi = "36.3";
+  if(year=="UL2016_preVFP"){
+    lumi = "19.5";
     trigger = "(trig_ht900 || trig_jet450)";
   }
-  else if(year == "2017"){
+  else if(year=="UL2016_postVFP"){
+    lumi = "16.8";
+    trigger = "(trig_ht900 || trig_jet450)";
+  }
+  else if(year=="UL2017"){
     lumi = "41.5";
     trigger = "trig_ht1050";
   }
-  else if(year == "2018"){
+  else if(year=="UL2018"){
     lumi = "59.8";
     trigger = "trig_ht1050";
   }
 
 
   // ntuple folders
-  TString folder_dat = "/mnt/data3/babies/231022_qcdfake/"+year+"/JetHTRun_rpvfitnbge0_step3/";
-  TString folder_bkg = "/mnt/data3/babies/231022_qcdfake/"+year+"/merged_norm_JER_0903/";
-  TString folder_sig = "/mnt/data3/babies/231022_qcdfake/"+year+"/merged_norm_sig_pu/";
-  //TString folder_dat = "/mnt/data1/babies/20210430/"+year+"/merged_norm_noMJ/";
-  //TString folder_bkg = "/mnt/data3/babies/210910/"+year+"/merged_norm_JER_noMJ/";
-  //TString folder_sig = "/mnt/data3/babies/210910/"+year+"/merged_norm_sig_pu/";
+  TString folder_dat = "/mnt/data3/babies/241201/"+year+"/merged_qcdfake_data/";
+  TString folder_bkg = "/mnt/data3/babies/241201/"+year+"/merged_qcdfake_mc/";
+  TString folder_sig = "/mnt/data3/babies/241201/"+year+"/merged_qcdfake_sig/";
 
   /*
   TString folder_bkg = folder_year(year,false).at(0);
@@ -102,10 +103,10 @@ int main(int argc, char *argv[]){
   Samples.push_back(sfeats(s_rpv_m1800, "m1800", kRed, 1, cutandweight("pass",extraweight)));
   Samples.back().isSig = true;
   
-  Samples.push_back(sfeats(s_qcd,   "QCD", 	rpv::c_qcd, 	1, cutandweight("pass","frac16")));
-  Samples.push_back(sfeats(s_wjets, "W+ jets",  rpv::c_wjets, 	1, cutandweight("pass","frac16")));
-  Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 	1, cutandweight("pass","frac16")));
-  Samples.push_back(sfeats(s_other, "Others", 	rpv::c_other, 	1, cutandweight("pass","frac16")));// */
+  Samples.push_back(sfeats(s_qcd,   "QCD", 	rpv::c_qcd, 	1, cutandweight("pass","1.")));
+  Samples.push_back(sfeats(s_wjets, "W+ jets",  rpv::c_wjets, 	1, cutandweight("pass","1.")));
+  Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 	1, cutandweight("pass","1.")));
+  Samples.push_back(sfeats(s_other, "Others", 	rpv::c_other, 	1, cutandweight("pass","1.")));// */
 												   //
   //Samples.push_back(sfeats(s_qcd,   "QCD", 	rpv::c_qcd, 	1, cutandweight("pass",extraweight)));
   //Samples.push_back(sfeats(s_wjets, "W+ jets",  rpv::c_wjets, 	1, cutandweight("pass",extraweight)));
@@ -176,6 +177,14 @@ int main(int argc, char *argv[]){
 
 
     for(auto injet : njetcuts){
+    	//cut = basecut + "&&(nbm==0||nbm==1||nbm==2)&&" + injet + "&&" + elscutid + "&&met<50";
+    	cut = basecut + "&&(nbm==0)&&" + injet + "&&" + elscutid + "&&met<50";
+	cout<<cut<<endl;
+    	hists.push_back(hfeats("els_sigid", 2, 0, 2, rpv_sam, "els_{sigid}"/*"I_{mini}/P_{T}^{els}"* "els_sigid"*/, cut));
+    	if(showData) hists.back().normalize = false;
+    	//if(showData) hists.back().normalize = true;
+	
+	// In the first histogram, legend is misplaced. For this reason, the plot above is generated twice.
     	//cut = basecut + "&&(nbm==0||nbm==1||nbm==2)&&" + injet + "&&" + elscutid + "&&met<50";
     	cut = basecut + "&&(nbm==0)&&" + injet + "&&" + elscutid + "&&met<50";
 	cout<<cut<<endl;

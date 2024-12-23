@@ -35,12 +35,14 @@ int main(int argc, char *argv[])
 	TString procname = argv[1]; 
 	TString year = argv[2];
 	TString folder;
+	TString folder_singlemuon, folder_jetht;
 	vector<TString> s_proc;
 	if(procname == "data"){ 
-		//folder = folder_year(year,true).at(1);
-		folder = "/mnt/data3/babies/merged_231126_singlemu_data/"+year+"/";
-		vector<TString> s_singlemuon = getRPVProcess(folder,"data_te");
-		vector<TString> s_jetht = getRPVProcess(folder,"data");
+		folder_singlemuon = folder_year(year,true).at(0);
+		folder_jetht      = folder_year(year,false).at(1);
+		//folder = "/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/";
+		vector<TString> s_singlemuon = getRPVProcess(folder_singlemuon,"data_te");
+		vector<TString> s_jetht      = getRPVProcess(folder_jetht,"data");
 		s_proc = s_singlemuon; 
 	}
 	if(procname == "mc"){
@@ -156,11 +158,11 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 			else if(procname=="data") nomweight=tree.pass();
 			float trig;
 			float trig_mu; // I didn't apply this cut when nanoprocessing
-			if(year=="2016") {
+			if(year=="UL2016_preVFP"||year=="UL2016") {
 				trig=(tree.trig_ht900()||tree.trig_jet450());
 				trig_mu=(tree.trig_isomu24());
 			}
-			else if(year=="2017"||year=="2018") {
+			else if(year=="UL2017"||year=="UL2018") {
 				trig=(tree.trig_ht1050());
 				trig_mu=(tree.trig_isomu27());
 			}
@@ -180,7 +182,8 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		h1eff[ibin]->Write();
 
 		TString lumi;
-		if(year=="2016") lumi = "36.3";
+		if(year=="UL2016_preVFP") lumi = "19.5";
+		if(year=="UL2016_postVFP") lumi = "16.8";
 		if(year=="2017") lumi = "41.5";
 		if(year=="2018") lumi = "59.8";
 

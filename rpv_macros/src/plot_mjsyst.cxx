@@ -38,15 +38,15 @@ float return_y(float x, float slope, float y_intercept)
 int main(int argc, char *argv[])
 {
   gStyle->SetOptStat(0);
-  TString filename;
+  TString filename, year;
   filename = argv[1];
-  TString year;
-  if(filename.Contains("2016")) year="2016";
-  else if(filename.Contains("2017_20178.root")) year="2017";
-  else if(filename.Contains("2018_20178.root")) year="2018";
-  else if(filename.Contains("2017.root")) year="2017";
-  else if(filename.Contains("2018.root")) year="2018";
-  else cout << "input file doesn't contain year" << endl;
+  year     = argv[2];
+//  if(filename.Contains("UL2016")) year="UL2016";
+//  else if(filename.Contains("UL2017_UL20178.root")) year="UL2017";
+//  else if(filename.Contains("UL2018_UL20178.root")) year="UL2018";
+//  else if(filename.Contains("UL2017.root")) year="UL2017";
+//  else if(filename.Contains("UL2018.root")) year="UL2018";
+//  else cout << "input file doesn't contain year" << endl;
   cout << "year: " << year << endl;
 
   TFile *infile;

@@ -37,12 +37,13 @@ int main(int argc, char *argv[]){
     cout<<"./run/plot_mc.exe [year] !!!!"<<endl;
   }
   string lumi;
-  if(year=="2016") lumi="36.3";
-  else if(year=="2017") lumi="41.5";
-  else if(year=="2018") lumi="59.8";
+  if(year=="UL2016_preVFP") lumi="19.5";
+  else if(year=="UL2016_postVFP") lumi="16.8";
+  else if(year=="UL2017") lumi="41.5";
+  else if(year=="UL2018") lumi="59.8";
 
   // ntuple folders
-  TString folder_bkg = "/mnt/data3/babies/231001/"+year+"/merged_norm_JER_0903/";
+  TString folder_bkg = "/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_mc/";
 
   // Get file lists
   vector<TString> s_qcd_njet45   = getRPVProcess(folder_bkg,"qcd");
@@ -61,37 +62,37 @@ int main(int argc, char *argv[]){
 
   // qcd
       // njet45
-  Samples_qcd_njet45.push_back(sfeats(s_qcd_njet45, "qcd N_{b}=0",	linecolor::c_nb0,   1, cutandweight("frac16*stitch_ht*pass*(nbm==0)",extraweight)));
-  Samples_qcd_njet45.push_back(sfeats(s_qcd_njet45, "qcd N_{b}=1",	linecolor::c_nb1,   1, cutandweight("frac16*stitch_ht*pass*(nbm==1)",extraweight)));
-  Samples_qcd_njet45.push_back(sfeats(s_qcd_njet45, "qcd N_{b}=2",	linecolor::c_nb2,   1, cutandweight("frac16*stitch_ht*pass*(nbm==2)",extraweight)));
-  Samples_qcd_njet45.push_back(sfeats(s_qcd_njet45, "qcd N_{b}#geq3",	linecolor::c_nb3,   1, cutandweight("frac16*stitch_ht*pass*(nbm>=3)",extraweight)));
+  Samples_qcd_njet45.push_back(sfeats(s_qcd_njet45, "qcd N_{b}=0",	linecolor::c_nb0,   1, cutandweight("stitch_ht*pass*(nbm==0)",extraweight)));
+  Samples_qcd_njet45.push_back(sfeats(s_qcd_njet45, "qcd N_{b}=1",	linecolor::c_nb1,   1, cutandweight("stitch_ht*pass*(nbm==1)",extraweight)));
+  Samples_qcd_njet45.push_back(sfeats(s_qcd_njet45, "qcd N_{b}=2",	linecolor::c_nb2,   1, cutandweight("stitch_ht*pass*(nbm==2)",extraweight)));
+  Samples_qcd_njet45.push_back(sfeats(s_qcd_njet45, "qcd N_{b}#geq3",	linecolor::c_nb3,   1, cutandweight("stitch_ht*pass*(nbm>=3)",extraweight)));
       // njet67, 8-
-  Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}=0",	linecolor::c_nb0,   1, cutandweight("frac16*stitch_ht*pass*(nbm==0)",extraweight)));
-  Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}=1",	linecolor::c_nb1,   1, cutandweight("frac16*stitch_ht*pass*(nbm==1)",extraweight)));
-  Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}=2",	linecolor::c_nb2,   1, cutandweight("frac16*stitch_ht*pass*(nbm==2)",extraweight)));
-  Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}#geq3",	linecolor::c_nb3,   1, cutandweight("frac16*stitch_ht*pass*(nbm>=3)",extraweight)));
+  Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}=0",	linecolor::c_nb0,   1, cutandweight("stitch_ht*pass*(nbm==0)",extraweight)));
+  Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}=1",	linecolor::c_nb1,   1, cutandweight("stitch_ht*pass*(nbm==1)",extraweight)));
+  Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}=2",	linecolor::c_nb2,   1, cutandweight("stitch_ht*pass*(nbm==2)",extraweight)));
+  Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}#geq3",	linecolor::c_nb3,   1, cutandweight("stitch_ht*pass*(nbm>=3)",extraweight)));
   // ttbar
       // njet45
-  Samples_ttbar_njet45.push_back(sfeats(s_ttbar_njet45, "t#bar{t} N_{b}=0",	linecolor::c_nb0,   1, cutandweight("frac16*stitch_ht*pass*(nbm==0)",extraweight)));
-  Samples_ttbar_njet45.push_back(sfeats(s_ttbar_njet45, "t#bar{t} N_{b}=1",	linecolor::c_nb1,   1, cutandweight("frac16*stitch_ht*pass*(nbm==1)",extraweight)));
-  Samples_ttbar_njet45.push_back(sfeats(s_ttbar_njet45, "t#bar{t} N_{b}=2",	linecolor::c_nb2,   1, cutandweight("frac16*stitch_ht*pass*(nbm==2)",extraweight)));
-  Samples_ttbar_njet45.push_back(sfeats(s_ttbar_njet45, "t#bar{t} N_{b}#geq3", linecolor::c_nb3,   1, cutandweight("frac16*stitch_ht*pass*(nbm>=3)",extraweight)));
+  Samples_ttbar_njet45.push_back(sfeats(s_ttbar_njet45, "t#bar{t} N_{b}=0",	linecolor::c_nb0,   1, cutandweight("stitch_ht*pass*(nbm==0)",extraweight)));
+  Samples_ttbar_njet45.push_back(sfeats(s_ttbar_njet45, "t#bar{t} N_{b}=1",	linecolor::c_nb1,   1, cutandweight("stitch_ht*pass*(nbm==1)",extraweight)));
+  Samples_ttbar_njet45.push_back(sfeats(s_ttbar_njet45, "t#bar{t} N_{b}=2",	linecolor::c_nb2,   1, cutandweight("stitch_ht*pass*(nbm==2)",extraweight)));
+  Samples_ttbar_njet45.push_back(sfeats(s_ttbar_njet45, "t#bar{t} N_{b}#geq3", linecolor::c_nb3,   1, cutandweight("stitch_ht*pass*(nbm>=3)",extraweight)));
       // njet67, 8-
-  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=0",	linecolor::c_nb0,   1, cutandweight("frac16*stitch_ht*pass*(nbm==0)",extraweight)));
-  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=1",	linecolor::c_nb1,   1, cutandweight("frac16*stitch_ht*pass*(nbm==1)",extraweight)));
-  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=2",	linecolor::c_nb2,   1, cutandweight("frac16*stitch_ht*pass*(nbm==2)",extraweight)));
-  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}#geq3", linecolor::c_nb3,   1, cutandweight("frac16*stitch_ht*pass*(nbm>=3)",extraweight)));
+  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=0",	linecolor::c_nb0,   1, cutandweight("stitch_ht*pass*(nbm==0)",extraweight)));
+  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=1",	linecolor::c_nb1,   1, cutandweight("stitch_ht*pass*(nbm==1)",extraweight)));
+  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=2",	linecolor::c_nb2,   1, cutandweight("stitch_ht*pass*(nbm==2)",extraweight)));
+  Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}#geq3", linecolor::c_nb3,   1, cutandweight("stitch_ht*pass*(nbm>=3)",extraweight)));
   // wjets 
       // njet45
-  Samples_wjets_njet45.push_back(sfeats(s_wjets_njet45, "wjets N_{b}=0",	linecolor::c_nb0,   1, cutandweight("frac16*stitch_ht*pass*(nbm==0)",extraweight)));
-  Samples_wjets_njet45.push_back(sfeats(s_wjets_njet45, "wjets N_{b}=1",	linecolor::c_nb1,   1, cutandweight("frac16*stitch_ht*pass*(nbm==1)",extraweight)));
-  Samples_wjets_njet45.push_back(sfeats(s_wjets_njet45, "wjets N_{b}=2",	linecolor::c_nb2,   1, cutandweight("frac16*stitch_ht*pass*(nbm==2)",extraweight)));
-  Samples_wjets_njet45.push_back(sfeats(s_wjets_njet45, "wjets N_{b}#geq3",	linecolor::c_nb3,   1, cutandweight("frac16*stitch_ht*pass*(nbm>=3)",extraweight)));
+  Samples_wjets_njet45.push_back(sfeats(s_wjets_njet45, "wjets N_{b}=0",	linecolor::c_nb0,   1, cutandweight("stitch_ht*pass*(nbm==0)",extraweight)));
+  Samples_wjets_njet45.push_back(sfeats(s_wjets_njet45, "wjets N_{b}=1",	linecolor::c_nb1,   1, cutandweight("stitch_ht*pass*(nbm==1)",extraweight)));
+  Samples_wjets_njet45.push_back(sfeats(s_wjets_njet45, "wjets N_{b}=2",	linecolor::c_nb2,   1, cutandweight("stitch_ht*pass*(nbm==2)",extraweight)));
+  Samples_wjets_njet45.push_back(sfeats(s_wjets_njet45, "wjets N_{b}#geq3",	linecolor::c_nb3,   1, cutandweight("stitch_ht*pass*(nbm>=3)",extraweight)));
       // njet67, 8-
-  Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}=0",	linecolor::c_nb0,   1, cutandweight("frac16*stitch_ht*pass*(nbm==0)",extraweight)));
-  Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}=1",	linecolor::c_nb1,   1, cutandweight("frac16*stitch_ht*pass*(nbm==1)",extraweight)));
-  Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}=2",	linecolor::c_nb2,   1, cutandweight("frac16*stitch_ht*pass*(nbm==2)",extraweight)));
-  Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}#geq3",	linecolor::c_nb3,   1, cutandweight("frac16*stitch_ht*pass*(nbm>=3)",extraweight)));
+  Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}=0",	linecolor::c_nb0,   1, cutandweight("stitch_ht*pass*(nbm==0)",extraweight)));
+  Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}=1",	linecolor::c_nb1,   1, cutandweight("stitch_ht*pass*(nbm==1)",extraweight)));
+  Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}=2",	linecolor::c_nb2,   1, cutandweight("stitch_ht*pass*(nbm==2)",extraweight)));
+  Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}#geq3",	linecolor::c_nb3,   1, cutandweight("stitch_ht*pass*(nbm>=3)",extraweight)));
 
   // Loop over samples
       // njet45
@@ -135,12 +136,12 @@ int main(int argc, char *argv[]){
       Samples_qcd.pop_back();
       Samples_ttbar.pop_back();
       Samples_wjets.pop_back();
-      Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}=3",		linecolor::c_nb3,   1, cutandweight("frac16*stitch_ht*pass*(nbm==3)",extraweight)));
-      Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}#geq4",		linecolor::c_nb4,   1, cutandweight("frac16*stitch_ht*pass*(nbm>=4)",extraweight)));
-      Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=3",	linecolor::c_nb3,   1, cutandweight("frac16*stitch_ht*pass*(nbm==3)",extraweight)));
-      Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}#geq4",	linecolor::c_nb4,   1, cutandweight("frac16*stitch_ht*pass*(nbm>=4)",extraweight)));
-      Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}=3",		linecolor::c_nb3,   1, cutandweight("frac16*stitch_ht*pass*(nbm==3)",extraweight)));
-      Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}#geq4",	linecolor::c_nb4,   1, cutandweight("frac16*stitch_ht*pass*(nbm>=4)",extraweight)));
+      Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}=3",		linecolor::c_nb3,   1, cutandweight("stitch_ht*pass*(nbm==3)",extraweight)));
+      Samples_qcd.push_back(sfeats(s_qcd, "qcd N_{b}#geq4",		linecolor::c_nb4,   1, cutandweight("stitch_ht*pass*(nbm>=4)",extraweight)));
+      Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}=3",	linecolor::c_nb3,   1, cutandweight("stitch_ht*pass*(nbm==3)",extraweight)));
+      Samples_ttbar.push_back(sfeats(s_ttbar, "t#bar{t} N_{b}#geq4",	linecolor::c_nb4,   1, cutandweight("stitch_ht*pass*(nbm>=4)",extraweight)));
+      Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}=3",		linecolor::c_nb3,   1, cutandweight("stitch_ht*pass*(nbm==3)",extraweight)));
+      Samples_wjets.push_back(sfeats(s_wjets, "wjets N_{b}#geq4",	linecolor::c_nb4,   1, cutandweight("stitch_ht*pass*(nbm>=4)",extraweight)));
       rpv_sam_qcd.push_back(4);
       rpv_sam_ttbar.push_back(4);
       rpv_sam_wjets.push_back(4);

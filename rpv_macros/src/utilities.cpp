@@ -303,18 +303,18 @@ vector<double> LinearSpacing(size_t npts, double low, double high){
 vector<TString> folder_year(TString year, bool te){
   vector<TString> ret;
   if(te){
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/");
-    //ret.push_back("/xrootd_user/jaehyeok/xrootd/2016v6/2020_04_20/merged_rpvfitnbge0/");
+    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/");
+//    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/");
+//    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/");
+//    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/");
   }
   else{
 //UL
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_JER_0903/");
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/JetHTRun_rpvfitnbge0_step3/");
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_sig_pu/");
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_njets3nleps2/");
+    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_mc/");
+    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_data/");
+    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_sig/");
+    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_dy_mc/");
+    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_dy_data/");
 /*
 //PL
     ret.push_back("/mnt/data3/babies/210910/"+year+"/merged_norm_JER_0903/");
@@ -322,30 +322,6 @@ vector<TString> folder_year(TString year, bool te){
     ret.push_back("/mnt/data3/babies/210910/"+year+"/merged_norm_sig_pu/");
     ret.push_back("/mnt/data1/babies/20210702/"+year+"/merged_norm_njets3nleps2/");
 */
-/*
-//UL2016_preVFP
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_JER_0903_UL2016_preVFP/");
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/JetHTRun_rpvfitnbge0_step3_UL2016_preVFP/");
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_sig_pu_UL2016_preVFP/");
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_njets3nleps2_UL2016_preVFP/");
-*/
-/*
-//UL2016
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_JER_0903_UL2016/");
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/JetHTRun_rpvfitnbge0_step3_UL2016/");
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_sig_pu_UL2016/");
-    ret.push_back("/mnt/data3/babies/231001/"+year+"/merged_norm_njets3nleps2_UL2016/");
-*/
-/*
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_JER_0903/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/skim_rpvfitnbge0_nbm2/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_sig_pu/");
-    ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_njets3nleps2/");
-*/
-  //  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_noMJ/");
-  //  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_noMJ/");
-  //  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_noMJ/");
-  //  ret.push_back("/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm_noMJ/");
   }
   return ret;
 }

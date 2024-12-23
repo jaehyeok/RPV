@@ -6,13 +6,14 @@ import ctypes
 if __name__=="__main__":
     year = sys.argv[1]
 
-    if year=="2016" or year=="20178": f_orig = TFile("variations/output_nominal_newnt_"+year+".root", "READ") #2016
-    elif year=="2017" or year=="2018": f_orig = TFile("variations/output_nominal_newnt_"+year+"_20178.root", "READ") #2017,2018
+    if year=="UL2016_preVFP" or year=="UL2016_postVFP": f_orig = TFile("variations/output_nominal_newnt_"+year+"_UL2016.root", "READ")
+    elif year=="UL2017" or year=="UL2018": f_orig = TFile("variations/output_nominal_newnt_"+year+"_UL20178.root", "READ")
     f_modi = TFile("variations/output_"+year+"_mckappa.root","RECREATE")
     f_kapp = TFile("data/fit_kappa_summary_"+year+".root","READ")
 
     for i in range(22,52) :
-        if year == "2017" or year == "2018" or year == "20178" : year="20178"
+        if year == "UL2016_preVFP" or year == "UL2016_postVFP" : year="UL2016"
+        elif year == "UL2017" or year == "UL2018" : year="UL20178"
         #Get histogram profiles from fit_kappa_summary file#
         injets  = (i-1)%3
         inb     = int((i-22)/3+1)

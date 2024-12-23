@@ -110,10 +110,10 @@ int main(int argc, char *argv[])
 		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=2",
 		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=2", // 30
-		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=3",
+		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq3",
 		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=3",
-		//"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
+		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
 		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4", // 35
 		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4",
 		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
 		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=2",
 		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=2", // 45
-		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
+		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq3",
 		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=3",
 		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=3",
 		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",

@@ -27,10 +27,11 @@ void drawHeader(TString year)
   lat->SetTextSize(0.053);
   lat->DrawLatexNDC(0.12, 0.93, "CMS #scale[0.8]{#font[52]{Work In Progress}}");
   lat->SetTextFont(42);
-  if(year=="2016") lat->DrawLatexNDC(0.76, 0.83, "36.3 fb^{-1} (13 TeV)");
-  else if(year=="2017") lat->DrawLatexNDC(0.76, 0.83, "41.5 fb^{-1} (13 TeV)");
-  else if(year=="2018") lat->DrawLatexNDC(0.76, 0.83, "59.8 fb^{-1} (13 TeV)");
-  else if(year=="20178") lat->DrawLatexNDC(0.76, 0.83, "101.3 fb^{-1} (13 TeV)");
+  if(year=="UL2016_preVFP")  lat->DrawLatexNDC(0.76, 0.83, "19.5 fb^{-1} (13 TeV)");
+  if(year=="UL2016_postVFP") lat->DrawLatexNDC(0.76, 0.83, "16.8 fb^{-1} (13 TeV)");
+  else if(year=="UL2017") lat->DrawLatexNDC(0.76, 0.83, "41.5 fb^{-1} (13 TeV)");
+  else if(year=="UL2018") lat->DrawLatexNDC(0.76, 0.83, "59.8 fb^{-1} (13 TeV)");
+  else if(year=="UL20178") lat->DrawLatexNDC(0.76, 0.83, "101.3 fb^{-1} (13 TeV)");
 }
 
 void drawSyst(TLatex *lat1){
@@ -209,10 +210,10 @@ int main(int argc, char *argv[])
 
     TFile *infile;
     if(argc>6) infile = TFile::Open(filename,"READ");
-//    else infile = TFile::Open("variations/output_"+year+".root", "READ");
 
     TString year_str = year;
-    if(year=="2017" || year=="2018") year_str="20178";
+    if(year=="UL2016_preVFP" || year=="UL2016_postVFP") year_str="UL2016";
+    else if(year=="UL2017"   || year=="UL2018") year_str="UL20178";
     // 2017_20178, 2018_20178 should be used for applying appropriate QCD kappa correction.
 
     vector<vector<float>> kappa1;
@@ -232,12 +233,10 @@ int main(int argc, char *argv[])
       h1_mj_qcd[ibin]        = new TH1F(Form("h1_mj_qcd_bin%i", ibin), Form("h1_mj_qcd_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_ttbar[ibin]      = new TH1F(Form("h1_mj_ttbar_bin%i", ibin), Form("h1_mj_ttbar_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_wjets[ibin]      = new TH1F(Form("h1_mj_wjets_bin%i", ibin), Form("h1_mj_wjets_bin%i", ibin), 3, mjmin, mjmax);
-//      h1_mj_other[ibin]      = new TH1F(Form("h1_mj_other_bin%i", ibin), Form("h1_mj_other_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_mc[ibin]         = new TH1F(Form("h1_mj_mc_bin%i", ibin), Form("h1_mj_mc_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_qcd_syst[ibin]   = new TH1F(Form("h1_mj_qcd_syst_bin%i", ibin), Form("h1_mj_qcd_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_ttbar_syst[ibin] = new TH1F(Form("h1_mj_ttbar_syst_bin%i", ibin), Form("h1_mj_ttbar_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_wjets_syst[ibin] = new TH1F(Form("h1_mj_wjets_syst_bin%i", ibin), Form("h1_mj_wjets_syst_bin%i", ibin), 3, mjmin, mjmax);
-//      h1_mj_other_syst[ibin] = new TH1F(Form("h1_mj_other_syst_bin%i", ibin), Form("h1_mj_other_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_mc_syst[ibin]    = new TH1F(Form("h1_mj_mc_syst_bin%i", ibin), Form("h1_mj_mc_syst_bin%i", ibin), 3, mjmin, mjmax);
       h1_mj_data[ibin]->Sumw2(); 
       h1_mj_data_qcd[ibin]->Sumw2(); 
@@ -246,18 +245,14 @@ int main(int argc, char *argv[])
       h1_mj_qcd[ibin]->Sumw2(); 
       h1_mj_ttbar[ibin]->Sumw2(); 
       h1_mj_wjets[ibin]->Sumw2(); 
-//      h1_mj_other[ibin]->Sumw2(); 
       h1_mj_mc[ibin]->Sumw2(); 
       h1_mj_qcd_syst[ibin]->Sumw2(); 
       h1_mj_ttbar_syst[ibin]->Sumw2(); 
       h1_mj_wjets_syst[ibin]->Sumw2(); 
-//      h1_mj_other_syst[ibin]->Sumw2(); 
       h1_mj_mc_syst[ibin]->Sumw2(); 
 
       // Get histograms from root file
       if(syst=="nominal"){
-//        h1_mj_data[ibin]  = static_cast<TH1F*>(infile->Get(Form("bin%i/data_obs", ibin))); 
-        //FIXME
         h1_mj_data_qcd[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin))); 
         h1_mj_data_ttbar[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin))); 
         h1_mj_data_wjets[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin))); 
@@ -266,39 +261,37 @@ int main(int argc, char *argv[])
 	h1_mj_data[ibin]->Add(h1_mj_data_wjets[ibin]);
       }
       else if(syst!="nominal"){
-      //(murf, mur, and muf have different name from other systs in output file) FIXME
-//	if(syst.find("mu")!=std::string::npos){
-	if(syst=="murf"||syst=="mur"||syst=="muf"){
+	if(syst=="murf"||syst=="mur"||syst=="muf"){ //(murf, mur, and muf have different name from other systs in output file)
           h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_qcd_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
           h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_ttbar_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
           h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_wjets_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
-//          h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s_other_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
           h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
           h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
           h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
-//          h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);
+	}
+	else if((syst=="btag_bc_uncor") || (syst=="btag_udsg_uncor") || (syst=="jec") || (syst=="jer")){ // These systs should be uncorrelated
+          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+          h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
+          h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
+          h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
 	}
 	else {
-        h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
-        h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
-        h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
-        //h1_mj_wjets[ibin]->Scale(1.53); //FIXME
-//        h1_mj_other_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
-        h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
-        h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
-        h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
-//        h1_mj_data[ibin]->Add(h1_mj_other_syst[ibin]);
+          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
+          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
+          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
+          h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
+          h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
+          h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
 	}
       }
       h1_mj_qcd[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin))); 
       h1_mj_ttbar[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin))); 
       h1_mj_wjets[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin))); 
-      //h1_mj_wjets[ibin]->Scale(1.53); //FIXME
-//      h1_mj_other[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin))); 
       h1_mj_mc[ibin] = static_cast<TH1F*>(h1_mj_qcd[ibin]->Clone(Form("h1_mj_mc_bin%i", ibin))); 
       h1_mj_mc[ibin]->Add(h1_mj_ttbar[ibin]);
       h1_mj_mc[ibin]->Add(h1_mj_wjets[ibin]);
-//      h1_mj_mc[ibin]->Add(h1_mj_other[ibin]);
     } 
 
     cout << "\\begin{table}[h]" << endl;

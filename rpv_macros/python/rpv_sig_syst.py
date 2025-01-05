@@ -8,8 +8,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input")
 parser.add_argument("-m", "--mass")
 parser.add_argument("-y", "--year")
+parser.add_argument("-c", "--combine_year")
 args = parser.parse_args()
-GLUINOMASS = 1700
+GLUINOMASS = 1800
 Year = 2016
 if (args.input):
   infile = args.input
@@ -19,6 +20,8 @@ if (args.mass):
   GLUINOMASS = args.mass
 if (args.year):
   Year = args.year
+if (args.combine_year):
+  Comb_year = args.combine_year
 
 one_pdf = False #put all plots in one pdf file
 verbose = True  
@@ -27,7 +30,7 @@ verbose = True
 # function to get pointers to histogram in root file
 def get_hist_with_overflow(file,histname):
     if verbose:
-        print" getting "+histname
+        print(" getting "+histname)
     hist = file.Get(histname)
     nbinsX = hist.GetNbinsX()
     content = hist.GetBinContent(nbinsX) + hist.GetBinContent(nbinsX+1)
@@ -49,8 +52,22 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
   
     #load hists and calculate SFs for floating component for each variation
 
-    up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
-    down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
+    if sysName=='btag_bc_uncor' or sysName=='btag_udsg_uncor' or sysName=='jer' or sysName=='jec':
+        if str(Comb_year)=='UL2016':
+            up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
+            down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
+        elif str(Comb_year)=='UL20178':
+            up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
+            down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
+    elif sysName=='mur' or sysName=='muf' or sysName=='murf':
+        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_sig_" + str(Comb_year) + "Up")
+        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_sig_" + str(Comb_year) + "Down")
+    else:
+        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Comb_year) + "Up")
+        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Comb_year) + "Down")
+
+#    up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
+#    down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
 
     #Put yields in new histogram to avoid modifying originals
     systHistUp.Add(up)
@@ -111,12 +128,14 @@ set_palette_gray()
 systList=[]
 systList.append(["gs","Gluon splitting",4,1])
 systList.append(["pileup","Pileup",10,1])
-systList.append(["btag_bc","b,c jet b-tag SF",5,1])
-systList.append(["btag_udsg","u,d,s,g jet b-tag SF",6,1])
+systList.append(["btag_bc_uncor","b,c jet b-tag SF",5,1])
+systList.append(["btag_bc_cor","across-year correlated b,c jet b-tag SF",5,1])
+systList.append(["btag_udsg_uncor","u,d,s,g jet b-tag SF",6,1])
+systList.append(["btag_udsg_cor","across-year correlated u,d,s,g jet b-tag SF",6,1])
 systList.append(["jec","Jet energy scale",7,1])
 systList.append(["jer","Jet energy resolution",7,1])
 systList.append(["lep_eff","Lepton efficiency",9,1])
-systList.append(["isr","Initial state radiation",11,1])
+#systList.append(["isr","Initial state radiation",11,1])
 systList.append(["mur","Renormalization scale",16,1])
 systList.append(["muf","Factorization scale",17,1])
 systList.append(["murf","Renorm. and fact. scale",18,1])
@@ -150,7 +169,7 @@ for ibin in binList:
 
     directory = ibin[0]
     if verbose:
-        print "directory is "+directory
+        print( "directory is "+directory)
     
     nominal = get_hist_with_overflow(sysFile,(directory + "/" + proc))
     nbinsX = nominal.GetNbinsX()
@@ -169,7 +188,7 @@ for ibin in binList:
         sysName = syst[0]
         systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",3,500,1400) # will eventually contain errors; define now to remain in scope
         if verbose:
-            print "starting "+sysName
+            print( "starting "+sysName)
 
         if "mc_stat" not in sysName:
             #pdf treated separately
@@ -210,7 +229,7 @@ for ibin in binList:
             else: 
                 table.SetBinContent(i,isys,round(100*systHist.GetBinContent(i),1))
             if verbose:
-                print "symmetrized rel error bin "+str(i)+" "+str(systHist.GetBinContent(i))         
+                print( "symmetrized rel error bin "+str(i)+" "+str(systHist.GetBinContent(i)))
 
 
 
@@ -247,15 +266,15 @@ for ibin in binList:
     tla.DrawLatexNDC(0.17, 0.55, ibin[2])
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
+            outname = "plots/rpv_sig_syst/" + str(Year) + "sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
         else:
-            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
     else:
-         outname = "plots/rpv_sig_syst/sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
-    print "outname is " +outname
+         outname = "plots/rpv_sig_syst/" + str(Year) + "/sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+    print( "outname is " +outname)
     c.Print(outname)
 
 
@@ -289,14 +308,14 @@ for ibin in binList:
     tla.DrawLatexNDC(0.66,0.93,"#sqrt{s} = 13 TeV")
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
         else:
-            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
     else:
-         outname = "plots/rpv_sig_syst/table_sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+         outname = "plots/rpv_sig_syst/" + str(Year) + "/table_sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
          
     c2.Print(outname)
 

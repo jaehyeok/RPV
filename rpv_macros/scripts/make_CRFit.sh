@@ -85,7 +85,6 @@ for year in ${years[@]}
 		./run/make_rpv_datacard_newbins_CRfit.exe 1800 mconly output_CRFit_${year}.root ${year} UL20178 on
 		combineCards.py datacards/datacard_M1800_mconly_cr_nb0_*_CRFit_${year}.dat datacards/datacard_M1800_mconly_cr_nb1_*_CRFit_${year}.dat > datacards/datacard_M1800_CRFit_${year}.dat
 	else
-		#./run/make_rpv_datacard_newbins_CRfit.exe 1800 mconly output_CRFit_${year}.root ${year} off off 
 		./run/make_rpv_datacard_newbins_CRfit.exe 1800 mconly output_CRFit_${year}.root ${year} off on
 		combineCards.py datacards/datacard_M1800_mconly_cr_nb0_*_CRFit_${year}.dat datacards/datacard_M1800_mconly_cr_nb1_*_CRFit_${year}.dat > datacards/datacard_M1800_CRFit_${year}.dat
 		combine -M FitDiagnostics datacards/datacard_M1800_CRFit_${year}.dat --saveNorm --saveShape --cminDefaultMinimizerType Minuit

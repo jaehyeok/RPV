@@ -20,7 +20,7 @@ float GetRMS(std::vector<float> proc)
 }
 
 
-void GetPostUncert(bool full=true, int year=2016, TString step="step1")
+void GetPostUncert(bool full=true, TString year="UL2016", TString step="step1")
 {
 
     int TOTALTOY=100;
@@ -39,8 +39,10 @@ void GetPostUncert(bool full=true, int year=2016, TString step="step1")
         //TFile* mlfitfile = TFile::Open(Form("postfit_uncert/fitDiagnosticsseed%i_M2200.root",itoy+1));
         //TFile* mlfitfile = TFile::Open(Form("out_injection/fitDiagnostics_M1500_%i.root",itoy+1));
         TFile* mlfitfile;
-        if(year==2016) mlfitfile = TFile::Open(Form("out_injection_%s/fitDiagnostics_M1500_16_%i.root",step.Data(),itoy+1));
-        else  mlfitfile = TFile::Open(Form("out_injection_%s/fitDiagnostics_M1500_78_%i.root",step.Data(),itoy+1));
+        //if(year==2016) mlfitfile = TFile::Open(Form("out_injection_%s_240606/fitDiagnostics_M1800_16_%i.root",step.Data(),itoy+1));
+        //else  mlfitfile = TFile::Open(Form("out_injection_%s_240606/fitDiagnostics_M1800_78_%i.root",step.Data(),itoy+1));
+        if(year=="UL2016") mlfitfile = TFile::Open(Form("out_injection_%s_250122/fitDiagnostics_M1800_16_%i.root",step.Data(),itoy+1));
+        else  mlfitfile = TFile::Open(Form("out_injection_%s_250122/fitDiagnostics_M1800_78_%i.root",step.Data(),itoy+1));
         
         if ( mlfitfile == 0x0  ) { continue;}
         RooFitResult *fit_s = (RooFitResult*) mlfitfile->Get("fit_s");
@@ -59,32 +61,27 @@ void GetPostUncert(bool full=true, int year=2016, TString step="step1")
             if(ibin>=30) flag_step=true;
           }
           else if(step=="step2"){
-            if(ibin>=31) flag_step=true;
+            if(ibin>=30) flag_step=true;
           }
 	  else if(step=="step3"){
 	    if(ibin>=32) flag_step=true;
+	    else if(ibin==30) flag_step=true;
 	  }
           if(flag_step) continue;
 
           cout << "bin " << ibin << endl; 
 
           for(int imj=1; imj<4; imj++)
-          {   float qcd, ttbar, wjets, other; 
-            if(year==2016)
-            {
-              qcd   = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/bin%i/qcd",ibin))))->GetBinContent(imj);  
-              ttbar = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/bin%i/ttbar",ibin))))->GetBinContent(imj);  
-              wjets = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/bin%i/wjets",ibin))))->GetBinContent(imj);  
-              other = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/bin%i/other",ibin))))->GetBinContent(imj);  
-            }
-            else if(year==2017)
+          {
+	    float qcd, ttbar, wjets, other; 
+            if(year=="UL2017")
             {
               qcd   = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch1_bin%i/qcd",ibin))))->GetBinContent(imj);  
               ttbar = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch1_bin%i/ttbar",ibin))))->GetBinContent(imj);  
               wjets = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch1_bin%i/wjets",ibin))))->GetBinContent(imj);  
               other = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch1_bin%i/other",ibin))))->GetBinContent(imj);  
             }
-            else if(year==2018)
+            else if(year=="UL2018")
             {
               qcd   = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch2_bin%i/qcd",ibin))))->GetBinContent(imj);  
               ttbar = (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch2_bin%i/ttbar",ibin))))->GetBinContent(imj);  
@@ -93,8 +90,14 @@ void GetPostUncert(bool full=true, int year=2016, TString step="step1")
             }
             else
             {
-              qcd   =   (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch1_bin%i/qcd",ibin))))->GetBinContent(imj)  
-                      + (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch2_bin%i/qcd",ibin))))->GetBinContent(imj);  
+	      if(year=="UL2016" && step=="step3" && ibin==31) {
+		cout << "DEBUG" << endl; // because yields of qcd in bin31 and UL2016_postVFP are 0 for all MJ bins
+                qcd   =   (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch1_bin%i/qcd",ibin))))->GetBinContent(imj);
+	      }
+	      else {
+                qcd   =   (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch1_bin%i/qcd",ibin))))->GetBinContent(imj)  
+                        + (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch2_bin%i/qcd",ibin))))->GetBinContent(imj);  
+	      }
               ttbar =   (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch1_bin%i/ttbar",ibin))))->GetBinContent(imj)  
                       + (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch2_bin%i/ttbar",ibin))))->GetBinContent(imj);  
               wjets =   (static_cast<TH1F*>(mlfitfile->Get(Form("shapes_fit_b/ch1_bin%i/wjets",ibin))))->GetBinContent(imj)  
@@ -121,7 +124,7 @@ void GetPostUncert(bool full=true, int year=2016, TString step="step1")
     // third index : toy
     float err[5][15][3]; 
 
-    TFile *outputrootfile = new TFile(Form("rpv_postfit_err%s_%s_%d.root",full?"":"_control", step.Data(), year), "RECREATE");
+    TFile *outputrootfile = new TFile(Form("rpv_postfit_err%s_%s_%s.root",full?"":"_control", step.Data(), year.Data()), "RECREATE");
     gROOT->cd();
     outputrootfile->cd();
 
@@ -138,7 +141,7 @@ void GetPostUncert(bool full=true, int year=2016, TString step="step1")
         if(ibin>=30) flag_step=true;
       }
       else if(step=="step2"){
-        if(ibin>=31) flag_step=true;
+        if(ibin>=30) flag_step=true;
       }
       if(flag_step) continue;
 

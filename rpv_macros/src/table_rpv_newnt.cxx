@@ -539,7 +539,7 @@ int main(int argc, char* argv[])
         cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$} \\\\" << endl;
         cout << "\\hline" << endl;
         for(int inb=0; inb<3; inb++) {
-	  if(ibin==32 || ibin==33 || ibin==35 || ibin==36) {
+	  if(ibin==30 || ibin==32 || ibin==33 || ibin==35 || ibin==36) {
 	    data[tablebin][inb]=0;  //FIXME when unblinding
 	  }
             printYieldBin(inb,

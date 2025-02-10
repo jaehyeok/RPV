@@ -133,10 +133,17 @@ int main(int argc, char* argv[])
     /////////////// QCD ///////////////
     ///////////////////////////////////
 
+    TString latex_year;
+    latex_year=year;
+    if(year=="UL2016_preVFP") latex_year="2016preVFP";
+    else if(year=="UL2016_postVFP") latex_year="2016postVFP";
+    else if(year=="UL2017") latex_year="2017";
+    else if(year=="UL2018") latex_year="2018";
+
     if(formatLatex) {
       cout << "\\begin{table}" << endl;
       cout << "\\centering" << endl;
-      cout << Form("\\caption{The summary table of the uncertainties in the kappa factor for QCD process using %s samples.}", year.Data()) << endl;
+      cout << Form("\\caption{The summary table of the uncertainties in the kappa factor for QCD process using %s samples.}", latex_year.Data()) << endl;
       cout << "\\resizebox{\\textwidth}{!}{" << endl;
       cout << "\\begin{tabular}[tbp!]{|c|c|cccccccc|cccccccc|cccccccc|}" << endl;
       cout << "\\hline" << endl;
@@ -244,6 +251,7 @@ int main(int argc, char* argv[])
       }
       cout << "\\end{tabular}"<<endl;
       cout << "}" << endl;
+      cout << Form("\\label{tab:kap_unc_table_qcd_%s}", year.Data()) << endl;
       cout << "\\end{table}\n"; 
       cout << endl;
     }
@@ -257,7 +265,7 @@ int main(int argc, char* argv[])
     if(formatLatex) {
       cout << "\\begin{table}" << endl;
       cout << "\\centering" << endl;
-      cout << Form("\\caption{The summary table of the uncertainties in the kappa factor for $\\wjets$ process using %s samples.}", year.Data()) << endl;
+      cout << Form("\\caption{The summary table of the uncertainties in the kappa factor for $\\wjets$ process using %s samples.}", latex_year.Data()) << endl;
       cout << "\\resizebox{\\textwidth}{!}{" << endl;
       cout << "\\begin{tabular}[tbp!]{|c|c|cccccccccc|cccccccccc|cccccccccc|}" << endl;
       cout << "\\hline" << endl;
@@ -383,6 +391,7 @@ int main(int argc, char* argv[])
       }
       cout << "\\end{tabular}"<<endl;
       cout << "}" << endl;
+      cout << Form("\\label{tab:kap_unc_table_wjets_%s}", year.Data()) << endl;
       cout << "\\end{table}\n"; 
       cout << endl;
     }
@@ -396,7 +405,7 @@ int main(int argc, char* argv[])
     if(formatLatex) {
       cout << "\\begin{table}" << endl;
       cout << "\\centering" << endl;
-      cout << Form("\\caption{The summary table of the uncertainties in the kappa factor for $\\ttbar$ process using %s samples.}", year.Data()) << endl;
+      cout << Form("\\caption{The summary table of the uncertainties in the kappa factor for $\\ttbar$ process using %s samples.}", latex_year.Data()) << endl;
       cout << "\\resizebox{\\textwidth}{!}{" << endl;
       cout << "\\begin{tabular}[tbp!]{|c|c|cccccccc|cccccccc|cccccccc|}" << endl;
       cout << "\\hline" << endl;
@@ -535,6 +544,7 @@ int main(int argc, char* argv[])
       }
       cout << "\\end{tabular}"<<endl;
       cout << "}" << endl;
+      cout << Form("\\label{tab:kap_unc_table_ttbar_%s}", year.Data()) << endl;
       cout << "\\end{table}\n"; 
       cout << endl;
     }
@@ -553,8 +563,8 @@ float getKappaUnc(TString filename, TString procname, int ikap, int ibin, TStrin
 
   TFile* infile = TFile::Open(filename, "READ");
   TString year;
-  if(filename.Contains("2016")) year = "2016";
-  else if(filename.Contains("2017")||filename.Contains("2018")||filename.Contains("20178")) year = "20178";
+  if(filename.Contains("2016")) year = "UL2016";
+  else if(filename.Contains("2017")||filename.Contains("2018")||filename.Contains("20178")) year = "UL20178";
   else {
     cout << "ERROR: The inputfile name should include the year" << endl;
     return 0;

@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
 		cout << "" <<endl;
 		cout << "./run/plot_overLayKappa.exe [Systematic] [year]" << endl;
 		cout << "" <<endl;
-		cout << "Systematic: jec,btag_bc_uncor,btag_bc_cor,btag_udsg_uncor,btag_udsg_cor,mur,muf,murf,isr,lep_eff" << endl;
+		cout << "Systematic: jer,jec,btag_bc_uncor,btag_bc_cor,btag_udsg_uncor,btag_udsg_cor,mur,muf,murf,isr,lep_eff" << endl;
 		cout << "year: UL2016_preVFP, UL2016_postVFP, UL2017, UL2018" << endl;
 		cout << "" << endl;
 		return 1;

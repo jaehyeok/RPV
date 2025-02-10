@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string.h>
 #include<stdio.h>
+#include "TGraphAsymmErrors.h"
 
 void CopyDir(TDirectory *source){
   //source->ls();
@@ -51,9 +52,27 @@ void CopyDir(TDirectory *source){
     else if (cl->InheritsFrom("TGraph")){
       TGraphAsymmErrors *h1 = (TGraphAsymmErrors*)source->Get(key->GetName());
       TGraphAsymmErrors *h = (TGraphAsymmErrors*)source->Get(key->GetName());
+      TGraphAsymmErrors *h_test = (TGraphAsymmErrors*)source->Get(key->GetName());
+      //TGraphAsymmErrors *h_test = new TGraphAsymmErrors();
       adir->cd();
       if((adir->FindObjectAny(key->GetName())!=NULL)){
         TGraphAsymmErrors *h2 = (TGraphAsymmErrors*)adir->Get(key->GetName());
+
+	// test
+	for(int i=0; i<h2->GetN(); i++) {
+	  double x1, x2, x_test, y1, y2, y_test;
+	  h->GetPoint(i,x1,y1);
+	  h2->GetPoint(i,x2,y2);
+
+	  cout << "h      - x: " << x1 << " / y: " << y1 << endl;
+	  cout << "h2     - x: " << x2 << " / y: " << y2 << endl;
+	  h_test->SetPoint(i, x1, y1+y2);
+	  
+	  h_test->GetPoint(i,x_test,y_test);
+	  cout << "h_test - x: " << x_test << " / y: " << y_test << endl;
+	}
+	// test end
+
 	TObjArray *l1 = new TObjArray();
 	l1->Add(h2);
 	h->Merge(l1);
@@ -64,7 +83,8 @@ void CopyDir(TDirectory *source){
 	adir->Delete(oname);
       }
       adir->cd();
-      h->Write();
+      //h->Write();
+      h_test->Write();
     }
     else {
       source->cd();
@@ -78,10 +98,10 @@ void CopyDir(TDirectory *source){
   savdir->cd();
 }
 
-void repack(TString year="2016"){
+void repack(TString year="UL2016"){
   //TFile *input = new TFile("fitDiagnostics_cr_"+year+".root","read");
-  TFile *input = new TFile("fitDiagnostics.root","read");
-  //TFile *input = new TFile("fitDiagnosticsTest.root","read");
+  //TFile *input = new TFile("fitDiagnostics.root","read");
+  TFile *input = new TFile("fitDiagnosticsTest.root","read");
   input->cd();
   gDirectory->cd("/");
   std::vector<TString> shapes = {"shapes_prefit","shapes_fit_b","shapes_fit_s"};

@@ -13,6 +13,8 @@
 #include "TFile.h"
 #include "TH3D.h"
 #include "TH2D.h"
+#include "TStyle.h"
+#include "TLatex.h"
 
 #include "styles.hpp"
 #include "utilities.hpp"
@@ -26,25 +28,20 @@ TString plot_style="CMSPaper_Preliminary";
 
 void muon_topology();
 void btag_eff_map();
+void lep_sf();
 
 
 void muon_topology(TString year) {
 
-  TString lumi, yr;
+  TString lumi;
   if(year=="UL2016_preVFP") lumi = "19.5";
   else if(year=="UL2016")   lumi = "16.8";
-  else if(year=="UL2017")   {lumi = "41.5"; yr="2017";}
-  else if(year=="UL2018")   {lumi = "59.8"; yr="2018";}
+  else if(year=="UL2017")   lumi = "41.5";
+  else if(year=="UL2018")   lumi = "59.8";
 
   TString folder_bkg, folder_sig;
-  if(year=="UL2016_preVFP" || year=="UL2016") {
-    folder_bkg = "/mnt/data3/babies/231001/2016/merged_norm_JER_0903_"+year+"/";
-    folder_sig = "/mnt/data3/babies/231001/2016/merged_norm_sig_pu_"+year+"/";
-  }
-  else {
-    folder_bkg = "/mnt/data3/babies/231001/"+yr+"/merged_norm_JER_0903/";
-    folder_sig = "/mnt/data3/babies/231001/"+yr+"/merged_norm_sig_pu/";
-  }
+  folder_bkg = "/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_mc/";
+  folder_sig = "/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_sig/";
 
   vector<TString> s_qcd, s_ttbar, s_wjets, s_other, s_sig_m1800;
   s_qcd       = getRPVProcess(folder_bkg, "qcd");
@@ -54,27 +51,11 @@ void muon_topology(TString year) {
   s_sig_m1800 = getRPVProcess(folder_sig, "rpv_m1800");
 
   vector<sfeats> Samples;
-  if(year=="UL2016_preVFP") {
-    Samples.push_back(sfeats(s_sig_m1800, "m_{#tilde{g}}=1800 GeV", kRed, 1, cutandweight("pass","19.5/36.3"))); Samples.back().isSig = true;
-    Samples.push_back(sfeats(s_qcd,   "QCD",      rpv::c_qcd,   1, cutandweight("pass","1.")));
-    Samples.push_back(sfeats(s_wjets, "W+jets",   rpv::c_wjets, 1, cutandweight("pass","1.")));
-    Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt,    1, cutandweight("pass","1.")));
-    Samples.push_back(sfeats(s_other, "Others",   rpv::c_other, 1, cutandweight("pass","1.")));
-  }
-  else if(year=="UL2016") {
-    Samples.push_back(sfeats(s_sig_m1800, "m_{#tilde{g}}=1800 GeV", kRed, 1, cutandweight("pass","16.8/36.3"))); Samples.back().isSig = true;
-    Samples.push_back(sfeats(s_qcd,   "QCD",      rpv::c_qcd,   1, cutandweight("pass","1.")));
-    Samples.push_back(sfeats(s_wjets, "W+jets",   rpv::c_wjets, 1, cutandweight("pass","1.")));
-    Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt,    1, cutandweight("pass","1.")));
-    Samples.push_back(sfeats(s_other, "Others",   rpv::c_other, 1, cutandweight("pass","1.")));
-  }
-  else {
-    Samples.push_back(sfeats(s_sig_m1800, "m_{#tilde{g}}=1800 GeV", kRed, 1, cutandweight("pass","1."))); Samples.back().isSig = true;
-    Samples.push_back(sfeats(s_qcd,   "QCD",      rpv::c_qcd,   1, cutandweight("pass","1.")));
-    Samples.push_back(sfeats(s_wjets, "W+jets",   rpv::c_wjets, 1, cutandweight("pass","1.")));
-    Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt,    1, cutandweight("pass","1.")));
-    Samples.push_back(sfeats(s_other, "Others",   rpv::c_other, 1, cutandweight("pass","1.")));
-  }
+  Samples.push_back(sfeats(s_sig_m1800, "m_{#tilde{g}}=1800 GeV", kRed, 1, cutandweight("pass","1."))); Samples.back().isSig = true;
+  Samples.push_back(sfeats(s_qcd,   "QCD",      rpv::c_qcd,   1, cutandweight("pass","1.")));
+  Samples.push_back(sfeats(s_wjets, "W+jets",   rpv::c_wjets, 1, cutandweight("pass","1.")));
+  Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt,    1, cutandweight("pass","1.")));
+  Samples.push_back(sfeats(s_other, "Others",   rpv::c_other, 1, cutandweight("pass","1.")));
 
   vector<int> rpv_sam;
   for(unsigned sam(0); sam < Samples.size(); sam++) rpv_sam.push_back(sam);
@@ -94,8 +75,11 @@ void muon_topology(TString year) {
 }
 
 void btag_eff_map(TString year) {
+
+  gStyle->SetOptStat(0);
+  gStyle->SetPaintTextFormat(".3f");
   
-  TString process[43] = {
+  TString process[56] = {
     // TTbar
     "TTJets_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8",
     "TTJets_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8",
@@ -146,106 +130,130 @@ void btag_eff_map(TString year) {
     "WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8",
     "WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8",
     "WZZ_TuneCP5_13TeV-amcatnlo-pythia8",
-    "ZZZ_TuneCP5_13TeV-amcatnlo-pythia8"
-  };
-
-  TString process_latex[43] = {
-    // TTbar
-    "TTJets\\_HT-600to800\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "TTJets\\_HT-800to1200\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "TTJets\\_HT-1200to2500\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "TTJets\\_HT-2500toInf\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "TTJets\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    // QCD
-    "QCD\\_HT500to700\\_TuneCP5\\_PSWeights\\_13TeV-madgraph-pythia8",
-    "QCD\\_HT700to1000\\_TuneCP5\\_PSWeights\\_13TeV-madgraph-pythia8",
-    "QCD\\_HT1000to1500\\_TuneCP5\\_PSWeights\\_13TeV-madgraph-pythia8",
-    "QCD\\_HT1500to2000\\_TuneCP5\\_PSWeights\\_13TeV-madgraph-pythia8",
-    "QCD\\_HT2000toInf\\_TuneCP5\\_PSWeights\\_13TeV-madgraph-pythia8",
-    // W+jets
-    "WJetsToLNu\\_HT-100To200\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "WJetsToLNu\\_HT-200To400\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "WJetsToLNu\\_HT-400To600\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "WJetsToLNu\\_HT-600To800\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "WJetsToLNu\\_HT-800To1200\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "WJetsToLNu\\_HT-1200To2500\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    "WJetsToLNu\\_HT-2500ToInf\\_TuneCP5\\_13TeV-madgraphMLM-pythia8",
-    // Others
-      // DY
-    "DYJetsToLL\\_M-50\\_HT-100to200\\_TuneCP5\\_PSweights\\_13TeV-madgraphMLM-pythia8",
-    "DYJetsToLL\\_M-50\\_HT-200to400\\_TuneCP5\\_PSweights\\_13TeV-madgraphMLM-pythia8",
-    "DYJetsToLL\\_M-50\\_HT-400to600\\_TuneCP5\\_PSweights\\_13TeV-madgraphMLM-pythia8",
-    "DYJetsToLL\\_M-50\\_HT-600to800\\_TuneCP5\\_PSweights\\_13TeV-madgraphMLM-pythia8",
-    "DYJetsToLL\\_M-50\\_HT-800to1200\\_TuneCP5\\_PSweights\\_13TeV-madgraphMLM-pythia8",
-    "DYJetsToLL\\_M-50\\_HT-1200to2500\\_TuneCP5\\_PSweights\\_13TeV-madgraphMLM-pythia8",
-    "DYJetsToLL\\_M-50\\_HT-2500toInf\\_TuneCP5\\_PSweights\\_13TeV-madgraphMLM-pythia8",
-      // TT+X
-    "TTZToLLNuNu\\_M-10\\_TuneCP5\\_13TeV-amcatnlo-pythia8",
-    "TTZToQQ\\_TuneCP5\\_13TeV-amcatnlo-pythia8",
-    "TTWJetsToLNu\\_TuneCP5\\_13TeV-amcatnloFXFX-madspin-pythia8",
-    "TTWJetsToQQ\\_TuneCP5\\_13TeV-amcatnloFXFX-madspin-pythia8",
-    "TTTT\\_TuneCP5\\_13TeV-amcatnlo-pythia8",
-    "ttHJetTobb\\_M125\\_TuneCP5\\_13TeV\\_amcatnloFXFX\\_madspin\\_pythia8",
-      // ST
-    "ST\\_tW\\_antitop\\_5f\\_inclusiveDecays\\_TuneCP5\\_13TeV-powheg-pythia8",
-    "ST\\_tW\\_top\\_5f\\_inclusiveDecays\\_TuneCP5\\_13TeV-powheg-pythia8",
-    "ST\\_t-channel\\_antitop\\_4f\\_InclusiveDecays\\_TuneCP5\\_13TeV-powheg-madspin-pythia8",
-    "ST\\_t-channel\\_top\\_4f\\_InclusiveDecays\\_TuneCP5\\_13TeV-powheg-madspin-pythia8",
-    "ST\\_s-channel\\_4f\\_hadronicDecays\\_TuneCP5\\_13TeV-amcatnlo-pythia8",
-    "ST\\_s-channel\\_4f\\_leptonDecays\\_TuneCP5\\_13TeV-amcatnlo-pythia8",
-      // Di-Boson
-    "WW\\_TuneCP5\\_13TeV-pythia8",
-    "WZ\\_TuneCP5\\_13TeV-pythia8",
-    "ZZ\\_TuneCP5\\_13TeV-pythia8",
-    "WWW\\_4F\\_TuneCP5\\_13TeV-amcatnlo-pythia8",
-    "WWZ\\_4F\\_TuneCP5\\_13TeV-amcatnlo-pythia8",
-    "WZZ\\_TuneCP5\\_13TeV-amcatnlo-pythia8",
-    "ZZZ\\_TuneCP5\\_13TeV-amcatnlo-pythia8"
+    "ZZZ_TuneCP5_13TeV-amcatnlo-pythia8",
+      // Signal
+    "SMS-T1tbs_RPV_mGluino1000_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino1100_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino1200_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino1300_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino1400_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino1500_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino1600_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino1700_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino1800_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino1900_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino2000_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino2100_TuneCP5_13TeV-madgraphMLM-pythia8",
+    "SMS-T1tbs_RPV_mGluino2200_TuneCP5_13TeV-madgraphMLM-pythia8"
   };
 
 
-
-  bool formatLatex = true;
-  TString yr;
-  if(year=="UL2016_preVFP") yr = "UL2016\\_preVFP";
-  else yr = year;
-
-  TFile* f_btag[43];
-  TH3D *comb[43], *comb_central[43], *incl[43];
-  for(int i=0; i<43; i++) {
-    f_btag[i]       = new TFile("btagEfficiency/ultralegacy/"+year+"/btagEfficiency_"+process[i]+"_"+year+".root" , "READ");
-    comb[i]         = static_cast<TH3D*>(f_btag[i]->Get("btagEfficiency_medium_comb")->Clone(Form("btagEfficiency_medium_comb_%d", i)));
-    comb_central[i] = static_cast<TH3D*>(f_btag[i]->Get("btagEfficiency_medium_comb_central")->Clone(Form("btagEfficiency_medium_comb_central_%d", i)));
-    incl[i]         = static_cast<TH3D*>(f_btag[i]->Get("btagEfficiency_medium_incl")->Clone(Form("btagEfficiency_medium_comb_central_%d", i)));
+  TFile* f_btag[56];
+  TH3D *comb[56], *comb_central[56], *incl[56];
+  for(int i=0; i<56; i++) {
+    f_btag[i]       = new TFile("data/btagEfficiency/ultralegacy/ptetabinned/"+year+"/btagEfficiency_"+process[i]+"_"+year+".root" , "READ");
+    comb[i]         = static_cast<TH3D*>(f_btag[i]->Get("btagEfficiency_medium")->Clone(Form("btagEfficiency_medium_%d", i)));
   }
 
+  int ind_b=3, ind_c=2, ind_lf=1;
+  double pt_cuts[9]   = {30., 50., 70., 100., 140., 200., 300., 600., 1000.};
+  double eta_cuts[13]  = {0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4};
+  TH2D *btag_eff_2D_b[56], *btag_eff_2D_c[56], *btag_eff_2D_lf[56];   // b, c, light-flavor quark
+  for(int i=0; i<56; i++) {
+    btag_eff_2D_b[i]  = new TH2D(Form("btag_eff_2D_b_%d", i), Form("btag_eff_2D_b_%d", i), 8, pt_cuts, 12, eta_cuts);
+    btag_eff_2D_c[i]  = new TH2D(Form("btag_eff_2D_c_%d", i), Form("btag_eff_2D_c_%d", i), 8, pt_cuts, 12, eta_cuts);
+    btag_eff_2D_lf[i] = new TH2D(Form("btag_eff_2D_lf_%d", i), Form("btag_eff_2D_lf_%d", i), 8, pt_cuts, 12, eta_cuts);
 
-  if(formatLatex) {
-    cout << endl;
-    cout << "\\renewcommand{\\arraystretch}{1.3}" << endl;
-    cout << endl;
-
-    cout << "\\begin{table}" << endl;
-    cout << "\\centering" << endl;
-    cout << Form("\\caption{Summary table of B-tagging efficiencies for the Deep Combined Secondary Vertex (DeepCSV) algorithm at the medium working point for each %s Monte Carlo sample, categorized by hadron flavor.}", yr.Data()) << endl;
-    cout << "\\resizebox{\\textwidth}{!}{" << endl;
-    cout << "\\begin{tabular}{|c|>{\\centering\\arraybackslash}p{2.5cm}|>{\\centering\\arraybackslash}p{2.5cm}|>{\\centering\\arraybackslash}p{2.8cm}|}" << endl;
-    cout << "\\hline" << endl;
-    cout << "\\multirow{2}{*}{Process}    & \\multicolumn{3}{c|}{Efficiency}                                                               \\\\ \\cline{2-4}"     << endl;
-    cout << "                             & b jets        & c jets        & light flavor jets  \\\\ \\hline"          << endl;
-    cout << "\\hline" << endl;
-
-    for(int i=0; i<43; i++) {
-      cout << Form("         %s           & %.5f          & %.5f          &        %.5f        \\\\ \\hline",   process_latex[i].Data(), comb_central[i]->GetBinContent(1,1,3), comb_central[i]->GetBinContent(1,1,2), comb_central[i]->GetBinContent(1,1,1))          << endl;
+    for(int ip=1; ip<9; ip++) {
+      for(int ie=1; ie<13; ie++) {
+	btag_eff_2D_b[i]->SetBinContent(ip, ie, comb[i]->GetBinContent(ie, ip, ind_b));
+	btag_eff_2D_b[i]->SetBinError(ip, ie, comb[i]->GetBinError(ie, ip, ind_b));
+	btag_eff_2D_b[i]->SetTitle("btag_eff_b;Jet p_{T} (GeV);Jet |#eta|");
+        btag_eff_2D_b[i]->SetTitleOffset(1.3);
+	btag_eff_2D_c[i]->SetBinContent(ip, ie, comb[i]->GetBinContent(ie, ip, ind_c));
+	btag_eff_2D_c[i]->SetBinError(ip, ie, comb[i]->GetBinError(ie, ip, ind_c));
+	btag_eff_2D_c[i]->SetTitle("btag_eff_c;Jet p_{T} (GeV);Jet |#eta|");
+        btag_eff_2D_c[i]->SetTitleOffset(1.3);
+	btag_eff_2D_lf[i]->SetBinContent(ip, ie, comb[i]->GetBinContent(ie, ip, ind_lf));
+	btag_eff_2D_lf[i]->SetBinError(ip, ie, comb[i]->GetBinError(ie, ip, ind_lf));
+	btag_eff_2D_lf[i]->SetTitle("btag_eff_light;Jet p_{T} (GeV);Jet |#eta|");
+        btag_eff_2D_lf[i]->SetTitleOffset(1.3);
+      }
     }
+  }
 
-    cout << "\\end{tabular}" << endl;
-    cout << "}" << endl;
-    cout << "\\end{table}" << endl;
+  TCanvas *c_b[56], *c_c[56], *c_lf[56];
+  for(int i=0; i<56; i++) {
+    c_b[i]  = new TCanvas(Form("c_b_%d", i), Form("c_b_%d", i), 1200, 1200);
+    c_c[i]  = new TCanvas(Form("c_c_%d", i), Form("c_c_%d", i), 1200, 1200);
+    c_lf[i] = new TCanvas(Form("c_lf_%d", i), Form("c_lf_%d", i), 1200, 1200);
+    // b
+    c_b[i]->cd();
+    gPad->SetLogx();
+    c_b[i]->SetRightMargin(0.15);
+    btag_eff_2D_b[i]->Draw("colz text e");
+    c_b[i]->Print(Form("plots/btagEfficiency/2dmap/%s/b/2D_btag_%s_%s_b.pdf", year.Data(), process[i].Data(), year.Data()));
+    // c
+    c_c[i]->cd();
+    gPad->SetLogx();
+    c_c[i]->SetRightMargin(0.15);
+    btag_eff_2D_c[i]->SetTitleOffset(1.3);
+    btag_eff_2D_c[i]->Draw("colz text e");
+    c_c[i]->Print(Form("plots/btagEfficiency/2dmap/%s/c/2D_btag_%s_%s_c.pdf", year.Data(), process[i].Data(), year.Data()));
+    // lf
+    c_lf[i]->cd();
+    c_lf[i]->SetRightMargin(0.15);
+    gPad->SetLogx();
+    btag_eff_2D_lf[i]->SetTitleOffset(1.3);
+    btag_eff_2D_lf[i]->Draw("colz text e");
+    c_lf[i]->Print(Form("plots/btagEfficiency/2dmap/%s/lf/2D_btag_%s_%s_lf.pdf", year.Data(), process[i].Data(), year.Data()));
   }
 
 
+}
 
+
+void lep_sf(TString year) {
+  TFile* f_els_sf = new TFile(Form("data/leptonsf/fullsim_electron_isolated_%s.root", year.Data()), "READ");
+  TFile* f_mus_sf = new TFile(Form("data/leptonsf/fullsim_muon_isolated_%s.root", year.Data()), "READ");
+
+  TH2D* els_sf = new TH2D();
+  TH2D* mus_sf = new TH2D();
+  els_sf = static_cast<TH2D*>(f_els_sf->Get("EGamma_SF2D")->Clone("els_sf1"));
+  mus_sf = static_cast<TH2D*>(f_mus_sf->Get("NUM_RazorPass_DEN_genTracks_abseta_pt")->Clone("mus_sf1"));
+
+  TCanvas* c_els_sf = new TCanvas("c_els_sf", "c_els_sf", 1200, 1200);
+  gPad->SetLogy();
+  c_els_sf->cd();
+  c_els_sf->SetRightMargin(0.2);
+  els_sf->GetXaxis()->SetTitle("SuperCluster #eta");
+  els_sf->GetXaxis()->SetTitleSize(0.2);
+  els_sf->GetXaxis()->SetLabelSize(0.03);
+  els_sf->GetYaxis()->SetTitle("p_{T} (GeV)");
+  els_sf->GetYaxis()->SetLabelSize(0.03);
+  els_sf->GetYaxis()->SetTitleSize(0.04);
+  els_sf->GetZaxis()->SetLabelSize(0.03);
+  els_sf->Draw("colz text");
+  c_els_sf->Print(Form("plots/lepsf/%s/els_sf_%s.pdf", year.Data(), year.Data()));
+
+  TCanvas* c_mus_sf = new TCanvas("c_mus_sf", "c_mus_sf", 1200, 1200);
+  gPad->SetLogy();
+  c_mus_sf->cd();
+  c_mus_sf->SetRightMargin(0.2);
+//  mus_sf->GetXaxis()->SetTitle("SuperCluster #eta");
+  mus_sf->GetXaxis()->SetTitleSize(0.2);
+  mus_sf->GetXaxis()->SetLabelSize(0.03);
+//  mus_sf->GetYaxis()->SetTitle("p_{T} (GeV)");
+  mus_sf->GetYaxis()->SetLabelSize(0.03);
+  mus_sf->GetYaxis()->SetTitleSize(0.04);
+  mus_sf->GetZaxis()->SetLabelSize(0.03);
+  mus_sf->GetZaxis()->SetTitle("");
+  mus_sf->SetTitle("#mu scale factors");
+  mus_sf->Draw("colz text");
+  c_mus_sf->Print(Form("plots/lepsf/%s/mus_sf_%s.pdf", year.Data(), year.Data()));
+
+
+  
 }
 
 int main(int argc, char *argv[]){
@@ -266,6 +274,14 @@ int main(int argc, char *argv[]){
     else if(flag=="btageffmap") {
       if(year=="UL2016_preVFP" || year=="UL2016" || year=="UL2017" || year=="UL2018") {
         btag_eff_map(year);
+      }
+      else {
+        cout << "ERROR::Please input year as UL2016_preVFP/UL2016/UL2017/UL2018" << endl;
+      }
+    }
+    else if(flag=="lepsf") {
+      if(year=="UL2016_preVFP" || year=="UL2016_postVFP" || year=="UL2017" || year=="UL2018") {
+        lep_sf(year);
       }
       else {
         cout << "ERROR::Please input year as UL2016_preVFP/UL2016/UL2017/UL2018" << endl;

@@ -39,6 +39,7 @@ using namespace std;
 
 void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString luminosity, 
                         TString filetype, TString namestyle, TString dir, bool doRatio, bool showcuts){
+  TH1::SetDefaultSumw2();
 
   TString outfolder("plots/"+dir);
   gSystem->mkdir(outfolder, kTRUE);
@@ -109,6 +110,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
   TString lumi_nodot = luminosity; lumi_nodot.ReplaceAll(".","p");
   TString plot_tag("_lumi"+lumi_nodot+filetype);
   float minLog = 0.5, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend
+//  float minLog = 0.01, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend // FIXME for objectreview
 
   double legLeft(style.PadLeftMargin+0.03), legRight(1-style.PadRightMargin-0.03);
   double legY(1-style.PadTopMargin-0.020)/*-0.027*/, legSingle = 0.052;//= 0.052
@@ -122,6 +124,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     leg[ileg].SetTextSize(style.LegendSize); leg[ileg].SetFillColor(0); 
     leg[ileg].SetFillStyle(0); leg[ileg].SetBorderSize(0);
     leg[ileg].SetTextFont(style.nFont); 
+//    leg[ileg].SetTextSize(0.03);  // FIXME for objectreview
   }
   TLine line; line.SetLineColor(1); line.SetLineWidth(5); line.SetLineStyle(2);
   vector< vector<TH1D*> > histo[2];
@@ -170,8 +173,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       int isam = vars[var].samples[sam];
       if(!Samples[isam].isSig && !Samples[isam].isData) nbkg++;
       samVariable = Samples[isam].samVariable;
-//      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
-      totCut = Samples[isam].factor+"*"+luminosity+"*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; //FIXME
+      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
+//      totCut = Samples[isam].factor+"*"+luminosity+"*frac16*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; //FIXME
+//      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; //FIXME
       if(Samples[isam].isData) totCut= vars[var].cuts+"&&"+Samples[isam].cut;
       if(vars[var].PU_reweight && !Samples[isam].isData) totCut = Samples[isam].factor+"*"+luminosity+"*weight*wpu*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
       cout<<"total cut: " << totCut<<endl;
@@ -291,11 +295,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	int maxbin = 20;
 	if(title.Contains("mus")) maxbin = 10;	
 	maxbin =2 ;
-        cout<< Samples[isam].label << " : " << "first bin content :" <<histo[0][var][sam]->Integral(1,1)  << endl;
-        //cout<< Samples[isam].label << " : " << "first bin content :" <<histo[0][var][sam]->GetBinContent(1)  << endl;
-        cout<< Samples[isam].label << " : " << "second bin content :" <<histo[0][var][sam]->Integral(2,2)  << endl;
-        cout<< Samples[isam].label << " : " << "third bin content :" <<histo[0][var][sam]->Integral(3,3)  << endl;
-	//cout<< Samples[isam].label << " : " << "bin 2 to max content :"  <<histo[0][var][sam]->Integral(2,maxbin) << endl;
+        cout<< Samples[isam].label << " : " << "first bin content:  " <<histo[0][var][sam]->Integral(1,1)  << endl;
+        cout<< Samples[isam].label << " : " << "second bin content: " <<histo[0][var][sam]->Integral(2,2)  << endl;
+        cout<< Samples[isam].label << " : " << "third bin content:  " <<histo[0][var][sam]->Integral(3,3)  << endl;
 	double error1(0), errorother(0);
 	double quad=0;
 	for(unsigned int ibin=1 ; ibin<maxbin ; ibin++){
@@ -305,8 +307,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	}
 	error1 = histo[0][var][sam]->GetBinError(1);
 	errorother = TMath::Sqrt(quad);
-        cout<< Samples[isam].label << " : " << "first bin error :" << error1 << endl;
-	cout<< Samples[isam].label << " : " << "bin 2 to max error :"  << errorother << endl;
+        cout<< Samples[isam].label << " : " << "first bin error : " << error1 << endl;
+	cout<< Samples[isam].label << " : " << "second bin error: " << histo[0][var][sam]->GetBinError(2) << endl;
+	cout<< Samples[isam].label << " : " << "third bin error:  " << histo[0][var][sam]->GetBinError(3) << endl;
 	//cout<< Samples[isam].label << " : " << "err first bin :" <<histo[0][var][sam]->GetBinError(1) << endl;
 	//for(unsigned int i=0;i<maxbin;i++) 
 //	cout<< Samples[isam].label << " : " << "bin 5 to max :" <<histo[0][var][sam]->Integral(5,maxbin) << endl;	
@@ -392,7 +395,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       for(int sam(Nsam-1); sam >= 0; sam--){
         int isam = vars[var].samples[sam];
         if(Samples[isam].isSig){if(!Samples[isam].mcerr) histo[0][var][sam]->Draw("hist same"); else histo[0][var][sam]->Draw("EP same"); }
-        if(Samples[isam].isData) histo[0][var][sam]->Draw("e0 same");
+        //if(Samples[isam].isData) histo[0][var][sam]->Draw("e0 same");
+        if(Samples[isam].isData) histo[0][var][sam]->Draw("same");
       }
       for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Draw(); 
 
@@ -430,7 +434,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           hratio_data->SetTitle("");
           hratio_data->Divide(histo[0][var][firstplotted]);
           hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
-          //hratio_data->GetYaxis()->SetRangeUser(0.8,1.2);//FIXME
+	  // L1 Prefiring Issue
+//          hratio_data->GetYaxis()->SetRangeUser(0.75,1.25);//FIXME // for L1 Prefiring Issue
           hratio_data->GetXaxis()->SetLabelOffset(0.025);
           hratio_data->GetXaxis()->SetLabelSize(style.LabelSize*2.2);
           hratio_data->GetYaxis()->SetLabelSize(style.LabelSize*2.1);
@@ -449,7 +454,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           histo[0][var][firstplotted]->GetXaxis()->SetLabelOffset(2.);
           //line at 1
           bpad->cd();
-          hratio_data->Draw("e0");
+          //hratio_data->Draw("e0");     //comment out when drawing pre-fit SR MJ templates
+          hratio_data->Draw();
 	  //          for (int ko=0; ko< hratio_data->GetNbinsX(); ko++){
           //  cout<<hratio_data->GetBinLowEdge(ko+1)<<" "<<(hratio_data->GetBinLowEdge(ko+1)+hratio_data->GetBinWidth(ko+1))
           //      <<hratio_data->GetBinContent(ko+1)<<std::endl;
@@ -469,6 +475,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       pad->cd();
       if(!namestyle.Contains("CMSPaper") || showcuts) {
 	TString lumilbl = TString::Format("%1.1f",luminosity.Atof())+" fb^{-1}, "+norm_s;
+//	TString lumilbl = TString::Format("%1.1f",luminosity.Atof())+" fb^{-1}"; // FIXME for pre-fit SR
+//	TString lumilbl = ""; // FIXME for HEM
 	TLatex llbl;
 	llbl.SetTextSize(style.LegendSize); 
 	llbl.SetNDC(); llbl.SetTextAlign(33);
@@ -575,11 +583,11 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
         if(vars[var].nevents.at(sam)<0){
 	  leg[ileg].SetX1NDC(0.23); leg[ileg].SetX2NDC(0.43); //220727 make plot look pretty
 	  leg[ileg].SetY1NDC(0.2); leg[ileg].SetY2NDC(0.35);
-	  if(sam>1) {     //230330 make plot look pretty, for Figure22~24 (mjsyst)
-	  //if(sam>3) {    //230330 make plot look pretty, for Figure16 (nbm=0 plots)
-	    leg[ileg].SetX1NDC(0.6); leg[ileg].SetX2NDC(0.8); //220727 make plot look pretty
-	    leg[ileg].SetY1NDC(0.55); leg[ileg].SetY2NDC(0.9);  //230109 make plot look pretty (Nb bin: 4 -> 5)
-            leg[ileg].SetTextSize(0.75*style.LegendSize);
+//	  if(sam>1) {     //230330 make plot look pretty, for Figure21~23 (mjsyst), Figure2
+	  if(sam>3) {    //230330 make plot look pretty, for Figure15, pre-postfit plots (nbm=0 plots)
+	    leg[ileg].SetX1NDC(0.6); leg[ileg].SetX2NDC(0.8); //220727 make plot look pretty, Figure2
+	    leg[ileg].SetY1NDC(0.55); leg[ileg].SetY2NDC(0.9);  //230109 make plot look pretty (Nb bin: 4 -> 5), Figure2
+//            leg[ileg].SetTextSize(0.75*style.LegendSize);    // 241223 Figure2, Figure21~23 // when plotting Figure15, pre-postfit plots, comment out this line
 	  }
           leghisto += " [#mu=";
           int digits(0);
@@ -588,9 +596,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
         } else{
 	    leg[ileg].SetX1NDC(0.5); leg[ileg].SetX2NDC(0.7); //220727 make plot look pretty
 	    leg[ileg].SetY1NDC(0.5); leg[ileg].SetY2NDC(0.7);
-//          leg[ileg].SetX1NDC(0.24); leg[ileg].SetX2NDC(0.7);
-          //leg[ileg].SetTextSize(0.75*style.LegendSize);
-          leg[ileg].SetTextSize(0.5*style.LegendSize);
+          leg[ileg].SetX1NDC(0.24); leg[ileg].SetX2NDC(0.7);    //231018 make plot look pretty, for Figure15 (nbm=0 plots)
+          leg[ileg].SetTextSize(0.75*style.LegendSize);
+          //leg[ileg].SetTextSize(0.5*style.LegendSize);
 	  if(vars[var].varname.Contains("tks")) leghisto +=  "[N_{tks} = " + RoundNumber(nentries[sam],1) + ", from N_{events} = "
             +RoundNumber(vars[var].nevents.at(sam),1)+"]";
         }
@@ -600,7 +608,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       else leg[ileg].AddEntry(histo[1][var][sam], leghisto, "p");
       legcount++;
     } // Loop over samples
-    for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Draw(); 
+//    for(int ileg(0); ileg<nLegs; ileg++) {leg[ileg].Draw(); leg[ileg].SetTextSize(0.03);} //FIXME for objectreview
+    for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Draw();
     if(vars[var].cut>0) line.DrawLine(vars[var].cut, 0, vars[var].cut, maxhisto*1.05);
 
     // Setting Y-axis for shapes plot (non-log)

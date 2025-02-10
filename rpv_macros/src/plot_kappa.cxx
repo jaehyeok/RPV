@@ -212,9 +212,28 @@ int main(int argc, char *argv[])
     if(argc>6) infile = TFile::Open(filename,"READ");
 
     TString year_str = year;
-    if(year=="UL2016_preVFP" || year=="UL2016_postVFP") year_str="UL2016";
-    else if(year=="UL2017"   || year=="UL2018") year_str="UL20178";
+    if(year=="UL2016_preVFP" || year=="UL2016_postVFP") year_str="2016";
+    else if(year=="UL2017"   || year=="UL2018") year_str="1718";
     // 2017_20178, 2018_20178 should be used for applying appropriate QCD kappa correction.
+    TString yr;
+    if(year=="UL2016_preVFP") yr="2016preVFP";
+    else if(year=="UL2016_postVFP") yr="2016postVFP";
+    else if(year=="UL2017") yr="2017";
+    else if(year=="UL2018") yr="2018";
+    
+    TString syst_name;
+    if(syst=="jer")                  syst_name="CMS_res_j";
+    else if(syst=="jec")             syst_name="CMS_scale_j";
+    else if(syst=="btag_bc_uncor")   syst_name="CMS_btag_fixedWP_comb_bc_uncorrelated";
+    else if(syst=="btag_bc_cor")     syst_name="CMS_btag_fixedWP_comb_bc_correlated";
+    else if(syst=="btag_udsg_uncor") syst_name="CMS_btag_fixedWP_incl_light_uncorrelated";
+    else if(syst=="btag_udsg_cor")   syst_name="CMS_btag_fixedWP_incl_light_correlated";
+    else if(syst=="mur")             syst_name="QCDscale_ren";
+    else if(syst=="muf")             syst_name="QCDscale_fac";
+    else if(syst=="murf")            syst_name="QCDscale";
+    else if(syst=="gs")              syst_name="CMS_gs";
+    else if(syst=="lep_eff")         syst_name="CMS_eff_lep";
+    else if(syst=="pileup")          syst_name="CMS_pileup";
 
     vector<vector<float>> kappa1;
     vector<vector<float>> kappa2;
@@ -262,25 +281,33 @@ int main(int argc, char *argv[])
       }
       else if(syst!="nominal"){
 	if(syst=="murf"||syst=="mur"||syst=="muf"){ //(murf, mur, and muf have different name from other systs in output file)
-          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_qcd_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
-          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_ttbar_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
-          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_wjets_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
+          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_qcd%s", ibin, syst_name.Data(), updo.Data()))); 
+          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_ttbar%s", ibin, syst_name.Data(), updo.Data()))); 
+          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_wjets%s", ibin, syst_name.Data(), updo.Data()))); 
           h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
           h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
           h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
 	}
-	else if((syst=="btag_bc_uncor") || (syst=="btag_udsg_uncor") || (syst=="jec") || (syst=="jer")){ // These systs should be uncorrelated
-          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
-          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
-          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst.Data(), year.Data(), updo.Data()))); 
+	else if((syst=="btag_bc_uncor") || (syst=="btag_udsg_uncor") || (syst=="jec") || (syst=="jer") || (syst=="pileup") || (syst=="lep_eff")){ // These systs should be uncorrelated
+          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst_name.Data(), yr.Data(), updo.Data()))); 
+          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst_name.Data(), yr.Data(), updo.Data()))); 
+          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst_name.Data(), yr.Data(), updo.Data()))); 
+          h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
+          h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
+          h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
+	}
+	else if(syst=="gs"||syst=="btag_bc_cor"||syst=="btag_udsg_cor") {
+          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s%s", ibin, syst_name.Data(), updo.Data()))); 
+          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s%s", ibin, syst_name.Data(), updo.Data()))); 
+          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s%s", ibin, syst_name.Data(), updo.Data()))); 
           h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
           h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
           h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
 	}
 	else {
-          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
-          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
-          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst.Data(), year_str.Data(), updo.Data()))); 
+          h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst_name.Data(), year_str.Data(), updo.Data()))); 
+          h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst_name.Data(), year_str.Data(), updo.Data()))); 
+          h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst_name.Data(), year_str.Data(), updo.Data()))); 
           h1_mj_data[ibin] = static_cast<TH1F*>(h1_mj_qcd_syst[ibin]->Clone(Form("h1_mj_mc_syst_bin%i", ibin))); 
           h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
           h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);

@@ -11,8 +11,8 @@ if __name__=="__main__":
     f_wjets = TFile("plots/mjsyst/"+year+"/mjsyst_wjets_"+year+".root","READ")
     
     for i in range(22,52):
-            if year == "UL2016_preVFP" or year == "UL2016_postVFP": year="UL2016"
-            elif year == "UL2017" or year == "UL2018": year="UL20178"
+            if year == "UL2016_preVFP" or year == "UL2016_postVFP": year="2016"
+            elif year == "UL2017" or year == "UL2018": year="1718"
             injets	= (i-1)%3
             inb	= int((i-22)/3+1)
             ind_njets = 10*(2*injets+4)+2*injets+5

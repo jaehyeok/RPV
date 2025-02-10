@@ -18,9 +18,9 @@ if __name__=="__main__":
             [0.21, 0.23],
             [0.21, 0.11]]
     unc_dy_UL2017 = [
-            [0.21, 0.18],
-            [0.23, 0.22],
-            [0.23, 0.17]]
+            [0.21, 0.19],
+            [0.23, 0.23],
+            [0.24, 0.18]]
     unc_dy_UL2018 = [
             [0.21, 0.20],
             [0.22, 0.19],
@@ -33,8 +33,8 @@ if __name__=="__main__":
     f_modi = TFile("variations/output_"+year+"_unc_dy.root","RECREATE")
 
     year_in = year
-    if year == "UL2016_preVFP" or year == "UL2016_postVFP": year_in="UL2016"
-    elif year == "UL2017" or year == "UL2018": year_in="UL20178"
+    if year == "UL2016_preVFP" or year == "UL2016_postVFP": year_in="2016"
+    elif year == "UL2017" or year == "UL2018": year_in="1718"
 
     # bin loop
     for i in range(22,52):

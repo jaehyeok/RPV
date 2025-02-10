@@ -55,6 +55,12 @@ void getOtherMuSyst(TString year, TString inputfile)
 {
   TH1::SetDefaultSumw2();
 
+  TString yr;
+  if(year=="UL2016_preVFP") yr="2016preVFP";
+  else if(year=="UL2016_postVFP") yr="2016postVFP";
+  else if(year=="UL2017") yr="2017";
+  else if(year=="UL2018") yr="2018";
+
   TFile *f_input = new TFile(inputfile, "Update");
 
   TH1F *other[52],      *other_jer_up[52], 	*other_jer_down[52];
@@ -69,12 +75,12 @@ void getOtherMuSyst(TString year, TString inputfile)
     gDirectory->cd(Form("/bin%d", ibin));
     // Get the histograms
     other[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/other", ibin)));
-    other_jer_up[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/other_jer_%sUp", ibin, year.Data())));
-    other_jer_down[ibin]  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/other_jer_%sDown", ibin, year.Data())));
+    other_jer_up[ibin] 	  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/other_CMS_res_j_%sUp", ibin, yr.Data())));
+    other_jer_down[ibin]  = static_cast<TH1F*>(f_input->Get(Form("/bin%d/other_CMS_res_j_%sDown", ibin, yr.Data())));
     for(int imass=0; imass<13; imass++) {
       signal[imass][ibin]          = static_cast<TH1F*>(f_input->Get(Form("/bin%d/signal_M%d", ibin, 1000+imass*100)));
-      signal_jer_up[imass][ibin]   = static_cast<TH1F*>(f_input->Get(Form("/bin%d/signal_M%d_jer_%sUp", ibin, 1000+imass*100, year.Data())));
-      signal_jer_down[imass][ibin] = static_cast<TH1F*>(f_input->Get(Form("/bin%d/signal_M%d_jer_%sDown", ibin, 1000+imass*100, year.Data())));
+      signal_jer_up[imass][ibin]   = static_cast<TH1F*>(f_input->Get(Form("/bin%d/signal_M%d_CMS_res_j_%sUp", ibin, 1000+imass*100, yr.Data())));
+      signal_jer_down[imass][ibin] = static_cast<TH1F*>(f_input->Get(Form("/bin%d/signal_M%d_CMS_res_j_%sDown", ibin, 1000+imass*100, yr.Data())));
     }
 
     // Clone the histograms

@@ -52,16 +52,19 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
   
     #load hists and calculate SFs for floating component for each variation
 
-    if sysName=='btag_bc_uncor' or sysName=='btag_udsg_uncor' or sysName=='jer' or sysName=='jec':
-        if str(Comb_year)=='UL2016':
+    if sysName=='CMS_btag_fixedWP_comb_bc_uncorrelated' or sysName=='CMS_btag_fixedWP_incl_light_uncorrelated' or sysName=='CMS_res_j' or sysName=='CMS_scale_j' or sysName=='CMS_pileup' or sysName=='CMS_eff_lep':
+        if str(Comb_year)=='2016':
             up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
             down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
-        elif str(Comb_year)=='UL20178':
+        elif str(Comb_year)=='1718':
             up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
             down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
-    elif sysName=='mur' or sysName=='muf' or sysName=='murf':
-        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_sig_" + str(Comb_year) + "Up")
-        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_sig_" + str(Comb_year) + "Down")
+    elif sysName=='QCDscale_ren' or sysName=='QCDscale_fac' or sysName=='QCDscale':
+        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_sigUp")
+        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_sigDown")
+    elif sysName=='CMS_gs' or sysName=='CMS_btag_fixedWP_comb_bc_correlated' or sysName=='CMS_btag_fixedWP_incl_light_correlated':
+        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Up")
+        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Down")
     else:
         up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Comb_year) + "Up")
         down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Comb_year) + "Down")
@@ -126,19 +129,19 @@ set_palette_gray()
 
 #make list of systematics- name, title, plot color and line style
 systList=[]
-systList.append(["gs","Gluon splitting",4,1])
-systList.append(["pileup","Pileup",10,1])
-systList.append(["btag_bc_uncor","b,c jet b-tag SF",5,1])
-systList.append(["btag_bc_cor","across-year correlated b,c jet b-tag SF",5,1])
-systList.append(["btag_udsg_uncor","u,d,s,g jet b-tag SF",6,1])
-systList.append(["btag_udsg_cor","across-year correlated u,d,s,g jet b-tag SF",6,1])
-systList.append(["jec","Jet energy scale",7,1])
-systList.append(["jer","Jet energy resolution",7,1])
-systList.append(["lep_eff","Lepton efficiency",9,1])
+systList.append(["CMS_gs","Gluon splitting",4,1])
+systList.append(["CMS_pileup","Pileup",10,1])
+systList.append(["CMS_btag_fixedWP_comb_bc_uncorrelated","#splitline{Across-year uncorrelated}{           b,c jet b-tag SF}",5,1])
+systList.append(["CMS_btag_fixedWP_comb_bc_correlated","#splitline{Across-year correlated}{           b,c jet b-tag SF}",5,1])
+systList.append(["CMS_btag_fixedWP_incl_light_uncorrelated","#splitline{Across-year uncorrelated}{     u,d,s,g jet b-tag SF}",6,1])
+systList.append(["CMS_btag_fixedWP_incl_light_correlated","#splitline{Across-year correlated}{     u,d,s,g jet b-tag SF}",6,1])
+systList.append(["CMS_scale_j","Jet energy scale",7,1])
+systList.append(["CMS_res_j","Jet energy resolution",7,1])
+systList.append(["CMS_eff_lep","Lepton efficiency",9,1])
 #systList.append(["isr","Initial state radiation",11,1])
-systList.append(["mur","Renormalization scale",16,1])
-systList.append(["muf","Factorization scale",17,1])
-systList.append(["murf","Renorm. and fact. scale",18,1])
+systList.append(["QCDscale_ren","Renormalization scale",16,1])
+systList.append(["QCDscale_fac","Factorization scale",17,1])
+systList.append(["QCDscale","Renorm. and fact. scale",18,1])
 systList.append(["mc_stat","MC statistics",1,2]) #must be done last!
 
 nSyst = len(systList)
@@ -296,7 +299,8 @@ for ibin in binList:
     table.SetZTitle("Uncertainty [%]")
     table.GetYaxis().SetTitleOffset(1.4)
     table.GetYaxis().SetTitleSize(0.054)
-    table.GetYaxis().SetLabelSize(0.045)
+    #table.GetYaxis().SetLabelSize(0.045)
+    table.GetYaxis().SetLabelSize(0.04)
     table.GetXaxis().SetTitleSize(0.04)
     table.Draw("colz text")
     ROOT.gPad.SetTicks(1,0)

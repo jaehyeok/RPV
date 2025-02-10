@@ -472,6 +472,28 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   ioctl(0,TIOCGWINSZ, &w);
   int cols = w.ws_col;
 
+  TString str_yr, yr;
+  if(str_year=="UL2016") str_yr="2016";
+  else if(str_year=="UL20178") str_yr="1718";
+  if(year=="UL2016_preVFP") yr="2016preVFP";
+  else if(year=="UL2016_postVFP") yr="2016postVFP";
+  else if(year=="UL2017") yr="2017";
+  else if(year=="UL2018") yr="2018";
+
+  TString variations_name;
+  if(variations=="jer") variations_name="CMS_res_j";
+  else if(variations=="jec") variations_name="CMS_scale_j";
+  else if(variations=="btag_bc_uncor") variations_name="CMS_btag_fixedWP_comb_bc_uncorrelated";
+  else if(variations=="btag_bc_cor") variations_name="CMS_btag_fixedWP_comb_bc_correlated";
+  else if(variations=="btag_udsg_uncor") variations_name="CMS_btag_fixedWP_incl_light_uncorrelated";
+  else if(variations=="btag_udsg_cor") variations_name="CMS_btag_fixedWP_incl_light_correlated";
+  else if(variations=="mur") variations_name="QCDscale_ren";
+  else if(variations=="muf") variations_name="QCDscale_fac";
+  else if(variations=="murf") variations_name="QCDscale";
+  else if(variations=="gs") variations_name="CMS_gs";
+  else if(variations=="lep_eff") variations_name="CMS_eff_lep";
+  else if(variations=="pileup") variations_name="CMS_pileup";
+
   cout << "Running syst      : " << variations << endl;  
   //TString procname = "qcd";
   TString nominalname = procname+"_"+variations+"_"+year;
@@ -580,8 +602,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         h_other_up = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Up",ibin)));
         h_other_down = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Down",ibin)));
         for(int iratio=0 ; iratio<3 ; iratio++){
-	 other_wgt_up[iratio][ibin]=h_other_up->GetBinContent(iratio+1);
-	 other_wgt_down[iratio][ibin]=h_other_down->GetBinContent(iratio+1);
+	  other_wgt_up[iratio][ibin]=h_other_up->GetBinContent(iratio+1);
+	  other_wgt_down[iratio][ibin]=h_other_down->GetBinContent(iratio+1);
+	  //other_wgt_up[iratio][ibin]=1;
+	  //other_wgt_down[iratio][ibin]=1;
 	}
       }
 
@@ -606,8 +630,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 //      kappa_syst[1][ibin][njbin][iproc] = TMath::Sqrt(kappa2_err*kappa2_err + (1-kappa2_cont)*(1-kappa2_cont));
 
       // Apply Mario's comment
-      kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err , TMath::Abs(1-kappa1_cont));
-      kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err , TMath::Abs(1-kappa2_cont));
+      //kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err/kappa1_cont , TMath::Abs(1-kappa1_cont));
+      //kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err/kappa2_cont , TMath::Abs(1-kappa2_cont));
+      kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err, TMath::Abs(1-kappa1_cont));
+      kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err, TMath::Abs(1-kappa2_cont));
       cout << "procname: " << procname << " / ibin: " << ibin << endl;
       cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
       kappa_wgt[0][njbin][iproc] = 1;
@@ -840,6 +866,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       if(tree.fromGS()==1){
         upweight    = upweight*(1.2*tree.fromGS());
         downweight  = downweight*(0.8*tree.fromGS()); 
+	// for gs 50% test
+        //upweight    = upweight*(1.5*tree.fromGS());
+        //downweight  = downweight*(0.5*tree.fromGS()); 
       }
     }
     if(variations=="gs67") 
@@ -1341,8 +1370,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
           downname = procname+"_"+temp_+"_"+year+"Down";
 	}
 	else{
-          upname = procname+"_"+temp_+"_"+str_year+"Up";
-          downname = procname+"_"+temp_+"_"+str_year+"Down";
+          upname = procname+"_"+temp_+"_"+str_yr+"Up";
+          downname = procname+"_"+temp_+"_"+str_yr+"Down";
 	}
 
         h1up_[ibin][kap-1]->SetTitle(upname.Data());
@@ -1358,12 +1387,12 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       TString procnamemu=procname;
       if(procname.Contains("signal"))procnamemu="sig";
       if(str_year==""){ // for 2017+2018 merging FIXME
-        upname = procname+"_"+variations+"_"+procnamemu+"_"+year+"Up";
-        downname = procname+"_"+variations+"_"+procnamemu+"_"+year+"Down";  //BJ_220922
+        upname = procname+"_"+variations_name+"_"+procnamemu+"Up";
+        downname = procname+"_"+variations_name+"_"+procnamemu+"Down";  //BJ_220922
       }
       else{
-        upname = procname+"_"+variations+"_"+procnamemu+"_"+str_year+"Up";
-        downname = procname+"_"+variations+"_"+procnamemu+"_"+str_year+"Down";  //BJ_220922
+        upname = procname+"_"+variations_name+"_"+procnamemu+"Up";
+        downname = procname+"_"+variations_name+"_"+procnamemu+"Down";  //BJ_220922
       }// */
 
       h1up[ibin]->SetTitle(upname.Data());
@@ -1373,10 +1402,11 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       h1up[ibin]->Write();
       h1down[ibin]->Write();
     }
-    else if((variations=="btag_bc_uncor") || (variations=="btag_udsg_uncor") || (variations=="jec") || (variations=="jer"))
+    else if((variations=="btag_bc_uncor") || (variations=="btag_udsg_uncor") || (variations=="jec") || (variations=="jer") ||
+	    (variations=="pileup")        || (variations=="lep_eff"))
     {
-      upname = procname+"_"+variations+"_"+year+"Up";
-      downname = procname+"_"+variations+"_"+year+"Down";
+      upname = procname+"_"+variations_name+"_"+yr+"Up";
+      downname = procname+"_"+variations_name+"_"+yr+"Down";
 
       h1up[ibin]->SetTitle(upname.Data());
       h1up[ibin]->SetName(upname.Data());
@@ -1385,15 +1415,27 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       h1up[ibin]->Write();
       h1down[ibin]->Write();
     }
+     else if((variations=="gs") || (variations=="btag_bc_cor") || (variations=="btag_udsg_cor"))
+    {
+      upname = procname+"_"+variations_name+"Up";
+      downname = procname+"_"+variations_name+"Down";
+
+      h1up[ibin]->SetTitle(upname.Data());
+      h1up[ibin]->SetName(upname.Data());
+      h1down[ibin]->SetTitle(downname.Data());
+      h1down[ibin]->SetName(downname.Data());
+      h1up[ibin]->Write();
+      h1down[ibin]->Write();
+    }   
     else 
     {
       if(str_year==""){ // for 2017+2018 merging FIXME
-        upname = procname+"_"+variations+"_"+year+"Up";
-        downname = procname+"_"+variations+"_"+year+"Down";
+        upname = procname+"_"+variations_name+"_"+year+"Up";
+        downname = procname+"_"+variations_name+"_"+year+"Down";
       }
       else{
-        upname = procname+"_"+variations+"_"+str_year+"Up";
-        downname = procname+"_"+variations+"_"+str_year+"Down";
+        upname = procname+"_"+variations_name+"_"+str_yr+"Up";
+        downname = procname+"_"+variations_name+"_"+str_yr+"Down";
       }//*/
 
       h1up[ibin]->SetTitle(upname.Data());

@@ -12,8 +12,8 @@ if __name__=="__main__":
     f_kapp = TFile("data/fit_kappa_summary_"+year+".root","READ")
 
     for i in range(22,52) :
-        if year == "UL2016_preVFP" or year == "UL2016_postVFP" : year="UL2016"
-        elif year == "UL2017" or year == "UL2018" : year="UL20178"
+        if year == "UL2016_preVFP" or year == "UL2016_postVFP" : year="2016"
+        elif year == "UL2017" or year == "UL2018" : year="1718"
         #Get histogram profiles from fit_kappa_summary file#
         injets  = (i-1)%3
         inb     = int((i-22)/3+1)

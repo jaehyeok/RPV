@@ -303,18 +303,28 @@ vector<double> LinearSpacing(size_t npts, double low, double high){
 vector<TString> folder_year(TString year, bool te){
   vector<TString> ret;
   if(te){
-    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/");
-//    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/");
-//    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/");
-//    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/");
+    ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_singlemu_data/");
+//    ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_singlemu_data/");
+//    ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_singlemu_data/");
+//    ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_singlemu_data/");
   }
   else{
 //UL
-    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_mc/");
-    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_data/");
-    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_sig/");
-    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_dy_mc/");
-    ret.push_back("/mnt/data3/babies/241201/"+year+"/merged_dy_data/");
+    ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_mc/");
+    ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_data/");
+    ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_sig/");
+    ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_dy_mc/");
+    ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_dy_data/");
+/*
+//yield test
+    ret.push_back("/mnt/data3/babies/241227_test_kappa_unc_by_changhwan/"+year+"/merged_rpvfitnbge0_mc/");
+    //ret.push_back("/mnt/data3/babies/241128_d0dz_study/"+year+"/JetHTRun_rpvfitnbge0_step3/"); // For w_btag test
+    //ret.push_back("/mnt/data3/babies/241128_d0dz_study_signal/"+year+"/");                     // For w_btag test
+    ret.push_back("/mnt/data3/babies/241227_test_kappa_unc_by_changhwan/"+year+"/merged_rpvfitnbge0_data/");
+    ret.push_back("/mnt/data3/babies/241227_test_kappa_unc_by_changhwan/"+year+"/merged_rpvfitnbge0_sig/");
+    ret.push_back("/mnt/data3/babies/241227_test_kappa_unc_by_changhwan/"+year+"/merged_dy_mc/");
+    ret.push_back("/mnt/data3/babies/241227_test_kappa_unc_by_changhwan/"+year+"/merged_dy_data/");
+*/
 /*
 //PL
     ret.push_back("/mnt/data3/babies/210910/"+year+"/merged_norm_JER_0903/");

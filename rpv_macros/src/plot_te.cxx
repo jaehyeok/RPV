@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	if(procname == "data"){ 
 		folder_singlemuon = folder_year(year,true).at(0);
 		folder_jetht      = folder_year(year,false).at(1);
-		//folder = "/mnt/data3/babies/241201/"+year+"/merged_singlemu_data/";
+		//folder = "/mnt/data3/babies/250110/"+year+"/merged_singlemu_data/";
 		vector<TString> s_singlemuon = getRPVProcess(folder_singlemuon,"data_te");
 		vector<TString> s_jetht      = getRPVProcess(folder_jetht,"data");
 		s_proc = s_singlemuon; 
@@ -158,7 +158,7 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 			else if(procname=="data") nomweight=tree.pass();
 			float trig;
 			float trig_mu; // I didn't apply this cut when nanoprocessing
-			if(year=="UL2016_preVFP"||year=="UL2016") {
+			if(year=="UL2016_preVFP"||year=="UL2016_postVFP") {
 				trig=(tree.trig_ht900()||tree.trig_jet450());
 				trig_mu=(tree.trig_isomu24());
 			}
@@ -184,8 +184,8 @@ void make_te(small_tree_rpv &tree, TFile *f, TString year, TString procname){
 		TString lumi;
 		if(year=="UL2016_preVFP") lumi = "19.5";
 		if(year=="UL2016_postVFP") lumi = "16.8";
-		if(year=="2017") lumi = "41.5";
-		if(year=="2018") lumi = "59.8";
+		if(year=="UL2017") lumi = "41.5";
+		if(year=="UL2018") lumi = "59.8";
 
 		TString cmslabel = "#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}";
 		TString lumilabel = TString::Format("%1.1f", lumi.Atof())+" fb^{-1}, 13 TeV";

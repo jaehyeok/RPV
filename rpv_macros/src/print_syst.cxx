@@ -50,9 +50,9 @@ void qcd_fake_ratio(TString year) {
 
 
 
-  TString folder_dat = "/mnt/data3/babies/241201/"+year+"/merged_qcdfake_data/";
-  TString folder_bkg = "/mnt/data3/babies/241201/"+year+"/merged_qcdfake_mc/";
-  TString folder_sig = "/mnt/data3/babies/241201/"+year+"/merged_qcdfake_sig/";
+  TString folder_dat = "/mnt/data3/babies/250110/"+year+"/merged_qcdfake_data/";
+  TString folder_bkg = "/mnt/data3/babies/250110/"+year+"/merged_qcdfake_mc/";
+  TString folder_sig = "/mnt/data3/babies/250110/"+year+"/merged_qcdfake_sig/";
 
   TChain* ch_dat = new TChain("tree");
   TChain* ch_sig = new TChain("tree");

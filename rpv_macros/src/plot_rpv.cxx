@@ -52,9 +52,9 @@ int main(int argc, char *argv[]){
   
   // ntuple folders
 
-  TString folder_dat = "/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_data/";
-  TString folder_bkg = "/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_mc/";
-  TString folder_sig = "/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_sig/";
+  TString folder_dat = "/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_data/";
+  TString folder_bkg = "/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_mc/";
+  TString folder_sig = "/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_sig/";
   
   cout << folder_dat << endl;
   cout << folder_bkg << endl;
@@ -80,11 +80,11 @@ int main(int argc, char *argv[]){
     s_wjets = getRPVProcess(folder_bkg,"wjets");
     s_other = getRPVProcess(folder_bkg,"other_public");
   }
-  else if(year=="20178") 
+  else if(year=="UL20178") 
   {
-    folder_dat = "/mnt/data3/babies/241201/UL2017/merged_rpvfitnbge0_data/";
-    folder_bkg = "/mnt/data3/babies/241201/UL2017/merged_rpvfitnbge0_mc/";
-    folder_sig = "/mnt/data3/babies/241201/UL2017/merged_rpvfitnbge0_sig/";
+    folder_dat = "/mnt/data3/babies/250110/UL2017/merged_rpvfitnbge0_data/";
+    folder_bkg = "/mnt/data3/babies/250110/UL2017/merged_rpvfitnbge0_mc/";
+    folder_sig = "/mnt/data3/babies/250110/UL2017/merged_rpvfitnbge0_sig/";
     
     s_data      = getRPVProcess(folder_dat,"data");
     s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");
@@ -93,9 +93,9 @@ int main(int argc, char *argv[]){
     s_wjets     = getRPVProcess(folder_bkg,"wjets");
     s_other     = getRPVProcess(folder_bkg,"other_public");
     
-    folder_dat = "/mnt/data3/babies/241201/UL2018/merged_rpvfitnbge0_data/";
-    folder_bkg = "/mnt/data3/babies/241201/UL2018/merged_rpvfitnbge0_mc/";
-    folder_sig = "/mnt/data3/babies/241201/UL2018/merged_rpvfitnbge0_sig/";
+    folder_dat = "/mnt/data3/babies/250110/UL2018/merged_rpvfitnbge0_data/";
+    folder_bkg = "/mnt/data3/babies/250110/UL2018/merged_rpvfitnbge0_mc/";
+    folder_sig = "/mnt/data3/babies/250110/UL2018/merged_rpvfitnbge0_sig/";
     
     vector<TString> s18_data      = getRPVProcess(folder_dat,"data");
     vector<TString> s18_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");

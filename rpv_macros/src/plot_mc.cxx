@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
   else if(year=="UL2018") lumi="59.8";
 
   // ntuple folders
-  TString folder_bkg = "/mnt/data3/babies/241201/"+year+"/merged_rpvfitnbge0_mc/";
+  TString folder_bkg = "/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_mc/";
 
   // Get file lists
   vector<TString> s_qcd_njet45   = getRPVProcess(folder_bkg,"qcd");

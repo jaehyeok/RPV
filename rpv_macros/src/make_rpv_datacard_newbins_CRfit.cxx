@@ -3021,7 +3021,6 @@ void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins
  for(auto ibin : bins){
    std::string temp = ibin;
    int binnumber = atoi(temp.erase(0,3).c_str());
-   if(binnumber>36) continue;
    file << ibin << " autoMCStats " << threshold << "\n";
  }
 }

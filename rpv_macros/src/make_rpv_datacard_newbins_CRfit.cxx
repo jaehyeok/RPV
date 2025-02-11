@@ -3026,15 +3026,13 @@ void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins
 }
 
 void outputrateParam( std::ofstream &file, const std::vector<std::string> &bins, TString year ){
-  TString yr_comb;
-  if(flag_merge=="UL2016"){
-    year = "UL2016";
-    yr_comb = "2016";
-  }
-  else if(flag_merge=="UL20178"){
-    year = "UL20178";
-    yr_comb = "1718";
-  }
+  TString yr_comb, yr;
+  if(year=="UL2016_preVFP") yr = "2016preVFP";
+  else if(year=="UL2016_postVFP") yr = "2016postVFP";
+  else if(year=="UL2017") yr = "2017";
+  else if(year=="UL2018") yr = "2018";
+  if(flag_merge=="UL2016") yr_comb = "2016";
+  else if(flag_merge=="UL20178") yr_comb = "1718";
   file << Form("normwjets_%s",yr_comb.Data()) << " rateParam * wjets 1.0 [0,20]  ";
   file << "\n";
   for(auto ibin : bins){
@@ -3044,9 +3042,9 @@ void outputrateParam( std::ofstream &file, const std::vector<std::string> &bins,
     tmpbin.Replace(0,3,"");
     i = atoi(tmpbin);
     if(i>36) continue;
-    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i) << " qcd 1.0 [0,20] ";
+    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,yr.Data()) << " rateParam " << Form("bin%d",i) << " qcd 1.0 [0,20] ";
     file << "\n";
-    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i+15) << " qcd 1.0 [0,20] ";
+    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,yr.Data()) << " rateParam " << Form("bin%d",i+15) << " qcd 1.0 [0,20] ";
     file << "\n";
     if(i<25){
       file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,yr_comb.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";

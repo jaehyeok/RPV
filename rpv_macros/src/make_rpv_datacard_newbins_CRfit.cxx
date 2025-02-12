@@ -3042,9 +3042,9 @@ void outputrateParam( std::ofstream &file, const std::vector<std::string> &bins,
     tmpbin.Replace(0,3,"");
     i = atoi(tmpbin);
     if(i>36) continue;
-    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,yr.Data()) << " rateParam " << Form("bin%d",i) << " qcd 1.0 [0,20] ";
+    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i) << " qcd 1.0 [0,20] ";
     file << "\n";
-    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,yr.Data()) << " rateParam " << Form("bin%d",i+15) << " qcd 1.0 [0,20] ";
+    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i+15) << " qcd 1.0 [0,20] ";
     file << "\n";
     if(i<25){
       file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,yr_comb.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";

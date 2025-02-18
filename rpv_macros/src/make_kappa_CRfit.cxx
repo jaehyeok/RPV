@@ -262,6 +262,15 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
   float lflavorValCentral = csv_weight->GetBinContent(3);
   float lflavorValError = csv_weight->GetBinError(3);
 
+  // QCD SF for norm difference in Nb=0 b/w qcd and data
+  TFile* f_qcd_nb0_sf = TFile::Open(Form("data/qcd_nb0_sf_%s.root", year.Data()), "READ");
+  TH1D* h_qcd_nb0_lownjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_lownjet_sf"));
+  TH1D* h_qcd_nb0_midnjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_midnjet_sf"));
+  TH1D* h_qcd_nb0_highnjet_sf = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_highnjet_sf"));
+  float qcd_nb0_lownjet_sf  = h_qcd_nb0_lownjet_sf->GetBinContent(1);
+  float qcd_nb0_midnjet_sf  = h_qcd_nb0_midnjet_sf->GetBinContent(1);
+  float qcd_nb0_highnjet_sf = h_qcd_nb0_highnjet_sf->GetBinContent(1);
+
   if(procname=="qcd")  
   {
     std::cout << "CSV fit low Njets results: " << std::endl;
@@ -372,7 +381,13 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
         index = find(bins.begin(), bins.end(), ibin) - bins.begin();
         float hmjmax = mjmax-0.001;
 	if(ibin>11) hmjmax = mjmin+(mjmax-mjmin)/3-0.001;
-        h1nominal[index]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), weight);  // nominal  
+	/*
+	if(procname=="qcd" && ibin==0) h1nominal[index]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), weight*qcd_nb0_lownjet_sf);
+	else if(procname=="qcd" && ibin==1) h1nominal[index]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), weight*qcd_nb0_midnjet_sf);
+	else if(procname=="qcd" && ibin==2) h1nominal[index]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), weight*qcd_nb0_highnjet_sf);
+	else h1nominal[index]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), weight);  // nominal  
+	*/
+	h1nominal[index]->Fill(tree.mj12()>hmjmax?hmjmax:tree.mj12(), weight);  // nominal  
       }
     }
   }

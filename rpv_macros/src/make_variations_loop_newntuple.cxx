@@ -576,6 +576,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   float kappa_wgt[2][3][3];
   float other_wgt_up[3][52];
   float other_wgt_down[3][nbins];
+  float qcd_nb0_sf[2][3][3];
   TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root","read");
   //TFile *f_kappa_syst = TFile::Open("data/result_kappa_2016_tmp.root","read");
   TFile *f_other_syst = TFile::Open("data/other_syst_"+year+".root","read");
@@ -587,6 +588,13 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     f_kappa_syst = TFile::Open("data/result_kappa_UL20178.root","read");
     cout<<"Combined UL20178 opened"<<endl;
   }
+  TFile* f_qcd_nb0_sf = TFile::Open(Form("data/qcd_nb0_sf_%s.root", year.Data()), "READ");
+  TH1D* h_qcd_nb0_lownjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_lownjet_sf"));
+  TH1D* h_qcd_nb0_midnjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_midnjet_sf"));
+  TH1D* h_qcd_nb0_highnjet_sf = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_highnjet_sf"));
+  float qcd_nb0_lownjet_sf  = h_qcd_nb0_lownjet_sf->GetBinContent(1);
+  float qcd_nb0_midnjet_sf  = h_qcd_nb0_midnjet_sf->GetBinContent(1);
+  float qcd_nb0_highnjet_sf = h_qcd_nb0_highnjet_sf->GetBinContent(1);
 
   // to make kappa_1, kapp_2 histograms which act independently
   TH1F * h1nominal_[nbins][2];
@@ -638,6 +646,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
       kappa_wgt[0][njbin][iproc] = 1;
       kappa_wgt[1][njbin][iproc] = 1;
+
       if(procname=="qcd") 
       {
         kappa_wgt[0][njbin][iproc] = kappa1_cont;
@@ -759,6 +768,21 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     // Central weights
     // 
     float nominalweight = lumi*tree.weight()*tree.pass();
+    /*
+    // apply qcd SF for nb0 difference b/w data and qcd
+    if(procname=="qcd") {
+      if(tree.nleps()==0) {
+        if(tree.njets()>=6 && tree.njets()<=7) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_lownjet_sf;
+	else if(tree.njets()>=8 && tree.njets()<=9) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_midnjet_sf;
+	else if(tree.njets()>=10) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_highnjet_sf;
+      }
+      else if(tree.nleps()==1) {
+        if(tree.njets()>=4 && tree.njets()<=5) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_lownjet_sf;
+	else if(tree.njets()>=6 && tree.njets()<=7) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_midnjet_sf;
+	else if(tree.njets()>=8) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_highnjet_sf;
+      }
+    }
+    */
     if (procname=="data_obs" && (year=="UL2016_preVFP"||year=="UL2016_postVFP"||year=="UL2016")) nominalweight = tree.pass() * (tree.trig_ht900()||tree.trig_jet450());
     else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
 /*

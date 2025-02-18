@@ -11,6 +11,7 @@
 #include "TSystem.h"
 
 void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
+void outputQCD_relative_year(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
 void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
 void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins, TString year);
@@ -357,6 +358,8 @@ int main(int argc, char *argv[])
 
   //output the QCD normalization and Nleps connection
   outputQCD(file, bins.at(ipair), cardType, year);
+
+  outputQCD_relative_year(file, bins.at(ipair), cardType, year);
 
   // output MC kappa systematics
   outputMCkappaSystematics(file, bins.at(ipair), filename, year);
@@ -1071,6 +1074,98 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
     }
   }
+
+  void outputQCD_relative_year(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
+
+    TString lownjcon_, mednjcon_, highnjcon_;
+    if(year=="UL2016_preVFP"){
+      lownjcon_ = "1.01";
+      mednjcon_ = "1.01";
+      highnjcon_ = "1.01";
+    }
+    else if(year=="UL2016_postVFP"){
+      lownjcon_ = "1.03";
+      mednjcon_ = "1.02";
+      highnjcon_ = "1.05";
+    }
+    else if(year=="UL2017"){
+      lownjcon_ = "1.01";
+      mednjcon_ = "1.01";
+      highnjcon_ = "1.01";
+    }
+    else if(year=="UL2018"){
+      lownjcon_ = "1.10";
+      mednjcon_ = "1.10";
+      highnjcon_ = "1.11";
+    }
+
+    TString yr, yr_comb;
+    if(year=="UL2016_preVFP"){
+      yr = "2016preVFP";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2016_postVFP"){
+      yr = "2016postVFP";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2017"){
+      yr = "2017";
+      yr_comb = "1718";
+    }
+    else if(year=="UL2018"){
+      yr = "2018";
+      yr_comb = "1718";
+    }
+
+    //create map between bin name and bin index
+    map<string, int> bindex;
+    vector<TString> all_bins;
+    for(uint ibin=22; ibin<52; ibin++){
+      bindex[Form("bin%d",ibin)]=9999;
+      all_bins.push_back(Form("bin%d",ibin));
+    }
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+if(cardType!="control")  // do not need Njets connection for CR fit
+    {
+      //create template line
+      TString line;
+      for(uint idash=0; idash<(nprocesses*nbins); idash++)
+        line+="-    ";
+
+      TString tmpLine;
+      TString tmpbin;
+      int numbin;
+
+      for(auto jbin:bins){
+        tmpLine = line;
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+        if(numbin<37) continue;
+
+        if(bindex[tmpbin.Data()]==9999) continue;
+        if(numbin%3==1) {
+          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),4, lownjcon_.Data());
+          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),4, lownjcon_.Data());
+        }
+        else if(numbin%3==2) {
+          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),4, mednjcon_.Data());
+          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),4, mednjcon_.Data());
+        }
+        else if(numbin%3==0) {
+          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),4, highnjcon_.Data());
+          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),4, highnjcon_.Data());
+        }
+        tmpLine.Prepend(Form("normqcd_relative_bin%d_bin%d_%s        lnN  ", numbin-15, numbin, yr_comb.Data()));
+        file << tmpLine.Data() << endl;
+
+      }
+    }
+
+  }
+
   // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
   void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
 

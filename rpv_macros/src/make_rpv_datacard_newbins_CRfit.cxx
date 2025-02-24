@@ -1434,6 +1434,14 @@ if(cardType!="control")  // do not need Njets connection for CR fit
           else file << " - - - - - ";//accept systematics to signal and other
     }
     file << "\n";
+    file << "ps_isr" << "       lnN ";
+    for(unsigned int index=0; index<nbins; index++){
+          std::string temp = bins.at(index);
+          int binnumber = atoi(temp.erase(0,3).c_str());
+          if(binnumber<37) file << " 1.01 - - - 1.01 ";//accept systematics to signal and other
+          else file << " - - - - - ";//accept systematics to signal and other
+    }
+    file << "\n";
   }
 
 void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year)

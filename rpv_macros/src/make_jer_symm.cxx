@@ -113,8 +113,8 @@ void getOtherMuSyst(TString year, TString inputfile)
       other_jer_down[ibin]->SetBinContent(imj+1, other[ibin]->GetBinContent(imj+1) - other[ibin]->GetBinContent(imj+1)*TMath::Abs((clone_other_jer_up[ibin]->GetBinContent(imj+1)-1)));
 
     }
-    other_jer_up[ibin]->Write(Form("other_jer_%sUp", year.Data()), TObject::kOverwrite);
-    other_jer_down[ibin]->Write(Form("other_jer_%sDown", year.Data()), TObject::kOverwrite);
+    other_jer_up[ibin]->Write(Form("other_CMS_res_j_%sUp", year.Data()), TObject::kOverwrite);
+    other_jer_down[ibin]->Write(Form("other_CMS_res_j_%sDown", year.Data()), TObject::kOverwrite);
 //    cout << Form("MJ[1]  %3.1f : %3.1f : %3.1f", other_jer_down[ibin]->GetBinContent(1), other[ibin]->GetBinContent(1), other_jer_up[ibin]->GetBinContent(1)) << endl;
 //    cout << Form("MJ[2]  %3.1f : %3.1f : %3.1f", other_jer_down[ibin]->GetBinContent(2), other[ibin]->GetBinContent(2), other_jer_up[ibin]->GetBinContent(2)) << endl;
 //    cout << Form("MJ[3]  %3.1f : %3.1f : %3.1f", other_jer_down[ibin]->GetBinContent(3), other[ibin]->GetBinContent(3), other_jer_up[ibin]->GetBinContent(3)) << endl;
@@ -130,8 +130,8 @@ void getOtherMuSyst(TString year, TString inputfile)
   	signal_jer_down[imass][ibin]->SetBinContent(imj+1, signal[imass][ibin]->GetBinContent(imj+1) - signal[imass][ibin]->GetBinContent(imj+1)*TMath::Abs((clone_signal_jer_up[imass][ibin]->GetBinContent(imj+1)-1)));
   
       }
-      signal_jer_up[imass][ibin]->Write(Form("signal_M%d_jer_%sUp", 1000+imass*100, year.Data()), TObject::kOverwrite);
-      signal_jer_down[imass][ibin]->Write(Form("signal_M%d_jer_%sDown", 1000+imass*100, year.Data()), TObject::kOverwrite);
+      signal_jer_up[imass][ibin]->Write(Form("signal_M%d_CMS_res_j_%sUp", 1000+imass*100, year.Data()), TObject::kOverwrite);
+      signal_jer_down[imass][ibin]->Write(Form("signal_M%d_CMS_res_j_%sDown", 1000+imass*100, year.Data()), TObject::kOverwrite);
 //      cout << Form("MJ[1]  %3.1f : %3.1f : %3.1f", signal_jer_down[imass][ibin]->GetBinContent(1), signal[imass][ibin]->GetBinContent(1), signal_jer_up[imass][ibin]->GetBinContent(1)) << endl;
 //      cout << Form("MJ[2]  %3.1f : %3.1f : %3.1f", signal_jer_down[imass][ibin]->GetBinContent(2), signal[imass][ibin]->GetBinContent(2), signal_jer_up[imass][ibin]->GetBinContent(2)) << endl;
 //      cout << Form("MJ[3]  %3.1f : %3.1f : %3.1f", signal_jer_down[imass][ibin]->GetBinContent(3), signal[imass][ibin]->GetBinContent(3), signal_jer_up[imass][ibin]->GetBinContent(3)) << endl;

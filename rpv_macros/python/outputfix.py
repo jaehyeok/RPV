@@ -59,18 +59,18 @@ if __name__=="__main__":
             #Making MC_kappa#
             ind_njets = 10*(2*injets+4)+2*injets+5
             if ind_njets==89 : ind_njets=8
-            h_mc_kap1_up   = h_mc.Clone(proc+"_MC_kappa1_njets"+str(ind_njets)+"_"+year+"Up")  # Clone : naming?
-            h_mc_kap1_down = h_mc.Clone(proc+"_MC_kappa1_njets"+str(ind_njets)+"_"+year+"Down")
-            h_mc_kap2_up   = h_mc.Clone(proc+"_MC_kappa2_njets"+str(ind_njets)+"_"+year+"Up")
-            h_mc_kap2_down = h_mc.Clone(proc+"_MC_kappa2_njets"+str(ind_njets)+"_"+year+"Down")
-            h_mc_kap1_jec_up   = h_mc.Clone(proc+"_MC_kappa1_jec_njets"+str(ind_njets)+"_"+year+"Up")
-            h_mc_kap1_jec_down = h_mc.Clone(proc+"_MC_kappa1_jec_njets"+str(ind_njets)+"_"+year+"Down")
-            h_mc_kap2_jec_up   = h_mc.Clone(proc+"_MC_kappa2_jec_njets"+str(ind_njets)+"_"+year+"Up")
-            h_mc_kap2_jec_down = h_mc.Clone(proc+"_MC_kappa2_jec_njets"+str(ind_njets)+"_"+year+"Down")
-            h_mc_kap1_jer_up   = h_mc.Clone(proc+"_MC_kappa1_jer_njets"+str(ind_njets)+"_"+year+"Up")
-            h_mc_kap1_jer_down = h_mc.Clone(proc+"_MC_kappa1_jer_njets"+str(ind_njets)+"_"+year+"Down")
-            h_mc_kap2_jer_up   = h_mc.Clone(proc+"_MC_kappa2_jer_njets"+str(ind_njets)+"_"+year+"Up")
-            h_mc_kap2_jer_down = h_mc.Clone(proc+"_MC_kappa2_jer_njets"+str(ind_njets)+"_"+year+"Down")
+            h_mc_kap1_up   = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa1_njets"+str(ind_njets)+"_"+year+"Up")  # Clone : naming?
+            h_mc_kap1_down = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa1_njets"+str(ind_njets)+"_"+year+"Down")
+            h_mc_kap2_up   = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa2_njets"+str(ind_njets)+"_"+year+"Up")
+            h_mc_kap2_down = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa2_njets"+str(ind_njets)+"_"+year+"Down")
+            h_mc_kap1_jec_up   = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa1_jec_njets"+str(ind_njets)+"_"+year+"Up")
+            h_mc_kap1_jec_down = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa1_jec_njets"+str(ind_njets)+"_"+year+"Down")
+            h_mc_kap2_jec_up   = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa2_jec_njets"+str(ind_njets)+"_"+year+"Up")
+            h_mc_kap2_jec_down = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa2_jec_njets"+str(ind_njets)+"_"+year+"Down")
+            h_mc_kap1_jer_up   = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa1_jer_njets"+str(ind_njets)+"_"+year+"Up")
+            h_mc_kap1_jer_down = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa1_jer_njets"+str(ind_njets)+"_"+year+"Down")
+            h_mc_kap2_jer_up   = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa2_jer_njets"+str(ind_njets)+"_"+year+"Up")
+            h_mc_kap2_jer_down = h_mc.Clone(proc+"_CMS_SUS21005_MC_kappa2_jer_njets"+str(ind_njets)+"_"+year+"Down")
 
             #Applying Kappa Correction#
             h_mc_kap1_up.SetBinContent(2,h_mc_kap1_up.GetBinContent(2)*(1+kap1_cor_up))			#total

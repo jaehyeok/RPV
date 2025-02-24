@@ -49,10 +49,10 @@ if __name__=="__main__":
         h_proc    = TH1F(f_orig.Get("bin"+str(i)+"/wjets"))
         h_wjets   = h_proc.Clone("h_wjets")
 
-        h_kap1_up   = h_wjets.Clone("wjets_kappa1_unc_dy_njets"+str(ind_njets)+"_wjets_"+year_in+"Up")
-        h_kap1_down = h_wjets.Clone("wjets_kappa1_unc_dy_njets"+str(ind_njets)+"_wjets_"+year_in+"Down")
-        h_kap2_up   = h_wjets.Clone("wjets_kappa2_unc_dy_njets"+str(ind_njets)+"_wjets_"+year_in+"Up")
-        h_kap2_down = h_wjets.Clone("wjets_kappa2_unc_dy_njets"+str(ind_njets)+"_wjets_"+year_in+"Down")
+        h_kap1_up   = h_wjets.Clone("wjets_CMS_SUS21005_kappa1_unc_dy_njets"+str(ind_njets)+"_wjets_"+year_in+"Up")
+        h_kap1_down = h_wjets.Clone("wjets_CMS_SUS21005_kappa1_unc_dy_njets"+str(ind_njets)+"_wjets_"+year_in+"Down")
+        h_kap2_up   = h_wjets.Clone("wjets_CMS_SUS21005_kappa2_unc_dy_njets"+str(ind_njets)+"_wjets_"+year_in+"Up")
+        h_kap2_down = h_wjets.Clone("wjets_CMS_SUS21005_kappa2_unc_dy_njets"+str(ind_njets)+"_wjets_"+year_in+"Down")
 
         # Apply kappa uncertainty
         if year == "UL2016_preVFP":

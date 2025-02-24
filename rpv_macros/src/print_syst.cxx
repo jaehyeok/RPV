@@ -94,9 +94,23 @@ void qcd_fake_ratio(TString year) {
   TString cut_fake_muon = "(mj12<500 && ht>1200 && (nbm==0) && mus_pt>20 && abs(mus_eta)<2.4 && (mus_miniso>=0.2 || mus_sigid==0) && met<50)";
    
 
+  // QCD SF for norm difference in Nb=0 b/w qcd and data
+  TFile* f_qcd_nb0_sf = TFile::Open(Form("data/qcd_nb0_sf_%s.root", year.Data()), "READ");
+  TH1D* h_qcd_nb0_lownjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_lownjet_sf"));
+  TH1D* h_qcd_nb0_midnjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_midnjet_sf"));
+  TH1D* h_qcd_nb0_highnjet_sf = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_highnjet_sf"));
+  float qcd_nb0_lownjet_sf  = h_qcd_nb0_lownjet_sf->GetBinContent(1);
+  float qcd_nb0_midnjet_sf  = h_qcd_nb0_midnjet_sf->GetBinContent(1);
+  float qcd_nb0_highnjet_sf = h_qcd_nb0_highnjet_sf->GetBinContent(1);
+
   for(auto injet : njetcuts) {
 
     cout << "njetcuts: " << injet << endl;
+
+    float qcd_nb0_sf=0;
+    if(injet=="(njets>=4&&njets<=5)") qcd_nb0_sf=qcd_nb0_lownjet_sf;
+    else if(injet=="(njets>=6&&njets<=7)") qcd_nb0_sf=qcd_nb0_midnjet_sf;
+    else if(injet=="(njets>=8)") qcd_nb0_sf=qcd_nb0_highnjet_sf;
 
     TH1D* h_dat_real_ele = new TH1D("h_dat_real_ele","h_dat_real_ele",1,0,1500);
     TH1D* h_sig_real_ele = new TH1D("h_sig_real_ele","h_sig_real_ele",1,0,1500);
@@ -127,25 +141,25 @@ void qcd_fake_ratio(TString year) {
     // real electron
     ch_dat->Draw("min(ht,1499.99)>>h_dat_real_ele", "pass*("+trigger+"&&"+injet+"&&"+cut_real_ele+")", "goff");
     ch_sig->Draw("min(ht,1499.99)>>h_sig_real_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_ele+")", "goff");
-    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_real_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_ele+")", "goff");
+    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_real_ele", lumi+"*"+qcd_nb0_sf+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_ele+")", "goff");
     ch_bkg->Draw("min(ht,1499.99)>>h_bkg_real_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_ele+")", "goff");
 
     // fake electron
     ch_dat->Draw("min(ht,1499.99)>>h_dat_fake_ele", "pass*("+trigger+"&&"+injet+"&&"+cut_fake_ele+")", "goff");
     ch_sig->Draw("min(ht,1499.99)>>h_sig_fake_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_ele+")", "goff");
-    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_fake_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_ele+")", "goff");
+    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_fake_ele", lumi+"*"+qcd_nb0_sf+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_ele+")", "goff");
     ch_bkg->Draw("min(ht,1499.99)>>h_bkg_fake_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_ele+")", "goff");
 
     // real muon
     ch_dat->Draw("min(ht,1499.99)>>h_dat_real_muon", "pass*("+trigger+"&&"+injet+"&&"+cut_real_muon+")", "goff");
     ch_sig->Draw("min(ht,1499.99)>>h_sig_real_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_muon+")", "goff");
-    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_real_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_muon+")", "goff");
+    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_real_muon", lumi+"*"+qcd_nb0_sf+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_muon+")", "goff");
     ch_bkg->Draw("min(ht,1499.99)>>h_bkg_real_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_muon+")", "goff");
 
     // fake muon
     ch_dat->Draw("min(ht,1499.99)>>h_dat_fake_muon", "pass*("+trigger+"&&"+injet+"&&"+cut_fake_muon+")", "goff");
     ch_sig->Draw("min(ht,1499.99)>>h_sig_fake_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_muon+")", "goff");
-    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_fake_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_muon+")", "goff");
+    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_fake_muon", lumi+"*"+qcd_nb0_sf+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_muon+")", "goff");
     ch_bkg->Draw("min(ht,1499.99)>>h_bkg_fake_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_muon+")", "goff");
 
     /*

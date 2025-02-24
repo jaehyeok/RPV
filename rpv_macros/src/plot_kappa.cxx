@@ -232,7 +232,8 @@ int main(int argc, char *argv[])
     else if(syst=="muf")             syst_name="QCDscale_fac";
     else if(syst=="murf")            syst_name="QCDscale";
     else if(syst=="gs")              syst_name="CMS_gs";
-    else if(syst=="lep_eff")         syst_name="CMS_eff_lep";
+    else if(syst=="els_eff")         syst_name="CMS_eff_e";
+    else if(syst=="mus_eff")         syst_name="CMS_eff_m";
     else if(syst=="pileup")          syst_name="CMS_pileup";
 
     vector<vector<float>> kappa1;
@@ -288,7 +289,7 @@ int main(int argc, char *argv[])
           h1_mj_data[ibin]->Add(h1_mj_ttbar_syst[ibin]);
           h1_mj_data[ibin]->Add(h1_mj_wjets_syst[ibin]);
 	}
-	else if((syst=="btag_bc_uncor") || (syst=="btag_udsg_uncor") || (syst=="jec") || (syst=="jer") || (syst=="pileup") || (syst=="lep_eff")){ // These systs should be uncorrelated
+	else if((syst=="btag_bc_uncor") || (syst=="btag_udsg_uncor") || (syst=="jec") || (syst=="jer") || (syst=="pileup") || (syst=="els_eff") || (syst=="mus_eff")){ // These systs should be uncorrelated
           h1_mj_qcd_syst[ibin]   = static_cast<TH1F*>(infile->Get(Form("bin%i/qcd_%s_%s%s", ibin, syst_name.Data(), yr.Data(), updo.Data()))); 
           h1_mj_ttbar_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar_%s_%s%s", ibin, syst_name.Data(), yr.Data(), updo.Data()))); 
           h1_mj_wjets_syst[ibin] = static_cast<TH1F*>(infile->Get(Form("bin%i/wjets_%s_%s%s", ibin, syst_name.Data(), yr.Data(), updo.Data()))); 

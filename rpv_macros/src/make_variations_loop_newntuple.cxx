@@ -491,7 +491,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   else if(variations=="muf") variations_name="QCDscale_fac";
   else if(variations=="murf") variations_name="QCDscale";
   else if(variations=="gs") variations_name="CMS_gs";
-  else if(variations=="lep_eff") variations_name="CMS_eff_lep";
+  else if(variations=="els_eff") variations_name="CMS_eff_e";
+  else if(variations=="mus_eff") variations_name="CMS_eff_m";
   else if(variations=="pileup") variations_name="CMS_pileup";
 
   cout << "Running syst      : " << variations << endl;  
@@ -919,12 +920,21 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         downweight  = downweight*(1-gs_dmc_syst[3]*tree.fromGS()); 
       } 
     }
-    if(variations=="lep_eff") 
+    if(variations=="els_eff") 
     {   
-      //upweight    = upweight*tree.w_lep();
-      //downweight  = downweight*(2-tree.w_lep());
-      upweight    = upweight*tree.sys_lep()[0]/tree.w_lep();
-      downweight  = downweight*tree.sys_lep()[1]/tree.w_lep();
+      //if(tree.nels()!=0) {
+      if(tree.nels()==1 && tree.nleps()==1) {
+        upweight    = upweight*tree.sys_lep()[0]/tree.w_lep();
+        downweight  = downweight*tree.sys_lep()[1]/tree.w_lep();
+      }
+    }
+    if(variations=="mus_eff") 
+    {   
+      //if(tree.nmus()!=0) {
+      if(tree.nmus()==1 && tree.nleps()==1) {
+        upweight    = upweight*tree.sys_lep()[0]/tree.w_lep();
+        downweight  = downweight*tree.sys_lep()[1]/tree.w_lep();
+      }
     }
     if(variations=="pileup") 
     {
@@ -1383,9 +1393,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     {
       for(int kap=1; kap<3; kap++){
         TString temp_;
-        if(ibin%3==1) temp_ = Form("kappa%d_njets45_%s",kap, procname.Data());
-        else if(ibin%3==2) temp_ = Form("kappa%d_njets67_%s",kap, procname.Data());
-        else if(ibin%3==0) temp_ = Form("kappa%d_njets8_%s",kap, procname.Data());
+        if(ibin%3==1) temp_ = Form("CMS_SUS21005_kappa%d_njets45_%s",kap, procname.Data());
+        else if(ibin%3==2) temp_ = Form("CMS_SUS21005_kappa%d_njets67_%s",kap, procname.Data());
+        else if(ibin%3==0) temp_ = Form("CMS_SUS21005_kappa%d_njets8_%s",kap, procname.Data());
 
         if(procname=="other"||procname.Contains("signal")) continue;
 
@@ -1406,18 +1416,38 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         h1down_[ibin][kap-1]->Write();
       }
     }
-    else if(variations.Contains("mu")) 
+    else if(variations.Contains("mu") && !(variations.Contains("mus_eff"))) 
     {
-      TString procnamemu=procname;
-      if(procname.Contains("signal"))procnamemu="sig";
-      if(str_year==""){ // for 2017+2018 merging FIXME
-        upname = procname+"_"+variations_name+"_"+procnamemu+"Up";
-        downname = procname+"_"+variations_name+"_"+procnamemu+"Down";  //BJ_220922
+      if(procname.Contains("signal")) {
+        if(str_year==""){ // for 2017+2018 merging FIXME
+          upname = procname+"_"+variations_name+"_t1tbsUp";
+          downname = procname+"_"+variations_name+"_t1tbsDown";
+        }
+        else{
+          upname = procname+"_"+variations_name+"_t1tbsUp";
+          downname = procname+"_"+variations_name+"_t1tbsDown";
+        }// */
       }
-      else{
-        upname = procname+"_"+variations_name+"_"+procnamemu+"Up";
-        downname = procname+"_"+variations_name+"_"+procnamemu+"Down";  //BJ_220922
-      }// */
+      else if(procname.Contains("other")) {
+        if(str_year==""){ // for 2017+2018 merging FIXME
+          upname = procname+"_"+variations_name+"_st_ttx_ewkUp";
+          downname = procname+"_"+variations_name+"_st_ttx_ewkDown";
+        }
+        else{
+          upname = procname+"_"+variations_name+"_st_ttx_ewkUp";
+          downname = procname+"_"+variations_name+"_st_ttx_ewkDown";
+        }// */
+      }
+      else {
+        if(str_year==""){ // for 2017+2018 merging FIXME
+          upname = procname+"_"+variations_name+"_"+procname+"Up";
+          downname = procname+"_"+variations_name+"_"+procname+"Down";
+        }
+        else{
+          upname = procname+"_"+variations_name+"_"+procname+"Up";
+          downname = procname+"_"+variations_name+"_"+procname+"Down";
+	}
+      }
 
       h1up[ibin]->SetTitle(upname.Data());
       h1up[ibin]->SetName(upname.Data());
@@ -1427,7 +1457,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       h1down[ibin]->Write();
     }
     else if((variations=="btag_bc_uncor") || (variations=="btag_udsg_uncor") || (variations=="jec") || (variations=="jer") ||
-	    (variations=="pileup")        || (variations=="lep_eff"))
+	    (variations=="pileup")        || (variations=="els_eff")         || (variations=="mus_eff"))
     {
       upname = procname+"_"+variations_name+"_"+yr+"Up";
       downname = procname+"_"+variations_name+"_"+yr+"Down";

@@ -42,7 +42,8 @@ TString convert_systname(TString systname){
   else if(systname=="btag_udsg_cor") real_systname="correlated u,d,s,g jet b-tag SF";
   else if(systname=="jec") real_systname="jet energy scale";
   else if(systname=="jer") real_systname="jet energy resolution";
-  else if(systname=="lep_eff") real_systname="lepton efficiency";
+  else if(systname=="els_eff") real_systname="electron efficiency";
+  else if(systname=="mus_eff") real_systname="muon efficiency";
   else if(systname=="isr") real_systname="initial state radiation";
   else if(systname=="mur") real_systname="renormalization scale";
   else if(systname=="muf") real_systname="factorization scale";
@@ -56,14 +57,15 @@ int linecolor(unsigned int isyst){
   else if(isyst==1) icolor=6;
   else if(isyst==2) icolor=7;
   else if(isyst==3) icolor=13; //
-  else if(isyst==4) icolor=21; //
-  else if(isyst==5) icolor=28;
-  else if(isyst==6) icolor=38;
-  else if(isyst==7) icolor=46;
-  else if(isyst==8) icolor=51;
-  else if(isyst==9) icolor=87;
-  else if(isyst==10) icolor=95;
-  else if(isyst==11) icolor=3;
+  else if(isyst==4) icolor=900; //
+  else if(isyst==5) icolor=21; //
+  else if(isyst==6) icolor=28;
+  else if(isyst==7) icolor=38;
+  else if(isyst==8) icolor=46;
+  else if(isyst==9) icolor=51;
+  else if(isyst==10) icolor=87;
+  else if(isyst==11) icolor=95;
+  else if(isyst==12) icolor=3;
   return icolor;
 }
 
@@ -111,7 +113,7 @@ int main(int argc, char *argv[]){
 
   vector<TString> syst_list; 
   syst_list = {"jec", "jer", 
-	       "pileup", "lep_eff",
+	       "pileup", "els_eff", "mus_eff",
 	       "murf", "mur", "muf",
                "gs", 
  	       "btag_bc_uncor", "btag_bc_cor", "btag_udsg_uncor", "btag_udsg_cor"}; 

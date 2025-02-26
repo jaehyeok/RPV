@@ -1013,7 +1013,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       //create template line
       TString line;
       for(uint idash=0; idash<(nprocesses*nbins); idash++)
-        line+="-    ";
+        line+="-       ";
 
       TString tmpLine;
       TString tmpbin;
@@ -1033,7 +1033,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         if((numbin%3==1||numbin%3==2)&&flag_brk){
           for(auto njb:lownj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4, lownjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+1),lownjcon_.Length(), lownjcon_.Data());
           }
           tmpLine.Prepend(Form("CMS_SUS21005_normqcd_lownjets_%s        lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;
@@ -1049,7 +1049,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         if((numbin%3==1||numbin%3==2)&&flag_brk){
           for(auto njb:mednj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4, mednjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+1),mednjcon_.Length(), mednjcon_.Data());
           }
           tmpLine.Prepend(Form("CMS_SUS21005_normqcd_mednjets_%s        lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;
@@ -1067,7 +1067,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         if((numbin%3==2||numbin%3==0)&&flag_brk){
           for(auto njb:highnj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4,highnjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+1),highnjcon_.Length(),highnjcon_.Data());
           }
           tmpLine.Prepend(Form("CMS_SUS21005_normqcd_highnjets_%s       lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;
@@ -1081,24 +1081,24 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
     TString lownjcon_, mednjcon_, highnjcon_;
     if(year=="UL2016_preVFP"){
-      lownjcon_ = "1.01";
-      mednjcon_ = "1.01";
-      highnjcon_ = "1.01";
+      lownjcon_ = "1.0001";      //hong
+      mednjcon_ = "1.0001";
+      highnjcon_ = "1.0001";
     }
     else if(year=="UL2016_postVFP"){
-      lownjcon_ = "1.03";
-      mednjcon_ = "1.02";
-      highnjcon_ = "1.05";
+      lownjcon_ = "1.02";
+      mednjcon_ = "1.01";
+      highnjcon_ = "1.04";
     }
     else if(year=="UL2017"){
-      lownjcon_ = "1.01";
-      mednjcon_ = "1.01";
-      highnjcon_ = "1.01";
+      lownjcon_ = "1.0001";
+      mednjcon_ = "1.0001";
+      highnjcon_ = "1.0001";
     }
     else if(year=="UL2018"){
-      lownjcon_ = "1.10";
-      mednjcon_ = "1.10";
-      highnjcon_ = "1.11";
+      lownjcon_ = "1.09";
+      mednjcon_ = "1.09";
+      highnjcon_ = "1.10";
     }
 
     TString yr, yr_comb;
@@ -1135,7 +1135,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       //create template line
       TString line;
       for(uint idash=0; idash<(nprocesses*nbins); idash++)
-        line+="-    ";
+        line+="-       ";
 
       TString tmpLine;
       TString tmpbin;
@@ -1150,16 +1150,16 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
         if(bindex[tmpbin.Data()]==9999) continue;
 	if(numbin%3==1) {
-          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),4, lownjcon_.Data());
-          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),4, lownjcon_.Data());
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),lownjcon_.Length(), lownjcon_.Data());
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),lownjcon_.Length(), lownjcon_.Data());
 	}
 	else if(numbin%3==2) {
-          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),4, mednjcon_.Data());
-          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),4, mednjcon_.Data());
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),mednjcon_.Length(), mednjcon_.Data());
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),mednjcon_.Length(), mednjcon_.Data());
 	}
 	else if(numbin%3==0) {
-          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),4, highnjcon_.Data());
-          tmpLine.Replace(5*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),4, highnjcon_.Data());
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),highnjcon_.Length(), highnjcon_.Data());
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),highnjcon_.Length(), highnjcon_.Data());
 	}
         tmpLine.Prepend(Form("CMS_SUS21005_normqcd_relative_bin%d_bin%d_%s        lnN  ", numbin-15, numbin, yr_comb.Data()));
         file << tmpLine.Data() << endl;
@@ -1220,7 +1220,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     // overall normalization   
     TString line_norm;
     for(uint idash=0; idash<nbins; idash++)
-      line_norm+="-    -    -    2    -    ";
+      line_norm+="-       -       -       2       -       ";
     line_norm.Prepend(Form("CMS_SUS21005_normwjets_%s                 lnU  ",yr.Data()));
     //file << line_norm.Data() << endl;
 
@@ -1229,7 +1229,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       //create template line
       TString line;
       for(uint idash=0; idash<(nprocesses*nbins); idash++)
-        line+="-    ";
+        line+="-       ";
 
       TString tmpLine;
       TString tmpbin;
@@ -1276,11 +1276,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
           */
           for(auto njb:lownj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,"1.01");
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+3),6,"1.0001"); //hong
           }
           for(auto njb:mednj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4, mednjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+3),mednjcon_.Length(), mednjcon_.Data());
           }
           tmpLine.Prepend(Form("CMS_SUS21005_normwjets_mednjets_%s        lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;
@@ -1320,11 +1320,11 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
           */
           for(auto njb:mednj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,"1.01");
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+3),6,"1.0001"); //hong
           }
           for(auto njb:highnj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,highnjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+3),highnjcon_.Length(),highnjcon_.Data());
           }
           tmpLine.Prepend(Form("CMS_SUS21005_normwjets_highnjets_%s       lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;

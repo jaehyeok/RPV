@@ -36,14 +36,16 @@ void CopyDir(TDirectory *source){
     } 
     else if (cl->InheritsFrom("TH1")) {
       TH1F *h  = (TH1F*)source->Get(key->GetName());
-      TH1F *h1 = (TH1F*)source->Get(key->GetName());
+      TH1F *h_test = (TH1F*)source->Get(key->GetName());
       adir->cd();
       //cout<<adir->GetPath()<<endl;
       if(adir->GetListOfKeys()->Contains(key->GetName())){
 	TH1F *h2 = (TH1F*)adir->Get(key->GetName());
-	h->Add(h1,h2);
+	h->Add(h2);
+	h->SetName(key->GetName());
 	TString oname(key->GetName());
 	adir->Delete(oname+";1");
+	adir->Delete(oname);
       }
       adir->cd();
       h->Write();

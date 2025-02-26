@@ -42,11 +42,11 @@ int main(int argc, char *argv[]) {
   TFile* infile = new TFile(fname, "READ");
 
 
-  TString syst_list[] = {"kappa1", "kappa2", "QCDscale_ren", "QCDscale_fac", "QCDscale", "CMS_eff_lep", 
+  TString syst_list[] = {"CMS_SUS21005_kappa1", "CMS_SUS21005_kappa2", "QCDscale_ren", "QCDscale_fac", "QCDscale", "CMS_eff_m", "CMS_eff_e",
 	  		 "CMS_btag_fixedWP_comb_bc_uncorrelated", "CMS_btag_fixedWP_comb_bc_correlated", "CMS_btag_fixedWP_incl_light_uncorrelated", "CMS_btag_fixedWP_incl_light_correlated", "CMS_scale_j", "CMS_res_j",
-			 "CMS_gs", "CMS_pileup", "MC_kappa1", "MC_kappa2", "MC_kappa1_jer", "MC_kappa2_jer",
-			 "MC_kappa1_jec", "MC_kappa2_jec",  
-			 "mjsyst_r1", "mjsyst_r2"};
+			 "CMS_gs", "CMS_pileup", "CMS_SUS21005_MC_kappa1", "CMS_SUS21005_MC_kappa2", "CMS_SUS21005_MC_kappa1_jer", "CMS_SUS21005_MC_kappa2_jer",
+			 "CMS_SUS21005_MC_kappa1_jec", "CMS_SUS21005_MC_kappa2_jec",  
+			 "CMS_SUS21005_mjsyst_r1", "CMS_SUS21005_mjsyst_r2"};
 
   int num_syst = sizeof(syst_list)/sizeof(syst_list[0]);
   cout << num_syst << endl;
@@ -84,22 +84,22 @@ int main(int argc, char *argv[]) {
           qcd[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/qcd_%s_qcd%s", ibin, syst_list[isyst].Data(), UpDown.Data()));
           wjets[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/wjets_%s_wjets%s", ibin, syst_list[isyst].Data(), UpDown.Data()));
           ttbar[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/ttbar_%s_ttbar%s", ibin, syst_list[isyst].Data(), UpDown.Data()));
-          other[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/other_%s_other%s", ibin, syst_list[isyst].Data(), UpDown.Data()));
-          signal[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/signal_M%s_%s_sig%s", ibin, mglu.Data(), syst_list[isyst].Data(), UpDown.Data()));
+          other[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/other_%s_st_ttx_ewk%s", ibin, syst_list[isyst].Data(), UpDown.Data()));
+          signal[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/signal_M%s_%s_t1tbs%s", ibin, mglu.Data(), syst_list[isyst].Data(), UpDown.Data()));
 	}
-	else if (isyst==5 || isyst==6 || isyst==8 || isyst==10 || isyst==11 || isyst==13) {
+	else if (isyst==5 || isyst==6 || isyst==7 || isyst==9 || isyst==11 || isyst==12 || isyst==14) {
           qcd[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/qcd_%s_%s%s", ibin, syst_list[isyst].Data(), yr.Data(), UpDown.Data()));
           wjets[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/wjets_%s_%s%s", ibin, syst_list[isyst].Data(), yr.Data(), UpDown.Data()));
           ttbar[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/ttbar_%s_%s%s", ibin, syst_list[isyst].Data(), yr.Data(), UpDown.Data()));
           other[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/other_%s_%s%s", ibin, syst_list[isyst].Data(), yr.Data(), UpDown.Data()));
           signal[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/signal_M%s_%s_%s%s", ibin, mglu.Data(), syst_list[isyst].Data(), yr.Data(), UpDown.Data()));
 	}
-	else if (isyst==14 || isyst==15 || isyst==16 || isyst==17 || isyst==18 || isyst==19) {
+	else if (isyst==15 || isyst==16 || isyst==17 || isyst==18 || isyst==19 || isyst==20) {
           qcd[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/qcd_%s_njets%d_%s%s", ibin, syst_list[isyst].Data(), ind_ijet, year_comb.Data(), UpDown.Data()));
           wjets[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/wjets_%s_njets%d_%s%s", ibin, syst_list[isyst].Data(), ind_ijet, year_comb.Data(), UpDown.Data()));
           ttbar[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/ttbar_%s_njets%d_%s%s", ibin, syst_list[isyst].Data(), ind_ijet, year_comb.Data(), UpDown.Data()));
 	}
-	else if(isyst==20 || isyst==21) {
+	else if(isyst==21 || isyst==22) {
           wjets[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/wjets_%s_njets%d_wjets_%s%s", ibin, syst_list[isyst].Data(), ind_ijet, year_comb.Data(), UpDown.Data()));
           ttbar[ibin][isyst+1][updo] = (TH1F*)infile->Get(Form("bin%d/ttbar_%s_njets%d_ttbar_%s%s", ibin, syst_list[isyst].Data(), ind_ijet, year_comb.Data(), UpDown.Data()));
 	}
@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
 
 	TString UpDown = (updo==0) ? "Up" : "Down";
 	cout << "  [" << UpDown << "]" << endl;
-	if (isyst==20 || isyst==21) {
+	if (isyst==21 || isyst==22) {
 	  cout << "            wjets:  MJ[1] " << wjets[ibin][isyst+1][updo]->GetBinContent(1)/wjets[ibin][0][0]->GetBinContent(1) << endl;
 	  cout << "                    MJ[2] " << wjets[ibin][isyst+1][updo]->GetBinContent(2)/wjets[ibin][0][0]->GetBinContent(2) << endl;
 	  cout << "                    MJ[3] " << wjets[ibin][isyst+1][updo]->GetBinContent(3)/wjets[ibin][0][0]->GetBinContent(3) << endl;
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
 	  cout << "                    MJ[2] " << ttbar[ibin][isyst+1][updo]->GetBinContent(2)/ttbar[ibin][0][0]->GetBinContent(2) << endl;
 	  cout << "                    MJ[3] " << ttbar[ibin][isyst+1][updo]->GetBinContent(3)/ttbar[ibin][0][0]->GetBinContent(3) << endl;
 	}
-	else if (isyst==0 || isyst==1 || (isyst>13 && isyst<20)) {
+	else if (isyst==0 || isyst==1 || (isyst>14 && isyst<21)) {
 	  cout << "            qcd:    MJ[1] " << qcd[ibin][isyst+1][updo]->GetBinContent(1)/qcd[ibin][0][0]->GetBinContent(1) << endl;
 	  cout << "                    MJ[2] " << qcd[ibin][isyst+1][updo]->GetBinContent(2)/qcd[ibin][0][0]->GetBinContent(2) << endl;
 	  cout << "                    MJ[3] " << qcd[ibin][isyst+1][updo]->GetBinContent(3)/qcd[ibin][0][0]->GetBinContent(3) << endl;

@@ -28,9 +28,9 @@ using namespace std;
 void appendTree(vector<TString> s_process, small_tree &tree_in);
 void pass_dy_selection(small_tree_rpv &tree, TH1D* h, TString datamc, TString njets, TString year, TString mjORnjets);
 
-void compare_shape_wjets_dy(TString year);      // Fig. 16
-void wjets_kappa_plot_dy_region(TString year);  // Fig. 17
-void comp_njets_dy_data(TString year);          // Fig. 30
+void compare_shape_wjets_dy(TString year);      // Fig. 17
+void wjets_kappa_plot_dy_region(TString year);  // Fig. 18
+void comp_njets_dy_data(TString year);          // Fig. 31
 
 
 void appendTree(vector<TString> s_process, small_tree &tree_in)
@@ -89,7 +89,7 @@ void pass_dy_selection(small_tree_rpv &tree, TH1D* h, TString datamc, TString nj
 
 
     // Fill histogram
-    if(mjORnjets=="mj") { // For mj distribution - Fig. 17
+    if(mjORnjets=="mj") { // For mj distribution - Fig. 18
       if(year=="UL2016_comb") {
         if(njets=="34") {
   	  if(datamc=="data") {
@@ -196,7 +196,7 @@ void pass_dy_selection(small_tree_rpv &tree, TH1D* h, TString datamc, TString nj
         else cout << "input njets as 34/56/7" << endl;
       }
     }
-    else if(mjORnjets=="njets") { // For njets distribution - Fig. 30
+    else if(mjORnjets=="njets") { // For njets distribution - Fig. 31
       if(year=="UL2016_comb") {
 	if(datamc=="data") {
 	  if(tree.trig_jet450()||tree.trig_ht900()) {
@@ -399,33 +399,33 @@ void compare_shape_wjets_dy(TString year)
   h_wjets_njets45->SetTitle("");
   h_wjets_njets45->GetXaxis()->SetLabelOffset(1);
   h_wjets_njets45->GetYaxis()->SetLabelSize(0.06); h_wjets_njets45->GetYaxis()->SetTitle("Events"); h_wjets_njets45->GetYaxis()->SetTitleOffset(0.95); h_wjets_njets45->GetYaxis()->SetTitleSize(0.06);
-  h_wjets_njets45->SetMinimum(0.31); h_wjets_njets45->SetMaximum(h_wjets_njets45->GetBinContent(1)*100); h_wjets_njets45->SetLineColor(kGreen+2); h_dy_njets34->SetLineColor(kViolet-9);
+  h_wjets_njets45->SetMinimum(0.31); h_wjets_njets45->SetMaximum(h_wjets_njets45->GetBinContent(1)*100); h_wjets_njets45->SetLineColor(TColor::GetColor("#832db6")); h_dy_njets34->SetLineColor(TColor::GetColor("#e76300"));
   h_wjets_njets45->SetLineWidth(3); h_dy_njets34->SetLineWidth(3);
         // njets 6-7
   h_wjets_njets67->SetTitle("");
   h_wjets_njets67->GetXaxis()->SetLabelOffset(1);
   h_wjets_njets67->GetYaxis()->SetLabelSize(0.06); h_wjets_njets67->GetYaxis()->SetTitle("Events"); h_wjets_njets67->GetYaxis()->SetTitleOffset(0.95); h_wjets_njets67->GetYaxis()->SetTitleSize(0.06);
-  h_wjets_njets67->SetMinimum(0.31); h_wjets_njets67->SetMaximum(h_wjets_njets67->GetBinContent(1)*100); h_wjets_njets67->SetLineColor(kGreen+2); h_dy_njets56->SetLineColor(kViolet-9);
+  h_wjets_njets67->SetMinimum(0.31); h_wjets_njets67->SetMaximum(h_wjets_njets67->GetBinContent(1)*100); h_wjets_njets67->SetLineColor(TColor::GetColor("#832db6")); h_dy_njets56->SetLineColor(TColor::GetColor("#e76300"));
   h_wjets_njets67->SetLineWidth(3); h_dy_njets56->SetLineWidth(3);
         // njets 8-
   h_wjets_njets8->SetTitle("");
   h_wjets_njets8->GetXaxis()->SetLabelOffset(1);
   h_wjets_njets8->GetYaxis()->SetLabelSize(0.06); h_wjets_njets8->GetYaxis()->SetTitle("Events"); h_wjets_njets8->GetYaxis()->SetTitleOffset(0.95); h_wjets_njets8->GetYaxis()->SetTitleSize(0.06);
-  h_wjets_njets8->SetMinimum(0.31); h_wjets_njets8->SetMaximum(h_wjets_njets8->GetBinContent(1)*100); h_wjets_njets8->SetLineColor(kGreen+2); h_dy_njets7->SetLineColor(kViolet-9);
+  h_wjets_njets8->SetMinimum(0.31); h_wjets_njets8->SetMaximum(h_wjets_njets8->GetBinContent(1)*100); h_wjets_njets8->SetLineColor(TColor::GetColor("#832db6")); h_dy_njets7->SetLineColor(TColor::GetColor("#e76300"));
   h_wjets_njets8->SetLineWidth(3); h_dy_njets7->SetLineWidth(3);
       // bpad
         // njets 4-5
   h_wjets_njets45_clone->SetTitle("");
   h_wjets_njets45_clone->GetXaxis()->SetNdivisions(505); h_wjets_njets45_clone->GetXaxis()->SetLabelSize(0.12); h_wjets_njets45_clone->GetXaxis()->SetLabelOffset(0.025); h_wjets_njets45_clone->GetXaxis()->SetTitle("M_{J}"); h_wjets_njets45_clone->GetXaxis()->SetTitleOffset(1.); h_wjets_njets45_clone->GetXaxis()->SetTitleSize(0.14);
-  h_wjets_njets45_clone->GetYaxis()->SetNdivisions(505); h_wjets_njets45_clone->GetYaxis()->SetLabelSize(0.12); h_wjets_njets45_clone->GetYaxis()->SetTitle("W+jets / DY"); h_wjets_njets45_clone->GetYaxis()->SetTitleSize(0.12); h_wjets_njets45_clone->GetYaxis()->SetTitleOffset(0.4);
+  h_wjets_njets45_clone->GetYaxis()->SetNdivisions(505); h_wjets_njets45_clone->GetYaxis()->SetLabelSize(0.12); h_wjets_njets45_clone->GetYaxis()->SetTitle("W+jets / Drell-Yan"); h_wjets_njets45_clone->GetYaxis()->SetTitleSize(0.12); h_wjets_njets45_clone->GetYaxis()->SetTitleOffset(0.4);
         // njets 6-7
   h_wjets_njets67_clone->SetTitle("");
   h_wjets_njets67_clone->GetXaxis()->SetNdivisions(505); h_wjets_njets67_clone->GetXaxis()->SetLabelSize(0.12); h_wjets_njets67_clone->GetXaxis()->SetLabelOffset(0.025); h_wjets_njets67_clone->GetXaxis()->SetTitle("M_{J}"); h_wjets_njets67_clone->GetXaxis()->SetTitleOffset(1.); h_wjets_njets67_clone->GetXaxis()->SetTitleSize(0.14);
-  h_wjets_njets67_clone->GetYaxis()->SetNdivisions(505); h_wjets_njets67_clone->GetYaxis()->SetLabelSize(0.12); h_wjets_njets67_clone->GetYaxis()->SetTitle("W+jets / DY"); h_wjets_njets67_clone->GetYaxis()->SetTitleSize(0.12); h_wjets_njets67_clone->GetYaxis()->SetTitleOffset(0.4);
+  h_wjets_njets67_clone->GetYaxis()->SetNdivisions(505); h_wjets_njets67_clone->GetYaxis()->SetLabelSize(0.12); h_wjets_njets67_clone->GetYaxis()->SetTitle("W+jets / Drell-Yan"); h_wjets_njets67_clone->GetYaxis()->SetTitleSize(0.12); h_wjets_njets67_clone->GetYaxis()->SetTitleOffset(0.4);
         // njets 8
   h_wjets_njets8_clone->SetTitle("");
   h_wjets_njets8_clone->GetXaxis()->SetNdivisions(505); h_wjets_njets8_clone->GetXaxis()->SetLabelSize(0.12); h_wjets_njets8_clone->GetXaxis()->SetLabelOffset(0.025); h_wjets_njets8_clone->GetXaxis()->SetTitle("M_{J}"); h_wjets_njets8_clone->GetXaxis()->SetTitleOffset(1.); h_wjets_njets8_clone->GetXaxis()->SetTitleSize(0.14);
-  h_wjets_njets8_clone->GetYaxis()->SetNdivisions(505); h_wjets_njets8_clone->GetYaxis()->SetLabelSize(0.12); h_wjets_njets8_clone->GetYaxis()->SetTitle("W+jets / DY"); h_wjets_njets8_clone->GetYaxis()->SetTitleSize(0.12); h_wjets_njets8_clone->GetYaxis()->SetTitleOffset(0.4);
+  h_wjets_njets8_clone->GetYaxis()->SetNdivisions(505); h_wjets_njets8_clone->GetYaxis()->SetLabelSize(0.12); h_wjets_njets8_clone->GetYaxis()->SetTitle("W+jets / Drell-Yan"); h_wjets_njets8_clone->GetYaxis()->SetTitleSize(0.12); h_wjets_njets8_clone->GetYaxis()->SetTitleOffset(0.4);
 
     // Make TLatex
   double err_wjets_njets45=0, err_wjets_njets67=0, err_wjets_njets8=0;
@@ -463,19 +463,19 @@ void compare_shape_wjets_dy(TString year)
   TLegend* l_njets34 = new TLegend(0.15, 0.05, 0.5, 0.20);
   l_njets34->SetBorderSize(0);
   l_njets34->AddEntry(h_wjets_njets45, Form("%s W+jets [N=%.0f]", yr.Data(), h_wjets_njets45_clone->Integral()));
-  l_njets34->AddEntry(h_dy_njets34, Form("%s DY [N=%.0f]", yr.Data(), h_wjets_njets45_clone->Integral()));
+  l_njets34->AddEntry(h_dy_njets34, Form("%s Drell-Yan [N=%.0f]", yr.Data(), h_wjets_njets45_clone->Integral()));
   l_njets34->SetTextSize(0.05);
     // njets 6-7
   TLegend* l_njets56  = new TLegend(0.15, 0.05, 0.5, 0.20);
   l_njets56->SetBorderSize(0);
   l_njets56->AddEntry(h_wjets_njets67, Form("%s W+jets [N=%.0f]", yr.Data(), h_wjets_njets67_clone->Integral()));
-  l_njets56->AddEntry(h_dy_njets56, Form("%s DY [N=%.0f]", yr.Data(), h_wjets_njets67_clone->Integral()));
+  l_njets56->AddEntry(h_dy_njets56, Form("%s Drell-Yan [N=%.0f]", yr.Data(), h_wjets_njets67_clone->Integral()));
   l_njets56->SetTextSize(0.05);
     // njets 8-
   TLegend* l_njets7 = new TLegend(0.15, 0.05, 0.5, 0.20);
   l_njets7->SetBorderSize(0);
   l_njets7->AddEntry(h_wjets_njets8, Form("%s W+jets [N=%.0f]", yr.Data(), h_wjets_njets8_clone->Integral()));
-  l_njets7->AddEntry(h_dy_njets7, Form("%s DY [N=%.0f]", yr.Data(), h_wjets_njets8_clone->Integral()));
+  l_njets7->AddEntry(h_dy_njets7, Form("%s Drell-Yan [N=%.0f]", yr.Data(), h_wjets_njets8_clone->Integral()));
   l_njets7->SetTextSize(0.05);
 
   // Draw plots
@@ -734,6 +734,51 @@ void wjets_kappa_plot_dy_region(TString year)
   cout << "          (1)" << h_signal_njets7->GetBinContent(1) << endl;
   cout << "          (2)" << h_signal_njets7->GetBinContent(2) << endl;
   cout << "          (3)" << h_signal_njets7->GetBinContent(3) << endl;
+  cout << endl;
+
+  // To validate kappa values against those from ./run/make_kappa_CRFit.exe
+    // normalize
+      // total mc
+  TH1D* h_tot_mc_njets34_clone = (TH1D*)h_tot_mc_njets34->Clone("h_tot_mc_njets34_clone");
+  TH1D* h_tot_mc_njets56_clone = (TH1D*)h_tot_mc_njets56->Clone("h_tot_mc_njets56_clone");
+  TH1D* h_tot_mc_njets7_clone  = (TH1D*)h_tot_mc_njets7->Clone("h_tot_mc_njets7_clone");
+
+      // SF
+  float sf_njets34 = h_data_njets34->Integral(1,-1)/h_tot_mc_njets34_clone->Integral(1,-1);
+  float sf_njets56 = h_data_njets56->Integral(1,-1)/h_tot_mc_njets56_clone->Integral(1,-1);
+  float sf_njets7  = h_data_njets7->Integral(1,-1)/h_tot_mc_njets7_clone->Integral(1,-1);
+
+      // other mc (total mc - dy)
+  TH1D* h_other_mc_njets34 = (TH1D*)h_qcd_njets34_clone->Clone("h_other_mc_njets34");
+  TH1D* h_other_mc_njets56 = (TH1D*)h_qcd_njets56_clone->Clone("h_other_mc_njets56");
+  TH1D* h_other_mc_njets7  = (TH1D*)h_qcd_njets7_clone->Clone("h_other_mc_njets7");
+  h_other_mc_njets34->Add(h_ttbar_njets34_clone); h_other_mc_njets34->Add(h_wjets_njets34_clone); h_other_mc_njets34->Add(h_other_njets34_clone);
+  h_other_mc_njets56->Add(h_ttbar_njets56_clone); h_other_mc_njets56->Add(h_wjets_njets56_clone); h_other_mc_njets56->Add(h_other_njets56_clone);
+  h_other_mc_njets7->Add(h_ttbar_njets7_clone); h_other_mc_njets7->Add(h_wjets_njets7_clone); h_other_mc_njets7->Add(h_other_njets7_clone);
+      // normalized other mc
+  h_other_mc_njets34->Scale(sf_njets34);
+  h_other_mc_njets56->Scale(sf_njets56);
+  h_other_mc_njets7->Scale(sf_njets7);
+
+      // data - other mc
+  TH1D* h_data_minus_others_njets34_clone = (TH1D*)h_data_njets34->Clone("h_data_minus_others_njets34_clone");
+  TH1D* h_data_minus_others_njets56_clone = (TH1D*)h_data_njets56->Clone("h_data_minus_others_njets56_clone");
+  TH1D* h_data_minus_others_njets7_clone  = (TH1D*)h_data_njets7->Clone("h_data_minus_others_njets7_clone");
+  h_data_minus_others_njets34_clone->Add(h_other_mc_njets34,-1);
+  h_data_minus_others_njets56_clone->Add(h_other_mc_njets56,-1);
+  h_data_minus_others_njets7_clone->Add(h_other_mc_njets7,-1);
+
+  cout << "Kappa" << endl;
+  cout << "Low Njets:  " << endl;
+  cout << "     kap1: " << (h_data_minus_others_njets34_clone->GetBinContent(2)/h_data_minus_others_njets34_clone->GetBinContent(1))/(h_dy_njets34_clone->GetBinContent(2)/h_dy_njets34_clone->GetBinContent(1)) << endl;
+  cout << "     kap2: " << (h_data_minus_others_njets34_clone->GetBinContent(3)/h_data_minus_others_njets34_clone->GetBinContent(1))/(h_dy_njets34_clone->GetBinContent(3)/h_dy_njets34_clone->GetBinContent(1)) << endl;
+  cout << "Mid Njets:  " << endl;
+  cout << "     kap1: " << (h_data_minus_others_njets56_clone->GetBinContent(2)/h_data_minus_others_njets56_clone->GetBinContent(1))/(h_dy_njets56_clone->GetBinContent(2)/h_dy_njets56_clone->GetBinContent(1)) << endl;
+  cout << "     kap2: " << (h_data_minus_others_njets56_clone->GetBinContent(3)/h_data_minus_others_njets56_clone->GetBinContent(1))/(h_dy_njets56_clone->GetBinContent(3)/h_dy_njets56_clone->GetBinContent(1)) << endl;
+  cout << "High Njets:  " << endl;
+  cout << "     kap1: " << (h_data_minus_others_njets7_clone->GetBinContent(2)/h_data_minus_others_njets7_clone->GetBinContent(1))/(h_dy_njets7_clone->GetBinContent(2)/h_dy_njets7_clone->GetBinContent(1)) << endl;
+  cout << "     kap2: " << (h_data_minus_others_njets7_clone->GetBinContent(3)/h_data_minus_others_njets7_clone->GetBinContent(1))/(h_dy_njets7_clone->GetBinContent(3)/h_dy_njets7_clone->GetBinContent(1)) << endl;
+  // validate end
 
   /*
   // test
@@ -814,52 +859,66 @@ void wjets_kappa_plot_dy_region(TString year)
 
   // Cosmetics
     // njets 3-4
-  h_data_njets34->SetMarkerStyle(20);
+  h_data_njets34->SetMarkerStyle(20); h_data_njets34->SetMarkerSize(1.5);
   h_data_njets34->SetLineColor(kBlack); h_dy_njets34->SetLineColor(kBlack); h_qcd_njets34->SetLineColor(kBlack); h_ttbar_njets34->SetLineColor(kBlack); h_wjets_njets34->SetLineColor(kBlack); h_other_njets34->SetLineColor(kBlack);
-  h_dy_njets34->SetFillColor(kViolet-9); h_qcd_njets34->SetFillColor(kYellow-7); h_ttbar_njets34->SetFillColor(kAzure+7); h_wjets_njets34->SetFillColor(kGreen+2); h_other_njets34->SetFillColor(kGray+1);
-  h_data_njets34->SetLineWidth(1); h_dy_njets34->SetLineWidth(1); h_qcd_njets34->SetLineWidth(1); h_ttbar_njets34->SetLineWidth(1); h_wjets_njets34->SetLineWidth(1); h_other_njets34->SetLineWidth(1);
+  h_dy_njets34->SetFillColor(TColor::GetColor("#e76300")); h_qcd_njets34->SetFillColor(TColor::GetColor("#ffa90e")); h_ttbar_njets34->SetFillColor(TColor::GetColor("#3f90da")); h_wjets_njets34->SetFillColor(TColor::GetColor("#832db6")); h_other_njets34->SetFillColor(TColor::GetColor("#94a4a2"));
+  h_data_njets34->SetLineWidth(2); h_dy_njets34->SetLineWidth(1); h_qcd_njets34->SetLineWidth(1); h_ttbar_njets34->SetLineWidth(1); h_wjets_njets34->SetLineWidth(1); h_other_njets34->SetLineWidth(1);
   h_data_njets34->SetTitle("");
   h_data_njets34->GetXaxis()->SetLabelOffset(1);
   h_data_njets34->GetYaxis()->SetLabelSize(0.06); h_data_njets34->GetYaxis()->SetTitle("Events"); h_data_njets34->GetYaxis()->SetTitleOffset(0.95); h_data_njets34->GetYaxis()->SetTitleSize(0.06);
-  h_data_njets34->SetMinimum(0.21); h_data_njets34->SetMaximum(h_data_njets34->GetBinContent(1)*20);
+  h_data_njets34->SetMinimum(0.02); h_data_njets34->SetMaximum(h_data_njets34->GetBinContent(1)*100);
   h_data_njets34_clone->SetTitle("");
   h_data_njets34_clone->GetXaxis()->SetNdivisions(505); h_data_njets34_clone->GetXaxis()->SetLabelSize(0.12); h_data_njets34_clone->GetXaxis()->SetLabelOffset(0.025); h_data_njets34_clone->GetXaxis()->SetTitle("M_{J}"); h_data_njets34_clone->GetXaxis()->SetTitleOffset(1.); h_data_njets34_clone->GetXaxis()->SetTitleSize(0.14);
   h_data_njets34_clone->GetYaxis()->SetNdivisions(505); h_data_njets34_clone->GetYaxis()->SetLabelSize(0.12); h_data_njets34_clone->GetYaxis()->SetTitle("Data / MC"); h_data_njets34_clone->GetYaxis()->SetTitleSize(0.12); h_data_njets34_clone->GetYaxis()->SetTitleOffset(0.4);
     // njets 5-6
-  h_data_njets56->SetMarkerStyle(20);
+  h_data_njets56->SetMarkerStyle(20); h_data_njets56->SetMarkerSize(1.5);
   h_data_njets56->SetLineColor(kBlack); h_dy_njets56->SetLineColor(kBlack); h_qcd_njets56->SetLineColor(kBlack); h_ttbar_njets56->SetLineColor(kBlack); h_wjets_njets56->SetLineColor(kBlack); h_other_njets56->SetLineColor(kBlack);
-  h_dy_njets56->SetFillColor(kViolet-9); h_qcd_njets56->SetFillColor(kYellow-7); h_ttbar_njets56->SetFillColor(kAzure+7); h_wjets_njets56->SetFillColor(kGreen+2); h_other_njets56->SetFillColor(kGray+1);
-  h_data_njets56->SetLineWidth(1); h_dy_njets56->SetLineWidth(1); h_qcd_njets56->SetLineWidth(1); h_ttbar_njets56->SetLineWidth(1); h_wjets_njets56->SetLineWidth(1); h_other_njets56->SetLineWidth(1);
+  h_dy_njets56->SetFillColor(TColor::GetColor("#e76300")); h_qcd_njets56->SetFillColor(TColor::GetColor("#ffa90e")); h_ttbar_njets56->SetFillColor(TColor::GetColor("#3f90da")); h_wjets_njets56->SetFillColor(TColor::GetColor("#832db6")); h_other_njets56->SetFillColor(TColor::GetColor("#94a4a2"));
+  h_data_njets56->SetLineWidth(2); h_dy_njets56->SetLineWidth(1); h_qcd_njets56->SetLineWidth(1); h_ttbar_njets56->SetLineWidth(1); h_wjets_njets56->SetLineWidth(1); h_other_njets56->SetLineWidth(1);
   h_data_njets56->SetTitle("");
   h_data_njets56->GetXaxis()->SetLabelOffset(1);
   h_data_njets56->GetYaxis()->SetLabelSize(0.06); h_data_njets56->GetYaxis()->SetTitle("Events"); h_data_njets56->GetYaxis()->SetTitleOffset(0.95); h_data_njets56->GetYaxis()->SetTitleSize(0.06);
-  h_data_njets56->SetMinimum(0.21); h_data_njets56->SetMaximum(h_data_njets56->GetBinContent(1)*20);
+  h_data_njets56->SetMinimum(0.02); h_data_njets56->SetMaximum(h_data_njets56->GetBinContent(1)*100);
   h_data_njets56_clone->SetTitle("");
   h_data_njets56_clone->GetXaxis()->SetNdivisions(505); h_data_njets56_clone->GetXaxis()->SetLabelSize(0.12); h_data_njets56_clone->GetXaxis()->SetLabelOffset(0.025); h_data_njets56_clone->GetXaxis()->SetTitle("M_{J}"); h_data_njets56_clone->GetXaxis()->SetTitleOffset(1.); h_data_njets56_clone->GetXaxis()->SetTitleSize(0.14);
   h_data_njets56_clone->GetYaxis()->SetNdivisions(505); h_data_njets56_clone->GetYaxis()->SetLabelSize(0.12); h_data_njets56_clone->GetYaxis()->SetTitle("Data / MC"); h_data_njets56_clone->GetYaxis()->SetTitleSize(0.12); h_data_njets56_clone->GetYaxis()->SetTitleOffset(0.4);
     // njets 7-
-  h_data_njets7->SetMarkerStyle(20);
+  h_data_njets7->SetMarkerStyle(20); h_data_njets7->SetMarkerSize(1.5);
   h_data_njets7->SetLineColor(kBlack); h_dy_njets7->SetLineColor(kBlack); h_qcd_njets7->SetLineColor(kBlack); h_ttbar_njets7->SetLineColor(kBlack); h_wjets_njets7->SetLineColor(kBlack); h_other_njets7->SetLineColor(kBlack);
-  h_data_njets7->SetLineWidth(1); h_dy_njets7->SetLineWidth(1); h_qcd_njets7->SetLineWidth(1); h_ttbar_njets7->SetLineWidth(1); h_wjets_njets7->SetLineWidth(1); h_other_njets7->SetLineWidth(1);
-  h_dy_njets7->SetFillColor(kViolet-9); h_qcd_njets7->SetFillColor(kYellow-7); h_ttbar_njets7->SetFillColor(kAzure+7); h_wjets_njets7->SetFillColor(kGreen+2); h_other_njets7->SetFillColor(kGray+1);
+  h_data_njets7->SetLineWidth(2); h_dy_njets7->SetLineWidth(1); h_qcd_njets7->SetLineWidth(1); h_ttbar_njets7->SetLineWidth(1); h_wjets_njets7->SetLineWidth(1); h_other_njets7->SetLineWidth(1);
+  h_dy_njets7->SetFillColor(TColor::GetColor("#e76300")); h_qcd_njets7->SetFillColor(TColor::GetColor("#ffa90e")); h_ttbar_njets7->SetFillColor(TColor::GetColor("#3f90da")); h_wjets_njets7->SetFillColor(TColor::GetColor("#832db6")); h_other_njets7->SetFillColor(TColor::GetColor("#94a4a2"));
   h_data_njets7->SetTitle("");
   h_data_njets7->GetXaxis()->SetLabelOffset(1);
   h_data_njets7->GetYaxis()->SetLabelSize(0.06); h_data_njets7->GetYaxis()->SetTitle("Events"); h_data_njets7->GetYaxis()->SetTitleOffset(0.95); h_data_njets7->GetYaxis()->SetTitleSize(0.06);
-  h_data_njets7->SetMinimum(0.21); h_data_njets7->SetMaximum(h_data_njets7->GetBinContent(1)*20);
+  h_data_njets7->SetMinimum(0.02); h_data_njets7->SetMaximum(h_data_njets7->GetBinContent(1)*100);
   h_data_njets7_clone->SetTitle("");
   h_data_njets7_clone->GetXaxis()->SetNdivisions(505); h_data_njets7_clone->GetXaxis()->SetLabelSize(0.12); h_data_njets7_clone->GetXaxis()->SetLabelOffset(0.025); h_data_njets7_clone->GetXaxis()->SetTitle("M_{J}"); h_data_njets7_clone->GetXaxis()->SetTitleOffset(1.); h_data_njets7_clone->GetXaxis()->SetTitleSize(0.14);
   h_data_njets7_clone->GetYaxis()->SetNdivisions(505); h_data_njets7_clone->GetYaxis()->SetLabelSize(0.12); h_data_njets7_clone->GetYaxis()->SetTitle("Data / MC"); h_data_njets7_clone->GetYaxis()->SetTitleSize(0.12); h_data_njets7_clone->GetYaxis()->SetTitleOffset(0.4);
 
-  h_signal_njets34->SetLineColor(kRed); h_signal_njets34->SetFillColor(kRed); h_signal_njets34->SetLineWidth(5);
-  h_signal_njets56->SetLineColor(kRed); h_signal_njets56->SetFillColor(kRed); h_signal_njets56->SetLineWidth(5);
-  h_signal_njets7->SetLineColor(kRed); h_signal_njets7->SetFillColor(kRed); h_signal_njets7->SetLineWidth(5);
+  h_signal_njets34->SetLineColor(TColor::GetColor("#bd1f01")); h_signal_njets34->SetFillColor(TColor::GetColor("#bd1f01")); h_signal_njets34->SetLineWidth(5); h_signal_njets34->SetLineStyle(2);
+  h_signal_njets56->SetLineColor(TColor::GetColor("#bd1f01")); h_signal_njets56->SetFillColor(TColor::GetColor("#bd1f01")); h_signal_njets56->SetLineWidth(5); h_signal_njets56->SetLineStyle(2);
+  h_signal_njets7->SetLineColor(TColor::GetColor("#bd1f01")); h_signal_njets7->SetFillColor(TColor::GetColor("#bd1f01")); h_signal_njets7->SetLineWidth(5); h_signal_njets7->SetLineStyle(2);
 
   // Make TLatex
   TLatex* tex_lumi = new TLatex(0.88, 0.95, Form("%.1f fb^{-1} (13 TeV)", lumi));
+  if(year=="UL20178_comb") tex_lumi = new TLatex(0.88, 0.95, Form("%d fb^{-1} (13 TeV)", int(lumi)));
   tex_lumi->SetNDC();
   tex_lumi->SetTextAlign(32);
   tex_lumi->SetTextFont(42);
   tex_lumi->SetTextSize(0.05);
+  TLatex *TexCMS = new TLatex(0.13,0.92,"CMS #font[52]{Preliminary}");
+  TexCMS->SetNDC();
+  TexCMS->SetTextSize(0.05);
+  TexCMS->SetLineWidth(2);
+
+  // Normalize
+  h_qcd_njets34->Scale(sf_njets34);    h_other_njets34->Scale(sf_njets34);  h_wjets_njets34->Scale(sf_njets34); h_ttbar_njets34->Scale(sf_njets34); h_dy_njets34->Scale(sf_njets34);
+  h_qcd_njets56->Scale(sf_njets56);    h_other_njets56->Scale(sf_njets56);  h_wjets_njets56->Scale(sf_njets56); h_ttbar_njets56->Scale(sf_njets56); h_dy_njets56->Scale(sf_njets56);
+  h_qcd_njets7->Scale(sf_njets7);      h_other_njets7->Scale(sf_njets7);    h_wjets_njets7->Scale(sf_njets7);   h_ttbar_njets7->Scale(sf_njets7);   h_dy_njets7->Scale(sf_njets7);
+  h_tot_mc_njets34->Scale(sf_njets34); h_tot_mc_njets56->Scale(sf_njets56); h_tot_mc_njets7->Scale(sf_njets7);
+  cout << "sf_njets34: " << sf_njets34 << endl;
+  cout << "sf_njets56: " << sf_njets56 << endl;
+  cout << "sf_njets7: " << sf_njets7 << endl;
 
   // Make THStack
   THStack* st_mc_njets34 = new THStack("st_mc_njets34", "st_mc_njets34");
@@ -872,43 +931,55 @@ void wjets_kappa_plot_dy_region(TString year)
 
   // Make TLegend
     // njets 3-4
-  TLegend* l_njets34 = new TLegend(0.14, 0.68, 0.85, 0.87);
-  l_njets34->SetTextSize(0.052);
-  l_njets34->SetNColumns(2);
-  l_njets34->SetBorderSize(0);
-  l_njets34->AddEntry(h_data_njets34,  "data", "ep");
-  l_njets34->AddEntry(h_dy_njets34,    "DY", "f");
-  l_njets34->AddEntry(h_qcd_njets34,   "QCD", "f");
-  l_njets34->AddEntry(h_ttbar_njets34, "t#bar{t}", "f");
-  l_njets34->AddEntry(h_wjets_njets34, "W+jets", "f");
-  l_njets34->AddEntry(h_other_njets34, "Other", "f");
-  l_njets34->AddEntry(h_signal_njets34, "m_{#tilde{g}}=1800 GeV", "l");
+  TLegend* l_njets34_1 = new TLegend(0.15, 0.73, 0.5, 0.87);
+  l_njets34_1->SetTextSize(0.06);
+  l_njets34_1->SetBorderSize(0);
+  l_njets34_1->SetFillStyle(0);
+  l_njets34_1->AddEntry(h_data_njets34,  "data", "elp");
+  l_njets34_1->AddEntry(h_dy_njets34,    "Drell-Yan", "f");
+  TLegend* l_njets34_2 = new TLegend(0.55, 0.55, 0.9, 0.87);
+  l_njets34_2->SetTextSize(0.06);
+  l_njets34_2->SetBorderSize(0);
+  l_njets34_2->SetFillStyle(0);
+  l_njets34_2->AddEntry(h_qcd_njets34,   "QCD", "f");
+  l_njets34_2->AddEntry(h_ttbar_njets34, "t#bar{t}", "f");
+  l_njets34_2->AddEntry(h_wjets_njets34, "W+jets", "f");
+  l_njets34_2->AddEntry(h_other_njets34, "Other", "f");
+  l_njets34_2->AddEntry(h_signal_njets34, "m_{#tilde{g}}=1800 GeV", "l");
 
     // njets 5-6
-  TLegend* l_njets56 = new TLegend(0.14, 0.68, 0.85, 0.87);
-  l_njets56->SetTextSize(0.052);
-  l_njets56->SetNColumns(2);
-  l_njets56->SetBorderSize(0);
-  l_njets56->AddEntry(h_data_njets56,  "data", "ep");
-  l_njets56->AddEntry(h_dy_njets56,    "DY", "f");
-  l_njets56->AddEntry(h_qcd_njets56,   "QCD", "f");
-  l_njets56->AddEntry(h_ttbar_njets56, "t#bar{t}", "f");
-  l_njets56->AddEntry(h_wjets_njets56, "W+jets", "f");
-  l_njets56->AddEntry(h_other_njets56, "Other", "f");
-  l_njets56->AddEntry(h_signal_njets56, "m_{#tilde{g}}=1800 GeV", "l");
+  TLegend* l_njets56_1 = new TLegend(0.15, 0.73, 0.5, 0.87);
+  l_njets56_1->SetTextSize(0.06);
+  l_njets56_1->SetBorderSize(0);
+  l_njets56_1->SetFillStyle(0);
+  l_njets56_1->AddEntry(h_data_njets56,  "data", "elp");
+  l_njets56_1->AddEntry(h_dy_njets56,    "Drell-Yan", "f");
+  TLegend* l_njets56_2 = new TLegend(0.55, 0.55, 0.9, 0.87);
+  l_njets56_2->SetTextSize(0.06);
+  l_njets56_2->SetBorderSize(0);
+  l_njets56_2->SetFillStyle(0);
+  l_njets56_2->AddEntry(h_qcd_njets56,   "QCD", "f");
+  l_njets56_2->AddEntry(h_ttbar_njets56, "t#bar{t}", "f");
+  l_njets56_2->AddEntry(h_wjets_njets56, "W+jets", "f");
+  l_njets56_2->AddEntry(h_other_njets56, "Other", "f");
+  l_njets56_2->AddEntry(h_signal_njets56, "m_{#tilde{g}}=1800 GeV", "l");
 
     // njets 7
-  TLegend* l_njets7 = new TLegend(0.14, 0.68, 0.85, 0.87);
-  l_njets7->SetTextSize(0.052);
-  l_njets7->SetNColumns(2);
-  l_njets7->SetBorderSize(0);
-  l_njets7->AddEntry(h_data_njets7,  "data", "ep");
-  l_njets7->AddEntry(h_dy_njets7,    "DY", "f");
-  l_njets7->AddEntry(h_qcd_njets7,   "QCD", "f");
-  l_njets7->AddEntry(h_ttbar_njets7, "t#bar{t}", "f");
-  l_njets7->AddEntry(h_wjets_njets7, "W+jets", "f");
-  l_njets7->AddEntry(h_other_njets7, "Other", "f");
-  l_njets7->AddEntry(h_signal_njets7, "m_{#tilde{g}}=1800 GeV", "l");
+  TLegend* l_njets7_1 = new TLegend(0.15, 0.73, 0.5, 0.87);
+  l_njets7_1->SetTextSize(0.06);
+  l_njets7_1->SetBorderSize(0);
+  l_njets7_1->SetFillStyle(0);
+  l_njets7_1->AddEntry(h_data_njets7,  "data", "elp");
+  l_njets7_1->AddEntry(h_dy_njets7,    "Drell-Yan", "f");
+  TLegend* l_njets7_2 = new TLegend(0.55, 0.55, 0.9, 0.87);
+  l_njets7_2->SetTextSize(0.06);
+  l_njets7_2->SetBorderSize(0);
+  l_njets7_2->SetFillStyle(0);
+  l_njets7_2->AddEntry(h_qcd_njets7,   "QCD", "f");
+  l_njets7_2->AddEntry(h_ttbar_njets7, "t#bar{t}", "f");
+  l_njets7_2->AddEntry(h_wjets_njets7, "W+jets", "f");
+  l_njets7_2->AddEntry(h_other_njets7, "Other", "f");
+  l_njets7_2->AddEntry(h_signal_njets7, "m_{#tilde{g}}=1800 GeV", "l");
   
   // Draw plots
   TLine *line;
@@ -924,13 +995,15 @@ void wjets_kappa_plot_dy_region(TString year)
   tpad_njets34->Draw();
   tpad_njets34->cd();
   gPad->SetLogy();
-  h_data_njets34->Draw("");
+  h_data_njets34->Draw("EP");
   st_mc_njets34->Draw("same hist");
-  h_data_njets34->Draw("same EP x0");
+  h_data_njets34->Draw("same EP");
   h_signal_njets34->Draw("same hist");
   gPad->RedrawAxis();
-  l_njets34->Draw();
+  l_njets34_1->Draw();
+  l_njets34_2->Draw();
   tex_lumi->Draw();
+  TexCMS->Draw();
       // bpad
   c_njets34->cd();
   bpad_njets34 = new TPad("bpad_njets34","bpad_njets34",0.,0.,1.,0.305);
@@ -942,6 +1015,7 @@ void wjets_kappa_plot_dy_region(TString year)
   h_data_njets34_clone->SetLineColor(kBlack);
   h_data_njets34_clone->SetLineWidth(2);
   h_data_njets34_clone->SetMarkerStyle(20);
+  h_data_njets34_clone->SetMarkerSize(1.5);
   h_data_njets34_clone->Draw("ep");
   line->SetLineColor(kBlack); line->SetLineWidth(1); line->SetLineStyle(2);
   line->Draw("same");
@@ -957,13 +1031,15 @@ void wjets_kappa_plot_dy_region(TString year)
   tpad_njets56->Draw();
   tpad_njets56->cd();
   gPad->SetLogy();
-  h_data_njets56->Draw("EP x0");
+  h_data_njets56->Draw("EP");
   st_mc_njets56->Draw("same hist");
-  h_data_njets56->Draw("same EP x0");
+  h_data_njets56->Draw("same EP");
   h_signal_njets56->Draw("same hist");
   gPad->RedrawAxis();
-  l_njets56->Draw();
+  l_njets56_1->Draw();
+  l_njets56_2->Draw();
   tex_lumi->Draw();
+  TexCMS->Draw();
       // bpad
   c_njets56->cd();
   bpad_njets56 = new TPad("bpad_njets56","bpad_njets56",0.,0.,1.,0.305);
@@ -975,6 +1051,7 @@ void wjets_kappa_plot_dy_region(TString year)
   h_data_njets56_clone->SetLineColor(kBlack);
   h_data_njets56_clone->SetLineWidth(2);
   h_data_njets56_clone->SetMarkerStyle(20);
+  h_data_njets56_clone->SetMarkerSize(1.5);
   h_data_njets56_clone->Draw("ep");
   line->SetLineColor(kBlack); line->SetLineWidth(1); line->SetLineStyle(2);
   line->Draw("same");
@@ -990,13 +1067,15 @@ void wjets_kappa_plot_dy_region(TString year)
   tpad_njets7->Draw();
   tpad_njets7->cd();
   gPad->SetLogy();
-  h_data_njets7->Draw("EP x0");
+  h_data_njets7->Draw("EP");
   st_mc_njets7->Draw("same hist");
-  h_data_njets7->Draw("same EP x0");
+  h_data_njets7->Draw("same EP");
   h_signal_njets7->Draw("same hist");
   gPad->RedrawAxis();
-  l_njets7->Draw();
+  l_njets7_1->Draw();
+  l_njets7_2->Draw();
   tex_lumi->Draw();
+  TexCMS->Draw();
       // bpad
   c_njets7->cd();
   bpad_njets7 = new TPad("bpad_njets7","bpad_njets7",0.,0.,1.,0.305);
@@ -1008,6 +1087,7 @@ void wjets_kappa_plot_dy_region(TString year)
   h_data_njets7_clone->SetLineColor(kBlack);
   h_data_njets7_clone->SetLineWidth(2);
   h_data_njets7_clone->SetMarkerStyle(20);
+  h_data_njets7_clone->SetMarkerSize(1.5);
   h_data_njets7_clone->Draw("ep");
   line->SetLineColor(kBlack); line->SetLineWidth(1); line->SetLineStyle(2);
   line->Draw("same");
@@ -1129,6 +1209,13 @@ void comp_njets_dy_data(TString year)
   cout << "low-mid:  " << tot_err_1 << " = " << diff_1 << " +- " << err_stat_1 << endl;
   cout << "low-high: " << tot_err_2 << " = " << diff_2 << " +- " << err_stat_2 << endl;
 
+  // Modify xsec of signal process (NLO+NLL -> NNLO+NNLL)
+    // gluino mass 1800
+  TH1D* h_signal_clone = (TH1D*)h_signal->Clone("h_signal_clone");
+  for(int i=1; i<4; i++) {
+    h_signal->SetBinContent(i, h_signal_clone->GetBinContent(i)*0.003349/0.293E-02);
+  }
+
   cout << "signal yield" << endl;
   cout << "          (1)" << h_signal->GetBinContent(1) << endl;
   cout << "          (2)" << h_signal->GetBinContent(2) << endl;
@@ -1141,23 +1228,23 @@ void comp_njets_dy_data(TString year)
   // Cosmetics
   h_data->SetMarkerStyle(20);
   h_data->SetLineColor(kBlack); h_dy->SetLineColor(kBlack); h_qcd->SetLineColor(kBlack); h_ttbar->SetLineColor(kBlack); h_wjets->SetLineColor(kBlack); h_other->SetLineColor(kBlack);
-  h_dy->SetFillColor(kViolet-9); h_qcd->SetFillColor(kYellow-7); h_ttbar->SetFillColor(kAzure+7); h_wjets->SetFillColor(kGreen+2); h_other->SetFillColor(kGray+1);
+  h_dy->SetFillColor(TColor::GetColor("#e76300")); h_qcd->SetFillColor(TColor::GetColor("#ffa90e")); h_ttbar->SetFillColor(TColor::GetColor("#3f90da")); h_wjets->SetFillColor(TColor::GetColor("#832db6")); h_other->SetFillColor(TColor::GetColor("#94a4a2"));
   h_data->SetLineWidth(1); h_dy->SetLineWidth(1); h_qcd->SetLineWidth(1); h_ttbar->SetLineWidth(1); h_wjets->SetLineWidth(1); h_other->SetLineWidth(1);
   h_data->SetTitle("");
   h_data->GetXaxis()->SetLabelOffset(1);
   h_data->GetYaxis()->SetLabelSize(0.06); h_data->GetYaxis()->SetTitle("Events"); h_data->GetYaxis()->SetTitleOffset(0.95); h_data->GetYaxis()->SetTitleSize(0.06);
   h_data->SetMinimum(0.21); h_data->SetMaximum(h_data->GetBinContent(1)*20);
   h_data_clone->SetTitle("");
-  h_data_clone->GetXaxis()->SetNdivisions(404); h_data_clone->GetXaxis()->SetLabelSize(0.14); h_data_clone->GetXaxis()->SetLabelOffset(0.025); h_data_clone->GetXaxis()->SetTitle("N_{jets}"); h_data_clone->GetXaxis()->SetTitleOffset(1.); h_data_clone->GetXaxis()->SetTitleSize(0.14);
+  h_data_clone->GetXaxis()->SetNdivisions(404); h_data_clone->GetXaxis()->SetLabelSize(0.14); h_data_clone->GetXaxis()->SetLabelOffset(0.025); h_data_clone->GetXaxis()->SetTitle("N_{jet}"); h_data_clone->GetXaxis()->SetTitleOffset(1.); h_data_clone->GetXaxis()->SetTitleSize(0.14);
   h_data_clone->GetYaxis()->SetNdivisions(505); h_data_clone->GetYaxis()->SetLabelSize(0.12); h_data_clone->GetYaxis()->SetTitle("Data / MC"); h_data_clone->GetYaxis()->SetTitleSize(0.12); h_data_clone->GetYaxis()->SetTitleOffset(0.4);
-  h_data_clone->GetXaxis()->SetBinLabel(1, "3 #leq N_{jets} #leq 4");
-  h_data_clone->GetXaxis()->SetBinLabel(2, "5 #leq N_{jets} #leq 6");
-  h_data_clone->GetXaxis()->SetBinLabel(3, "N_{jets} #geq 7");
+  h_data_clone->GetXaxis()->SetBinLabel(1, "3 #leq N_{jet} #leq 4");
+  h_data_clone->GetXaxis()->SetBinLabel(2, "5 #leq N_{jet} #leq 6");
+  h_data_clone->GetXaxis()->SetBinLabel(3, "N_{jet} #geq 7");
 //  h_data_clone->GetXaxis()->SetBinLabel(1, "3");
 //  h_data_clone->GetXaxis()->SetBinLabel(2, "5");
 //  h_data_clone->GetXaxis()->SetBinLabel(3, "7");
 //  h_data_clone->GetXaxis()->SetBinLabel(4, "9");
-  h_signal->SetLineColor(kRed); h_signal->SetFillColor(kRed); h_signal->SetLineWidth(3);
+  h_signal->SetLineColor(TColor::GetColor("#bd1f01")); h_signal->SetFillColor(TColor::GetColor("#bd1f01")); h_signal->SetLineWidth(3); h_signal->SetLineStyle(2);
 
   // Make TLatex
   TLatex* tex_lumi = new TLatex(0.88, 0.95, Form("%.1f fb^{-1} (13 TeV)", lumi));
@@ -1176,8 +1263,8 @@ void comp_njets_dy_data(TString year)
   l->SetTextSize(0.05);
   l->SetNColumns(2);
   l->SetBorderSize(0);
-  l->AddEntry(h_data,  "data", "ep");
-  l->AddEntry(h_dy,    "DY", "f");
+  l->AddEntry(h_data,  "data", "elp");
+  l->AddEntry(h_dy,    "Drell-Yan", "f");
   l->AddEntry(h_qcd,   "QCD", "f");
   l->AddEntry(h_ttbar, "t#bar{t}", "f");
   l->AddEntry(h_wjets, "W+jets", "f");
@@ -1196,9 +1283,9 @@ void comp_njets_dy_data(TString year)
   tpad->Draw();
   tpad->cd();
   gPad->SetLogy();
-  h_data->Draw("EP x0");
+  h_data->Draw("EP");
   st_mc->Draw("same hist");
-  h_data->Draw("same EP x0");
+  h_data->Draw("same EP");
   h_signal->Draw("same hist");
   gPad->RedrawAxis();
   l->Draw();
@@ -1229,11 +1316,11 @@ int main(int argc, char **argv)
   year = argv[1];
   fig  = argv[2];
  
-  if(fig=="16") compare_shape_wjets_dy(year); // Fig. 16
+  if(fig=="17") compare_shape_wjets_dy(year); // Fig. 17
 
-  if(fig=="17") wjets_kappa_plot_dy_region(year); // Fig. 17
+  if(fig=="18") wjets_kappa_plot_dy_region(year); // Fig. 18
 
-  if(fig=="30") comp_njets_dy_data(year);  // Fig. 30
+  if(fig=="31") comp_njets_dy_data(year);  // Fig. 31
 
 
   return 0;

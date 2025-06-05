@@ -52,7 +52,7 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
   
     #load hists and calculate SFs for floating component for each variation
 
-    if sysName=='CMS_btag_fixedWP_comb_bc_uncorrelated' or sysName=='CMS_btag_fixedWP_incl_light_uncorrelated' or sysName=='CMS_res_j' or sysName=='CMS_scale_j' or sysName=='CMS_pileup' or sysName=='CMS_eff_lep':
+    if sysName=='CMS_btag_fixedWP_comb_bc_uncorrelated' or sysName=='CMS_btag_fixedWP_incl_light_uncorrelated' or sysName=='CMS_res_j' or sysName=='CMS_scale_j' or sysName=='CMS_pileup' or sysName=='CMS_eff_e' or sysName=='CMS_eff_m':
         if str(Comb_year)=='2016':
             up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
             down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
@@ -60,8 +60,8 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
             up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
             down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
     elif sysName=='QCDscale_ren' or sysName=='QCDscale_fac' or sysName=='QCDscale':
-        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_sigUp")
-        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_sigDown")
+        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_t1tbsUp")
+        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_t1tbsDown")
     elif sysName=='CMS_gs' or sysName=='CMS_btag_fixedWP_comb_bc_correlated' or sysName=='CMS_btag_fixedWP_incl_light_correlated':
         up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Up")
         down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Down")
@@ -131,13 +131,14 @@ set_palette_gray()
 systList=[]
 systList.append(["CMS_gs","Gluon splitting",4,1])
 systList.append(["CMS_pileup","Pileup",10,1])
-systList.append(["CMS_btag_fixedWP_comb_bc_uncorrelated","#splitline{Across-year uncorrelated}{           b,c jet b-tag SF}",5,1])
+systList.append(["CMS_btag_fixedWP_comb_bc_uncorrelated","#splitline{ Across-year uncorrelated}{                b,c jet b-tag SF}",5,1])
 systList.append(["CMS_btag_fixedWP_comb_bc_correlated","#splitline{Across-year correlated}{           b,c jet b-tag SF}",5,1])
-systList.append(["CMS_btag_fixedWP_incl_light_uncorrelated","#splitline{Across-year uncorrelated}{     u,d,s,g jet b-tag SF}",6,1])
+systList.append(["CMS_btag_fixedWP_incl_light_uncorrelated","#splitline{Across-year uncorrelated}{         u,d,s,g jet b-tag SF}",6,1])
 systList.append(["CMS_btag_fixedWP_incl_light_correlated","#splitline{Across-year correlated}{     u,d,s,g jet b-tag SF}",6,1])
 systList.append(["CMS_scale_j","Jet energy scale",7,1])
 systList.append(["CMS_res_j","Jet energy resolution",7,1])
-systList.append(["CMS_eff_lep","Lepton efficiency",9,1])
+systList.append(["CMS_eff_e","Electron efficiency",9,1])
+systList.append(["CMS_eff_m","Muon efficiency",9,1])
 #systList.append(["isr","Initial state radiation",11,1])
 systList.append(["QCDscale_ren","Renormalization scale",16,1])
 systList.append(["QCDscale_fac","Factorization scale",17,1])
@@ -260,9 +261,13 @@ for ibin in binList:
     leg.Draw()
     tla = ROOT.TLatex()
     tla.SetTextSize(0.038)
-    tla.DrawLatexNDC(0.12,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}")
+    #tla.DrawLatexNDC(0.12,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}")
+    tla.DrawLatexNDC(0.20,0.93,"#font[62]{CMS} #font[52]{Preliminary}")
     tla.SetTextFont(42)
-    tla.DrawLatexNDC(0.71,0.93,"#sqrt{s} = 13 TeV")
+    if str(Comb_year)=='2016':
+        tla.DrawLatexNDC(0.66,0.93,"36.3 fb^{-1}")
+    elif str(Comb_year)=='1718':
+        tla.DrawLatexNDC(0.80,0.93,"101 fb^{-1}")
 #    tla.SetTextSize(0.045)
     tla.DrawLatexNDC(0.17, 0.65, ibin[3])
     tla.DrawLatexNDC(0.17, 0.6, ibin[1])
@@ -286,17 +291,23 @@ for ibin in binList:
     ROOT.gStyle.SetPadBottomMargin(0.1)
     #ROOT.gStyle.SetPaintTextFormat("4.5f")
     c2 = ROOT.TCanvas()
-    table.GetXaxis().SetLabelSize(0.02)
-    table.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV")
-    table.GetXaxis().SetBinLabel(2,"800 \leq M_{J} \leq 1100 GeV")
-    table.GetXaxis().SetBinLabel(3,"M_{J} \geq 1100 GeV")
-    table.GetXaxis().SetNdivisions(400,0) 
+    table.GetXaxis().SetLabelSize(0.025)
+    table.GetXaxis().SetNdivisions(505,1) 
+    #table.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV")
+    #table.GetXaxis().SetBinLabel(2,"800 \leq M_{J} \leq 1100 GeV")
+    #table.GetXaxis().SetBinLabel(3,"M_{J} \geq 1100 GeV")
+    table.GetXaxis().SetBinLabel(1,"")
+    table.GetXaxis().SetBinLabel(2,"")
+    table.GetXaxis().SetBinLabel(3,"")
+    table.GetXaxis().SetLabelOffset(0.01)
     table.SetMaximum(20)
     table.SetMinimum(0)
     table.SetStats(0)
     table.SetMarkerSize(1.5)
-    table.SetXTitle("M_{J}")
+    table.SetXTitle("")
+    #table.SetXTitle("M_{J} (GeV)")
     table.SetZTitle("Uncertainty [%]")
+    table.GetXaxis().SetTitleOffset(0.95)
     table.GetYaxis().SetTitleOffset(1.4)
     table.GetYaxis().SetTitleSize(0.054)
     #table.GetYaxis().SetLabelSize(0.045)
@@ -307,9 +318,27 @@ for ibin in binList:
     table.Draw("axis y+ same")
     tla = ROOT.TLatex()
     tla.SetTextSize(0.038)
-    tla.DrawLatexNDC(0.35,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}")
+    tla.DrawLatexNDC(0.35,0.93,"#font[62]{CMS} #scale[0.9]{#font[52]{Preliminary}}")
     tla.SetTextFont(42)
-    tla.DrawLatexNDC(0.66,0.93,"#sqrt{s} = 13 TeV")
+
+    tla_mj = ROOT.TLatex()
+    tla_mj.SetTextFont(42)
+    tla_mj.SetTextSize(0.038)
+    tla_mj.DrawLatexNDC(0.32, 0.06, "500")
+    tla_mj.DrawLatexNDC(0.473, 0.06, "800")
+    tla_mj.DrawLatexNDC(0.615, 0.06, "1100")
+    tla_mj.DrawLatexNDC(0.76, 0.06, "1400")
+    tla_mj.DrawLatexNDC(0.75, 0.02, "M_{J} (GeV)")
+
+    if str(Year)=='2016preVFP':
+        tla.DrawLatexNDC(0.63,0.93,"#scale[0.8]{19.5 fb^{-1} (13 TeV)}")
+    elif str(Year)=='2016postVFP':
+        tla.DrawLatexNDC(0.63,0.93,"#scale[0.8]{16.8 fb^{-1} (13 TeV)}")
+    elif str(Year)=='2017':
+        tla.DrawLatexNDC(0.63,0.93,"#scale[0.8]{41.5 fb^{-1} (13 TeV)}")
+    elif str(Year)=='2018':
+        tla.DrawLatexNDC(0.63,0.93,"#scale[0.8]{59.8 fb^{-1} (13 TeV)}")
+
     if one_pdf:
         if directory == binList[0][0]:
             outname = "plots/rpv_sig_syst/" + str(Year) + "/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("

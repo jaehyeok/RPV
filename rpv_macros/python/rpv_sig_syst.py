@@ -169,6 +169,7 @@ binList.append(["bin36","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
 sysFile = ROOT.TFile(infile,"read")
 proc = "signal_M" + str(GLUINOMASS)
 
+
 for ibin in binList: 
 
     directory = ibin[0]
@@ -184,7 +185,7 @@ for ibin in binList:
     c = ROOT.TCanvas()
     leg = ROOT.TLegend(0.12,0.7,0.54,0.92)
 
-    table = ROOT.TH2F("table_"+directory,"",nbinsX,500,1400,nSyst,0,nSyst)
+    table = ROOT.TH2F("table_"+directory,"",nbinsX,500,1400,nSyst+1,0,nSyst+1) #nSyst"+1" for total unc.
     systHists_sym = []
 
     
@@ -236,7 +237,6 @@ for ibin in binList:
                 print( "symmetrized rel error bin "+str(i)+" "+str(systHist.GetBinContent(i)))
 
 
-
         systHists_sym.append(systHist)
 
 
@@ -255,7 +255,6 @@ for ibin in binList:
         systHists_sym[isys-1].GetXaxis().SetNdivisions(505)
         leg.AddEntry(systHists_sym[isys-1],syst[1],"l")
         systHists_sym[isys-1].Draw("hist same")  
-
 
 
     leg.Draw()
@@ -285,6 +284,27 @@ for ibin in binList:
     print( "outname is " +outname)
     c.Print(outname)
 
+    integral_tot_systHist = ROOT.TH1F("integral_tot_systHist","",3,500,1400)
+    for i in range (1, systHist.GetNbinsX()+1):
+        for j in range(1, len(systHists_sym)+1):
+            integral_tot_systHist.SetBinContent(i, math.sqrt(integral_tot_systHist.GetBinContent(i)*integral_tot_systHist.GetBinContent(i)+table.GetBinContent(i,j)*table.GetBinContent(i,j)))
+
+    # change the order of systs
+    for i in range(nSyst, 0, -1):
+        for j in range(1,systHist.GetNbinsX()+1):
+            table.SetBinContent(j,i+1,table.GetBinContent(j,i))
+
+    for i in range(nSyst+1, 0, -1):
+        if i==1:
+            table.GetYaxis().SetBinLabel(i, "Total uncertainty")
+        else:
+            table.GetYaxis().SetBinLabel(i, systList[i-2][1])
+
+
+    # total unc
+    for i in range(1, systHist.GetNbinsX()+1):
+        table.SetBinContent(i, 1, integral_tot_systHist.GetBinContent(i))
+#    print(table.GetBinContent(3,nSyst+1))
 
     ROOT.gStyle.SetPadLeftMargin(0.35)
     ROOT.gStyle.SetPadRightMargin(0.2)
@@ -310,8 +330,8 @@ for ibin in binList:
     table.GetXaxis().SetTitleOffset(0.95)
     table.GetYaxis().SetTitleOffset(1.4)
     table.GetYaxis().SetTitleSize(0.054)
-    #table.GetYaxis().SetLabelSize(0.045)
-    table.GetYaxis().SetLabelSize(0.04)
+    #table.GetYaxis().SetLabelSize(0.04)
+    table.GetYaxis().SetLabelSize(0.03)
     table.GetXaxis().SetTitleSize(0.04)
     table.Draw("colz text")
     ROOT.gPad.SetTicks(1,0)

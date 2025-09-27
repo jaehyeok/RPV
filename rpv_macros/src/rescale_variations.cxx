@@ -6,14 +6,16 @@
 #include <iostream>
 #include "small_tree_rpv.hpp"
 
-TString msig = "1500";
+//TString msig = "1500";
 
 std::vector<float> morphBins = {1.00, 0.900, 0.800};
+using namespace std;
 
 bool isBlinded(const std::string &binName, const std::vector<std::string>& blindBins);
 
 int main(int argc, char* argv[])
 {
+    TH1::SetDefaultSumw2();
     // Choose the type of cards to produce: mconly, control, and default
     //    For signal injection studies(mconly), only want to use MC as nuisance parameters
     //    are different for data in sideband regions and MC
@@ -23,7 +25,11 @@ int main(int argc, char* argv[])
     //TString year = "2016";
     TString rootfile_org = argv[2];
     TString year = argv[3];
-    if(argc==4) msig = argv[4];
+    TString msig = argv[4];
+    //if(argc==4) msig = argv[4];
+    cout << "argc: " << argc << endl;
+    cout << "msig: " << msig << endl;
+    cout << "year: " << year << endl;
     //./run/rescale_variations.exe [cardType] [inputdir] [year] [mass]
     TString temp = rootfile_org;
     TString rootfile(temp.ReplaceAll(".root","_rescaled.root"));
@@ -250,6 +256,7 @@ int main(int argc, char* argv[])
                             + wjets->GetBinContent(i)
                             + other->GetBinContent(i)));
 		            data_obs->SetBinError(i, TMath::Sqrt(data_obs->GetBinContent(i)));
+//		            data_obs->SetBinError(i, TMath::Sqrt(qcd->GetBinError(i)*qcd->GetBinError(i) + ttbar->GetBinError(i)*ttbar->GetBinError(i) + wjets->GetBinError(i)*wjets->GetBinError(i) + other->GetBinError(i)*other->GetBinError(i))); // 231006 for comparison of MJ distribution between 2016_pre and 2016_post
             }
             data_obs->Write("",TObject::kOverwrite);
             //data_obs->Write();

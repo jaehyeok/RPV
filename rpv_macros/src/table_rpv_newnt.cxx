@@ -15,6 +15,8 @@ using namespace std;
 bool formatLatex=true;
 
 float addInQuad(float a, float b);
+std::vector<float> pdgRound(float value, float error);
+int getPrecision(float error);
 void printOneLine(int nb, 
                   float data, float qcd, float ttbar, float wjets, float other, 
                   float sig1500, float sig1600, float sig1700, float sig1800, float sig1900,
@@ -25,9 +27,9 @@ void printOneLine(int nb,
 //                  float sig1500, 
 //                  float qcd_err, float ttbar_err, float wjets_err, float other_err, 
 //                  float sig1500_err, bool doLatex);
-void printYieldBin(int nb, float data,
+void printYieldBin(int ibin, int mjbin, float data,
                    float qcd, float ttbar, float wjets, float other, float sig,
-                   float qcd_err, float ttbar_err, float wjets_err, float other_err,
+                   float qcd_err, float ttbar_err, float wjets_err, float other_err, float sig_err,
                    float dataovermc, bool doNorm, bool printErr);
 
 
@@ -322,7 +324,7 @@ int main(int argc, char* argv[])
     // -----------------------------------------------------
 
     // Get pre-fit errors
-    float err[4][nbins][3];
+    float err[5][nbins][3];
 
     for(int ibin=22; ibin<nbins; ibin++)
     {
@@ -333,6 +335,7 @@ int main(int argc, char* argv[])
             err[1][ibin][inb] = ttbar_err[ibin][inb];
             err[2][ibin][inb] = wjets_err[ibin][inb];
             err[3][ibin][inb] = other_err[ibin][inb];
+            err[4][ibin][inb] = sig1800_err[ibin][inb];
         }
     }
 
@@ -517,10 +520,11 @@ int main(int argc, char* argv[])
     int tablebin_1lep[30]={22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51};
     cout << "\\begin{table}" << endl;
     cout << "\\centering" << endl;
+    cout << "\\vspace{1mm}" << endl;
     cout << "\\resizebox{\\textwidth}{!}{%" << endl;
-    cout << "\\begin{tabular}[tbp!]{ l | c  c  c  c | c |  c | c  }" << endl;
+    cout << "\\begin{tabular}[tbp!]{ c | c | c | c  c  c  c | c |  c | c  }" << endl;
     cout << "\\hline" << endl;
-    cout << "$\\MJ$ $(\\textrm{GeV})$ & QCD & $t\\bar{t}$ & $\\wjets$ & Other & All bkg. & Data & $m_{\\tilde{g}}=1.8$ $\\textrm{TeV}$\\\\"  << endl;
+    cout << "$\\Nb$ & $\\Njet$ & $\\MJ$ $(\\textrm{GeV})$ & QCD & $t\\bar{t}$ & $\\wjets$ & Other & All bkg. & Data & $m_{\\tilde{g}}=1800$ $\\textrm{GeV}$\\\\"  << endl;
     cout << "\\hline\\hline" << endl;
 
 //    for(int ibin=22; ibin<nbins; ibin++)
@@ -536,13 +540,13 @@ int main(int argc, char* argv[])
             mcbin = mcbin + qcd[tablebin][inb] + ttbar[tablebin][inb] + wjets[tablebin][inb] + other[tablebin][inb]; 
         }
 
-        cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$} \\\\" << endl;
-        cout << "\\hline" << endl;
+//        cout <<"\\multicolumn{8}{c}{$" <<  binLatex[tablebin].Data() << "$} \\\\" << endl;
+//        cout << "\\hline" << endl;
         for(int inb=0; inb<3; inb++) {
-	  if(ibin==32 || ibin==33 || ibin==35 || ibin==36) {
-	    data[tablebin][inb]=0;  //FIXME when unblinding
-	  }
-            printYieldBin(inb,
+//	  if(ibin==30 || ibin==32 || ibin==33 || ibin==35 || ibin==36) {
+//	    data[tablebin][inb]=0;  //FIXME when unblinding
+//	  }
+            printYieldBin(ibin, inb,
                     data[tablebin][inb],
                     qcd[tablebin][inb],
                     ttbar[tablebin][inb],
@@ -553,9 +557,10 @@ int main(int argc, char* argv[])
                     err[1][tablebin][inb],//*ttbar[tablebin][inb],
                     err[2][tablebin][inb],//*wjets[tablebin][inb],
                     err[3][tablebin][inb],//*other[tablebin][inb],
+                    err[4][tablebin][inb],//*sig[tablebin][inb],
                     databin/mcbin, false /*renormalize to data*/, true);
 	}
-        cout << "\\hline" << endl;
+//        cout << "\\hline" << endl;
     }
     cout<< "\\hline" << endl;
     cout << "\\end{tabular}" << endl;
@@ -648,9 +653,53 @@ void printOneLine(int nb,
     }
 } 
 */
-void printYieldBin(int nb, float data, 
+std::vector<float> pdgRound(float value, float error)
+{
+  std::vector<float> result(2);
+  if(value==0 || error==0) return result={0,0};
+  if(value<0.0001) return result={0,0};
+
+  int exp = static_cast<int>(std::floor(std::log10(error)));
+  float scale = std::pow(10, exp-2);
+  int top3 = static_cast<int>(std::round(error / scale));
+
+  int sig_digits;
+  if(top3 <= 354) sig_digits = 2;
+  else if(top3<=949) sig_digits = 1;
+  else {
+    sig_digits = 2;
+    exp += 1;
+  }
+  float round_to = std::pow(10, exp - sig_digits + 1);
+  float rounded_error = std::round(error/round_to)*round_to;
+  float rounded_value = std::round(value/round_to)*round_to;
+
+  result[0] = rounded_value;
+  result[1] = rounded_error;
+
+  return result;
+}
+
+int getPrecision(float error) {
+  if (error==0) return 0;
+  int exp = static_cast<int>(std::floor(std::log10(error)));
+  float scale = std::pow(10, exp-2);
+  int top3 = static_cast<int>(std::round(error / scale));
+
+  int sig_digits;
+  if(top3 <= 354) sig_digits = 2;
+  else if(top3 <= 949) sig_digits = 1;
+  else {
+    sig_digits = 2;
+    exp += 1;
+  }
+  float round_to = std::pow(10, exp - sig_digits + 1);
+  return std::max(0, static_cast<int>(-std::floor(std::log10(round_to))));
+}
+
+void printYieldBin(int ibin, int mjbin, float data, 
         float qcd, float ttbar, float wjets, float other, float sig,
-        float qcd_err, float ttbar_err, float wjets_err, float other_err, 
+        float qcd_err, float ttbar_err, float wjets_err, float other_err, float sig_err,
         float dataovermc, bool doNorm, bool printErr)
 {
     if(qcd==0) qcd_err=0;
@@ -658,10 +707,35 @@ void printYieldBin(int nb, float data,
     if(wjets==0) wjets_err=0;
     if(other==0) other_err=0;
 
-    string nbbin;
-    if(nb==0) nbbin="$500 - 800$";
-    if(nb==1) nbbin="$800 - 1100$";
-    if(nb==2) nbbin="$1100 \\le$";
+     string imj;
+    if(mjbin==0) imj="$500 - 800$";
+    if(mjbin==1) imj="$800 - 1100$";
+    if(mjbin==2) imj="$\\ge 1100$";
+    //if(mjbin==2) imj="$1100 \\le$";
+  
+    string nb;
+    if(ibin%3==1 && mjbin==0) {
+      nb=Form("\\multirow{9}{*}{$%d$}", (ibin-22)/3);
+      if(ibin==31) nb="\\multirow{3}{*}{$\\ge3$}";
+    }
+    if(mjbin==0) {
+      if(ibin==32) nb="\\multirow{6}{*}{$3$}";
+      else if(ibin==35) nb="\\multirow{6}{*}{$\\ge4$}";
+    }
+    else nb="";
+    //nb=Form("$%d$", (ibin-22)/3);
+    //else if(ibin>34) nb="$\\ge4$";
+  
+    string njet;
+    if(mjbin==1) {
+      if(ibin%3==1) njet="$4-5$";
+      else if(ibin%3==2) njet="$6-7$";
+      else if(ibin%3==0) njet="$\\ge8$";
+      //if(ibin%3==1) njet="$4\\le\\Njet\\le5$";
+      //else if(ibin%3==2) njet="$6\\le\\Njet\\le7$";
+      //else if(ibin%3==0) njet="$\\Njet\\ge8$";
+    }
+    else njet="";
    
     if(doNorm)  
     { 
@@ -675,18 +749,23 @@ void printYieldBin(int nb, float data,
   
     if(printErr) 
     {
-    cout << nbbin << " & "
-        << Form("$%.1f \\pm %.1f$",qcd,qcd_err)  << " & "
-        << Form("$%.1f \\pm %.1f$",ttbar,ttbar_err) << " & "
-        << Form("$%.1f \\pm %.1f$",wjets,wjets_err) << " & "
-        << Form("$%.1f \\pm %.1f$",other,other_err) << " & "
-        << Form("$%.1f \\pm %.1f$",qcd+ttbar+wjets+other,tot_err) << " & "
-        << Form("$%.0f$",data) << " & "
-        << Form("$%.1f$",sig) << " \\\\ " << endl;//FIXME
+      cout << nb << " & " << njet << " & " << imj << " & "
+        << pdgRound(qcd, qcd_err).at(0) << " & "
+        << pdgRound(ttbar, ttbar_err).at(0) << " & "
+        << pdgRound(wjets, wjets_err).at(0) << " & "
+        << pdgRound(other, other_err).at(0) << " & "
+        << Form("$%.*f \\pm %.*f$", getPrecision(tot_err), pdgRound(qcd+ttbar+wjets+other, tot_err).at(0), getPrecision(tot_err), pdgRound(qcd+ttbar+wjets+other, tot_err).at(1)) << " & "
+        << Form("$%.0f$", data) << " & "
+        << Form("$%.*f \\pm %.*f$", getPrecision(sig_err), pdgRound(sig, sig_err).at(0), getPrecision(sig_err), pdgRound(sig, sig_err).at(1)) << " \\\\ " << endl;
+      if(mjbin==2) {
+        if(ibin%3==0) cout << "\\hline" << endl;
+        else cout << "\\cline{2-10}" << endl;
+        if(ibin==31) cout << "\\hline" << endl;
+      }
     }
     else 
     { 
-    cout << nbbin << " & "
+    cout << nb << " & "
         << Form("$%.1f$",qcd)  << " & "
         << Form("$%.1f$",ttbar) << " & "
         << Form("$%.1f$",wjets) << " & "

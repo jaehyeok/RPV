@@ -28,33 +28,31 @@ void qcd_fake_ratio(TString year) {
 
   TString lumi, trigger;
 
-  if(year=="UL2016" || year=="2016") {
-    lumi = "36.3";
-    //lumi = "35.9";
+  if(year=="UL2016_preVFP") {
+    lumi = "19.5";
     trigger = "(trig_jet450 || trig_ht900)";
   }
-  else if(year=="UL2017" || year=="2017") {
+  else if(year=="UL2016_postVFP") {
+    lumi = "16.8";
+    trigger = "(trig_jet450 || trig_ht900)";
+  }
+  else if(year=="UL2017") {
     lumi = "41.5";
     trigger = "trig_ht1050";
   }
-  else if(year=="UL2018" || year=="2018") {
+  else if(year=="UL2018") {
     lumi = "59.8";
     trigger = "trig_ht1050";
   }
   else {
-    cout << "Please input the year as 2016/2017/2018/UL2016/UL2017/UL2018" << endl;
+    cout << "Please input the year as UL2016_preVFP/UL2016_postVFP/UL2017/UL2018" << endl;
   }
 
 
 
-  // UL
-  TString folder_dat = "/mnt/data3/babies/231022_qcdfake/"+year+"/JetHTRun_rpvfitnbge0_step3/";
-  TString folder_bkg = "/mnt/data3/babies/231022_qcdfake/"+year+"/merged_norm_JER_0903/";
-  TString folder_sig = "/mnt/data3/babies/231022_qcdfake/"+year+"/merged_norm_sig_pu/";
-  // PL
-  //TString folder_dat = "/mnt/data1/babies/20210430/"+year+"/merged_norm_noMJ/";
-  //TString folder_bkg = "/mnt/data3/babies/210910/"+year+"/merged_norm_JER_noMJ/";
-  //TString folder_sig = "/mnt/data3/babies/210910/"+year+"/merged_norm_sig_pu/";
+  TString folder_dat = "/mnt/data3/babies/250110/"+year+"/merged_qcdfake_data/";
+  TString folder_bkg = "/mnt/data3/babies/250110/"+year+"/merged_qcdfake_mc/";
+  TString folder_sig = "/mnt/data3/babies/250110/"+year+"/merged_qcdfake_sig/";
 
   TChain* ch_dat = new TChain("tree");
   TChain* ch_sig = new TChain("tree");
@@ -96,9 +94,23 @@ void qcd_fake_ratio(TString year) {
   TString cut_fake_muon = "(mj12<500 && ht>1200 && (nbm==0) && mus_pt>20 && abs(mus_eta)<2.4 && (mus_miniso>=0.2 || mus_sigid==0) && met<50)";
    
 
+  // QCD SF for norm difference in Nb=0 b/w qcd and data
+  TFile* f_qcd_nb0_sf = TFile::Open(Form("data/qcd_nb0_sf_%s.root", year.Data()), "READ");
+  TH1D* h_qcd_nb0_lownjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_lownjet_sf"));
+  TH1D* h_qcd_nb0_midnjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_midnjet_sf"));
+  TH1D* h_qcd_nb0_highnjet_sf = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_highnjet_sf"));
+  float qcd_nb0_lownjet_sf  = h_qcd_nb0_lownjet_sf->GetBinContent(1);
+  float qcd_nb0_midnjet_sf  = h_qcd_nb0_midnjet_sf->GetBinContent(1);
+  float qcd_nb0_highnjet_sf = h_qcd_nb0_highnjet_sf->GetBinContent(1);
+
   for(auto injet : njetcuts) {
 
     cout << "njetcuts: " << injet << endl;
+
+    float qcd_nb0_sf=0;
+    if(injet=="(njets>=4&&njets<=5)") qcd_nb0_sf=qcd_nb0_lownjet_sf;
+    else if(injet=="(njets>=6&&njets<=7)") qcd_nb0_sf=qcd_nb0_midnjet_sf;
+    else if(injet=="(njets>=8)") qcd_nb0_sf=qcd_nb0_highnjet_sf;
 
     TH1D* h_dat_real_ele = new TH1D("h_dat_real_ele","h_dat_real_ele",1,0,1500);
     TH1D* h_sig_real_ele = new TH1D("h_sig_real_ele","h_sig_real_ele",1,0,1500);
@@ -128,32 +140,27 @@ void qcd_fake_ratio(TString year) {
 
     // real electron
     ch_dat->Draw("min(ht,1499.99)>>h_dat_real_ele", "pass*("+trigger+"&&"+injet+"&&"+cut_real_ele+")", "goff");
-    //ch_sig->Draw("min(ht,1499.99)>>h_sig_real_ele", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_real_ele+")", "goff");
-    //signal does not have frac16
-    ch_sig->Draw("min(ht,1499.99)>>h_sig_real_ele", lumi+"*weight*pass*("+injet+"&&"+cut_real_ele+")", "goff");
-    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_real_ele", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_real_ele+")", "goff");
-    ch_bkg->Draw("min(ht,1499.99)>>h_bkg_real_ele", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_real_ele+")", "goff");
+    ch_sig->Draw("min(ht,1499.99)>>h_sig_real_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_ele+")", "goff");
+    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_real_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_ele+")", "goff");
+    ch_bkg->Draw("min(ht,1499.99)>>h_bkg_real_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_ele+")", "goff");
 
     // fake electron
     ch_dat->Draw("min(ht,1499.99)>>h_dat_fake_ele", "pass*("+trigger+"&&"+injet+"&&"+cut_fake_ele+")", "goff");
-    //ch_sig->Draw("min(ht,1499.99)>>h_sig_fake_ele", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_fake_ele+")", "goff");
-    ch_sig->Draw("min(ht,1499.99)>>h_sig_fake_ele", lumi+"*weight*pass*("+injet+"&&"+cut_fake_ele+")", "goff");
-    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_fake_ele", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_fake_ele+")", "goff");
-    ch_bkg->Draw("min(ht,1499.99)>>h_bkg_fake_ele", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_fake_ele+")", "goff");
+    ch_sig->Draw("min(ht,1499.99)>>h_sig_fake_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_ele+")", "goff");
+    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_fake_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_ele+")", "goff");
+    ch_bkg->Draw("min(ht,1499.99)>>h_bkg_fake_ele", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_ele+")", "goff");
 
     // real muon
     ch_dat->Draw("min(ht,1499.99)>>h_dat_real_muon", "pass*("+trigger+"&&"+injet+"&&"+cut_real_muon+")", "goff");
-    //ch_sig->Draw("min(ht,1499.99)>>h_sig_real_muon", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_real_muon+")", "goff");
-    ch_sig->Draw("min(ht,1499.99)>>h_sig_real_muon", lumi+"*weight*pass*("+injet+"&&"+cut_real_muon+")", "goff");
-    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_real_muon", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_real_muon+")", "goff");
-    ch_bkg->Draw("min(ht,1499.99)>>h_bkg_real_muon", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_real_muon+")", "goff");
+    ch_sig->Draw("min(ht,1499.99)>>h_sig_real_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_muon+")", "goff");
+    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_real_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_muon+")", "goff");
+    ch_bkg->Draw("min(ht,1499.99)>>h_bkg_real_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_real_muon+")", "goff");
 
     // fake muon
     ch_dat->Draw("min(ht,1499.99)>>h_dat_fake_muon", "pass*("+trigger+"&&"+injet+"&&"+cut_fake_muon+")", "goff");
-    //ch_sig->Draw("min(ht,1499.99)>>h_sig_fake_muon", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_fake_muon+")", "goff");
-    ch_sig->Draw("min(ht,1499.99)>>h_sig_fake_muon", lumi+"*weight*pass*("+injet+"&&"+cut_fake_muon+")", "goff");
-    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_fake_muon", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_fake_muon+")", "goff");
-    ch_bkg->Draw("min(ht,1499.99)>>h_bkg_fake_muon", lumi+"*weight*pass*frac16*("+injet+"&&"+cut_fake_muon+")", "goff");
+    ch_sig->Draw("min(ht,1499.99)>>h_sig_fake_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_muon+")", "goff");
+    ch_qcd->Draw("min(ht,1499.99)>>h_qcd_fake_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_muon+")", "goff");
+    ch_bkg->Draw("min(ht,1499.99)>>h_bkg_fake_muon", lumi+"*weight*pass*stitch_ht*("+injet+"&&"+cut_fake_muon+")", "goff");
 
     /*
     ch_dat->Draw("min(ht,1499.99)>>h_dat_real_ele", "pass*("+trigger+"&&"+injet+"&&"+cut_real_ele+")", "goff");
@@ -251,14 +258,14 @@ void ttbar_purity(TString year) {
 
   TString inputfile;
 
-  if(year=="UL2016" || year=="2016") {
-    inputfile = "variations/output_nominal_newnt_2016.root";
+  if(year=="UL2016_preVFP" || year=="UL2016_postVFP") {
+    inputfile = "variations/output_nominal_newnt_"+year+"_UL2016.root";
   }
-  else if(year=="UL2017" || year=="2017") {
-    inputfile = "variations/output_nominal_newnt_2017_20178.root";
+  else if(year=="UL2017" || year=="UL2018") {
+    inputfile = "variations/output_nominal_newnt_"+year+"_UL20178.root";
   }
-  else if(year=="UL2018" || year=="2018") {
-    inputfile = "variations/output_nominal_newnt_2018_20178.root";
+  else if(year=="UL2016" || year=="UL20178") {
+    inputfile = "variations/output_nominal_newnt_"+year+".root";
   }
 
   TFile* f_in = new TFile(inputfile, "READ");
@@ -313,7 +320,7 @@ int main(int argc, char *argv[]) {
 
   if(argc<2 || arg=="--help") {
     cout << "./run/print_syst.exe [year] [type]" << endl;
-    cout << "[year]: UL2016/2016 or UL2017/2017 or UL2018/2018" << endl;
+    cout << "[year]: UL2016_preVFP, UL2016_postVFP, UL2017, or UL2018" << endl;
     cout << "[type]: qcd or ttbar or wjets" << endl;
     cout << "FYI - qcd  : qcd fake ratio" << endl;
     cout << "FYI - ttbar: ttbar purity" << endl;

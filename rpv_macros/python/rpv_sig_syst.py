@@ -8,8 +8,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input")
 parser.add_argument("-m", "--mass")
 parser.add_argument("-y", "--year")
+parser.add_argument("-c", "--combine_year")
 args = parser.parse_args()
-GLUINOMASS = 1700
+GLUINOMASS = 1800
 Year = 2016
 if (args.input):
   infile = args.input
@@ -19,6 +20,8 @@ if (args.mass):
   GLUINOMASS = args.mass
 if (args.year):
   Year = args.year
+if (args.combine_year):
+  Comb_year = args.combine_year
 
 one_pdf = False #put all plots in one pdf file
 verbose = True  
@@ -27,7 +30,7 @@ verbose = True
 # function to get pointers to histogram in root file
 def get_hist_with_overflow(file,histname):
     if verbose:
-        print" getting "+histname
+        print(" getting "+histname)
     hist = file.Get(histname)
     nbinsX = hist.GetNbinsX()
     content = hist.GetBinContent(nbinsX) + hist.GetBinContent(nbinsX+1)
@@ -49,8 +52,25 @@ def get_symmetrized_relative_errors(sysName,nominal,proc,sysFile,directory):
   
     #load hists and calculate SFs for floating component for each variation
 
-    up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
-    down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
+    if sysName=='CMS_btag_fixedWP_comb_bc_uncorrelated' or sysName=='CMS_btag_fixedWP_incl_light_uncorrelated' or sysName=='CMS_res_j' or sysName=='CMS_scale_j' or sysName=='CMS_pileup' or sysName=='CMS_eff_e' or sysName=='CMS_eff_m':
+        if str(Comb_year)=='2016':
+            up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
+            down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
+        elif str(Comb_year)=='1718':
+            up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
+            down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
+    elif sysName=='QCDscale_ren' or sysName=='QCDscale_fac' or sysName=='QCDscale':
+        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_t1tbsUp")
+        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_t1tbsDown")
+    elif sysName=='CMS_gs' or sysName=='CMS_btag_fixedWP_comb_bc_correlated' or sysName=='CMS_btag_fixedWP_incl_light_correlated':
+        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Up")
+        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "Down")
+    else:
+        up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Comb_year) + "Up")
+        down = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Comb_year) + "Down")
+
+#    up = get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Up")
+#    down =  get_hist_with_overflow(sysFile,directory + "/" + proc + "_" + sysName + "_" + str(Year) + "Down")
 
     #Put yields in new histogram to avoid modifying originals
     systHistUp.Add(up)
@@ -109,17 +129,20 @@ set_palette_gray()
 
 #make list of systematics- name, title, plot color and line style
 systList=[]
-systList.append(["gs","Gluon splitting",4,1])
-systList.append(["pileup","Pileup",10,1])
-systList.append(["btag_bc","b,c jet b-tag SF",5,1])
-systList.append(["btag_udsg","u,d,s,g jet b-tag SF",6,1])
-systList.append(["jec","Jet energy scale",7,1])
-systList.append(["jer","Jet energy resolution",7,1])
-systList.append(["lep_eff","Lepton efficiency",9,1])
-systList.append(["isr","Initial state radiation",11,1])
-systList.append(["mur","Renormalization scale",16,1])
-systList.append(["muf","Factorization scale",17,1])
-systList.append(["murf","Renorm. and fact. scale",18,1])
+systList.append(["CMS_gs","Gluon splitting",4,1])
+systList.append(["CMS_pileup","Pileup",10,1])
+systList.append(["CMS_btag_fixedWP_comb_bc_uncorrelated","#splitline{ Across-year uncorrelated}{                b,c jet b-tag SF}",5,1])
+systList.append(["CMS_btag_fixedWP_comb_bc_correlated","#splitline{Across-year correlated}{           b,c jet b-tag SF}",5,1])
+systList.append(["CMS_btag_fixedWP_incl_light_uncorrelated","#splitline{Across-year uncorrelated}{         u,d,s,g jet b-tag SF}",6,1])
+systList.append(["CMS_btag_fixedWP_incl_light_correlated","#splitline{Across-year correlated}{     u,d,s,g jet b-tag SF}",6,1])
+systList.append(["CMS_scale_j","Jet energy scale",7,1])
+systList.append(["CMS_res_j","Jet energy resolution",7,1])
+systList.append(["CMS_eff_e","Electron efficiency",9,1])
+systList.append(["CMS_eff_m","Muon efficiency",9,1])
+#systList.append(["isr","Initial state radiation",11,1])
+systList.append(["QCDscale_ren","Renormalization scale",16,1])
+systList.append(["QCDscale_fac","Factorization scale",17,1])
+systList.append(["QCDscale","Renorm. and fact. scale",18,1])
 systList.append(["mc_stat","MC statistics",1,2]) #must be done last!
 
 nSyst = len(systList)
@@ -146,11 +169,12 @@ binList.append(["bin36","n_{jets} #geq 8","M_{J} > 500 GeV","n_{lep} = 1"])
 sysFile = ROOT.TFile(infile,"read")
 proc = "signal_M" + str(GLUINOMASS)
 
+
 for ibin in binList: 
 
     directory = ibin[0]
     if verbose:
-        print "directory is "+directory
+        print( "directory is "+directory)
     
     nominal = get_hist_with_overflow(sysFile,(directory + "/" + proc))
     nbinsX = nominal.GetNbinsX()
@@ -161,7 +185,7 @@ for ibin in binList:
     c = ROOT.TCanvas()
     leg = ROOT.TLegend(0.12,0.7,0.54,0.92)
 
-    table = ROOT.TH2F("table_"+directory,"",nbinsX,500,1400,nSyst,0,nSyst)
+    table = ROOT.TH2F("table_"+directory,"",nbinsX,500,1400,nSyst+1,0,nSyst+1) #nSyst"+1" for total unc.
     systHists_sym = []
 
     
@@ -169,7 +193,7 @@ for ibin in binList:
         sysName = syst[0]
         systHist = ROOT.TH1F(directory+"_"+sysName+"_sym","",3,500,1400) # will eventually contain errors; define now to remain in scope
         if verbose:
-            print "starting "+sysName
+            print( "starting "+sysName)
 
         if "mc_stat" not in sysName:
             #pdf treated separately
@@ -210,8 +234,7 @@ for ibin in binList:
             else: 
                 table.SetBinContent(i,isys,round(100*systHist.GetBinContent(i),1))
             if verbose:
-                print "symmetrized rel error bin "+str(i)+" "+str(systHist.GetBinContent(i))         
-
+                print( "symmetrized rel error bin "+str(i)+" "+str(systHist.GetBinContent(i)))
 
 
         systHists_sym.append(systHist)
@@ -234,70 +257,124 @@ for ibin in binList:
         systHists_sym[isys-1].Draw("hist same")  
 
 
-
     leg.Draw()
     tla = ROOT.TLatex()
     tla.SetTextSize(0.038)
-    tla.DrawLatexNDC(0.12,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}")
+    #tla.DrawLatexNDC(0.12,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}")
+    tla.DrawLatexNDC(0.20,0.93,"#font[62]{CMS} #font[52]{Preliminary}")
     tla.SetTextFont(42)
-    tla.DrawLatexNDC(0.71,0.93,"#sqrt{s} = 13 TeV")
+    if str(Comb_year)=='2016':
+        tla.DrawLatexNDC(0.66,0.93,"36.3 fb^{-1}")
+    elif str(Comb_year)=='1718':
+        tla.DrawLatexNDC(0.80,0.93,"101 fb^{-1}")
 #    tla.SetTextSize(0.045)
     tla.DrawLatexNDC(0.17, 0.65, ibin[3])
     tla.DrawLatexNDC(0.17, 0.6, ibin[1])
     tla.DrawLatexNDC(0.17, 0.55, ibin[2])
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
+            outname = "plots/rpv_sig_syst/" + str(Year) + "sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
         else:
-            outname = "plots/rpv_sig_syst/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
     else:
-         outname = "plots/rpv_sig_syst/sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
-    print "outname is " +outname
+         outname = "plots/rpv_sig_syst/" + str(Year) + "/sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+    print( "outname is " +outname)
     c.Print(outname)
 
+    integral_tot_systHist = ROOT.TH1F("integral_tot_systHist","",3,500,1400)
+    for i in range (1, systHist.GetNbinsX()+1):
+        for j in range(1, len(systHists_sym)+1):
+            integral_tot_systHist.SetBinContent(i, math.sqrt(integral_tot_systHist.GetBinContent(i)*integral_tot_systHist.GetBinContent(i)+table.GetBinContent(i,j)*table.GetBinContent(i,j)))
+
+    # change the order of systs
+    for i in range(nSyst, 0, -1):
+        for j in range(1,systHist.GetNbinsX()+1):
+            table.SetBinContent(j,i+1,table.GetBinContent(j,i))
+
+    for i in range(nSyst+1, 0, -1):
+        if i==1:
+            table.GetYaxis().SetBinLabel(i, "Total uncertainty")
+        else:
+            table.GetYaxis().SetBinLabel(i, systList[i-2][1])
+
+
+    # total unc
+    for i in range(1, systHist.GetNbinsX()+1):
+        table.SetBinContent(i, 1, integral_tot_systHist.GetBinContent(i))
 
     ROOT.gStyle.SetPadLeftMargin(0.35)
     ROOT.gStyle.SetPadRightMargin(0.2)
     ROOT.gStyle.SetPadBottomMargin(0.1)
     #ROOT.gStyle.SetPaintTextFormat("4.5f")
     c2 = ROOT.TCanvas()
-    table.GetXaxis().SetLabelSize(0.02)
-    table.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV")
-    table.GetXaxis().SetBinLabel(2,"800 \leq M_{J} \leq 1100 GeV")
-    table.GetXaxis().SetBinLabel(3,"M_{J} \geq 1100 GeV")
-    table.GetXaxis().SetNdivisions(400,0) 
+    table.GetXaxis().SetLabelSize(0.025)
+    table.GetXaxis().SetNdivisions(505,1) 
+    #table.GetXaxis().SetBinLabel(1,"500 \leq M_{J} \leq 800 GeV")
+    #table.GetXaxis().SetBinLabel(2,"800 \leq M_{J} \leq 1100 GeV")
+    #table.GetXaxis().SetBinLabel(3,"M_{J} \geq 1100 GeV")
+    table.GetXaxis().SetBinLabel(1,"")
+    table.GetXaxis().SetBinLabel(2,"")
+    table.GetXaxis().SetBinLabel(3,"")
+    table.GetXaxis().SetLabelOffset(0.01)
     table.SetMaximum(20)
     table.SetMinimum(0)
     table.SetStats(0)
     table.SetMarkerSize(1.5)
-    table.SetXTitle("M_{J}")
+    table.SetXTitle("")
+    #table.SetXTitle("M_{J} (GeV)")
     table.SetZTitle("Uncertainty [%]")
+    table.GetXaxis().SetTitleOffset(0.95)
     table.GetYaxis().SetTitleOffset(1.4)
     table.GetYaxis().SetTitleSize(0.054)
-    table.GetYaxis().SetLabelSize(0.045)
+    #table.GetYaxis().SetLabelSize(0.04)
+    table.GetYaxis().SetLabelSize(0.035)
     table.GetXaxis().SetTitleSize(0.04)
     table.Draw("colz text")
     ROOT.gPad.SetTicks(1,0)
     table.Draw("axis y+ same")
     tla = ROOT.TLatex()
     tla.SetTextSize(0.038)
-    tla.DrawLatexNDC(0.35,0.93,"#font[62]{CMS} #scale[0.8]{#font[52]{Work In Progress}}")
+    tla.DrawLatexNDC(0.35,0.93,"#font[62]{CMS} #scale[0.9]{#font[52]{Preliminary}}")
     tla.SetTextFont(42)
-    tla.DrawLatexNDC(0.66,0.93,"#sqrt{s} = 13 TeV")
+
+    tla_mj = ROOT.TLatex()
+    tla_mj.SetTextFont(42)
+    tla_mj.SetTextSize(0.038)
+    tla_mj.DrawLatexNDC(0.32, 0.06, "500")
+    tla_mj.DrawLatexNDC(0.473, 0.06, "800")
+    tla_mj.DrawLatexNDC(0.615, 0.06, "1100")
+    tla_mj.DrawLatexNDC(0.76, 0.06, "1400")
+    tla_mj.DrawLatexNDC(0.75, 0.02, "M_{J} (GeV)")
+
+    if str(Year)=='2016preVFP':
+        tla.DrawLatexNDC(0.63,0.93,"#scale[0.8]{19.5 fb^{-1} (13 TeV)}")
+    elif str(Year)=='2016postVFP':
+        tla.DrawLatexNDC(0.63,0.93,"#scale[0.8]{16.8 fb^{-1} (13 TeV)}")
+    elif str(Year)=='2017':
+        tla.DrawLatexNDC(0.63,0.93,"#scale[0.8]{41.5 fb^{-1} (13 TeV)}")
+    elif str(Year)=='2018':
+        tla.DrawLatexNDC(0.63,0.93,"#scale[0.8]{59.8 fb^{-1} (13 TeV)}")
+
     if one_pdf:
         if directory == binList[0][0]:
-            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf("
         elif directory == binList[len(binList)-1][0]:
-            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf)"
         else:
-            outname = "plots/rpv_sig_syst/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+            outname = "plots/rpv_sig_syst/" + str(Year) + "/table_sig_systs_all_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
 
     else:
-         outname = "plots/rpv_sig_syst/table_sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
+         outname = "plots/rpv_sig_syst/" + str(Year) + "/table_sig_systs_" + directory + "_m" + str(GLUINOMASS) + "_" + str(Year) + ".pdf"
          
+    for i in range(1, 4):
+        for j in range(1, nSyst+2):
+            if(directory=="bin36"):
+                print(str(table.GetBinContent(i, j))+", ", end='')
+        print("\n")
+
     c2.Print(outname)
 
 

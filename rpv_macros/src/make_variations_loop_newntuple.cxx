@@ -25,6 +25,7 @@ using namespace std;
 
 struct winsize w;
 
+void appendTree(vector<TString> s_process, small_tree &tree_in);
 void getSyst(small_tree_rpv &trees, TString variations, TString year, TFile *f, TString procname);
 double addError(double error, double added_error);
 double divideErrors(double x, double y, double dx, double dy);
@@ -135,9 +136,10 @@ int main(int argc, char *argv[])
       mjmax=atof(argv[3]);
       year =argv[4];
       cout<<year<<endl;
-      if(year=="2016") lumi = 36.3;
-      else if(year=="2017") lumi = 41.5;
-      else if(year=="2018") lumi = 59.8;
+      if(year=="UL2016_preVFP") lumi = 19.5;
+      else if(year=="UL2016_postVFP") lumi = 16.8;
+      else if(year=="UL2017") lumi = 41.5;
+      else if(year=="UL2018") lumi = 59.8;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "There are only 5 arguments! 0 Lepton shape is entered as on..." << endl;
@@ -167,9 +169,10 @@ int main(int argc, char *argv[])
       mjmin=atof(argv[3]);
       mjmax=atof(argv[4]);
       year = argv[5];
-      if(year=="2016") lumi = 36.3;
-      else if(year=="2017") lumi = 41.5;
-      else if(year=="2018") lumi = 59.8;
+      if(year=="UL2016_preVFP") lumi = 19.5;
+      else if(year=="UL2016_postVFP") lumi = 16.8;
+      else if(year=="UL2017") lumi = 41.5;
+      else if(year=="UL2018") lumi = 59.8;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -210,15 +213,16 @@ int main(int argc, char *argv[])
       cout << " with w_pdf index " << w_pdf_index; 
       cout << endl; 
     }
-    else if(temp=="20178"){
+    else if(temp=="UL2016"||temp=="UL20178"){
       onoff=argv[2];
       mjmin=atof(argv[3]);
       mjmax=atof(argv[4]);
       year = argv[5];
       str_year = argv[6];
-      if(year=="2016") lumi = 36.3;
-      else if(year=="2017") lumi = 41.5;
-      else if(year=="2018") lumi = 59.8;
+      if(year=="UL2016_preVFP") lumi = 19.5;
+      else if(year=="UL2016_postVFP") lumi = 16.8;
+      else if(year=="UL2017") lumi = 41.5;
+      else if(year=="UL2018") lumi = 59.8;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -246,17 +250,6 @@ int main(int argc, char *argv[])
     }
   }
   // Define samples
-  //TString folder_bkg = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_11_07/skim_rpvfit/";
-  //TString folder_sig = "/xrootd_user/jaehyeok/xrootd/2016v4/2019_12_10/processed/";
-
-  /*TString folder_bkg = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
-    TString folder_dat = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";
-    TString folder_sig = "/xrootd_user/yjeong/xrootd/nanoprocessing/"+year+"/merged_norm/";// */
-
-  //  TString folder_bkg = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
-  //  TString folder_dat = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
-  //  TString folder_sig = "/net/cms26/cms26r0/jaehyeokyoo/rpv_ku_babies/2016v6/2020_05_11/merged_rpvfitnbge0/";
-
   TString folder_bkg = folder_year(year,false).at(0);
   TString folder_dat = folder_year(year,false).at(1);
   TString folder_sig = folder_year(year,false).at(2);
@@ -264,8 +257,8 @@ int main(int argc, char *argv[])
 
   vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 
-  vector<TString> s_qcd = getRPVProcess(folder_bkg,"qcd");
-  vector<TString> s_tt = getRPVProcess(folder_bkg,"ttbar");
+  vector<TString> s_qcd   = getRPVProcess(folder_bkg,"qcd");
+  vector<TString> s_tt    = getRPVProcess(folder_bkg,"ttbar");
   vector<TString> s_wjets = getRPVProcess(folder_bkg,"wjets");
   vector<TString> s_other = getRPVProcess(folder_bkg,"other_public");
 
@@ -319,13 +312,17 @@ int main(int argc, char *argv[])
 
   // qcd ttbar wjets other 750 1000 1100 1200 1300 1400 1500
   small_tree_rpv qcd((static_cast<std::string>(s_qcd.at(0))));
-  for(unsigned int iqcd=1; iqcd<s_qcd.size(); iqcd++) qcd.Add((static_cast<std::string>(s_qcd.at(iqcd))));
+  appendTree(s_jetht, data);
+//  for(unsigned int iqcd=1; iqcd<s_qcd.size(); iqcd++) qcd.Add((static_cast<std::string>(s_qcd.at(iqcd))));
   small_tree_rpv ttbar((static_cast<std::string>(s_tt.at(0))));
-  for(unsigned int ittbar=1; ittbar<s_tt.size(); ittbar++) ttbar.Add((static_cast<std::string>(s_tt.at(ittbar))));
+  appendTree(s_tt, ttbar);
+//  for(unsigned int ittbar=1; ittbar<s_tt.size(); ittbar++) ttbar.Add((static_cast<std::string>(s_tt.at(ittbar))));
   small_tree_rpv wjets((static_cast<std::string>(s_wjets.at(0))));
-  for(unsigned int iwjets=1; iwjets<s_wjets.size(); iwjets++) wjets.Add((static_cast<std::string>(s_wjets.at(iwjets))));
+  appendTree(s_wjets, wjets);
+//  for(unsigned int iwjets=1; iwjets<s_wjets.size(); iwjets++) wjets.Add((static_cast<std::string>(s_wjets.at(iwjets))));
   small_tree_rpv other((static_cast<std::string>(s_other.at(0))));
-  for(unsigned int iother=1; iother<s_other.size(); iother++) other.Add((static_cast<std::string>(s_other.at(iother))));
+  appendTree(s_other, other);
+//  for(unsigned int iother=1; iother<s_other.size(); iother++) other.Add((static_cast<std::string>(s_other.at(iother))));
 
   // rpv_signal
   small_tree_rpv rpv_m1000((static_cast<std::string>(s_rpv_m1000.at(0))));
@@ -341,6 +338,20 @@ int main(int argc, char *argv[])
   small_tree_rpv rpv_m2000((static_cast<std::string>(s_rpv_m2000.at(0))));
   small_tree_rpv rpv_m2100((static_cast<std::string>(s_rpv_m2100.at(0))));
   small_tree_rpv rpv_m2200((static_cast<std::string>(s_rpv_m2200.at(0))));// */
+
+  appendTree(s_rpv_m1000, rpv_m1000);
+  appendTree(s_rpv_m1100, rpv_m1100);
+  appendTree(s_rpv_m1200, rpv_m1200);
+  appendTree(s_rpv_m1300, rpv_m1300);
+  appendTree(s_rpv_m1400, rpv_m1400);
+  appendTree(s_rpv_m1500, rpv_m1500);
+  appendTree(s_rpv_m1600, rpv_m1600);
+  appendTree(s_rpv_m1700, rpv_m1700);
+  appendTree(s_rpv_m1800, rpv_m1800);
+  appendTree(s_rpv_m1900, rpv_m1900);
+  appendTree(s_rpv_m2000, rpv_m2000);
+  appendTree(s_rpv_m2100, rpv_m2100);
+  appendTree(s_rpv_m2200, rpv_m2200);
 
   //GluinoToNeutralino
   /*small_tree_rpv gn_1200((static_cast<std::string>(s_GN_1200.at(0))));
@@ -444,10 +455,45 @@ int main(int argc, char *argv[])
   f->Close();
 } 
 
+void appendTree(vector<TString> s_process, small_tree &tree_in)
+{
+  cout << "flist of s_process: " << s_process.at(0) << endl;
+  if(s_process.size()>1) {
+    for(int i=1; i<s_process.size(); i++) {
+      tree_in.Add((static_cast<std::string>(s_process.at(i))));
+      cout << "       " << s_process.at(i) << " is appended" << endl;
+    }
+  }
+  cout << endl;
+}
+
 void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, TString procname)
 {
   ioctl(0,TIOCGWINSZ, &w);
   int cols = w.ws_col;
+
+  TString str_yr, yr;
+  if(str_year=="UL2016") str_yr="2016";
+  else if(str_year=="UL20178") str_yr="1718";
+  if(year=="UL2016_preVFP") yr="2016preVFP";
+  else if(year=="UL2016_postVFP") yr="2016postVFP";
+  else if(year=="UL2017") yr="2017";
+  else if(year=="UL2018") yr="2018";
+
+  TString variations_name;
+  if(variations=="jer") variations_name="CMS_res_j";
+  else if(variations=="jec") variations_name="CMS_scale_j";
+  else if(variations=="btag_bc_uncor") variations_name="CMS_btag_fixedWP_comb_bc_uncorrelated";
+  else if(variations=="btag_bc_cor") variations_name="CMS_btag_fixedWP_comb_bc_correlated";
+  else if(variations=="btag_udsg_uncor") variations_name="CMS_btag_fixedWP_incl_light_uncorrelated";
+  else if(variations=="btag_udsg_cor") variations_name="CMS_btag_fixedWP_incl_light_correlated";
+  else if(variations=="mur") variations_name="QCDscale_ren";
+  else if(variations=="muf") variations_name="QCDscale_fac";
+  else if(variations=="murf") variations_name="QCDscale";
+  else if(variations=="gs") variations_name="CMS_gs";
+  else if(variations=="els_eff") variations_name="CMS_eff_e";
+  else if(variations=="mus_eff") variations_name="CMS_eff_m";
+  else if(variations=="pileup") variations_name="CMS_pileup";
 
   cout << "Running syst      : " << variations << endl;  
   //TString procname = "qcd";
@@ -502,6 +548,26 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     std::cout << "Reweight c jets by " << cflavorValCentral << " +/ " << cflavorValError << std::endl;
     std::cout << "Reweight l jets by " << lflavorValCentral << " +/ " << lflavorValError << std::endl;
   }
+  //
+  float f_modify_sig_xsec = 0.;
+  if(procname.Contains("signal")) {
+    if(procname=="signal_M1000") f_modify_sig_xsec=0.3942/0.385E+00;
+    else if(procname=="signal_M1100") f_modify_sig_xsec=0.1972/0.191E+00;
+    else if(procname=="signal_M1200") f_modify_sig_xsec=0.1024/0.985E-01;
+    else if(procname=="signal_M1300") f_modify_sig_xsec=0.05486/0.522E-01;
+    else if(procname=="signal_M1400") f_modify_sig_xsec=0.03018/0.284E-01;
+    else if(procname=="signal_M1500") f_modify_sig_xsec=0.01697/0.157E-01;
+    else if(procname=="signal_M1600") f_modify_sig_xsec=0.00972/0.887E-02;
+    else if(procname=="signal_M1700") f_modify_sig_xsec=0.005662/0.507E-02;
+    else if(procname=="signal_M1800") f_modify_sig_xsec=0.003349/0.293E-02;
+    else if(procname=="signal_M1900") f_modify_sig_xsec=0.002004/0.171E-02;
+    else if(procname=="signal_M2000") f_modify_sig_xsec=0.001216/0.101E-02;
+    else if(procname=="signal_M2100") f_modify_sig_xsec=0.0007439/0.598E-03;
+    else if(procname=="signal_M2200") f_modify_sig_xsec=0.0004607/0.356E-03;
+    
+    cout << "f_modify_sig_xsec = " << f_modify_sig_xsec << endl;
+  }
+
   // Get GS weights 
   std::vector<double> gs_dmc={1,1,1,1};
   std::vector<double> gs_dmc_err={0,0,0,0};
@@ -531,14 +597,25 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   float kappa_wgt[2][3][3];
   float other_wgt_up[3][52];
   float other_wgt_down[3][nbins];
+  float qcd_nb0_sf[2][3][3];
   TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root","read");
+  //TFile *f_kappa_syst = TFile::Open("data/result_kappa_2016_tmp.root","read");
   TFile *f_other_syst = TFile::Open("data/other_syst_"+year+".root","read");
-  if(str_year=="20178"){
-    //f_kappa_syst->Close();
-    //cout<<"20178 opened"<<endl;
-    f_kappa_syst = TFile::Open("data/result_kappa_20178.root","read");
-    cout<<"20178 opened"<<endl;
+  if(str_year=="UL2016"){
+    f_kappa_syst = TFile::Open("data/result_kappa_UL2016.root","read");
+    cout<<"Combined UL2016 opened"<<endl;
   }
+  else if(str_year=="UL20178"){
+    f_kappa_syst = TFile::Open("data/result_kappa_UL20178.root","read");
+    cout<<"Combined UL20178 opened"<<endl;
+  }
+  TFile* f_qcd_nb0_sf = TFile::Open(Form("data/qcd_nb0_sf_%s.root", year.Data()), "READ");
+  TH1D* h_qcd_nb0_lownjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_lownjet_sf"));
+  TH1D* h_qcd_nb0_midnjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_midnjet_sf"));
+  TH1D* h_qcd_nb0_highnjet_sf = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_highnjet_sf"));
+  float qcd_nb0_lownjet_sf  = h_qcd_nb0_lownjet_sf->GetBinContent(1);
+  float qcd_nb0_midnjet_sf  = h_qcd_nb0_midnjet_sf->GetBinContent(1);
+  float qcd_nb0_highnjet_sf = h_qcd_nb0_highnjet_sf->GetBinContent(1);
 
   // to make kappa_1, kapp_2 histograms which act independently
   TH1F * h1nominal_[nbins][2];
@@ -554,12 +631,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         h_other_up = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Up",ibin)));
         h_other_down = static_cast<TH1F*>(f_other_syst->Get(Form("bin%d/ratio_other_"+variations+"_"+year+"Down",ibin)));
         for(int iratio=0 ; iratio<3 ; iratio++){
-           other_wgt_up[iratio][ibin]=h_other_up->GetBinContent(iratio+1);
-	 // cout<<" up weight iratio : " << iratio << " / ibin : " << ibin << " :: " <<other_wgt_up[iratio][ibin]<<endl;
-           other_wgt_down[iratio][ibin]=h_other_down->GetBinContent(iratio+1);
-	 // cout<<" down weight iratio : " << iratio << " / ibin : " << ibin << " :: " <<other_wgt_down[iratio][ibin]<<endl;
-	 //other_wgt_up[iratio][ibin]=1;
-	 //other_wgt_down[iratio][ibin]=1;
+	  other_wgt_up[iratio][ibin]=h_other_up->GetBinContent(iratio+1);
+	  other_wgt_down[iratio][ibin]=h_other_down->GetBinContent(iratio+1);
+	  //other_wgt_up[iratio][ibin]=1;
+	  //other_wgt_down[iratio][ibin]=1;
 	}
       }
 
@@ -573,7 +648,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       else if(procname=="wjets") iproc=1;
       else if(procname=="ttbar") iproc=2;
 
-
       TH1F *h_kap1  = static_cast<TH1F*>(f_kappa_syst->Get("hist_kappa1"));
       TH1F *h_kap2  = static_cast<TH1F*>(f_kappa_syst->Get("hist_kappa2"));
       kappa1_err  = h_kap1->GetBinError(njbin+3*iproc+1); 
@@ -585,12 +659,15 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 //      kappa_syst[1][ibin][njbin][iproc] = TMath::Sqrt(kappa2_err*kappa2_err + (1-kappa2_cont)*(1-kappa2_cont));
 
       // Apply Mario's comment
-      kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err , TMath::Abs(1-kappa1_cont));
-      kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err , TMath::Abs(1-kappa2_cont));
-//      cout << "procname: " << procname << " / ibin: " << ibin << endl;
-//      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
+      //kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err/kappa1_cont , TMath::Abs(1-kappa1_cont));
+      //kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err/kappa2_cont , TMath::Abs(1-kappa2_cont));
+      kappa_syst[0][ibin][njbin][iproc] = TMath::Max(kappa1_err, TMath::Abs(1-kappa1_cont));
+      kappa_syst[1][ibin][njbin][iproc] = TMath::Max(kappa2_err, TMath::Abs(1-kappa2_cont));
+      cout << "procname: " << procname << " / ibin: " << ibin << endl;
+      cout << "kappa1 err: " << kappa_syst[0][ibin][njbin][iproc] << "   /   kappa2 err: " << kappa_syst[1][ibin][njbin][iproc] << endl; // FIXME
       kappa_wgt[0][njbin][iproc] = 1;
       kappa_wgt[1][njbin][iproc] = 1;
+
       if(procname=="qcd") 
       {
         kappa_wgt[0][njbin][iproc] = kappa1_cont;
@@ -711,25 +788,25 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     // 
     // Central weights
     // 
-    //float nominalweight = lumi*tree.weight()*tree.pass(); //FIXME 20220118
-    float nominalweight = lumi*tree.weight()*tree.frac16()*tree.pass(); //FIXME 20231001, add frac16
-    //float nominalweight = lumi*tree.w_lumi()*tree.frac16()*tree.pass(); //for testing only w_lumi
-//    if(procname=="wjets"){
-//       	cout<<"WEIGHT: " << tree.weight()<<endl;
-//       	cout<<"LUMI  : " << lumi <<endl;
-//       	cout<<"PASS  : " << tree.pass()<<endl;
-//    }
-//    float nominalweight = lumi*tree.weight()*tree.frac1718(); // FIXME for 2017+2018 merging
-    //cout<<nominalweight<<endl;
-    //else if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig()[12]||tree.trig()[54]||tree.trig()[56]); // rereco
-
-    //if (procname=="data_obs") nominalweight = tree.pass() * (tree.trig_jet450()||tree.trig_ht900()); // rereco FIXME
-    if (procname=="data_obs" && year=="2016") nominalweight = tree.pass() * (tree.trig_ht900()||tree.trig_jet450());
+    float nominalweight = lumi*tree.weight()*tree.pass();
+    /*
+    // apply qcd SF for nb0 difference b/w data and qcd
+    if(procname=="qcd") {
+      if(tree.nleps()==0) {
+        if(tree.njets()>=6 && tree.njets()<=7) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_lownjet_sf;
+	else if(tree.njets()>=8 && tree.njets()<=9) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_midnjet_sf;
+	else if(tree.njets()>=10) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_highnjet_sf;
+      }
+      else if(tree.nleps()==1) {
+        if(tree.njets()>=4 && tree.njets()<=5) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_lownjet_sf;
+	else if(tree.njets()>=6 && tree.njets()<=7) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_midnjet_sf;
+	else if(tree.njets()>=8) nominalweight = lumi*tree.weight()*tree.pass()*qcd_nb0_highnjet_sf;
+      }
+    }
+    */
+    if (procname=="data_obs" && (year=="UL2016_preVFP"||year=="UL2016_postVFP"||year=="UL2016")) nominalweight = tree.pass() * (tree.trig_ht900()||tree.trig_jet450());
     else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
-    //else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig()[12]; // prompt reco
-    //else if (procname=="signal") nominalweight = nominalweight * 1;
-    else if (procname.Contains("signal")) nominalweight = lumi*tree.weight()*tree.pass();  //FIXME 20231001, there is no frac16 in sig
-    //else if ((tree.nbm()==0||tree.nbm()==1) && tree.mj12()>1100 && tree.njets()>=4 && tree.njets()<=5) nominalweight=lumi*tree.weight()*0.4;//FIXME HEM issue
+    if (procname.Contains("signal")) nominalweight = lumi*tree.weight()*tree.pass()*f_modify_sig_xsec;
 /*
     int nb_csv=0;
     for(unsigned int j=0; j<tree.jets_hflavor().size();j++){
@@ -810,24 +887,34 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     //
     // variations that are common in all processes
     //
-    if(variations=="btag_bc") 
+    if(variations=="btag_bc_uncor") 
     { 
-      //cout<<tree.sys_bctag()[0]<<"::"<<tree.sys_bctag()[1]<<endl;
-      upweight    = upweight*tree.sys_bctag()[0]/tree.w_btag_dcsv();
-      downweight  = downweight*tree.sys_bctag()[1]/tree.w_btag_dcsv();
-      //cout<<tree.sys_bctag()[0]<<"::"<<tree.sys_bctag()[1]<<endl;
-      //cout<<upweight<<"::"<<downweight<<"::"<<nominalweight<<endl;
+      upweight    = upweight*tree.sys_bctag_uncor()[0]/tree.w_btag_dcsv();
+      downweight  = downweight*tree.sys_bctag_uncor()[1]/tree.w_btag_dcsv();
     }
-    if(variations=="btag_udsg") 
+    if(variations=="btag_bc_cor") 
     { 
-      upweight    = upweight*tree.sys_udsgtag()[0]/tree.w_btag_dcsv();
-      downweight  = downweight*tree.sys_udsgtag()[1]/tree.w_btag_dcsv();
+      upweight    = upweight*tree.sys_bctag_cor()[0]/tree.w_btag_dcsv();
+      downweight  = downweight*tree.sys_bctag_cor()[1]/tree.w_btag_dcsv();
+    }
+    if(variations=="btag_udsg_uncor") 
+    { 
+      upweight    = upweight*tree.sys_udsgtag_uncor()[0]/tree.w_btag_dcsv();
+      downweight  = downweight*tree.sys_udsgtag_uncor()[1]/tree.w_btag_dcsv();
+    }
+    if(variations=="btag_udsg_cor") 
+    { 
+      upweight    = upweight*tree.sys_udsgtag_cor()[0]/tree.w_btag_dcsv();
+      downweight  = downweight*tree.sys_udsgtag_cor()[1]/tree.w_btag_dcsv();
     }
     if(variations=="gs") 
     {
       if(tree.fromGS()==1){
         upweight    = upweight*(1.2*tree.fromGS());
         downweight  = downweight*(0.8*tree.fromGS()); 
+	// for gs 50% test
+        //upweight    = upweight*(1.5*tree.fromGS());
+        //downweight  = downweight*(0.5*tree.fromGS()); 
       }
     }
     if(variations=="gs67") 
@@ -854,12 +941,21 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         downweight  = downweight*(1-gs_dmc_syst[3]*tree.fromGS()); 
       } 
     }
-    if(variations=="lep_eff") 
+    if(variations=="els_eff") 
     {   
-      //upweight    = upweight*tree.w_lep();
-      //downweight  = downweight*(2-tree.w_lep());
-      upweight    = upweight*tree.sys_lep()[0]/tree.w_lep();
-      downweight  = downweight*tree.sys_lep()[1]/tree.w_lep();
+      //if(tree.nels()!=0) {
+      if(tree.nels()==1 && tree.nleps()==1) {
+        upweight    = upweight*tree.sys_lep()[0]/tree.w_lep();
+        downweight  = downweight*tree.sys_lep()[1]/tree.w_lep();
+      }
+    }
+    if(variations=="mus_eff") 
+    {   
+      //if(tree.nmus()!=0) {
+      if(tree.nmus()==1 && tree.nleps()==1) {
+        upweight    = upweight*tree.sys_lep()[0]/tree.w_lep();
+        downweight  = downweight*tree.sys_lep()[1]/tree.w_lep();
+      }
     }
     if(variations=="pileup") 
     {
@@ -880,11 +976,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     }
     if(variations=="muf")
     {
-      if(((year == "2017" || year == "2018") && procname == "ttbar")){
+      if(((year == "UL2017" || year == "UL2018") && procname == "ttbar")){
         upweight    = upweight*tree.sys_muf()[0];
         downweight  = downweight*tree.sys_muf()[1];
-        //upweight   = lumi*tree.weight();
-        //downweight   = lumi*tree.weight();
       }
       else {// procname!="other" //-->2016
         upweight    = upweight*tree.sys_muf()[0];
@@ -937,7 +1031,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       }
       if(variations=="isr") 
       {
-	if(year == "2016"){
+	if(year=="UL2016_preVFP" || year=="UL2016_postVFP"){
           upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
           downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
 	}
@@ -966,7 +1060,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     { 
       if(variations=="isr") 
       {
-        if(year == "2016"){
+	if(year=="UL2016_preVFP" || year=="UL2016_postVFP"){
 	  upweight    = upweight*tree.sys_isr()[0]/tree.w_isr();
 	  downweight  = downweight*tree.sys_isr()[1]/tree.w_isr();// */ //FIXME
         }
@@ -1124,7 +1218,7 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
 
       if((procname=="other")&&(variations=="mur"||variations=="muf"||variations=="murf")){
         int hbother=(ihb+1)%1000;
-	if(tree.sys_mur()[0]==1){
+	if(tree.sys_mur()[0]==1){ // for WW, WZ, and ZZ samples
           upweight=nominalweight*other_wgt_up[hbother][ibin];
           downweight=nominalweight*other_wgt_down[hbother][ibin];
 /*	  if(ibin==27){
@@ -1320,9 +1414,9 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     {
       for(int kap=1; kap<3; kap++){
         TString temp_;
-        if(ibin%3==1) temp_ = Form("kappa%d_njets45_%s",kap, procname.Data());
-        else if(ibin%3==2) temp_ = Form("kappa%d_njets67_%s",kap, procname.Data());
-        else if(ibin%3==0) temp_ = Form("kappa%d_njets8_%s",kap, procname.Data());
+        if(ibin%3==1) temp_ = Form("CMS_SUS21005_kappa%d_njets45_%s",kap, procname.Data());
+        else if(ibin%3==2) temp_ = Form("CMS_SUS21005_kappa%d_njets67_%s",kap, procname.Data());
+        else if(ibin%3==0) temp_ = Form("CMS_SUS21005_kappa%d_njets8_%s",kap, procname.Data());
 
         if(procname=="other"||procname.Contains("signal")) continue;
 
@@ -1331,8 +1425,8 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
           downname = procname+"_"+temp_+"_"+year+"Down";
 	}
 	else{
-          upname = procname+"_"+temp_+"_"+str_year+"Up";
-          downname = procname+"_"+temp_+"_"+str_year+"Down";
+          upname = procname+"_"+temp_+"_"+str_yr+"Up";
+          downname = procname+"_"+temp_+"_"+str_yr+"Down";
 	}
 
         h1up_[ibin][kap-1]->SetTitle(upname.Data());
@@ -1343,22 +1437,38 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
         h1down_[ibin][kap-1]->Write();
       }
     }
-    else if(variations.Contains("mu")) 
+    else if(variations.Contains("mu") && !(variations.Contains("mus_eff"))) 
     {
-      TString procnamemu=procname;
-      if(procname.Contains("signal"))procnamemu="sig";
-      if(str_year==""){ // for 2017+2018 merging FIXME
-        upname = procname+"_"+variations+"_"+procnamemu+"_"+year+"Up";
-        downname = procname+"_"+variations+"_"+procnamemu+"_"+year+"Down";
-//BJ_220322        upname = procname+"_"+variations+"_"+year+"Up";
-//BJ_220322        downname = procname+"_"+variations+"_"+year+"Down";
+      if(procname.Contains("signal")) {
+        if(str_year==""){ // for 2017+2018 merging FIXME
+          upname = procname+"_"+variations_name+"_t1tbsUp";
+          downname = procname+"_"+variations_name+"_t1tbsDown";
+        }
+        else{
+          upname = procname+"_"+variations_name+"_t1tbsUp";
+          downname = procname+"_"+variations_name+"_t1tbsDown";
+        }// */
       }
-      else{
-        upname = procname+"_"+variations+"_"+procnamemu+"_"+str_year+"Up";
-        downname = procname+"_"+variations+"_"+procnamemu+"_"+str_year+"Down";
-//BJ_220322        upname = procname+"_"+variations+"_"+str_year+"Up";
-//BJ_220322        downname = procname+"_"+variations+"_"+str_year+"Down";
-      }// */
+      else if(procname.Contains("other")) {
+        if(str_year==""){ // for 2017+2018 merging FIXME
+          upname = procname+"_"+variations_name+"_st_ttx_ewkUp";
+          downname = procname+"_"+variations_name+"_st_ttx_ewkDown";
+        }
+        else{
+          upname = procname+"_"+variations_name+"_st_ttx_ewkUp";
+          downname = procname+"_"+variations_name+"_st_ttx_ewkDown";
+        }// */
+      }
+      else {
+        if(str_year==""){ // for 2017+2018 merging FIXME
+          upname = procname+"_"+variations_name+"_"+procname+"Up";
+          downname = procname+"_"+variations_name+"_"+procname+"Down";
+        }
+        else{
+          upname = procname+"_"+variations_name+"_"+procname+"Up";
+          downname = procname+"_"+variations_name+"_"+procname+"Down";
+	}
+      }
 
       h1up[ibin]->SetTitle(upname.Data());
       h1up[ibin]->SetName(upname.Data());
@@ -1367,15 +1477,40 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       h1up[ibin]->Write();
       h1down[ibin]->Write();
     }
+    else if((variations=="btag_bc_uncor") || (variations=="btag_udsg_uncor") || (variations=="jec") || (variations=="jer") ||
+	    (variations=="pileup")        || (variations=="els_eff")         || (variations=="mus_eff"))
+    {
+      upname = procname+"_"+variations_name+"_"+yr+"Up";
+      downname = procname+"_"+variations_name+"_"+yr+"Down";
+
+      h1up[ibin]->SetTitle(upname.Data());
+      h1up[ibin]->SetName(upname.Data());
+      h1down[ibin]->SetTitle(downname.Data());
+      h1down[ibin]->SetName(downname.Data());
+      h1up[ibin]->Write();
+      h1down[ibin]->Write();
+    }
+     else if((variations=="gs") || (variations=="btag_bc_cor") || (variations=="btag_udsg_cor"))
+    {
+      upname = procname+"_"+variations_name+"Up";
+      downname = procname+"_"+variations_name+"Down";
+
+      h1up[ibin]->SetTitle(upname.Data());
+      h1up[ibin]->SetName(upname.Data());
+      h1down[ibin]->SetTitle(downname.Data());
+      h1down[ibin]->SetName(downname.Data());
+      h1up[ibin]->Write();
+      h1down[ibin]->Write();
+    }   
     else 
     {
       if(str_year==""){ // for 2017+2018 merging FIXME
-        upname = procname+"_"+variations+"_"+year+"Up";
-        downname = procname+"_"+variations+"_"+year+"Down";
+        upname = procname+"_"+variations_name+"_"+year+"Up";
+        downname = procname+"_"+variations_name+"_"+year+"Down";
       }
       else{
-        upname = procname+"_"+variations+"_"+str_year+"Up";
-        downname = procname+"_"+variations+"_"+str_year+"Down";
+        upname = procname+"_"+variations_name+"_"+str_yr+"Up";
+        downname = procname+"_"+variations_name+"_"+str_yr+"Down";
       }//*/
 
       h1up[ibin]->SetTitle(upname.Data());

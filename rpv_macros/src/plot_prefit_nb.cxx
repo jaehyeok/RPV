@@ -47,6 +47,7 @@ int main()
   gROOT->ForceStyle(); 
 
   // variation file 
+//  TFile* infile  = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root", "READ");
   TFile* infile  = TFile::Open("variations/11jan2017/12p9/sum_rescaled_control.root", "READ");
   
   // bin definition

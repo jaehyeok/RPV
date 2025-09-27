@@ -11,11 +11,12 @@
 #include "TSystem.h"
 
 void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
+void outputQCD_relative_year(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
 void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year);
 void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string> &bins, TString year);
 void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bins, TString year);
-void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts, const std::vector<std::string> &bins, TString year);
+void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapeSysts, const std::vector<std::string> shapeSysts_name, const std::vector<std::string> &bins, TString year);
 void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
 void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
 void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::string> &bins, const std::string filename, TString year);
@@ -38,40 +39,31 @@ namespace {
 
 using namespace std;
 
-TString merge_78;
+TString flag_merge;
 
 int main(int argc, char *argv[])
 {
   bool includePDFUncert = false;
   bool includeLowMJ = false;
   bool nocrvr = false;
-  bool othersyst = false; 
 //  bool includeSignalRegion = true;
   TString year;
   TString sig_onoff;
   // signal is added later
   std::vector<std::string> processes = { "qcd", "ttbar", "wjets", "other"};
-  /*std::vector<std::string> shapeSysts = {"btag_bc", "btag_udsg", //"kappa"
-					                     "gs45", "gs67", "gs89", "gs10Inf",
-					                     //"jes", "jer",
-					                     "pileup", "lep_eff", "ttbar_pt",
-					                     "qcd_flavor",
-					                     "qcd_muf", "qcd_mur", "qcd_murf", 
-					                     //"isr",
-					                     "ttbar_muf", "ttbar_mur", "ttbar_murf",
-					                     "wjets_muf", "wjets_mur", "wjets_murf",
-					                     "other_muf", "other_mur", "other_murf",
-					                     "fs_btag_bc", "fs_btag_udsg", "fs_lep_eff"}; // temporarily removed */
-
-  //std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","lep_eff","ISR"};//FIXME
-  std::vector<std::string> shapeSysts = {"JES","btag_bc","btag_udsg","muf","mur","murf","ISR","GS","lep_eff"};
-//  shapeSysts = {};
+  //BJ_231012 remove isr from shapeSysts
+  std::vector<std::string> shapeSysts = {"jec","jer","btag_bc_uncor","btag_bc_cor","btag_udsg_uncor","btag_udsg_cor",
+	                                 "muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other",
+					 "gs","els_eff","mus_eff","pileup"};
+  std::vector<std::string> shapeSysts_name = {"CMS_scale_j","CMS_res_j","CMS_btag_fixedWP_comb_bc_uncorrelated","CMS_btag_fixedWP_comb_bc_correlated","CMS_btag_fixedWP_incl_light_uncorrelated","CMS_btag_fixedWP_incl_light_correlated",
+	  			         "QCDscale_fac_t1tbs","QCDscale_ren_t1tbs","QCDscale_t1tbs","QCDscale_fac_st_ttx_ewk","QCDscale_ren_st_ttx_ewk","QCDscale_st_ttx_ewk",
+					 "CMS_gs","CMS_eff_e","CMS_eff_m","CMS_pileup"};
   std::string gluinoMass;
   std::string signalBinName;
   std::string cardType;
   TString inputname;
   if(argc<3) {
-    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename] [year] [20178 on/off] [signal Systematics on/off]" << std::endl;
+    std::cout << "Syntax: make_rpv_datacard.exe [gluino mass, in GeV] [default/control/mconly] [filename] [year] [flag for merge: UL2016 or UL20178] [signal Systematics on/off]" << std::endl;
     return 1;
   }
   else {
@@ -89,20 +81,10 @@ int main(int argc, char *argv[])
       return 1;
     }
     inputname = argv[3];
-    merge_78  = argv[5];
+    flag_merge = argv[5];
     sig_onoff = argv[6];
     cout<<"year : "<< year <<endl;
   }
-  if(year == "2016"){
-      //BJ_220314 change members of shapeSysts
-      //BJ_231012 remove isr from shapeSysts
-	//shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","isr","gs","lep_eff","pileup"};
-	shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","pileup"};
-  }
-  else if(year != "2016"){
-	shapeSysts = {"jec","jer","btag_bc","btag_udsg","muf_sig","mur_sig","murf_sig","muf_other","mur_other","murf_other","gs","lep_eff","pileup"};
-  }
-//  if(!othersyst) shapeSysts = {};
 
   nprocesses=processes.size();
 
@@ -145,7 +127,6 @@ int main(int argc, char *argv[])
   if(nocrvr){
     bins_all = {};
   }
-
   if(cardType=="default" || cardType=="mconly"){
     bins_all.push_back("bin46");
     bins_all.push_back("bin31");
@@ -379,6 +360,8 @@ int main(int argc, char *argv[])
 
   //output the QCD normalization and Nleps connection
   outputQCD(file, bins.at(ipair), cardType, year);
+
+  outputQCD_relative_year(file, bins.at(ipair), cardType, year);
   
   // output MC kappa systematics
   outputMCkappaSystematics(file, bins.at(ipair), filename, year);
@@ -396,7 +379,7 @@ int main(int argc, char *argv[])
   // output kappa systematics
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
-  outputShapeSystematics(file, shapeSysts, bins.at(ipair), year);
+  outputShapeSystematics(file, shapeSysts, shapeSysts_name, bins.at(ipair), year);
 
   if(sig_onoff=="on"){
   // output shape systematics
@@ -484,7 +467,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(5*(bindex["bin28"]*nprocesses+1),1,"5");
       tmpLine.Replace(5*(bindex["bin31"]*nprocesses+1),1,"5");
       tmpLine.Replace(5*(bindex["bin34"]*nprocesses+1),1,"5");
-      tmpLine.Prepend(Form("normqcd_lownjets_%s          lnU  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_lownjets_%s          lnU  ",year.Data()));
       file << tmpLine.Data() << endl;
     }
     else if(jbin=="bin38"){
@@ -498,7 +481,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(5*(bindex["bin29"]*nprocesses+1),1,"5");
       tmpLine.Replace(5*(bindex["bin32"]*nprocesses+1),1,"5");
       tmpLine.Replace(5*(bindex["bin35"]*nprocesses+1),1,"5");
-      tmpLine.Prepend(Form("normqcd_mednjets_%s          lnU  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_mednjets_%s          lnU  ",year.Data()));
       file << tmpLine.Data() << endl;
     }
     else if(jbin=="bin39"){
@@ -512,7 +495,7 @@ void outputNormSharing(std::ofstream &file, const std::vector<std::string> &bins
       tmpLine.Replace(5*(bindex["bin30"]*nprocesses+1),1,"5");
       tmpLine.Replace(5*(bindex["bin33"]*nprocesses+1),1,"5");
       tmpLine.Replace(5*(bindex["bin36"]*nprocesses+1),1,"5");
-      tmpLine.Prepend(Form("normqcd_highnjets_%s         lnU  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_highnjets_%s         lnU  ",year.Data()));
       file << tmpLine.Data() << endl;
     }
 
@@ -636,7 +619,7 @@ void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string>
     tmpLine = line;
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+1),1,"5");
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+1),1,"5");
-    tmpLine.Prepend(Form("normqcd_bin%d_bin%d_%s                   lnU  ",numbin,numbin+15,year.Data()));
+    tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin%d_bin%d_%s                   lnU  ",numbin,numbin+15,year.Data()));
     file << tmpLine.Data() << endl;
   }
   for(auto jbin:bins){ // QCD 
@@ -650,7 +633,7 @@ void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string>
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+2),1,"5");
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+3)]*nprocesses+2),1,"5");
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+18)]*nprocesses+2),1,"5");
-    tmpLine.Prepend(Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s     lnU  ",numbin,numbin+15,numbin+3,numbin+18,year.Data()));
+    tmpLine.Prepend(Form("CMS_SUS21005_normttbar_bin%d_bin%d_bin%d_bin%d_%s     lnU  ",numbin,numbin+15,numbin+3,numbin+18,year.Data()));
     file << tmpLine.Data() << endl;
     }
     else if(numbin > 24 && numbin < 28){
@@ -659,14 +642,14 @@ void outputOnlyNormalization(std::ofstream &file, const std::vector<std::string>
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+12)]*nprocesses+2),1,"5");
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+2),1,"5");
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+2),1,"5");
-    tmpLine.Prepend(Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s     lnU  ",numbin-3,numbin+12,numbin,numbin+15,year.Data()));
+    tmpLine.Prepend(Form("CMS_SUS21005_normttbar_bin%d_bin%d_bin%d_bin%d_%s     lnU  ",numbin-3,numbin+12,numbin,numbin+15,year.Data()));
     file << tmpLine.Data() << endl;
   }
     else{
     tmpLine = line;
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin)]*nprocesses+2),1,"5");
     tmpLine.Replace(5*(bindex[Form("bin%d",numbin+15)]*nprocesses+2),1,"5");
-    tmpLine.Prepend(Form("normttbar_bin%d_bin%d_%s                 lnU  ",numbin,numbin+15,year.Data()));
+    tmpLine.Prepend(Form("CMS_SUS21005_normttbar_bin%d_bin%d_%s                 lnU  ",numbin,numbin+15,year.Data()));
     file << tmpLine.Data() << endl;
     }
   }
@@ -740,7 +723,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin40"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin22"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin25"]*nprocesses+1),4,"1.10");  
-      tmpLine.Prepend(Form("normqcd_bin37_40_bin22_25_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin37_40_bin22_25_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }   
     else if(jbin=="bin40"){
@@ -748,7 +731,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin43"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin25"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin28"]*nprocesses+1),4,"1.10");  
-      tmpLine.Prepend(Form("normqcd_bin40_43_bin25_28_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin40_43_bin25_28_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }   
     else if(jbin=="bin43"){ 
@@ -756,7 +739,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin46"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin28"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin31"]*nprocesses+1),4,"1.10");  
-      tmpLine.Prepend(Form("normqcd_bin43_46_bin28_31_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin43_46_bin28_31_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }
     else if(jbin=="bin46"){
@@ -764,7 +747,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin49"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin31"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin34"]*nprocesses+1),4,"1.10"); 
-      tmpLine.Prepend(Form("normqcd_bin46_49_bin31_34_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin46_49_bin31_34_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }
     else if(jbin=="bin38"){
@@ -772,7 +755,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin41"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin23"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin26"]*nprocesses+1),4,"1.10");  
-      tmpLine.Prepend(Form("normqcd_bin38_41_bin23_26_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin38_41_bin23_26_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }   
     else if(jbin=="bin41"){
@@ -780,7 +763,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin44"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin26"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin29"]*nprocesses+1),4,"1.10");  
-      tmpLine.Prepend(Form("normqcd_bin41_44_bin26_29_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin41_44_bin26_29_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }   
     else if(jbin=="bin44"){
@@ -788,7 +771,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin47"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin29"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin32"]*nprocesses+1),4,"1.10");  
-      tmpLine.Prepend(Form("normqcd_bin44_47_bin29_32_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin44_47_bin29_32_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }  
     else if(jbin=="bin47"){
@@ -796,7 +779,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin50"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin32"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin35"]*nprocesses+1),4,"1.10"); 
-      tmpLine.Prepend(Form("normqcd_bin47_50_bin32_35_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin47_50_bin32_35_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }  
     else if(jbin=="bin39"){
@@ -804,7 +787,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin42"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin24"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin27"]*nprocesses+1),4,"1.10");  
-      tmpLine.Prepend(Form("normqcd_bin39_42_bin24_27_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin39_42_bin24_27_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }    
     else if(jbin=="bin42"){
@@ -812,7 +795,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin45"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin27"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin30"]*nprocesses+1),4,"1.10");  
-      tmpLine.Prepend(Form("normqcd_bin42_45_bin27_30_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin42_45_bin27_30_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }    
     else if(jbin=="bin45"){
@@ -820,7 +803,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin48"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin30"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin33"]*nprocesses+1),4,"1.10");  
-      tmpLine.Prepend(Form("normqcd_bin45_48_bin30_33_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin45_48_bin30_33_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }    
     else if(jbin=="bin48"){
@@ -828,7 +811,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       tmpLine.Replace(5*(bindex["bin51"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin33"]*nprocesses+1),4,"1.10");  
       tmpLine.Replace(5*(bindex["bin36"]*nprocesses+1),4,"1.10"); 
-      tmpLine.Prepend(Form("normqcd_bin48_51_bin33_36_%s lnN  ",year.Data()));
+      tmpLine.Prepend(Form("CMS_SUS21005_normqcd_bin48_51_bin33_36_%s lnN  ",year.Data()));
       file << tmpLine.Data() << endl; 
     }    
   }
@@ -979,20 +962,43 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
   void outputQCD(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
     TString lownjcon_, mednjcon_, highnjcon_;
-    if(year=="2016"){
-      lownjcon_ = "1.29";
-      mednjcon_ = "1.19";
-      highnjcon_ = "1.29";
-    }
-    if(year=="2017"){
-      lownjcon_ = "1.29";
-      mednjcon_ = "1.11";
-      highnjcon_ = "1.33";
-    }
-    if(year=="2018"){
+    if(year=="UL2016_preVFP"){
       lownjcon_ = "1.28";
+      mednjcon_ = "1.23";
+      highnjcon_ = "2.21";
+    }
+    else if(year=="UL2016_postVFP"){
+      lownjcon_ = "1.28";
+      mednjcon_ = "1.20";
+      highnjcon_ = "1.35";
+    }
+    else if(year=="UL2017"){
+      lownjcon_ = "1.24";
       mednjcon_ = "1.12";
-      highnjcon_ = "1.29";
+      highnjcon_ = "1.31";
+    }
+    else if(year=="UL2018"){
+      lownjcon_ = "1.21";
+      mednjcon_ = "1.11";
+      highnjcon_ = "1.22";
+    }
+
+    TString yr, yr_comb;
+    if(year=="UL2016_preVFP"){
+      yr = "2016preVFP";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2016_postVFP"){
+      yr = "2016postVFP";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2017"){
+      yr = "2017";
+      yr_comb = "1718";
+    }
+    else if(year=="UL2018"){
+      yr = "2018";
+      yr_comb = "1718";
     }
 
     map<string, int> bindex;
@@ -1007,7 +1013,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       //create template line
       TString line;
       for(uint idash=0; idash<(nprocesses*nbins); idash++)
-        line+="-    ";
+        line+="-       ";
 
       TString tmpLine;
       TString tmpbin;
@@ -1027,9 +1033,9 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         if((numbin%3==1||numbin%3==2)&&flag_brk){
           for(auto njb:lownj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4, lownjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+1),lownjcon_.Length(), lownjcon_.Data());
           }
-          tmpLine.Prepend(Form("normqcd_lownjets_%s        lnN  ",year.Data()));
+          tmpLine.Prepend(Form("CMS_SUS21005_normqcd_lownjets_%s        lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;
           flag_brk=false;
         }
@@ -1043,9 +1049,9 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         if((numbin%3==1||numbin%3==2)&&flag_brk){
           for(auto njb:mednj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4, mednjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+1),mednjcon_.Length(), mednjcon_.Data());
           }
-          tmpLine.Prepend(Form("normqcd_mednjets_%s        lnN  ",year.Data()));
+          tmpLine.Prepend(Form("CMS_SUS21005_normqcd_mednjets_%s        lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;
           flag_brk=false;
         }
@@ -1061,38 +1067,147 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
         if((numbin%3==2||numbin%3==0)&&flag_brk){
           for(auto njb:highnj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+1),4,highnjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+1),highnjcon_.Length(),highnjcon_.Data());
           }
-          tmpLine.Prepend(Form("normqcd_highnjets_%s       lnN  ",year.Data()));
+          tmpLine.Prepend(Form("CMS_SUS21005_normqcd_highnjets_%s       lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;
           flag_brk=false;
         }
       }
     }
   }
+
+  void outputQCD_relative_year(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
+
+    TString lownjcon_, mednjcon_, highnjcon_;
+    if(year=="UL2016_preVFP"){
+      lownjcon_ = "1.0001";      //hong
+      mednjcon_ = "1.0001";
+      highnjcon_ = "1.0001";
+    }
+    else if(year=="UL2016_postVFP"){
+      lownjcon_ = "1.02";
+      mednjcon_ = "1.01";
+      highnjcon_ = "1.04";
+    }
+    else if(year=="UL2017"){
+      lownjcon_ = "1.0001";
+      mednjcon_ = "1.0001";
+      highnjcon_ = "1.0001";
+    }
+    else if(year=="UL2018"){
+      lownjcon_ = "1.09";
+      mednjcon_ = "1.09";
+      highnjcon_ = "1.10";
+    }
+
+    TString yr, yr_comb;
+    if(year=="UL2016_preVFP"){
+      yr = "2016preVFP";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2016_postVFP"){
+      yr = "2016postVFP";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2017"){
+      yr = "2017";
+      yr_comb = "1718";
+    }
+    else if(year=="UL2018"){
+      yr = "2018";
+      yr_comb = "1718";
+    }
+
+    //create map between bin name and bin index
+    map<string, int> bindex;
+    vector<TString> all_bins;
+    for(uint ibin=22; ibin<52; ibin++){
+      bindex[Form("bin%d",ibin)]=9999;
+      all_bins.push_back(Form("bin%d",ibin));
+    }
+    for(uint ibin=0; ibin<nbins; ibin++){
+      bindex[bins[ibin]]=ibin;
+    }
+
+    if(cardType!="control")  // do not need Njets connection for CR fit
+    {
+      //create template line
+      TString line;
+      for(uint idash=0; idash<(nprocesses*nbins); idash++)
+        line+="-       ";
+
+      TString tmpLine;
+      TString tmpbin;
+      int numbin;
+
+      for(auto jbin:bins){
+        tmpLine = line;
+        tmpbin  = jbin;
+        tmpbin.Replace(0,3,"");
+        numbin = atoi(tmpbin);
+	if(numbin<37) continue;
+
+        if(bindex[tmpbin.Data()]==9999) continue;
+	if(numbin%3==1) {
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),lownjcon_.Length(), lownjcon_.Data());
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),lownjcon_.Length(), lownjcon_.Data());
+	}
+	else if(numbin%3==2) {
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),mednjcon_.Length(), mednjcon_.Data());
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),mednjcon_.Length(), mednjcon_.Data());
+	}
+	else if(numbin%3==0) {
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+1),highnjcon_.Length(), highnjcon_.Data());
+          tmpLine.Replace(8*(bindex[Form("bin%s", tmpbin.Data())]*nprocesses+6),highnjcon_.Length(), highnjcon_.Data());
+	}
+        tmpLine.Prepend(Form("CMS_SUS21005_normqcd_relative_bin%d_bin%d_%s        lnN  ", numbin-15, numbin, yr_comb.Data()));
+        file << tmpLine.Data() << endl;
+
+      }
+    }
+
+  }
+
   // Assumes that processes is of the format {signal, "qcd", "ttbar", "wjets", "other" } 
   void outputWjets(std::ofstream &file, const std::vector<std::string> &bins, const std::string cardType, TString year){
 
-    //if(merge_78=="on"){
-    //  year = "20178";
-    //}
     TString mednjcon_, highnjcon_;
-    if(year=="2016"){
-      mednjcon_ = "1.62";
-      highnjcon_ = "1.33";
+    if(year=="UL2016_preVFP"){
+      mednjcon_ = "1.73";
+      highnjcon_ = "1.75";
     }
-    if(year=="2017"){
-      mednjcon_ = "1.34";
-      highnjcon_ = "1.20";
+    else if(year=="UL2016_postVFP"){
+      mednjcon_ = "1.24";
+      highnjcon_ = "1.26";
     }
-    if(year=="2018"){
-      mednjcon_ = "1.23";
-      highnjcon_ = "1.22";
+    else if(year=="UL2017"){
+      mednjcon_ = "1.22";
+      highnjcon_ = "1.36";
     }
-    if(year=="20178"){
-      mednjcon_ = "1.27";
-      highnjcon_ = "1.10"; 
+    else if(year=="UL2018"){
+      mednjcon_ = "1.24";
+      highnjcon_ = "1.49";
     }
+
+    TString yr, yr_comb;
+    if(year=="UL2016_preVFP"){
+      yr = "2016preVFP";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2016_postVFP"){
+      yr = "2016postVFP";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2017"){
+      yr = "2017";
+      yr_comb = "1718";
+    }
+    else if(year=="UL2018"){
+      yr = "2018";
+      yr_comb = "1718";
+    }
+
     //create map between bin name and bin index
     map<string, int> bindex;
     for(uint ibin=22; ibin<52; ibin++){
@@ -1105,8 +1220,8 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
     // overall normalization   
     TString line_norm;
     for(uint idash=0; idash<nbins; idash++)
-      line_norm+="-    -    -    2    -    ";
-    line_norm.Prepend(Form("normwjets_%s                 lnU  ",year.Data()));
+      line_norm+="-       -       -       2       -       ";
+    line_norm.Prepend(Form("CMS_SUS21005_normwjets_%s                 lnU  ",yr.Data()));
     //file << line_norm.Data() << endl;
 
     if(cardType!="control")  // do not need Njets connection for CR fit
@@ -1114,7 +1229,7 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       //create template line
       TString line;
       for(uint idash=0; idash<(nprocesses*nbins); idash++)
-        line+="-    ";
+        line+="-       ";
 
       TString tmpLine;
       TString tmpbin;
@@ -1161,13 +1276,13 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
           */
           for(auto njb:lownj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,"1.01");
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+3),6,"1.0001"); //hong
           }
           for(auto njb:mednj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4, mednjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+3),mednjcon_.Length(), mednjcon_.Data());
           }
-          tmpLine.Prepend(Form("normwjets_mednjets_%s        lnN  ",year.Data()));
+          tmpLine.Prepend(Form("CMS_SUS21005_normwjets_mednjets_%s        lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;
           flag_brk=false;
         }
@@ -1205,13 +1320,13 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
           */
           for(auto njb:mednj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,"1.01");
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+3),6,"1.0001"); //hong
           }
           for(auto njb:highnj_bins){
             if(bindex[njb.Data()]==9999) continue;
-            tmpLine.Replace(5*(bindex[njb.Data()]*nprocesses+3),4,highnjcon_.Data());
+            tmpLine.Replace(8*(bindex[njb.Data()]*nprocesses+3),highnjcon_.Length(),highnjcon_.Data());
           }
-          tmpLine.Prepend(Form("normwjets_highnjets_%s       lnN  ",year.Data()));
+          tmpLine.Prepend(Form("CMS_SUS21005_normwjets_highnjets_%s       lnN  ",yr.Data()));
           file << tmpLine.Data() << endl;
           flag_brk=false;
         }
@@ -1221,29 +1336,79 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
 
   void outputLognormalSystematics(std::ofstream &file, TString year)
   {
-    // luminosity uncertainty is 2.6% for 2016 data    ->    1.2% for 2016UL data (NanoAODv9)  (ref:https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun2) 230104
-    // luminosity uncertainty is 2.3% for 2017 data
-    // luminosity uncertainty is 2.5% for 2018 data
-    file << "lumi  lnN  ";
+    // luminosity uncertainty is 2.6% for UL2016 data    ->    1.2% for 2016UL data (NanoAODv9)  (ref:https://twiki.cern.ch/twiki/bin/view/CMS/LumiRecommendationsRun2) 230104
+    // luminosity uncertainty is 2.3% for UL2017 data
+    // luminosity uncertainty is 2.5% for UL2018 data
+    // -> updated. For a 2016-2018 analysis, we should include all five uncertainties lines, i.e., the three uncorrelated ones, the fully correlated one, and the only correlated between 2017 and 2018.
+    // ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/LumiRecommendationsRun2#Combination_and_correlations
+    // ref: https://hypernews.cern.ch/HyperNews/CMS/get/luminosity/1122/1.html
+    // ref: https://cms-talk.web.cern.ch/t/correlation-in-combine/30374/3
+    TString yr, yr_comb;
+    if(year=="UL2016_preVFP"){
+      yr = "2016";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2016_postVFP"){
+      yr = "2016";
+      yr_comb = "2016";
+    }
+    else if(year=="UL2017"){
+      yr = "2017";
+      yr_comb = "1718";
+    }
+    else if(year=="UL2018"){
+      yr = "2018";
+      yr_comb = "1718";
+    }
+
+    // uncorrelated part
+    file << "lumi_13TeV_" << yr << "  lnN  ";
     for(unsigned int ibin=0; ibin<nbins; ibin++) {
-      if(year == "2016") file << "1.012 - - - 1.012 ";
-      if(year == "2017") file << "1.023 - - - 1.023 ";
-      if(year == "2018") file << "1.025 - - - 1.025 ";
+      if(year=="UL2016_preVFP" || year=="UL2016_postVFP") file << "1.01 - - - 1.01 ";
+      if(year=="UL2017") file << "1.02 - - - 1.02 ";
+      if(year=="UL2018") file << "1.015 - - - 1.015 ";
+    }
+    file << std::endl;
+
+    // 2017-2018 correlated part
+    if(flag_merge=="UL20178") {
+      file << "lumi_13TeV_" << yr_comb << "  lnN  ";
+      for(unsigned int ibin=0; ibin<nbins; ibin++) {
+        if(year=="UL2017") file << "1.006 - - - 1.006 ";
+        if(year=="UL2018") file << "1.002 - - - 1.002 ";
+      }
+      file << std::endl;
+    }
+
+    // fully correlated part
+    file << "lumi_13TeV_correlated  lnN  ";
+    for(unsigned int ibin=0; ibin<nbins; ibin++) {
+      if(year=="UL2016_preVFP" || year=="UL2016_postVFP") file << "1.006 - - - 1.006 ";
+      if(year=="UL2017") file << "1.009 - - - 1.009 ";
+      if(year=="UL2018") file << "1.02 - - - 1.02 ";
     }
     file << std::endl;
 
   }
 
-  void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, const std::vector<std::string> &bins, TString year)
+  void outputShapeSystematics(std::ofstream &file, const std::vector<std::string> shapesysts, const std::vector<std::string> shapesysts_name,const std::vector<std::string> &bins, TString year)
   {
     map<string, int> bindex;
     for(uint ibin=0; ibin<nbins; ibin++) bindex[bins[ibin]]=ibin;
 
-    if(merge_78=="on"){
-      year = "20178";
-    }
+    TString yr;
+    if(year=="UL2016_preVFP") yr = "2016preVFP";
+    else if(year=="UL2016_postVFP") yr = "2016postVFP";
+    else if(year=="UL2017") yr = "2017";
+    else if(year=="UL2018") yr = "2018";
+
     for(unsigned int isyst=0; isyst<shapesysts.size(); isyst++) {
-      file << shapesysts.at(isyst) << "_" << year << "     shape     ";
+      if((shapesysts.at(isyst)=="btag_bc_cor") || (shapesysts.at(isyst)=="btag_udsg_cor") || (shapesysts.at(isyst)=="gs") ||
+	 (shapesysts.at(isyst)=="muf_sig")     || (shapesysts.at(isyst)=="murf_sig")      || (shapesysts.at(isyst)=="mur_sig") ||
+	 (shapesysts.at(isyst)=="muf_other")   || (shapesysts.at(isyst)=="murf_other")    || (shapesysts.at(isyst)=="mur_other")) {
+        file << shapesysts_name.at(isyst) << "     shape     ";
+      }
+      else file << shapesysts_name.at(isyst) << "_" << yr << "     shape     ";
       if(shapesysts.at(isyst).find("pdf")!=std::string::npos) {
         // there are 100 nnpdf variations and so each needs to be scaled down by a factor 1/sqrt(100)
         for(unsigned int index=0; index<nbins; index++) file << "0.1 0.1 0.1 0.1 0.1 ";
@@ -1264,7 +1429,15 @@ void outputMJConnection(std::ofstream &file, const std::vector<std::string> &bin
       }
       file << "\n";
     }
-    file << "trigeff_" << year << "       lnN ";
+    file << "CMS_eff_trig_" << yr << "       lnN ";
+    for(unsigned int index=0; index<nbins; index++){
+	  std::string temp = bins.at(index);
+	  int binnumber = atoi(temp.erase(0,3).c_str());
+	  if(binnumber<37) file << " 1.01 - - - 1.01 ";//accept systematics to signal and other
+	  else file << " - - - - - ";//accept systematics to signal and other
+    }
+    file << "\n";
+    file << "ps_isr" << "       lnN ";
     for(unsigned int index=0; index<nbins; index++){
 	  std::string temp = bins.at(index);
 	  int binnumber = atoi(temp.erase(0,3).c_str());
@@ -1296,17 +1469,21 @@ void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+      year = "2016";
+    }
+    else if(flag_merge=="UL20178"){
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
+      year = "1718";
     }
     par_shape="shape";
     par_value="1.00";
     if(filename.find("lownjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -1324,7 +1501,7 @@ void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string
     else if(filename.find("mednjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -1342,7 +1519,7 @@ void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string
     else if(filename.find("highnjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -1360,7 +1537,7 @@ void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string
     else{  
       bool iproc_check=true;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -1413,7 +1590,7 @@ void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -1466,7 +1643,7 @@ void outputMCkappaSystematics(std::ofstream &file, const std::vector<std::string
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){  
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -1544,17 +1721,21 @@ void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::str
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+      year = "2016";
+    }
+    else if(flag_merge=="UL20178"){
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
+      year = "1718";
     }
     par_shape="shape";
     par_value="1.00";
     if(filename.find("lownjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_jec_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jec_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -1572,7 +1753,7 @@ void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::str
     else if(filename.find("mednjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_jec_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jec_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -1590,7 +1771,7 @@ void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::str
     else if(filename.find("highnjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_jec_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jec_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -1608,7 +1789,7 @@ void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::str
     else{  
       bool iproc_check=true;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_jec_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jec_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -1661,7 +1842,7 @@ void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::str
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_jec_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jec_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -1714,7 +1895,7 @@ void outputMCkappaJECSystematics(std::ofstream &file, const std::vector<std::str
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_jec_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jec_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){  
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -1792,17 +1973,21 @@ void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::str
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+      year = "2016";
+    }
+    else if(flag_merge=="UL20178"){
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
+      year = "1718";
     }
     par_shape="shape";
     par_value="1.00";
     if(filename.find("lownjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_jer_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jer_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -1820,7 +2005,7 @@ void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::str
     else if(filename.find("mednjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_jer_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jer_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -1838,7 +2023,7 @@ void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::str
     else if(filename.find("highnjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_jer_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jer_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -1856,7 +2041,7 @@ void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::str
     else{  
       bool iproc_check=true;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_jer_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jer_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -1909,7 +2094,7 @@ void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::str
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_jer_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jer_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -1962,7 +2147,7 @@ void outputMCkappaJERSystematics(std::ofstream &file, const std::vector<std::str
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_jer_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_jer_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){  
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -2040,17 +2225,21 @@ void outputMCkappaMURFSystematics(std::ofstream &file, const std::vector<std::st
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+      year = "2016";
+    }
+    else if(flag_merge=="UL20178"){
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
+      year = "1718";
     }
     par_shape="shape";
     par_value="1.00";
     if(filename.find("lownjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_murf_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_murf_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -2068,7 +2257,7 @@ void outputMCkappaMURFSystematics(std::ofstream &file, const std::vector<std::st
     else if(filename.find("mednjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_murf_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_murf_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -2086,7 +2275,7 @@ void outputMCkappaMURFSystematics(std::ofstream &file, const std::vector<std::st
     else if(filename.find("highnjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_murf_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_murf_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -2104,7 +2293,7 @@ void outputMCkappaMURFSystematics(std::ofstream &file, const std::vector<std::st
     else{  
       bool iproc_check=true;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_murf_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_murf_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -2157,7 +2346,7 @@ void outputMCkappaMURFSystematics(std::ofstream &file, const std::vector<std::st
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_murf_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_murf_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -2210,7 +2399,7 @@ void outputMCkappaMURFSystematics(std::ofstream &file, const std::vector<std::st
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_murf_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_murf_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){  
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -2288,17 +2477,21 @@ void outputMCkappaMURSystematics(std::ofstream &file, const std::vector<std::str
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+      year = "2016";
+    }
+    else if(flag_merge=="UL20178"){
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
+      year = "1718";
     }
     par_shape="shape";
     par_value="1.00";
     if(filename.find("lownjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_mur_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_mur_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -2316,7 +2509,7 @@ void outputMCkappaMURSystematics(std::ofstream &file, const std::vector<std::str
     else if(filename.find("mednjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_mur_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_mur_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -2334,7 +2527,7 @@ void outputMCkappaMURSystematics(std::ofstream &file, const std::vector<std::str
     else if(filename.find("highnjets")!=std::string::npos){
       bool flag_procind=false;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_mur_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_mur_njets8_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  for(auto iproc : process) flag_procind = flag_procind || int(index%5) == procind[iproc];
 	  if(index%nprocesses==0) file << "-    ";
@@ -2352,7 +2545,7 @@ void outputMCkappaMURSystematics(std::ofstream &file, const std::vector<std::str
     else{  
       bool iproc_check=true;
       for(int i_kap=1; i_kap<3; i_kap++){
-        file << Form("MC_kappa%d_mur_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_mur_njets45_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -2405,7 +2598,7 @@ void outputMCkappaMURSystematics(std::ofstream &file, const std::vector<std::str
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_mur_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_mur_njets67_%s", i_kap, year.Data()) << Form("             %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -2458,7 +2651,7 @@ void outputMCkappaMURSystematics(std::ofstream &file, const std::vector<std::str
         }
         file << "\n";
 
-        file << Form("MC_kappa%d_mur_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
+        file << Form("CMS_SUS21005_MC_kappa%d_mur_njets8_%s", i_kap, year.Data()) << Form("              %s     ",par_shape.Data());
         for(unsigned int index=0; index<nbins*nprocesses; index++){  
 	  iproc_check = true;
           if(index%nprocesses==0) file << "-    ";
@@ -2538,10 +2731,14 @@ void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bi
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+      year = "2016";
+    }
+    else if(flag_merge=="UL20178"){
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
+      year = "1718";
     }
     for(auto iproc : process) {
       par_shape="shape";
@@ -2549,7 +2746,7 @@ void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bi
       if(filename.find("lownjets")!=std::string::npos){
 	if(iproc=="qcd") continue;    // Regarding MJSyst, QCD is not considered. Only are ttbar and W+jets considered.
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("mjsyst_r%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_mjsyst_r%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
   	    if(index%nprocesses==0) file << "-    ";   // this line is for signal, and it is a background-systematic uncert.
   	    else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2565,7 +2762,7 @@ void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bi
       else if(filename.find("mednjets")!=std::string::npos){
 	if(iproc=="qcd") continue;    // Regarding MJSyst, QCD is not considered. Only are ttbar and W+jets considered.
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("mjsyst_r%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_mjsyst_r%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
   	    if(index%nprocesses==0) file << "-    ";
   	    else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2581,7 +2778,7 @@ void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bi
       else if(filename.find("highnjets")!=std::string::npos){
 	if(iproc=="qcd") continue;    // Regarding MJSyst, QCD is not considered. Only are ttbar and W+jets considered.
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("mjsyst_r%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_mjsyst_r%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
   	    if(index%nprocesses==0) file << "-    ";
   	    else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2597,7 +2794,7 @@ void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bi
       else{  
 	if(iproc=="qcd") continue;    // Regarding MJSyst, QCD is not considered. Only are ttbar and W+jets considered.
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("mjsyst_r%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_mjsyst_r%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2609,7 +2806,7 @@ void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bi
           }
 	  file << "\n";
 
-          file << Form("mjsyst_r%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_mjsyst_r%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2621,7 +2818,7 @@ void outputMJSystematics(std::ofstream &file, const std::vector<std::string> &bi
           }
           file << "\n";
   
-          file << Form("mjsyst_r%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_mjsyst_r%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){  
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2659,10 +2856,14 @@ void outputkappaDYUncSystematics(std::ofstream &file, const std::vector<std::str
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+      year = "2016";
+    }
+    else if(flag_merge=="UL20178"){
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
+      year = "1718";
     }
     for(auto iproc : process) {
       par_shape="shape";
@@ -2671,7 +2872,7 @@ void outputkappaDYUncSystematics(std::ofstream &file, const std::vector<std::str
 	if(iproc=="qcd") continue;
 	if(iproc=="ttbar") continue;
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_unc_dy_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_unc_dy_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
   	    if(index%nprocesses==0) file << "-    ";   // this line is for signal, and it is a background-systematic uncert.
   	    else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2688,7 +2889,7 @@ void outputkappaDYUncSystematics(std::ofstream &file, const std::vector<std::str
 	if(iproc=="qcd") continue;
 	if(iproc=="ttbar") continue;
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_unc_dy_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_unc_dy_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
   	    if(index%nprocesses==0) file << "-    ";
   	    else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2705,7 +2906,7 @@ void outputkappaDYUncSystematics(std::ofstream &file, const std::vector<std::str
 	if(iproc=="qcd") continue;
 	if(iproc=="ttbar") continue;
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_unc_dy_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_unc_dy_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
   	    if(index%nprocesses==0) file << "-    ";
   	    else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2722,7 +2923,7 @@ void outputkappaDYUncSystematics(std::ofstream &file, const std::vector<std::str
 	if(iproc=="qcd") continue;
 	if(iproc=="ttbar") continue;
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_unc_dy_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_unc_dy_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2734,7 +2935,7 @@ void outputkappaDYUncSystematics(std::ofstream &file, const std::vector<std::str
           }
 	  file << "\n";
 
-          file << Form("kappa%d_unc_dy_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_unc_dy_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2746,7 +2947,7 @@ void outputkappaDYUncSystematics(std::ofstream &file, const std::vector<std::str
           }
           file << "\n";
   
-          file << Form("kappa%d_unc_dy_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_unc_dy_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){  
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&int(index%5)==procind[iproc]) file << "1.00" << " ";
@@ -2785,10 +2986,14 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
       }
     }
 
-    if(merge_78=="off") cout << "2017-2018 not merged" <<endl; 
-    else if(merge_78=="on"){
-      year = "20178";
-      cout<< "2017-2018 merged : 20178"  << endl;
+    if(flag_merge=="off") cout << "UL2016_preVFP-UL2016_postVFP or UL2017-UL2018 not merged" <<endl;
+    else if(flag_merge=="UL2016"){
+      cout<< "UL2016_preVFP-UL2016_postVFP merged : UL2016"  << endl;
+      year = "2016";
+    }
+    else if(flag_merge=="UL20178"){
+      cout<< "UL2017-UL2018 merged : UL20178"  << endl;
+      year = "1718";
     }
     for(auto iproc : process){
       par_shape="shape";
@@ -2803,7 +3008,7 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
        
       if(filename.find("lownjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -2818,7 +3023,7 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
       }
       else if(filename.find("mednjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -2833,7 +3038,7 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
       }
       else if(filename.find("highnjets")!=std::string::npos){
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -2848,7 +3053,7 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
       }
       else{  
         for(int i_kap=1; i_kap<3; i_kap++){
-          file << Form("kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_njets45_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",22)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -2860,7 +3065,7 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
           }
           file << "\n";
 
-          file << Form("kappa%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_njets67_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("             %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",23)]&&int(index%5)==procind[iproc])file << "1.00" << " ";
@@ -2872,7 +3077,7 @@ void outputkappaSystematics(std::ofstream &file, const std::vector<std::string> 
           }
           file << "\n";
 
-          file << Form("kappa%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
+          file << Form("CMS_SUS21005_kappa%d_njets8_%s_%s", i_kap, iproc.Data(), year.Data()) << Form("              %s     ",par_shape.Data());
           for(unsigned int index=0; index<nbins*nprocesses; index++){
             if(index%nprocesses==0) file << "-    ";
             else if(int(index/nprocesses)==bindex[Form("bin%d",24)]&&(int(index%5)==procind[iproc]))file << "1.00" << " ";
@@ -2922,16 +3127,20 @@ void outputautoMCStats( std::ofstream &file,const std::vector<std::string> &bins
  for(auto ibin : bins){
    std::string temp = ibin;
    int binnumber = atoi(temp.erase(0,3).c_str());
-   if(binnumber>36) continue;
    file << ibin << " autoMCStats " << threshold << "\n";
  }
 }
 
 void outputrateParam( std::ofstream &file, const std::vector<std::string> &bins, TString year ){
-  if(merge_78=="on"){
-    year = "20178";
-  }
-  file << Form("normwjets_%s",year.Data()) << " rateParam * wjets 1.0 [0,20]  ";
+  TString yr_comb, yr;
+  if(year=="UL2016_preVFP") yr = "2016preVFP";
+  else if(year=="UL2016_postVFP") yr = "2016postVFP";
+  else if(year=="UL2017") yr = "2017";
+  else if(year=="UL2018") yr = "2018";
+  if(flag_merge=="UL2016") yr_comb = "2016";
+  else if(flag_merge=="UL20178") yr_comb = "1718";
+
+  file << Form("CMS_SUS21005_normwjets_%s",yr_comb.Data()) << " rateParam * wjets 1.0 [0,20]  ";
   file << "\n";
   for(auto ibin : bins){
     TString tmpbin;
@@ -2940,26 +3149,26 @@ void outputrateParam( std::ofstream &file, const std::vector<std::string> &bins,
     tmpbin.Replace(0,3,"");
     i = atoi(tmpbin);
     if(i>36) continue;
-    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i) << " qcd 1.0 [0,20] ";
+    file << Form("CMS_SUS21005_normqcd_bin%d_bin%d_%s",i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i) << " qcd 1.0 [0,20] ";
     file << "\n";
-    file << Form("normqcd_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i+15) << " qcd 1.0 [0,20] ";
+    file << Form("CMS_SUS21005_normqcd_bin%d_bin%d_%s",i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i+15) << " qcd 1.0 [0,20] ";
     file << "\n";
     if(i<25){
-      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,year.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
+      file << Form("CMS_SUS21005_normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,yr_comb.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
       file << "\n";
-      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,year.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
+      file << Form("CMS_SUS21005_normttbar_bin%d_bin%d_bin%d_bin%d_%s",i,i+15,i+3,i+18,yr_comb.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
       file << "\n";
     }
     else if(i<28){
-      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i-3,i+12,i,i+15,year.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
+      file << Form("CMS_SUS21005_normttbar_bin%d_bin%d_bin%d_bin%d_%s",i-3,i+12,i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
       file << "\n";
-      file << Form("normttbar_bin%d_bin%d_bin%d_bin%d_%s",i-3,i+12,i,i+15,year.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
+      file << Form("CMS_SUS21005_normttbar_bin%d_bin%d_bin%d_bin%d_%s",i-3,i+12,i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
       file << "\n";
     }
     else{
-      file << Form("normttbar_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
+      file << Form("CMS_SUS21005_normttbar_bin%d_bin%d_%s",i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i) << " ttbar 1.0 [0,20]  ";
       file << "\n";
-      file << Form("normttbar_bin%d_bin%d_%s",i,i+15,year.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
+      file << Form("CMS_SUS21005_normttbar_bin%d_bin%d_%s",i,i+15,yr_comb.Data()) << " rateParam " << Form("bin%d",i+15) << " ttbar 1.0 [0,20]  ";
       file << "\n";
     }
   }

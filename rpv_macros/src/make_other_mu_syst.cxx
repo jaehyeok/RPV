@@ -37,11 +37,11 @@ int main(int argc, char *argv[])
 
   if(argc<3) {
     cout << "You should input [year] and [inputfile]" << endl;
-    cout << "[example]: ./run/make_other_mu_syst.exe 2017 variations/output_impact_2017_20178.root" << endl;
+    cout << "[example]: ./run/make_other_mu_syst.exe UL2016_preVFP variations/output_impact_UL2016_preVFP_UL2016.root" << endl;
     return 0;
   }
-  if(!(year=="2016" || year=="2017" || year=="2018")) {
-    cout << "year should be 2016, 2017, or 2018" << endl;
+  if(!(year=="UL2016_preVFP" || year=="UL2016_postVFP" || year=="UL2017" || year=="UL2018")) {
+    cout << "year should be UL2016_preVFP, UL2016_postVFP, UL2017, or UL2018" << endl;
     return 0;
   }
 
@@ -55,8 +55,8 @@ void getOtherMuSyst(TString year, TString inputfile)
   TH1::SetDefaultSumw2();
 
   TString yr;
-  if(year=="2017" || year=="2018") yr="20178";
-  else yr="2016";
+  if(year=="UL2016_preVFP" || year=="UL2016_postVFP") yr="UL2016";
+  else if(year=="UL2017" || year=="UL2018") yr="UL20178";
 
   TFile *f_input = new TFile(inputfile, "READ");
 

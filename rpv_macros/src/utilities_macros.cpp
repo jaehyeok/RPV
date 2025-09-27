@@ -39,6 +39,7 @@ using namespace std;
 
 void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString luminosity, 
                         TString filetype, TString namestyle, TString dir, bool doRatio, bool showcuts){
+  TH1::SetDefaultSumw2();
 
   TString outfolder("plots/"+dir);
   gSystem->mkdir(outfolder, kTRUE);
@@ -108,7 +109,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 
   TString lumi_nodot = luminosity; lumi_nodot.ReplaceAll(".","p");
   TString plot_tag("_lumi"+lumi_nodot+filetype);
-  float minLog = 0.5, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend
+//  float minLog = 0.5, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend
+  float minLog = 0.01, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend // FIXME for objectreview
 
   double legLeft(style.PadLeftMargin+0.03), legRight(1-style.PadRightMargin-0.03);
   double legY(1-style.PadTopMargin-0.020)/*-0.027*/, legSingle = 0.052;//= 0.052
@@ -122,6 +124,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     leg[ileg].SetTextSize(style.LegendSize); leg[ileg].SetFillColor(0); 
     leg[ileg].SetFillStyle(0); leg[ileg].SetBorderSize(0);
     leg[ileg].SetTextFont(style.nFont); 
+    leg[ileg].SetTextSize(0.03);  // FIXME for objectreview
   }
   TLine line; line.SetLineColor(1); line.SetLineWidth(5); line.SetLineStyle(2);
   vector< vector<TH1D*> > histo[2];
@@ -170,8 +173,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       int isam = vars[var].samples[sam];
       if(!Samples[isam].isSig && !Samples[isam].isData) nbkg++;
       samVariable = Samples[isam].samVariable;
-//      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
-      totCut = Samples[isam].factor+"*"+luminosity+"*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; //FIXME
+      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
+//      totCut = Samples[isam].factor+"*"+luminosity+"*frac16*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; //FIXME
+//      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; //FIXME
       if(Samples[isam].isData) totCut= vars[var].cuts+"&&"+Samples[isam].cut;
       if(vars[var].PU_reweight && !Samples[isam].isData) totCut = Samples[isam].factor+"*"+luminosity+"*weight*wpu*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
       cout<<"total cut: " << totCut<<endl;
@@ -269,6 +273,7 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           if(Samples[isam].doStack)  histo[0][var][sam]->Add(histo[0][var][bkgind]);
 	  if(vars[var].normalizeByBin){ histo[0][var][sam]->SetLineWidth(0);histo[0][var][sam]->SetLineColor(Samples[isam].color);}
         }
+	if(isam==1) {histo[0][var][sam]->SetLineStyle(2); histo[0][var][sam]->SetLineWidth(3);}
 
       }
       TString norm_s("");
@@ -291,11 +296,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	int maxbin = 20;
 	if(title.Contains("mus")) maxbin = 10;	
 	maxbin =2 ;
-        cout<< Samples[isam].label << " : " << "first bin content :" <<histo[0][var][sam]->Integral(1,1)  << endl;
-        //cout<< Samples[isam].label << " : " << "first bin content :" <<histo[0][var][sam]->GetBinContent(1)  << endl;
-        cout<< Samples[isam].label << " : " << "second bin content :" <<histo[0][var][sam]->Integral(2,2)  << endl;
-        cout<< Samples[isam].label << " : " << "third bin content :" <<histo[0][var][sam]->Integral(3,3)  << endl;
-	//cout<< Samples[isam].label << " : " << "bin 2 to max content :"  <<histo[0][var][sam]->Integral(2,maxbin) << endl;
+        cout<< Samples[isam].label << " : " << "first bin content:  " <<histo[0][var][sam]->Integral(1,1)  << endl;
+        cout<< Samples[isam].label << " : " << "second bin content: " <<histo[0][var][sam]->Integral(2,2)  << endl;
+        cout<< Samples[isam].label << " : " << "third bin content:  " <<histo[0][var][sam]->Integral(3,3)  << endl;
 	double error1(0), errorother(0);
 	double quad=0;
 	for(unsigned int ibin=1 ; ibin<maxbin ; ibin++){
@@ -305,8 +308,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
 	}
 	error1 = histo[0][var][sam]->GetBinError(1);
 	errorother = TMath::Sqrt(quad);
-        cout<< Samples[isam].label << " : " << "first bin error :" << error1 << endl;
-	cout<< Samples[isam].label << " : " << "bin 2 to max error :"  << errorother << endl;
+        cout<< Samples[isam].label << " : " << "first bin error : " << error1 << endl;
+	cout<< Samples[isam].label << " : " << "second bin error: " << histo[0][var][sam]->GetBinError(2) << endl;
+	cout<< Samples[isam].label << " : " << "third bin error:  " << histo[0][var][sam]->GetBinError(3) << endl;
 	//cout<< Samples[isam].label << " : " << "err first bin :" <<histo[0][var][sam]->GetBinError(1) << endl;
 	//for(unsigned int i=0;i<maxbin;i++) 
 //	cout<< Samples[isam].label << " : " << "bin 5 to max :" <<histo[0][var][sam]->Integral(5,maxbin) << endl;	
@@ -392,7 +396,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       for(int sam(Nsam-1); sam >= 0; sam--){
         int isam = vars[var].samples[sam];
         if(Samples[isam].isSig){if(!Samples[isam].mcerr) histo[0][var][sam]->Draw("hist same"); else histo[0][var][sam]->Draw("EP same"); }
-        if(Samples[isam].isData) histo[0][var][sam]->Draw("e0 same");
+        //if(Samples[isam].isData) histo[0][var][sam]->Draw("e0 same");
+        if(Samples[isam].isData) histo[0][var][sam]->Draw("same");
       }
       for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Draw(); 
 
@@ -430,7 +435,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           hratio_data->SetTitle("");
           hratio_data->Divide(histo[0][var][firstplotted]);
           hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
-          //hratio_data->GetYaxis()->SetRangeUser(0.8,1.2);//FIXME
+	  // L1 Prefiring Issue
+//          hratio_data->GetYaxis()->SetRangeUser(0.75,1.25);//FIXME // for L1 Prefiring Issue
           hratio_data->GetXaxis()->SetLabelOffset(0.025);
           hratio_data->GetXaxis()->SetLabelSize(style.LabelSize*2.2);
           hratio_data->GetYaxis()->SetLabelSize(style.LabelSize*2.1);
@@ -449,7 +455,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
           histo[0][var][firstplotted]->GetXaxis()->SetLabelOffset(2.);
           //line at 1
           bpad->cd();
-          hratio_data->Draw("e0");
+          //hratio_data->Draw("e0");     //comment out when drawing pre-fit SR MJ templates
+          hratio_data->Draw();
 	  //          for (int ko=0; ko< hratio_data->GetNbinsX(); ko++){
           //  cout<<hratio_data->GetBinLowEdge(ko+1)<<" "<<(hratio_data->GetBinLowEdge(ko+1)+hratio_data->GetBinWidth(ko+1))
           //      <<hratio_data->GetBinContent(ko+1)<<std::endl;
@@ -469,6 +476,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       pad->cd();
       if(!namestyle.Contains("CMSPaper") || showcuts) {
 	TString lumilbl = TString::Format("%1.1f",luminosity.Atof())+" fb^{-1}, "+norm_s;
+//	TString lumilbl = TString::Format("%1.1f",luminosity.Atof())+" fb^{-1}"; // FIXME for pre-fit SR
+//	TString lumilbl = ""; // FIXME for HEM
 	TLatex llbl;
 	llbl.SetTextSize(style.LegendSize); 
 	llbl.SetNDC(); llbl.SetTextAlign(33);
@@ -575,11 +584,11 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
         if(vars[var].nevents.at(sam)<0){
 	  leg[ileg].SetX1NDC(0.23); leg[ileg].SetX2NDC(0.43); //220727 make plot look pretty
 	  leg[ileg].SetY1NDC(0.2); leg[ileg].SetY2NDC(0.35);
-	  if(sam>1) {     //230330 make plot look pretty, for Figure22~24 (mjsyst)
-	  //if(sam>3) {    //230330 make plot look pretty, for Figure16 (nbm=0 plots)
-	    leg[ileg].SetX1NDC(0.6); leg[ileg].SetX2NDC(0.8); //220727 make plot look pretty
-	    leg[ileg].SetY1NDC(0.55); leg[ileg].SetY2NDC(0.9);  //230109 make plot look pretty (Nb bin: 4 -> 5)
-            leg[ileg].SetTextSize(0.75*style.LegendSize);
+//	  if(sam>1) {     //230330 make plot look pretty, for Figure21~23 (mjsyst), Figure2
+	  if(sam>3) {    //230330 make plot look pretty, for Figure15, pre-postfit plots (nbm=0 plots)
+	    leg[ileg].SetX1NDC(0.6); leg[ileg].SetX2NDC(0.8); //220727 make plot look pretty, Figure2
+	    leg[ileg].SetY1NDC(0.55); leg[ileg].SetY2NDC(0.9);  //230109 make plot look pretty (Nb bin: 4 -> 5), Figure2
+//            leg[ileg].SetTextSize(0.75*style.LegendSize);    // 241223 Figure2, Figure21~23 // when plotting Figure15, pre-postfit plots, comment out this line
 	  }
           leghisto += " [#mu=";
           int digits(0);
@@ -588,9 +597,9 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
         } else{
 	    leg[ileg].SetX1NDC(0.5); leg[ileg].SetX2NDC(0.7); //220727 make plot look pretty
 	    leg[ileg].SetY1NDC(0.5); leg[ileg].SetY2NDC(0.7);
-//          leg[ileg].SetX1NDC(0.24); leg[ileg].SetX2NDC(0.7);
-          //leg[ileg].SetTextSize(0.75*style.LegendSize);
-          leg[ileg].SetTextSize(0.5*style.LegendSize);
+          leg[ileg].SetX1NDC(0.24); leg[ileg].SetX2NDC(0.7);    //231018 make plot look pretty, for Figure15 (nbm=0 plots)
+          leg[ileg].SetTextSize(0.75*style.LegendSize);
+          //leg[ileg].SetTextSize(0.5*style.LegendSize);
 	  if(vars[var].varname.Contains("tks")) leghisto +=  "[N_{tks} = " + RoundNumber(nentries[sam],1) + ", from N_{events} = "
             +RoundNumber(vars[var].nevents.at(sam),1)+"]";
         }
@@ -600,7 +609,8 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
       else leg[ileg].AddEntry(histo[1][var][sam], leghisto, "p");
       legcount++;
     } // Loop over samples
-    for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Draw(); 
+//    for(int ileg(0); ileg<nLegs; ileg++) {leg[ileg].Draw(); leg[ileg].SetTextSize(0.03);} //FIXME for objectreview
+    for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Draw();
     if(vars[var].cut>0) line.DrawLine(vars[var].cut, 0, vars[var].cut, maxhisto*1.05);
 
     // Setting Y-axis for shapes plot (non-log)
@@ -632,6 +642,658 @@ void plot_distributions(vector<sfeats> Samples, vector<hfeats> vars, TString lum
     float maxpadLog = maxhisto*exp(fracLeg*log(maxhisto/minLog)/(1-fracLeg));
     histo[1][var][0]->SetMaximum(maxpadLog);
     histo[1][var][0]->SetMinimum(minLog);
+    style.moveYAxisLabel(histo[1][var][0], maxpadLog, true);
+    can.SetLogy(1);
+    pname = outfolder+"/log_shapes_"+vars[var].tag+plot_tag;
+    if(!vars[var].skiplog && (vars[var].whichPlots.Contains("0") || vars[var].whichPlots.Contains("4"))) 
+      can.SaveAs(pname);
+  }// Loop over variables
+  cout<<endl;
+
+  for(unsigned var(0); var<vars.size(); var++){
+    for(unsigned his(0); his < 2; his++){
+      for(unsigned sam(0); sam < vars[var].samples.size(); sam++)
+        if(histo[his][var][sam]) {
+	  //cout<<"Deleting "<<histo[his][var][sam]->GetName()<<endl;
+	  delete histo[his][var][sam];
+	}
+    }
+  }
+}
+
+// plot_distributions for paper draft
+void plot_distributions_paper_draft(vector<sfeats> Samples, vector<hfeats> vars, TString luminosity, 
+                        TString filetype, TString namestyle, TString dir, bool doRatio, bool showcuts){
+  TH1::SetDefaultSumw2();
+
+  TString outfolder("plots/"+dir);
+  gSystem->mkdir(outfolder, kTRUE);
+
+  TString CMStype("");
+  if(namestyle.Contains("_Supplementary")) {
+    CMStype = "Supplementary";
+    namestyle.ReplaceAll("_Supplementary","");
+  }
+  if(namestyle.Contains("_Preliminary")) {
+    CMStype = "Preliminary";
+    namestyle.ReplaceAll("_Preliminary","");
+  }
+  if(namestyle.Contains("_WorkInProgress")) {
+    CMStype = "Work In Progress";
+    namestyle.ReplaceAll("_WorkInProgress","");
+  }
+  bool normByBin=false;
+  if(namestyle.Contains("_normalizeByBin")) {
+    normByBin=true;
+    namestyle.ReplaceAll("_normalizeByBin","");
+  }
+
+  if (doRatio) namestyle = "CMSPaper";
+  styles style(namestyle);
+  if(namestyle.Contains("CMSPaper")) style.nDivisions = 706;
+  if (doRatio){
+    style.LabelSize    *= 1.1;
+    style.LegendSize   *= 1.0;
+    style.TitleSize    *= 1.1;
+    style.yTitleOffset /= 1.3;
+    style.xTitleOffset /= 1.08;
+  }
+
+  if(normByBin) style.xTitleOffset *= 0.86;
+
+//  if(showcuts) style.LegendSize *= 0.85;
+  style.setDefaultStyle();
+  TCanvas can;
+  can.cd();
+  TPad *pad(NULL), *bpad(NULL); //bpad (stands for bottom pad) is for ratio
+  if (doRatio){
+    float bpadHeight = 0.3;
+    pad = new TPad("tpad","tpad",0.,bpadHeight,1.,1.); // assign 
+    pad->SetBottomMargin(0.02);
+    pad->SetTopMargin(style.PadTopMargin+0.01);
+    pad->Draw();    
+    bpad = new TPad("bpad","bpad",0.,0.,1.,bpadHeight+0.005); // assign 
+    bpad->SetTopMargin(0.);
+    bpad->SetBottomMargin(2.35*style.PadBottomMargin);
+    bpad->SetFillStyle(4000);
+    bpad->Draw();
+  } else {
+    pad = static_cast<TPad *>(can.cd());
+  }
+
+  // Reading ntuples
+  vector<TChain *> chain;
+  for(unsigned sam(0); sam < Samples.size(); sam++){
+    chain.push_back(new TChain("tree"));
+    for(unsigned insam(0); insam < Samples[sam].file.size(); insam++){
+      // cout<<"Reading "<<Samples[sam].file[insam]<<endl;
+      chain[sam]->Add(Samples[sam].file[insam]);
+      // cout<<"Entries "<<chain[sam]->GetEntries()<<endl;
+    }
+  }
+
+  TString lumi_nodot = luminosity; lumi_nodot.ReplaceAll(".","p");
+  TString plot_tag("_lumi"+lumi_nodot+filetype);
+  float minLog = 0.5, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend
+//  float minLog = 0.01, fracLeg = 0.36; // Fraction of the histo pad devoted to the legend // FIXME for objectreview
+
+  double legLeft(style.PadLeftMargin+0.03), legRight(1-style.PadRightMargin-0.03);
+  double legY(1-style.PadTopMargin-0.020)/*-0.027*/, legSingle = 0.052;//= 0.052
+  if (doRatio) {legY=1-style.PadTopMargin-0.020; legSingle = 0.052;}
+  double legW = 0.33, legH = legSingle*(vars[0].samples.size()+1)/2;
+  double legX1[2] = {legLeft, (legLeft+legRight)/2};
+  TLegend leg[2]; int nLegs(2);
+  for(int ileg(0); ileg<nLegs; ileg++){
+//    leg[ileg].SetX1NDC(legX1[ileg]); leg[ileg].SetX2NDC(legX1[ileg]+legW); 
+//    leg[ileg].SetY1NDC(legY-legH); leg[ileg].SetY2NDC(legY); 
+    leg[ileg].SetTextSize(0.06); leg[ileg].SetFillColor(0); 
+    leg[ileg].SetFillStyle(0); leg[ileg].SetBorderSize(0);
+    leg[ileg].SetTextFont(style.nFont); 
+  }
+  TLine line; line.SetLineColor(1); line.SetLineWidth(5); line.SetLineStyle(2);
+  vector< vector<TH1D*> > histo[2];
+  vector<TH1D*> varhisto;
+  vector<float> nentries;
+  TString hname, pname, variable, samVariable, leghisto, totCut, title, ytitle, lumilabel, cmslabel;
+  for(unsigned var(0); var<vars.size(); var++){
+    bool variableBins = vars[var].minx == -1;
+    if (vars[var].minx == -1) vars[var].minx = vars[var].binning[0];
+    const unsigned Nsam(vars[var].samples.size());
+    legH = (Nsam<=3?legSingle*Nsam:legSingle*(Nsam+1)/2);
+    // Calculating fraction of internal pad taken by the legend, and adding a 4% buffer
+    fracLeg = (legH+1-style.PadTopMargin-legY)/(1-style.PadTopMargin-style.PadBottomMargin) + 0.01;
+//    for(int ileg(0); ileg<nLegs; ileg++){
+//	leg[ileg].SetY1NDC(legY-legH);
+//	leg[ileg].SetY2NDC(legY); 
+//	}
+//    leg[1].SetX1NDC(legX1[1]+vars[var].moveRLegend); leg[1].SetX2NDC(legX1[1]+legW+vars[var].moveRLegend); 
+
+    cout<<endl;
+
+    bool someBands = false;
+    // Generating vector of histograms
+    title = cuts2title(vars[var].cuts);
+    if(namestyle.Contains("CMSPaper") && !showcuts) title = "";
+    title = "";
+    for(unsigned his(0); his < 2; his++){
+      varhisto.resize(0);
+      for(unsigned sam(0); sam < Nsam; sam++){ 
+	if(Samples[vars[var].samples[sam]].doBand) someBands = true;
+        hname = "histo"; hname += var; hname += his; hname += sam;  
+	delete gROOT->FindObject(hname); // For some reason, the deletion at the end is not enough
+        if(variableBins) { 
+          vars[var].minx = vars[var].binning[0];
+          varhisto.push_back(new TH1D(hname, title, vars[var].nbins, vars[var].binning));
+        }else {
+          varhisto.push_back(new TH1D(hname, title, vars[var].nbins, vars[var].minx, vars[var].maxx));
+        }
+      }
+      histo[his].push_back(varhisto);
+    }
+    nentries.resize(Nsam);
+    variable = vars[var].varname;
+    float maxhisto(-999);
+    int nbkg(0);
+    for(unsigned sam(Nsam-1); sam < Nsam; sam--){
+      int isam = vars[var].samples[sam];
+      if(!Samples[isam].isSig && !Samples[isam].isData) nbkg++;
+      samVariable = Samples[isam].samVariable;
+      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
+//      totCut = Samples[isam].factor+"*"+luminosity+"*frac16*frac1718*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; //FIXME
+//      totCut = Samples[isam].factor+"*"+luminosity+"*weight*("+vars[var].cuts+"&&"+Samples[isam].cut+")"; //FIXME
+      if(Samples[isam].isData) totCut= vars[var].cuts+"&&"+Samples[isam].cut;
+      if(vars[var].PU_reweight && !Samples[isam].isData) totCut = Samples[isam].factor+"*"+luminosity+"*weight*wpu*("+vars[var].cuts+"&&"+Samples[isam].cut+")";
+      cout<<"total cut: " << totCut<<endl;
+      //histo[0][var][sam]->Sumw2();
+      histo[0][var][sam]->SetBinErrorOption(TH1::kPoisson);
+      if(samVariable=="noPlot") chain[isam]->Project(histo[0][var][sam]->GetName(), variable, totCut);
+      else chain[isam]->Project(histo[0][var][sam]->GetName(), samVariable, totCut);
+//      histo[0][var][sam]->SetTitle(title); 
+      if(vars[var].addOverflow) 
+	histo[0][var][sam]->SetBinContent(vars[var].nbins,
+	histo[0][var][sam]->GetBinContent(vars[var].nbins)+
+	histo[0][var][sam]->GetBinContent(vars[var].nbins+1));
+      
+        nentries[sam] = histo[0][var][sam]->Integral(1,vars[var].nbins);
+        if(nentries[sam]<0) nentries[sam]=0;
+        ytitle = "Events";
+        if(vars[var].normalizeByBin){
+	ytitle = "Events [% by bin]";
+      }      
+
+
+      if(!namestyle.Contains("CMSPaper") || showcuts) {
+        // ytitle = "Events for "+luminosity+" fb^{-1}";
+        lumilabel = "";
+        cmslabel = "";
+      } else {
+        //lumilabel = TString::Format("L = %1.f",luminosity.Atof()*1000.)+" pb^{-1} (13 TeV)";
+	lumilabel = TString::Format("#scale[0.8]{13 TeV}");
+        cmslabel = "#font[62]{CMS} #scale[0.8]{#font[52]{Simulation}}";
+        if(CMStype=="Supplementary")cmslabel = "#scale[0.8]{#font[62]{CMS}} #scale[0.6]{#font[52]{Supplementary (Simulation)}}";
+	bool contains_data = false;
+	for(unsigned is=0;is<Samples.size();is++){if(Samples[is].isData){contains_data=true; break;} }
+	if(contains_data){ 
+	  cmslabel = "#font[62]{CMS}";
+	  cmslabel += " #scale[0.8]{#font[52]{"+CMStype+"}}";  
+	  lumilabel = TString::Format("%1.1f",luminosity.Atof())+" fb^{-1} (13 TeV)";}
+      }
+      if(vars[var].unit!="") {
+        int digits(0);
+        float binwidth((vars[var].maxx-vars[var].minx)/static_cast<float>(vars[var].nbins));
+        if(binwidth<1) digits = 1;
+        if (!variableBins) ytitle += ("/("+RoundNumber(binwidth,digits) +" "+vars[var].unit+")");
+      }
+      histo[0][var][sam]->SetYTitle(ytitle);
+      // Cloning histos for later
+      for(int bin(0); bin<=histo[0][var][sam]->GetNbinsX()+1; bin++){
+        double val(histo[0][var][sam]->GetBinContent(bin));
+        histo[1][var][sam]->SetBinContent(bin, val);
+        //if(Samples[isam].isData) histo[0][var][sam]->SetBinError(bin, sqrt(val));
+        histo[1][var][sam]->SetBinError(bin, histo[0][var][sam]->GetBinErrorUp(bin));
+      }
+    }
+    
+    if(nbkg>0 && (vars[var].whichPlots.Contains("0") || vars[var].whichPlots.Contains("1") 
+                  || vars[var].whichPlots.Contains("2"))){
+      //// Plotting lumi-weighted distributions in histo[0], and then area-normalized in histo[1] ///
+      int bkgind(-1);
+      unsigned int last_hist=9999;
+      float normalization_ratio=1; 
+      for(unsigned sam(Nsam-1); sam < Nsam; sam--){
+        int isam = vars[var].samples[sam];
+        bool noStack = Samples[isam].isSig || Samples[isam].isData;
+        if(!noStack){ // Adding previous bkg histos
+	  if(sam<last_hist) last_hist=sam;
+          for(unsigned bsam(sam+1); bsam < Nsam; bsam++){
+            histo[0][var][sam]->Add(histo[0][var][bsam]);
+            break;
+          }
+	  histo[0][var][sam]->SetFillStyle(1001);
+	  if(Samples[isam].doBand){
+	    histo[0][var][sam]->SetFillColor(Samples[isam].color-12);
+	    histo[0][var][sam]->SetLineColor(Samples[isam].color);
+	    histo[0][var][sam]->SetLineWidth(3);
+	  } else {
+	    histo[0][var][sam]->SetFillColor(Samples[isam].color);
+	    histo[0][var][sam]->SetLineColor(1);
+	    histo[0][var][sam]->SetLineWidth(1);
+	  }
+          bkgind = sam;
+        } else {
+          histo[0][var][sam]->SetLineColor(Samples[isam].color);
+          if(Samples[isam].isData){
+            histo[0][var][sam]->SetMarkerStyle(20);
+            histo[0][var][sam]->SetMarkerSize(1.2);         
+            histo[0][var][sam]->SetLineWidth(2);
+          } else {
+            if(someBands) histo[0][var][sam]->SetLineWidth(3);
+	    else histo[0][var][sam]->SetLineWidth(6);
+            histo[0][var][sam]->SetLineStyle(abs(Samples[isam].style));
+	    if(vars[var].normalizeByBin){
+	      histo[0][var][sam]->SetLineColor(Samples[isam].color);
+	      histo[0][var][sam]->SetLineWidth(0);
+	      }
+          }
+          if(Samples[isam].doStack)  histo[0][var][sam]->Add(histo[0][var][bkgind]);
+	  if(vars[var].normalizeByBin){ histo[0][var][sam]->SetLineWidth(0);histo[0][var][sam]->SetLineColor(Samples[isam].color);}
+        }
+
+	if(isam==1) {histo[0][var][sam]->SetLineStyle(2); histo[0][var][sam]->SetLineWidth(3);}
+      }
+      TString norm_s("");
+      if(vars[var].normalize || doRatio){
+	double err_num(0), err_den(0);
+	float num = histo[0][var][0]->IntegralAndError(1,histo[0][var][0]->GetNbinsX(),err_num);
+	float den = histo[0][var][last_hist]->IntegralAndError(1,histo[0][var][last_hist]->GetNbinsX(),err_den);
+	normalization_ratio = num/den; //I want this to crash if den=0
+	double err_tot(den/num*sqrt(pow(err_num/num,2)+pow(err_den/den,2)));
+	err_tot = num/den*sqrt(pow(err_num/num,2)+pow(err_den/den,2));
+	//cout<<"Histogram [MC] is ("<<RoundNumber((den/num-1)*100,1)
+	//    <<" +- "<<RoundNumber(err_tot*100,1)<<")% larger than markers [data]"<<endl; 
+	//norm_s = "("+RoundNumber((num/den)*100,1)+"#pm"+RoundNumber(err_tot*100,1)+")%";
+	cout<<"Markers [data] are ("<<RoundNumber((num/den)*100,1)
+	    <<" +- "<<RoundNumber(err_tot*100,1)<<")% the histogram [MC]. Data yield is "<<num<<endl;
+      }
+      
+      for(unsigned sam(Nsam-1) ; sam < Nsam ; sam--){
+	int isam = vars[var].samples[sam];
+	int maxbin = 20;
+	if(title.Contains("mus")) maxbin = 10;	
+	maxbin =2 ;
+        cout<< Samples[isam].label << " : " << "first bin content:  " <<histo[0][var][sam]->Integral(1,1)  << endl;
+        cout<< Samples[isam].label << " : " << "second bin content: " <<histo[0][var][sam]->Integral(2,2)  << endl;
+        cout<< Samples[isam].label << " : " << "third bin content:  " <<histo[0][var][sam]->Integral(3,3)  << endl;
+	double error1(0), errorother(0);
+	double quad=0;
+	for(unsigned int ibin=1 ; ibin<maxbin ; ibin++){
+		double temp;
+		temp = histo[0][var][sam]->GetBinError(ibin+1);
+		quad = quad + temp*temp;
+	}
+	error1 = histo[0][var][sam]->GetBinError(1);
+	errorother = TMath::Sqrt(quad);
+        cout<< Samples[isam].label << " : " << "first bin error : " << error1 << endl;
+	cout<< Samples[isam].label << " : " << "second bin error: " << histo[0][var][sam]->GetBinError(2) << endl;
+	cout<< Samples[isam].label << " : " << "third bin error:  " << histo[0][var][sam]->GetBinError(3) << endl;
+	//cout<< Samples[isam].label << " : " << "err first bin :" <<histo[0][var][sam]->GetBinError(1) << endl;
+	//for(unsigned int i=0;i<maxbin;i++) 
+//	cout<< Samples[isam].label << " : " << "bin 5 to max :" <<histo[0][var][sam]->Integral(5,maxbin) << endl;	
+      }
+
+      for(unsigned sam(Nsam-1); sam < Nsam; sam--){
+	int isam = vars[var].samples[sam];
+	//bool noStack = Samples[isam].isSig || Samples[isam].isData;
+	if(sam>=last_hist && vars[var].normalize && !Samples[isam].isSig){ 
+	  histo[0][var][sam]->Scale(normalization_ratio); //FIXME
+	  nentries[sam]*= normalization_ratio;
+
+	}
+	
+	if(vars[var].normalizeByBin){
+	  for(int ibin=1;ibin<=histo[0][var][sam]->GetNbinsX();ibin++){
+	    cout<<"bin content "<<ibin<<": "<<histo[0][var][sam]->GetBinContent(ibin)<<endl;
+	    cout<<"denominator :"<<histo[0][var][last_hist]->GetBinContent(ibin)<<endl;
+	    float fractional_content;
+	    if(histo[0][var][last_hist]->GetBinContent(ibin)>0) fractional_content = 100.*histo[0][var][sam]->GetBinContent(ibin)/histo[0][var][last_hist]->GetBinContent(ibin);
+	    else fractional_content=0.;
+	    cout<<"fraction content: "<<fractional_content<<endl;
+	    histo[0][var][sam]->SetBinContent(ibin,fractional_content);
+	  }
+	}
+
+
+        if(Samples[isam].mcerr){ histo[0][var][sam]->SetLineWidth(4);  histo[0][var][sam]->SetMarkerStyle(20); 
+          //histo[0][var][sam]->SetMarkerColor(Samples[isam].color);
+          histo[0][var][sam]->SetMarkerSize(1.2);
+          histo[0][var][sam]->SetLineStyle(abs(Samples[isam].style));
+          if(Nsam>=3) histo[0][var][2]->SetFillColorAlpha(Samples[2].color, 0.5);
+        }
+        double maxval(histo[0][var][sam]->GetMaximum());
+        if(maxhisto < maxval)  maxhisto = maxval;
+	//maxval += histo[0][var][sam]->GetBinErrorUp(histo[0][var][sam]->GetMaximumBin());//FIXME
+	//if((Samples[isam].isData || Samples[isam].mcerr) && maxhisto < maxval) maxhisto = maxval;//FIXME
+      }
+
+
+      // First loop over samples
+      pad->cd();
+      for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Clear();
+      unsigned legcount(0);
+      int firstplotted(-1);
+      for(unsigned sam(0); sam < Nsam; sam++){
+        int isam = vars[var].samples[sam];
+        leghisto = Samples[isam].label;
+        //if(!namestyle.Contains("CMSPaper") || showcuts) leghisto += " [N=" + RoundNumber(nentries[sam],0) + "]";
+        //leghisto += " [N=" + RoundNumber(nentries[sam],0) + "]";
+        bool noStack = Samples[isam].isSig || Samples[isam].isData;
+        unsigned ileg = (Nsam<=3?0:legcount>=(Nsam+1)/2);
+        if(!noStack){
+          if(Samples[isam].doBand) leg[ileg].AddEntry(histo[0][var][sam], leghisto,"l");//FIXME
+	  else leg[ileg].AddEntry(histo[0][var][sam], leghisto,"f");
+          legcount++;
+          if(firstplotted < 0) {
+            if(!Samples[isam].mcerr) {
+	      if(!Samples[isam].doBand) histo[0][var][sam]->Draw("hist");
+	      else {
+		histo[0][var][sam]->Draw("E2");
+		TString hcname("hclone"); hcname += var;
+		TH1F *hclone = static_cast<TH1F*>(histo[0][var][sam]->Clone(hcname));
+		hclone->SetLineColor(Samples[isam].color);
+		hclone->SetLineWidth(3);
+		if(vars[var].normalizeByBin) hclone->SetLineWidth(0);
+		hclone->SetFillColor(0);
+		hclone->Draw("hist same");
+	      }
+            } else histo[0][var][sam]->Draw("E0LP");
+            firstplotted = sam;
+//            style.setTitles(histo[0][var][sam],vars[var].title, ytitle, cmslabel, lumilabel);
+          } else {
+            if(!Samples[isam].mcerr) histo[0][var][sam]->Draw("hist same");
+            else histo[0][var][sam]->Draw("E0LP same");
+          }
+        } else {
+          if(Samples[isam].isSig) leg[ileg].AddEntry(histo[0][var][sam], leghisto,"l");
+          else leg[ileg].AddEntry(histo[0][var][sam], leghisto,"elp");
+          legcount++;
+        }
+      }
+      for(int sam(Nsam-1); sam >= 0; sam--){
+        int isam = vars[var].samples[sam];
+        if(Samples[isam].isSig){if(!Samples[isam].mcerr) histo[0][var][sam]->Draw("hist same"); else histo[0][var][sam]->Draw("EP same"); }
+        //if(Samples[isam].isData) histo[0][var][sam]->Draw("e0 same");
+        if(Samples[isam].isData) histo[0][var][sam]->Draw("same");
+      }
+      for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Draw(); 
+
+      // Setting Y-axis for log_lumi plot
+      if(histo[0][var][firstplotted]->GetMinimum() > minLog) histo[0][var][firstplotted]->SetMinimum(minLog);
+      float maxpadLog(maxhisto*10*exp(fracLeg*log(maxhisto/minLog)/(1-fracLeg)));
+      histo[0][var][firstplotted]->SetMinimum(0.02);
+      histo[0][var][firstplotted]->SetMaximum(maxpadLog);
+      /*for(int bin(0); bin<=histo[0][var][firstplotted]->GetNbinsX()+1; bin++){
+	histo[0][var][firstplotted]->SetBinError(bin,0);//FIXME//command out this line when the testing pre-firing issue
+      }// */
+      if (!doRatio) style.moveYAxisLabel(histo[0][var][firstplotted], maxpadLog, true);
+      histo[0][var][firstplotted]->Draw("axis same");
+      if(vars[var].cut>0) line.DrawLine(vars[var].cut, 0, vars[var].cut, maxhisto*1.05);
+
+      //ratio
+      TH1D* hratio_data(NULL);
+      TLine* l1(NULL);
+      if (doRatio){
+        // TH1D* hratio_mc = static_cast<TH1D*>(histo[0][var][firstplotted]->Clone());
+        TH1D* hdata(NULL);
+        unsigned ndatasam(0);
+        for(unsigned sam(Nsam-1); sam < Nsam; sam--) {
+          int isam = vars[var].samples[sam];
+          if (Samples[isam].isData || (Samples[isam].mcerr && sam==0)) {
+            if (ndatasam==0) hdata = static_cast<TH1D*>(histo[0][var][sam]->Clone());
+            else hdata->Add(histo[0][var][sam]); //in case the different PDs are put in as separate samples
+            ndatasam++;
+          }
+        }        
+        if (ndatasam) {
+	  float maxRatio = 1.9;
+	  if(vars[var].maxRatio > 0) maxRatio = vars[var].maxRatio;
+          hratio_data = static_cast<TH1D*>(hdata->Clone());
+          hratio_data->SetTitle("");
+          hratio_data->Divide(histo[0][var][firstplotted]);
+          hratio_data->GetYaxis()->SetRangeUser(0.1,maxRatio);//FIXME
+	  // L1 Prefiring Issue
+//          hratio_data->GetYaxis()->SetRangeUser(0.75,1.25);//FIXME // for L1 Prefiring Issue
+          hratio_data->GetXaxis()->SetLabelOffset(0.025);
+          hratio_data->GetXaxis()->SetLabelSize(style.LabelSize*2.2);
+          hratio_data->GetYaxis()->SetLabelSize(style.LabelSize*2.1);
+          hratio_data->GetYaxis()->SetTitle("Data / MC ");
+	  if(Nsam==2) {
+	    size_t idata = vars[var].samples[0];
+	    if(Samples[idata].label.Contains("2l")) hratio_data->GetYaxis()->SetTitle("2l / 1l");
+	    else hratio_data->GetYaxis()->SetTitle("high / low");
+	  }
+          hratio_data->GetXaxis()->SetTitle(histo[0][var][firstplotted]->GetXaxis()->GetTitle());
+          hratio_data->GetYaxis()->SetTitleSize(style.TitleSize*3);
+          hratio_data->GetYaxis()->SetTitleOffset(0.5); //can't use relative size, since somehow it changes between plots...
+          hratio_data->GetXaxis()->SetTitleSize(style.TitleSize*3);
+          hratio_data->GetXaxis()->SetTitleOffset(style.xTitleOffset*0.9);
+          //move  the labels ou tof the way
+          histo[0][var][firstplotted]->GetXaxis()->SetLabelOffset(2.);
+          //line at 1
+          bpad->cd();
+          //hratio_data->Draw("e0");     //comment out when drawing pre-fit SR MJ templates
+          hratio_data->Draw();
+	  //          for (int ko=0; ko< hratio_data->GetNbinsX(); ko++){
+          //  cout<<hratio_data->GetBinLowEdge(ko+1)<<" "<<(hratio_data->GetBinLowEdge(ko+1)+hratio_data->GetBinWidth(ko+1))
+          //      <<hratio_data->GetBinContent(ko+1)<<std::endl;
+          //}
+
+          l1 = new TLine(histo[0][var][firstplotted]->GetXaxis()->GetXmin(), 1., histo[0][var][firstplotted]->GetXaxis()->GetXmax(), 1.);
+          l1->SetLineStyle(2);
+          l1->Draw("same");
+        } else {
+          cerr<<"ERROR: Ratio plots currently only supported for plots with data."<<endl;
+          exit(1);
+        }
+        delete hdata;
+      }
+
+      //label lumi
+      pad->cd();
+      if(!namestyle.Contains("CMSPaper") || showcuts) {
+	//TString lumilbl = TString::Format("%1.1f",luminosity.Atof())+" fb^{-1}, "+norm_s;
+//	TString lumilbl = TString::Format("%1.1f",luminosity.Atof())+" fb^{-1}"; // FIXME for pre-fit SR
+	TString lumilbl = ""; // FIXME for HEM
+	TLatex llbl;
+	llbl.SetTextSize(style.LegendSize); 
+	llbl.SetNDC(); llbl.SetTextAlign(33);
+//	llbl.DrawLatex(1-style.PadRightMargin-0.02,leg[0].GetY1NDC()-0.02,lumilbl);
+      }
+      // label nb
+      if(vars[var].tag.Contains("results") && vars[var].cuts.Contains("nbm")){
+	TLatex tla;
+	tla.SetTextSize(0.06);
+	tla.SetTextFont(42);
+	if(vars[var].cuts.Contains("nbm==1")) tla.DrawLatexNDC(0.73,0.64,"#font[62]{N_{b} = 1}");
+	if(vars[var].cuts.Contains("nbm>=2")) tla.DrawLatexNDC(0.73,0.64,"#font[62]{N_{b} #geq 2}");
+      }
+      // CMS label
+      TLatex *TexCMS = new TLatex(0.2,0.92,"#font[62]{CMS} #font[52]{Preliminary}");
+      TexCMS->SetNDC();
+      TexCMS->SetTextSize(0.05);
+      TexCMS->SetLineWidth(2);
+      TexCMS->Draw("same");
+      TLatex *TexEnergyLumi = new TLatex(0.94,0.92,Form("#font[42]{%.1f fb^{-1} (13 TeV)}", luminosity.Atof()));
+      if(luminosity=="101.3") TexEnergyLumi = new TLatex(0.94,0.92,Form("#font[42]{%d fb^{-1} (13 TeV)}", luminosity.Atoi()));
+      TexEnergyLumi->SetNDC();
+      TexEnergyLumi->SetTextSize(0.05);
+      TexEnergyLumi->SetTextAlign (31);
+      TexEnergyLumi->SetLineWidth(2);
+      TexEnergyLumi->Draw("same");
+
+      /*
+      if(vars[var].normalizeByBin){
+
+	float textSize = 0.055;
+	TLatex *TexNlep = new TLatex();
+	TLatex *TexNjets = new TLatex();
+	TLatex *TexMJ = new TLatex();
+	TString binname_tstr = vars[var].cuts;
+	if(binname_tstr.Contains("(nmus+nels)==1"))   TexNlep = new TLatex(0.22,0.33,"N_{lep} = 1");
+	if(binname_tstr.Contains("(nmus+nels)==0"))   TexNlep = new TLatex(0.22,0.33,"N_{lep} = 0");
+	TexNlep->SetNDC();
+	TexNlep->SetTextSize(textSize);
+	//TexNlep->SetLineWidth(2);
+	if(binname_tstr.Contains("njets<="))   TexNjets = new TLatex(0.22,0.26,"4 #leq N_{jet} #leq 5");
+	if(binname_tstr.Contains("njets<=7"))   TexNjets = new TLatex(0.22,0.26,"6 #leq N_{jet} #leq 7");
+	if(binname_tstr.Contains("njets<=9"))   TexNjets = new TLatex(0.22,0.26,"8 #leq N_{jet} #leq 9");
+	if(binname_tstr.Contains("njets>=8")&&!binname_tstr.Contains("njets<=9"))    TexNjets = new TLatex(0.22,0.26,"N_{jet} #geq 8");
+	if(binname_tstr.Contains("njets>=10"))   TexNjets = new TLatex(0.22,0.26,"N_{jet} #geq 10");
+	TexNjets->SetNDC();
+	TexNjets->SetTextSize(textSize);
+	//TexNjets->SetLineWidth(2);
+	if(binname_tstr.Contains("mj>500"))    TexMJ = new TLatex(0.22,0.19,"500 < M_{J} < 800 GeV");
+	if(binname_tstr.Contains("mj>800"))   TexMJ = new TLatex(0.22,0.19,"M_{J} > 800 GeV");
+	TexMJ->SetNDC();
+	TexMJ->SetTextSize(textSize);
+	//TexMJ->SetLineWidth(2);
+
+	TexNlep->Draw("same");
+	TexNjets->Draw("same");
+	TexMJ->Draw("same");
+
+
+
+      }
+      */
+
+
+      //save canvas
+      pad->SetLogy(1);
+      pname = outfolder+"/log_lumi_"+vars[var].tag+plot_tag;
+      if(vars[var].normalize) pname.ReplaceAll("/log_lumi","/log_norm");
+      if(!vars[var].skiplog && (vars[var].whichPlots.Contains("0") || vars[var].whichPlots.Contains("1")))
+        can.SaveAs(pname);
+      pad->SetLogy(0);
+ 
+      // Setting Y-axis for lumi plot (non-log)
+      float minhisto(0), maxpad(minhisto + (maxhisto-minhisto)/(1-fracLeg));
+      if(vars[var].maxYaxis > 0) maxpad = vars[var].maxYaxis;
+      histo[0][var][firstplotted]->SetMinimum(0.02);
+      histo[0][var][firstplotted]->SetMaximum(maxpad);
+      // pad = static_cast<TPad *>(can.cd(1));
+      if (!doRatio) style.moveYAxisLabel(histo[0][var][firstplotted], maxpad, false);
+      pname = outfolder+"/lumi_"+vars[var].tag+plot_tag;
+      if(vars[var].normalize) pname.ReplaceAll("/lumi","/norm");
+      if(vars[var].whichPlots.Contains("0") || vars[var].whichPlots.Contains("2")) can.SaveAs(pname);
+    } // Lumi plots
+
+
+    //////////// Plotting area-normalized distributions ////////////
+    maxhisto = -999;
+    for(int ileg(0); ileg<nLegs; ileg++) leg[ileg].Clear();
+    unsigned legcount = 0;
+    for(unsigned sam(0); sam < Nsam; sam++){
+      int isam = vars[var].samples[sam];
+      histo[1][var][sam]->SetLineColor(Samples[isam].color);
+      histo[1][var][sam]->SetMarkerColor(Samples[isam].color);
+      histo[1][var][sam]->SetMarkerStyle(20);
+      histo[1][var][sam]->SetLineStyle(abs(Samples[isam].style));
+      histo[1][var][sam]->SetLineWidth(4);
+      if(nentries[sam]) histo[1][var][sam]->Scale(100./nentries[sam]);
+      if(maxhisto < histo[1][var][sam]->GetMaximum()) maxhisto = histo[1][var][sam]->GetMaximum();
+//      style.setTitles(histo[1][var][sam],vars[var].title, "", cmslabel, lumilabel);
+      if(sam==0){
+	histo[1][var][sam]->SetXTitle(vars[var].title);
+	ytitle = "% events";
+	if(vars[var].unit!="") {
+	  int digits(0);
+	  float binwidth((vars[var].maxx-vars[var].minx)/static_cast<float>(vars[var].nbins));
+	  if(binwidth<1) digits = 1;
+	  if (!variableBins) ytitle += ("/("+RoundNumber(binwidth,digits) +" "+vars[var].unit+")");
+	}	
+        histo[1][var][sam]->SetYTitle(ytitle);
+        if(Samples[isam].style>0) histo[1][var][sam]->Draw("hist E"); //220727 draw error bar
+        else histo[1][var][sam]->Draw("E");
+      } else {
+        if(Samples[isam].style>0) histo[1][var][sam]->Draw("hist E same"); //220727 draw error bar
+        else histo[1][var][sam]->Draw("E same");
+      }
+      leghisto = Samples[isam].label;
+      unsigned ileg = (Nsam<=5?0:legcount>=(Nsam+1)/2);
+      if(!namestyle.Contains("CMSPaper") || showcuts){
+	      cout << "sam: " << sam << endl;
+	      cout << "var: " << vars[var].nevents.at(sam) << endl;
+        if(vars[var].nevents.at(sam)<0){
+	  //leg[ileg].SetX1NDC(0.23); leg[ileg].SetX2NDC(0.43); //220727 make plot look pretty
+	  //leg[ileg].SetY1NDC(0.2); leg[ileg].SetY2NDC(0.35);
+	  leg[ileg].SetX1NDC(0.23); leg[ileg].SetX2NDC(0.43); //220727 make plot look pretty
+	  leg[ileg].SetY1NDC(0.2); leg[ileg].SetY2NDC(0.35);
+          leg[ileg].SetTextSize(0.06);
+	  if(sam>=1) {
+		  cout << "HI" << endl;
+	    leg[ileg].SetX1NDC(0.23); leg[ileg].SetX2NDC(0.58);
+	    leg[ileg].SetY1NDC(0.68); leg[ileg].SetY2NDC(0.87);
+            leg[ileg].SetTextSize(0.06);
+	  }
+	  if(sam>3) {    //230330 make plot look pretty, for Figure15, pre-postfit plots (nbm=0 plots)
+		  cout << "IH" << endl;
+	    leg[ileg].SetX1NDC(0.64); leg[ileg].SetX2NDC(0.99); //220727 make plot look pretty, Figure2
+	    leg[ileg].SetY1NDC(0.68); leg[ileg].SetY2NDC(0.87);  //230109 make plot look pretty (Nb bin: 4 -> 5), Figure2
+            leg[ileg].SetTextSize(0.06);
+//            leg[ileg].SetTextSize(0.75*style.LegendSize);    // 241223 Figure2, Figure21~23 // when plotting Figure15, pre-postfit plots, comment out this line
+	  }
+          leghisto += " [#mu=";
+          int digits(0);
+          if(histo[1][var][sam]->GetMean()<30) digits = 1;
+          leghisto += RoundNumber(histo[1][var][sam]->GetMean(),digits) + "]";
+        } else{
+	    leg[ileg].SetX1NDC(0.5); leg[ileg].SetX2NDC(0.7); //220727 make plot look pretty
+	    leg[ileg].SetY1NDC(0.5); leg[ileg].SetY2NDC(0.7);
+            leg[ileg].SetX1NDC(0.24); leg[ileg].SetX2NDC(0.7);    //231018 make plot look pretty, for Figure15 (nbm=0 plots)
+            leg[ileg].SetTextSize(0.06);
+            //leg[ileg].SetTextSize(0.5*style.LegendSize);
+	    if(vars[var].varname.Contains("tks")) leghisto +=  "[N_{tks} = " + RoundNumber(nentries[sam],1) + ", from N_{events} = "
+              +RoundNumber(vars[var].nevents.at(sam),1)+"]";
+        }
+      }
+      
+      if(Samples[isam].style>0) leg[ileg].AddEntry(histo[1][var][sam], leghisto, "l");
+      else leg[ileg].AddEntry(histo[1][var][sam], leghisto, "p");
+      legcount++;
+    } // Loop over samples
+//    for(int ileg(0); ileg<nLegs; ileg++) {leg[ileg].Draw(); leg[ileg].SetTextSize(0.03);} //FIXME for objectreview
+    for(int ileg(0); ileg<nLegs; ileg++) {leg[ileg].SetTextSize(0.06); leg[ileg].Draw();}
+    if(vars[var].cut>0) line.DrawLine(vars[var].cut, 0, vars[var].cut, maxhisto*1.05);
+
+    // Setting Y-axis for shapes plot (non-log)
+    float minhisto(0), maxpad(minhisto + (maxhisto-minhisto)/(1-fracLeg));
+    histo[1][var][0]->SetMinimum(0.02);
+    histo[1][var][0]->SetMaximum(maxpad);
+    histo[1][var][0]->Draw("axis same");
+    style.moveYAxisLabel(histo[1][var][0], maxpad, false);
+    can.SetLogy(0);
+    if(vars[var].cuts.Contains("abs(isr_tru_pt)")){
+      TLatex tla;
+      tla.SetTextSize(0.055);
+      tla.SetTextFont(42);
+      if(vars[var].cuts.Contains("abs(isr_tru_pt)<10")) tla.DrawLatexNDC(0.63,0.79,"#font[62]{ISR p_{T} < 10 GeV}");
+      if(vars[var].cuts.Contains("abs(isr_tru_pt)>100")) tla.DrawLatexNDC(0.63,0.79,"#font[62]{ISR p_{T} > 100 GeV}");
+    }
+    else if(vars[var].cuts.Contains("nleps<1234")){
+      TString lsp = "{#lower[-0.1]{#tilde{#chi}}#lower[0.2]{#scale[0.85]{^{0}}}#kern[-1.3]{#scale[0.85]{_{1}}}}";
+      TString t1t_label = "#scale[0.95]{#tilde{g}#kern[0.2]{#tilde{g}}, #tilde{g}#rightarrowt#kern[0.18]{#bar{t}}#kern[0.18]"+lsp;
+      TLatex tla;
+      tla.SetTextSize(0.055);
+      tla.SetTextFont(42);
+      tla.DrawLatexNDC(0.52,0.70,"#font[62]{"+t1t_label+" (1500,100)}}");
+      histo[1][var][0]->SetMaximum(60);
+    }
+
+    pname = outfolder+"/shapes_"+vars[var].tag+plot_tag;
+    if(vars[var].whichPlots.Contains("0") || vars[var].whichPlots.Contains("3")) can.SaveAs(pname);
+    float maxpadLog = maxhisto*exp(fracLeg*log(maxhisto/minLog)/(1-fracLeg));
+    histo[1][var][0]->SetMaximum(maxpadLog);
+    histo[1][var][0]->SetMinimum(0.02);
     style.moveYAxisLabel(histo[1][var][0], maxpadLog, true);
     can.SetLogy(1);
     pname = outfolder+"/log_shapes_"+vars[var].tag+plot_tag;

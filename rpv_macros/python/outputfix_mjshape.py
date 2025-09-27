@@ -4,14 +4,15 @@ import sys
 
 if __name__=="__main__":
     year = sys.argv[1]
-    if year=="2016": f_orig = TFile("variations/output_nominal_newnt_"+year+".root", "READ") #2016
-    elif year=="2017" or year=="2018": f_orig = TFile("variations/output_nominal_newnt_"+year+"_20178.root", "READ") #2017,2018
+    if year=="UL2016_preVFP" or year=="UL2016_postVFP": f_orig = TFile("variations/output_nominal_newnt_"+year+"_UL2016.root", "READ") #UL2016_preVFP, UL2016_postVFP
+    elif year=="UL2017" or year=="UL2018": f_orig = TFile("variations/output_nominal_newnt_"+year+"_UL20178.root", "READ") #2017,2018
     f_modi = TFile("variations/output_"+year+"_mjsyst.root","RECREATE")
     f_ttbar = TFile("plots/mjsyst/"+year+"/mjsyst_ttbar_"+year+".root","READ")
     f_wjets = TFile("plots/mjsyst/"+year+"/mjsyst_wjets_"+year+".root","READ")
     
     for i in range(22,52):
-            if year == "2017" or year == "2018": year="20178"
+            if year == "UL2016_preVFP" or year == "UL2016_postVFP": year="2016"
+            elif year == "UL2017" or year == "UL2018": year="1718"
             injets	= (i-1)%3
             inb	= int((i-22)/3+1)
             ind_njets = 10*(2*injets+4)+2*injets+5
@@ -38,18 +39,18 @@ if __name__=="__main__":
             cor_wjets_r2	= wjets_r2.GetBinContent(inb)
             print("bin"+str(i))
             
-            qcd_mc_r1_up	    = h_proc_qcd.Clone("qcd_mjsyst_r1_njets"+str(ind_njets)+"_qcd_"+year+"Up")
-            qcd_mc_r1_down    = h_proc_qcd.Clone("qcd_mjsyst_r1_njets"+str(ind_njets)+"_qcd_"+year+"Down")
-            qcd_mc_r2_up	    = h_proc_qcd.Clone("qcd_mjsyst_r2_njets"+str(ind_njets)+"_qcd_"+year+"Up")
-            qcd_mc_r2_down    = h_proc_qcd.Clone("qcd_mjsyst_r2_njets"+str(ind_njets)+"_qcd_"+year+"Down")
-            ttbar_mc_r1_up	    = h_mc_ttbar.Clone("ttbar_mjsyst_r1_njets"+str(ind_njets)+"_ttbar_"+year+"Up")
-            ttbar_mc_r1_down    = h_mc_ttbar.Clone("ttbar_mjsyst_r1_njets"+str(ind_njets)+"_ttbar_"+year+"Down")
-            ttbar_mc_r2_up	    = h_mc_ttbar.Clone("ttbar_mjsyst_r2_njets"+str(ind_njets)+"_ttbar_"+year+"Up")
-            ttbar_mc_r2_down    = h_mc_ttbar.Clone("ttbar_mjsyst_r2_njets"+str(ind_njets)+"_ttbar_"+year+"Down")
-            wjets_mc_r1_up	    = h_mc_wjets.Clone("wjets_mjsyst_r1_njets"+str(ind_njets)+"_wjets_"+year+"Up")
-            wjets_mc_r1_down    = h_mc_wjets.Clone("wjets_mjsyst_r1_njets"+str(ind_njets)+"_wjets_"+year+"Down")
-            wjets_mc_r2_up    = h_mc_wjets.Clone("wjets_mjsyst_r2_njets"+str(ind_njets)+"_wjets_"+year+"Up")
-            wjets_mc_r2_down    = h_mc_wjets.Clone("wjets_mjsyst_r2_njets"+str(ind_njets)+"_wjets_"+year+"Down")
+            qcd_mc_r1_up	    = h_proc_qcd.Clone("qcd_CMS_SUS21005_mjsyst_r1_njets"+str(ind_njets)+"_qcd_"+year+"Up")
+            qcd_mc_r1_down    = h_proc_qcd.Clone("qcd_CMS_SUS21005_mjsyst_r1_njets"+str(ind_njets)+"_qcd_"+year+"Down")
+            qcd_mc_r2_up	    = h_proc_qcd.Clone("qcd_CMS_SUS21005_mjsyst_r2_njets"+str(ind_njets)+"_qcd_"+year+"Up")
+            qcd_mc_r2_down    = h_proc_qcd.Clone("qcd_CMS_SUS21005_mjsyst_r2_njets"+str(ind_njets)+"_qcd_"+year+"Down")
+            ttbar_mc_r1_up	    = h_mc_ttbar.Clone("ttbar_CMS_SUS21005_mjsyst_r1_njets"+str(ind_njets)+"_ttbar_"+year+"Up")
+            ttbar_mc_r1_down    = h_mc_ttbar.Clone("ttbar_CMS_SUS21005_mjsyst_r1_njets"+str(ind_njets)+"_ttbar_"+year+"Down")
+            ttbar_mc_r2_up	    = h_mc_ttbar.Clone("ttbar_CMS_SUS21005_mjsyst_r2_njets"+str(ind_njets)+"_ttbar_"+year+"Up")
+            ttbar_mc_r2_down    = h_mc_ttbar.Clone("ttbar_CMS_SUS21005_mjsyst_r2_njets"+str(ind_njets)+"_ttbar_"+year+"Down")
+            wjets_mc_r1_up	    = h_mc_wjets.Clone("wjets_CMS_SUS21005_mjsyst_r1_njets"+str(ind_njets)+"_wjets_"+year+"Up")
+            wjets_mc_r1_down    = h_mc_wjets.Clone("wjets_CMS_SUS21005_mjsyst_r1_njets"+str(ind_njets)+"_wjets_"+year+"Down")
+            wjets_mc_r2_up    = h_mc_wjets.Clone("wjets_CMS_SUS21005_mjsyst_r2_njets"+str(ind_njets)+"_wjets_"+year+"Up")
+            wjets_mc_r2_down    = h_mc_wjets.Clone("wjets_CMS_SUS21005_mjsyst_r2_njets"+str(ind_njets)+"_wjets_"+year+"Down")
 
             if(i>36): continue;
             else:

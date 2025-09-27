@@ -36,19 +36,20 @@ void set_piechart(TPie *p_opt){
 
 int main(int argc, char *argv[])
 {
-	TString inputdir, outputdir, year;
+	TString inputdir, outputdir, year, infile;
 	year = argv[1];
 	TString test = argv[1];
+	infile = argv[2];
+
 	inputdir = "variations/";
 	outputdir = "plots/pie_"+year+"/";
 	gSystem->mkdir(outputdir);
 
 	if(test == "--help" || argc<1){
-		cout<<"./run/plot_piechart.exe [year]"<<endl;
+		cout<<"./run/plot_piechart.exe [year] [infile]"<<endl;
 	}
 
-	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_nl0shape_"+year+".root", "READ"); // for QCD kappa factor region
-//	TFile* infile  = TFile::Open(inputdir+"output_nominal_newnt_"+year+".root", "READ");
+	TFile* f = TFile::Open(infile.Data(), "READ"); // for QCD kappa factor region
 
 	const int nbins = 52;
 
@@ -65,11 +66,11 @@ int main(int argc, char *argv[])
 
 	for(int ibin=22; ibin<nbins; ibin++){
 		for(int iMj=0; iMj<3; iMj++){
-			qcd[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/qcd", ibin)))->GetBinContent(iMj+1);
-			ttbar[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(iMj+1);
-			wjets[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/wjets", ibin)))->GetBinContent(iMj+1);
-			other[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/other", ibin)))->GetBinContent(iMj+1);
-			sig1800[ibin][iMj]= static_cast<TH1F*>(infile->Get(Form("bin%i/signal_M1800", ibin)))->GetBinContent(iMj+1);
+			qcd[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/qcd", ibin)))->GetBinContent(iMj+1);
+			ttbar[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/ttbar", ibin)))->GetBinContent(iMj+1);
+			wjets[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/wjets", ibin)))->GetBinContent(iMj+1);
+			other[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/other", ibin)))->GetBinContent(iMj+1);
+			sig1800[ibin][iMj]= static_cast<TH1F*>(f->Get(Form("bin%i/signal_M1800", ibin)))->GetBinContent(iMj+1);
 		}
 	}
 
@@ -100,36 +101,36 @@ int main(int argc, char *argv[])
 		"",//20
 		"",
 		// Njets-Nb basis
-		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=0", // 22
-		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
-		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=0",
-		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=1", // 25
-		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1",
-		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=1",
-		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=2",
-		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
-		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=2", // 30
-		"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}=3",
-		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
-		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}=3",
-		//"1-lepton,HT>1200,4#leq N_{jets}#leq5,N_{b}#geq4",
-		"1-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4", // 35
-		"1-lepton,HT>1200,N_{jets}#geq8,N_{b}#geq4",
-		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=0",
-		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=0",
-		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=0",
-		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=1", // 40
-		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=1",
-		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=1",
-		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=2",
-		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=2",
-		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=2", // 45
-		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}=3",
-		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}=3",
-		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}=3",
-		"0-lepton,HT>1200,6#leq N_{jets}#leq7,N_{b}#geq4",
-		"0-lepton,HT>1200,8#leq N_{jets}#leq9,N_{b}#geq4", // 50
-		"0-lepton,HT>1200,N_{jets}#geq10,N_{b}#geq4"
+		"1-lepton, HT>1200, 4#leq N_{jet}#leq5, N_{b}=0", // 22
+		"1-lepton, HT>1200, 6#leq N_{jet}#leq7, N_{b}=0",
+		"1-lepton, HT>1200, N_{jet}#geq8, N_{b}=0",
+		"1-lepton, HT>1200, 4#leq N_{jet}#leq5, N_{b}=1", // 25
+		"1-lepton, HT>1200, 6#leq N_{jet}#leq7, N_{b}=1",
+		"1-lepton, HT>1200, N_{jet}#geq8, N_{b}=1",
+		"1-lepton, HT>1200, 4#leq N_{jet}#leq5, N_{b}=2",
+		"1-lepton, HT>1200, 6#leq N_{jet}#leq7, N_{b}=2",
+		"1-lepton, HT>1200, N_{jet}#geq8, N_{b}=2", // 30
+		"1-lepton, HT>1200, 4#leq N_{jet}#leq5, N_{b}#geq3",
+		"1-lepton, HT>1200, 6#leq N_{jet}#leq7, N_{b}=3",
+		"1-lepton, HT>1200, N_{jet}#geq8, N_{b}=3",
+		"1-lepton, HT>1200, 4#leq N_{jet}#leq5, N_{b}#geq4",
+		"1-lepton, HT>1200, 6#leq N_{jet}#leq7, N_{b}#geq4", // 35
+		"1-lepton, HT>1200, N_{jet}#geq8, N_{b}#geq4",
+		"0-lepton, HT>1200, 5#leq N_{jet}#leq6, N_{b}=0",
+		"0-lepton, HT>1200, 7#leq N_{jet}#leq8, N_{b}=0",
+		"0-lepton, HT>1200, N_{jet}#geq9, N_{b}=0",
+		"0-lepton, HT>1200, 5#leq N_{jet}#leq6, N_{b}=1", // 40
+		"0-lepton, HT>1200, 7#leq N_{jet}#leq8, N_{b}=1",
+		"0-lepton, HT>1200, N_{jet}#geq9, N_{b}=1",
+		"0-lepton, HT>1200, 5#leq N_{jet}#leq6, N_{b}=2",
+		"0-lepton, HT>1200, 7#leq N_{jet}#leq8, N_{b}=2",
+		"0-lepton, HT>1200, N_{jet}#geq9, N_{b}=2", // 45
+		"0-lepton, HT>1200, 5#leq N_{jet}#leq6, N_{b}#geq3",
+		"0-lepton, HT>1200, 7#leq N_{jet}#leq8, N_{b}=3",
+		"0-lepton, HT>1200, N_{jet}#geq9, N_{b}=3",
+		"0-lepton, HT>1200, 5#leq N_{jet}#leq6, N_{b}#geq4",
+		"0-lepton, HT>1200, 7#leq N_{jet}#leq8, N_{b}#geq4", // 50
+		"0-lepton, HT>1200, N_{jet}#geq9, N_{b}#geq4"
 	};
 
 	TString Mj_txt[3]={", 500<M_{J}<800",", 800<M_{J}<1100",", 1100<M_{J}"};
@@ -138,7 +139,8 @@ int main(int argc, char *argv[])
 		if(ibin == 34 or ibin==49) continue;
 		for (int iMj=0; iMj<3; iMj++){
 			Float_t vals[] = {qcd[ibin][iMj],ttbar[ibin][iMj],wjets[ibin][iMj],other[ibin][iMj],sig1800[ibin][iMj]};
-			Int_t colors[] = {kYellow-7,kAzure+7,kGreen+2,kGray+1,kRed+1};
+			//Int_t colors[] = {kYellow-7,kAzure+7,kGreen+2,kGray+1,kRed+1};
+			Int_t colors[] = {TColor::GetColor("#ffa90e"),TColor::GetColor("#3f90da"),TColor::GetColor("#832db6"),TColor::GetColor("#94a4a2"),TColor::GetColor("#bd1f01")};
 			Int_t nvals = sizeof(vals)/sizeof(vals[0]);
 			cpie[ibin][iMj] = new TCanvas(Form("cpie_%i_%i",ibin,iMj),Form("TPie test_%i_%i",ibin,iMj),700,700);
 			pie4[ibin][iMj] = new TPie(Form("pie4_%i_%i", ibin,iMj),Form(title_1[ibin]+Mj_txt[iMj]),nvals,vals,colors);

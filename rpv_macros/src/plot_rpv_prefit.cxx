@@ -17,7 +17,6 @@
 
 namespace {
   bool showData = true; // Draw with/wihout data
-  //bool showData = false; // Draw with/wihout data
   bool unblindSRs = false; // Draw data in (unblind) SRs
   TString json = "1";
 
@@ -31,20 +30,20 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-  TH1::SetDefaultSumw2();
-
   TString year = argv[1];
   //cout << argc << endl;
   if(argc<1){
     cout<<"./run/plot_rpv [year] !!!!"<<endl;
   }
   
-  TString lumi, trigger;
-  if(year.Contains("UL2016_preVFP"))   {lumi = "19.5";   trigger = "(trig_ht900 || trig_jet450)";}
-  if(year.Contains("UL2016_postVFP"))  {lumi = "16.8";   trigger = "(trig_ht900 || trig_jet450)";}
-  if(year.Contains("UL2017"))          {lumi = "41.5";   trigger = "trig_ht1050";}
-  if(year.Contains("UL2018"))          {lumi = "59.8";   trigger = "trig_ht1050";}
-  if(year.Contains("UL20178"))         {lumi = "101.3";  trigger = "trig_ht1050";}
+  TString lumi = "36.3";
+  TString trigger = "(trig_ht900 || trig_jet450)"; // PFHT800 OR PFHT900 OR PFJet450 */
+  if(year.Contains("UL2016_preVFP"))    {lumi = "19.5";   trigger = "(trig_ht900 || trig_jet450)";}
+  if(year.Contains("UL2016_postVFP"))   {lumi = "16.8";   trigger = "(trig_ht900 || trig_jet450)";}
+  if(year.Contains("UL2016"))           {lumi = "36.3";   trigger = "(trig_ht900 || trig_jet450)";}
+  if(year.Contains("UL2017"))   {lumi = "41.5";   trigger = "trig_ht1050";}
+  if(year.Contains("UL2018"))   {lumi = "59.8";   trigger = "trig_ht1050";}
+  if(year.Contains("UL20178"))  {lumi = "101.3";  trigger = "trig_ht1050";}
   
   cout << year << endl;
   cout << "lumi : "   << lumi << endl;
@@ -56,10 +55,6 @@ int main(int argc, char *argv[]){
   TString folder_bkg = "/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_mc/";
   TString folder_sig = "/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_sig/";
   
-  cout << folder_dat << endl;
-  cout << folder_bkg << endl;
-  cout << folder_sig << endl;
-
   vector<TString> s_data;
   vector<TString> s_rpv_m1600 ;
   vector<TString> s_rpv_m1800 ;
@@ -80,48 +75,42 @@ int main(int argc, char *argv[]){
     s_wjets = getRPVProcess(folder_bkg,"wjets");
     s_other = getRPVProcess(folder_bkg,"other_public");
   }
-  else if(year=="UL20178") 
+  else if(year=="UL2016")
   {
-    folder_dat = "/mnt/data3/babies/250110/UL2017/merged_rpvfitnbge0_data/";
-    folder_bkg = "/mnt/data3/babies/250110/UL2017/merged_rpvfitnbge0_mc/";
-    folder_sig = "/mnt/data3/babies/250110/UL2017/merged_rpvfitnbge0_sig/";
-    
+    folder_dat = "/mnt/data3/babies/250110/UL2016_comb/merged_rpvfitnbge0_data/";
+    folder_bkg = "/mnt/data3/babies/250110/UL2016_comb/merged_rpvfitnbge0_mc/";
+    folder_sig = "/mnt/data3/babies/250110/UL2016_comb/merged_rpvfitnbge0_sig/";
+
     s_data      = getRPVProcess(folder_dat,"data");
     s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");
     s_ttbar     = getRPVProcess(folder_bkg,"ttbar");
     s_qcd       = getRPVProcess(folder_bkg,"qcd");
     s_wjets     = getRPVProcess(folder_bkg,"wjets");
     s_other     = getRPVProcess(folder_bkg,"other_public");
-    
-    folder_dat = "/mnt/data3/babies/250110/UL2018/merged_rpvfitnbge0_data/";
-    folder_bkg = "/mnt/data3/babies/250110/UL2018/merged_rpvfitnbge0_mc/";
-    folder_sig = "/mnt/data3/babies/250110/UL2018/merged_rpvfitnbge0_sig/";
-    
-    vector<TString> s18_data      = getRPVProcess(folder_dat,"data");
-    vector<TString> s18_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");
-    vector<TString> s18_ttbar     = getRPVProcess(folder_bkg,"ttbar");
-    vector<TString> s18_qcd       = getRPVProcess(folder_bkg,"qcd");
-    vector<TString> s18_wjets     = getRPVProcess(folder_bkg,"wjets");
-    vector<TString> s18_other     = getRPVProcess(folder_bkg,"other_public");
-    
-    s_data.insert( s_data.end(),  s18_data.begin(), s18_data.end());
-    s_rpv_m1800.insert( s_rpv_m1800.end(),  s18_rpv_m1800.begin(), s18_rpv_m1800.end());
-    s_ttbar.insert( s_ttbar.end(),  s18_ttbar.begin(), s18_ttbar.end());
-    s_qcd.insert( s_qcd.end(),  s18_qcd.begin(), s18_qcd.end());
-    s_wjets.insert( s_wjets.end(),  s18_wjets.begin(), s18_wjets.end());
-    s_other.insert( s_other.end(),  s18_other.begin(), s18_other.end());
+  }
+  else if(year=="UL20178")
+  {
+    folder_dat = "/mnt/data3/babies/250110/UL20178_comb/merged_rpvfitnbge0_data/";
+    folder_bkg = "/mnt/data3/babies/250110/UL20178_comb/merged_rpvfitnbge0_mc/";
+    folder_sig = "/mnt/data3/babies/250110/UL20178_comb/merged_rpvfitnbge0_sig/";
+
+    s_data      = getRPVProcess(folder_dat,"data");
+    s_rpv_m1800 = getRPVProcess(folder_sig,"rpv_m1800");
+    s_ttbar     = getRPVProcess(folder_bkg,"ttbar");
+    s_qcd       = getRPVProcess(folder_bkg,"qcd");
+    s_wjets     = getRPVProcess(folder_bkg,"wjets");
+    s_other     = getRPVProcess(folder_bkg,"other_public");
   }
 
-  /*
-  TString folder_bkg = folder_year(year,false).at(0);
-  TString folder_dat = folder_year(year,false).at(1);
-  TString folder_sig = folder_year(year,false).at(2);// 
-  */
+  cout << folder_dat << endl;
+  cout << folder_bkg << endl;
+  cout << folder_sig << endl;
 
   
   // Reading ntuples
   vector<sfeats> Samples; 
   // Plot with data if showData == true
+  cout << "showData: " << showData << endl;
   if(showData) {
     if(unblindSRs){
       Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass"));
@@ -129,33 +118,45 @@ int main(int argc, char *argv[]){
     }
     else{
       // Only use events with njets<=7 (for 0-lepton) and njets<=5 (for 1-lepton)
-//      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nbm<=2)||(nbm>=3 && njets>=4 && njets<=5))"));
-      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass"));
+      //Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && ((nbm<=2)||(nbm>=3 && njets>=4 && njets<=5))"));
+      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass && (nbm<=1||(nbm<=2&&njets>=4&&njets<=7)||(nbm>=3 && njets>=4 && njets<=5))"));
+//      Samples.push_back(sfeats(s_data, "Data",kBlack,1,trigger+" && "+json+" && pass"));
       //Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt, 1, cutandweight("pass","1.")));
       Samples.back().isData = true;
     }
   }
 
-  string extraweight = "1";
-  Samples.push_back(sfeats(s_rpv_m1800, "m_{#tilde{g}}=1800 GeV", kRed, 1, cutandweight("pass",extraweight)));Samples.back().isSig = true;
+  if(year=="UL2016") {
+    Samples.push_back(sfeats(s_rpv_m1800, "m_{#tilde{g}}=1800 GeV", kRed, 1, cutandweight("pass","frac16")));Samples.back().isSig = true;
+  }
+  else if(year=="UL20178") {
+    Samples.push_back(sfeats(s_rpv_m1800, "m_{#tilde{g}}=1800 GeV", kRed, 1, cutandweight("pass","frac1718")));Samples.back().isSig = true;
+  }
   Samples.back().isSig = true;
-  
-  if(year=="20178") {
+
+  if(year=="UL2016") {
+    Samples.push_back(sfeats(s_qcd,   "QCD",      rpv::c_qcd,   1, cutandweight("pass","frac16")));
+    Samples.push_back(sfeats(s_wjets, "W+ jets",  rpv::c_wjets, 1, cutandweight("pass","frac16")));
+    Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt,    1, cutandweight("pass&&stitch_ht","frac16")));
+    Samples.push_back(sfeats(s_other, "Others",   rpv::c_other, 1, cutandweight("pass","frac16")));
+  }
+  else if(year=="UL20178"){
     Samples.push_back(sfeats(s_qcd,   "QCD",      rpv::c_qcd,   1, cutandweight("pass","frac1718")));
     Samples.push_back(sfeats(s_wjets, "W+ jets",  rpv::c_wjets, 1, cutandweight("pass","frac1718")));
-    Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt,    1, cutandweight("pass","frac1718")));
+    Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt,    1, cutandweight("pass&&stitch_ht","frac1718")));
     Samples.push_back(sfeats(s_other, "Others",   rpv::c_other, 1, cutandweight("pass","frac1718")));
   }
   else {
     Samples.push_back(sfeats(s_qcd,   "QCD",      rpv::c_qcd,   1, cutandweight("pass","1")));
     Samples.push_back(sfeats(s_wjets, "W+ jets",  rpv::c_wjets, 1, cutandweight("pass","1")));
-    Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt,    1, cutandweight("pass","1")));
+    Samples.push_back(sfeats(s_ttbar, "t#bar{t}", rpv::c_tt,    1, cutandweight("pass&&stitch_ht","1")));
     Samples.push_back(sfeats(s_other, "Others",   rpv::c_other, 1, cutandweight("pass","1")));
   }
 
   // Loop over samples
   vector<int> rpv_sam;
   for(unsigned sam(0); sam < Samples.size(); sam++) rpv_sam.push_back(sam);
+  cout << Samples.size() << endl;
 
   // Define histogram vector
   vector<hfeats> hists;
@@ -163,18 +164,13 @@ int main(int argc, char *argv[]){
   if(makeNm1==true){
     // Set cuts
     TString basecut = "mj12>=500";
-    //TString lepcuts = "nleps==1&&ht>1200";
-    TString lepcuts = "nleps==0&&ht>1200";
-    vector<TString> nbcuts =  {"nbm==0", "nbm==1", "nbm==2", "nbm==3", "nbm>=4"};
-    //vector<TString> njetcuts = {"4<=njets&&njets<=5","6<=njets&&njets<=7", "njets>=8"};
-    vector<TString> njetcuts = {"6<=njets&&njets<=7","8<=njets&&njets<=9", "njets>=10"};
-    vector<TString> mjcuts = {"500<=mj12&&mj12<=800","800<=mj12&&mj12<=1100", "mj12>=1100"};
-
-
+    TString lepcuts = "nleps==1&&ht>1200";
     //TString lepcuts = "nleps==0&&ht>1200";
-    //vector<TString> nbcuts =  {"nbm==0", "nbm==1", "nbm==2", "nbm>=3"};
+//    vector<TString> nbcuts =  {"nbm==0", "nbm==1", "nbm==2", "nbm>=3"};  // If you draw pre-fit SR MJ plots, comment out it and use the nbcuts below
+    vector<TString> nbcuts =  {"nbm==0", "nbm==1", "nbm==2", "nbm==3", "nbm>=3", "nbm>=4"};
     //vector<TString> nbcuts =  {"nbm==0"};
     //vector<TString> njetcuts = {"6<=njets&&njets<=7","8<=njets&&njets<=9", "njets>=10"};
+    vector<TString> njetcuts = {"4<=njets&&njets<=5","6<=njets&&njets<=7", "njets>=8"};
     //vector<TString> njetcuts = {"4<=njets&&njets<=5"};
     
     //vector<TString> nbcuts = {"nbm<3"}
@@ -187,6 +183,10 @@ int main(int argc, char *argv[]){
     TString cut = "";
     for(auto inb : nbcuts) {
       for(auto injet : njetcuts){
+//	if(inb=="nbm>=3"&&(injet=="6<=njets&&njets<=7"||injet=="njets>=8")) { // If you draw pre-fit SR MJ plots, comment out it
+//	  continue;                                                           // If you draw pre-fit SR MJ plots, comment out it
+//	}                                                                     // If you draw pre-fit SR MJ plots, comment out it
+
         /*
         // Handle different MJ binning at low njets (CR)
         if(ilep == "nleps==0&&ht>1500"){
@@ -213,17 +213,16 @@ int main(int argc, char *argv[]){
 
         // Define histograms
         hists.push_back(hfeats("mj12", 3, 500, 1400, rpv_sam, "M_{J}", cut));
-        //hists.push_back(hfeats("nbm", 6, 0, 6, rpv_sam, "nbm", cut));
-        //hists.push_back(hfeats("njets", 10, 0, 10, rpv_sam, "N_{jet}", cut));
+//        hists.push_back(hfeats("mus_pt", 100, 0, 10000, rpv_sam, "muon pT", "nmus==1&&njets>=4&&ht>1200&&mj12>500&&nleps==1 && mus_sigid==1"));
         //hists.push_back(hfeats("ht", 20, 900, 3000, rpv_sam, "H_{T}", cut));
-        //hists.push_back(hfeats("nleps", 4, 0, 4, rpv_sam, "N_{leps}", cut));
+        //hists.push_back(hfeats("nbm", 6, 0, 6, rpv_sam, "nbm", cut));
+        //hists.push_back(hfeats("njets", 10, 0, 20, rpv_sam, "njets", cut));
         if(showData) hists.back().normalize = true;	
-	hists.back().normalize = true;
       }
     }
 
-    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", true, true);  
-    //plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", false, true);  
+    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", true, true);
+//    plot_distributions(Samples, hists, lumi, plot_type, plot_style, "rpv_base", false, true);
   }
   
   /*////////////

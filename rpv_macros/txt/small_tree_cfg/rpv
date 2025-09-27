@@ -14,6 +14,7 @@ float w_isr
 float w_toppt
 float w_lep
 float frac1718
+float frac16
 std::vector<float> w_pdf
 float eff_trig
 int npv
@@ -35,6 +36,8 @@ bool fromGS
 bool trig_ht1050
 bool trig_ht900
 bool trig_jet450
+bool trig_isomu24
+bool trig_isomu27
 
 ##################   MC   ################
 int ntruleps
@@ -124,8 +127,10 @@ std::vector<int> fjets08_btags
 std::vector<int> fjets08_nconst
 
 ################  syst   ##################
-std::vector<float> sys_bctag
-std::vector<float> sys_udsgtag
+std::vector<float> sys_bctag_uncor
+std::vector<float> sys_bctag_cor
+std::vector<float> sys_udsgtag_uncor
+std::vector<float> sys_udsgtag_cor
 std::vector<float> sys_pu
 std::vector<float> sys_lep
 std::vector<float> sys_mur

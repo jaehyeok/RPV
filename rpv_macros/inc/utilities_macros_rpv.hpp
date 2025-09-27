@@ -88,9 +88,13 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 
 	// For 0, 1, or 2 lepton ttbar apply a ntruleps cut at the sfeat level
 	else if(process=="ttbar"){
+		/*
+		// Run 2
 		files.push_back(folder+"TTJets_Tune*");
-		//files.push_back(folder+"*TTJets_inclusive*");
 		files.push_back(folder+"TTJets_HT*");
+		*/
+		// Run 3
+		files.push_back(folder+"TTto*"); // This includes hadronic/semi-leptonic/leptonic decays
 	}
 	//Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
 	else if(process=="ttbar_2l"){
@@ -106,21 +110,41 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"TTJets_Tune*"); //For this sample to be used in the hadronic-only selection it needs a ntruleps==0 skim
 	}
 	else if(process=="qcd"){
+		/*
+		// Run 2
 		files.push_back(folder+"QCD_*"); 
+		*/
+		// Run 3
+		files.push_back(folder+"QCD-4Jets*");
 	}
 	// For 0 or 1 lepton wjets apply a ntruleps cut at the sfeat level
 	else if(process=="wjets"){
-		files.push_back(folder+"WJetsToLNu_*"); 
-		//files.push_back(folder+"*WJetsToQQ*");//-
+		/*
+		// Run 2
+		//files.push_back(folder+"WJetsToLNu_*"); 
+		*/
+		// Run 3
+		files.push_back(folder+"WtoLNu*");
 	}
 	else if(process=="singlet"){
+		/*
+		// Run 2
 		files.push_back(folder+"ST_*");
+		*/
+		files.push_back(folder+"TBbartoLplusNuBbar*");
+		files.push_back(folder+"TbarBtoLminusNuB*");
+		files.push_back(folder+"TQbartoLNu*");
+		files.push_back(folder+"TbarQtoLNu*");
+		files.push_back(folder+"TWminusto*");
+		files.push_back(folder+"TbarWplusto*");
 	}
 	else if(process=="zjets"){
 		files.push_back(folder+"ZJetsToQQ_HT600toInf_*");
 		files.push_back(folder+"ZJetsToNuNu_HT-*");
 	}
 	else if(process=="other"){
+		/*
+		// Run 2
 		files.push_back(folder+"DYJetsToLL_M-50_HT*");
 		files.push_back(folder+"TTTT*");
 		files.push_back(folder+"TTW*");
@@ -133,6 +157,17 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"ZZZ_*"); 
 		files.push_back(folder+"WWW_*"); 
 		files.push_back(folder+"ttHJetTobb_*"); //
+		*/
+		// Run 3
+		files.push_back(folder+"DYto2L*");
+		files.push_back(folder+"TTTT*");
+		files.push_back(folder+"TTHto2B*");
+		files.push_back(folder+"WW_*");
+		files.push_back(folder+"WZ_*");
+		files.push_back(folder+"WWZ_*");
+		files.push_back(folder+"WZZ_*");
+		files.push_back(folder+"ZZ_*");
+		files.push_back(folder+"ZZZ_*");
 	}
   else if(process=="DY"){
     files.push_back(folder+"DYJetsToLL_M-50_HT*");

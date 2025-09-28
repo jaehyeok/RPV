@@ -53,6 +53,9 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		else if(process=="rpv_m2000") files.push_back(folder+"*mGluino*2000*");
 		else if(process=="rpv_m2100") files.push_back(folder+"*mGluino*2100*");
 		else if(process=="rpv_m2200") files.push_back(folder+"*mGluino*2200*");
+		else if(process=="rpv_m2300") files.push_back(folder+"*mGluino*2300*");
+		else if(process=="rpv_m2400") files.push_back(folder+"*mGluino*2400*");
+		else if(process=="rpv_m2500") files.push_back(folder+"*mGluino*2500*");
 	}
 	else if(process.Contains("mStop")){
 		if(process=="mStop_300") files.push_back(folder+"*mStop-300*");

@@ -47,6 +47,9 @@ void qcd_kappa_plot(TString year);  // Fig. 16
 void wjets_kappa_plot_dy_region(TString year);  // Fig. 18
 void ttbar_kappa_plot(TString year);  // Fig. 19
 void kappa_summary_plot(TString year);  // Fig.20
+void qcd_kappa_plot_combine();             // Fig.3 in paper draft (Full Run 2)
+void wjets_kappa_plot_dy_region_combine(); // Fig.3 in paper draft (Full Run 2)
+void kappa_summary_plot_combine();         // Fig.4 in paper draft (Full Run 2)
 
 void appendTree(vector<TString> s_process, small_tree &tree_in)
 {
@@ -2088,7 +2091,8 @@ void ttbar_kappa_plot(TString year)
   }
 }
 
-void kappa_summary_plot(TString year) {
+void kappa_summary_plot(TString year)
+{
   float lumi=0;
   if(year=="UL2016") lumi=36.3;
   else if(year=="UL20178") lumi=101.3;
@@ -3686,7 +3690,8 @@ void wjets_kappa_plot_dy_region_combine()
 
 
 
-void kappa_summary_plot_combine() {
+void kappa_summary_plot_combine()
+{
   TH1::SetDefaultSumw2();
   gStyle->SetOptStat(0);
   float lumi=138, lumi_16=36.3, lumi_1718=101.3;
@@ -3737,6 +3742,12 @@ void kappa_summary_plot_combine() {
   cout << "   Low :" << hist_kappa2->GetBinContent(7) << " +- " << std::max(hist_kappa2->GetBinError(7), 1-hist_kappa2->GetBinContent(7)) << endl;
   cout << "   Mid :" << hist_kappa2->GetBinContent(8) << " +- " << std::max(hist_kappa2->GetBinError(8), 1-hist_kappa2->GetBinContent(8)) << endl;
   cout << "   High:" << hist_kappa2->GetBinContent(9) << " +- " << std::max(hist_kappa2->GetBinError(9), 1-hist_kappa2->GetBinContent(9)) << endl;
+
+  TFile* f = new TFile("data/result_kappa_UL201678.root", "recreate");
+  f->cd();
+  hist_kappa1->Write();
+  hist_kappa2->Write();
+  f->Close();
 
   hist_kappa2->GetXaxis()->SetBinLabel(1, "Low");
   hist_kappa2->GetXaxis()->SetBinLabel(2, "Mid");

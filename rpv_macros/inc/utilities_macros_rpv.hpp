@@ -95,6 +95,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		*/
 		// Run 3
 		files.push_back(folder+"TTto*"); // This includes hadronic/semi-leptonic/leptonic decays
+						 // 2023, 2024
 	}
 	//Separated by ntrulep to avoid looping over samples killed by sfeat ntruleps selection
 	else if(process=="ttbar_2l"){
@@ -115,7 +116,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"QCD_*"); 
 		*/
 		// Run 3
-		files.push_back(folder+"QCD-4Jets*");
+		files.push_back(folder+"QCD-4Jets*");   // 2023, 2024
 	}
 	// For 0 or 1 lepton wjets apply a ntruleps cut at the sfeat level
 	else if(process=="wjets"){
@@ -124,19 +125,21 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		//files.push_back(folder+"WJetsToLNu_*"); 
 		*/
 		// Run 3
-		files.push_back(folder+"WtoLNu*");
+		files.push_back(folder+"WtoLNu*");   // 2023, 2024
 	}
 	else if(process=="singlet"){
 		/*
 		// Run 2
 		files.push_back(folder+"ST_*");
 		*/
-		files.push_back(folder+"TBbartoLplusNuBbar*");
-		files.push_back(folder+"TbarBtoLminusNuB*");
-		files.push_back(folder+"TQbartoLNu*");
-		files.push_back(folder+"TbarQtoLNu*");
-		files.push_back(folder+"TWminusto*");
-		files.push_back(folder+"TbarWplusto*");
+		// Run 3
+		files.push_back(folder+"TBbartoLplusNuBbar*");   // 2023
+		files.push_back(folder+"TbarBtoLminusNuB*");     // 2023
+		files.push_back(folder+"TQbartoLNu*");           // 2023
+		files.push_back(folder+"TbarQtoLNu*");           // 2023
+		files.push_back(folder+"TWminusto*");       	 // 2023, 2024
+		files.push_back(folder+"TbarWplusto*");     	 // 2023, 2024
+		files.push_back(folder+"TbarBQtoLNu*");     	 // 2024
 	}
 	else if(process=="zjets"){
 		files.push_back(folder+"ZJetsToQQ_HT600toInf_*");
@@ -159,15 +162,20 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"ttHJetTobb_*"); //
 		*/
 		// Run 3
-		files.push_back(folder+"DYto2L*");
-		files.push_back(folder+"TTTT*");
-		files.push_back(folder+"TTHto2B*");
-		files.push_back(folder+"WW_*");
-		files.push_back(folder+"WZ_*");
-		files.push_back(folder+"WWZ_*");
-		files.push_back(folder+"WZZ_*");
-		files.push_back(folder+"ZZ_*");
-		files.push_back(folder+"ZZZ_*");
+		files.push_back(folder+"DYto2L*");   // 2023
+		files.push_back(folder+"TTTT*");     // 2023
+		files.push_back(folder+"TTHto2B*");  // 2023
+		files.push_back(folder+"WWZ_*");     // 2023
+		files.push_back(folder+"WZZ_*");     // 2023
+		files.push_back(folder+"ZZZ_*");     // 2023
+		files.push_back(folder+"WZ_*");      // 2023, 2024
+		files.push_back(folder+"WW_*");      // 2023, 2024
+		files.push_back(folder+"ZZ_*");      // 2023, 2024
+		files.push_back(folder+"DYto2E*");   // 2024
+		files.push_back(folder+"DYto2Mu*");  // 2024
+		files.push_back(folder+"WWW-*");     // 2024
+		files.push_back(folder+"WZZ-*");     // 2024
+		files.push_back(folder+"ZZZ-*");     // 2024
 	}
   else if(process=="DY"){
     files.push_back(folder+"DYJetsToLL_M-50_HT*");

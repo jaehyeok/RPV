@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
       else if(year=="UL2016_postVFP") lumi = 16.8;
       else if(year=="UL2017") lumi = 41.5;
       else if(year=="UL2018") lumi = 59.8;
-      else if(year=="2024")   lumi = 300.;
+      else if(year=="2024")   lumi = 138.;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "There are only 5 arguments! 0 Lepton shape is entered as on..." << endl;
@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
       else if(year=="UL2016_postVFP") lumi = 16.8;
       else if(year=="UL2017") lumi = 41.5;
       else if(year=="UL2018") lumi = 59.8;
-      else if(year=="2024")   lumi = 300.;
+      else if(year=="2024")   lumi = 138.;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
       else if(year=="UL2016_postVFP") lumi = 16.8;
       else if(year=="UL2017") lumi = 41.5;
       else if(year=="UL2018") lumi = 59.8;
-      else if(year=="2024")   lumi = 300.;
+      else if(year=="2024")   lumi = 138.;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -831,7 +831,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
     else if (procname=="data_obs") nominalweight = tree.pass() * tree.trig_ht1050(); // rereco // 2017 and 2018
     else if (procname=="data_obs" && year=="2024") nominalweight = 0; // rereco // 2017 and 2018
     //if (procname.Contains("signal")) nominalweight = lumi*tree.weight()*tree.pass()*f_modify_sig_xsec;
-    if(procname.Contains("signal")) cout << "sig nominalweight: " << nominalweight << endl;
 /*
     int nb_csv=0;
     for(unsigned int j=0; j<tree.jets_hflavor().size();j++){
@@ -1434,12 +1433,6 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
       h1nominal[ibin]->SetTitle(procname.Data());
       h1nominal[ibin]->SetName(procname.Data());
       h1nominal[ibin]->Write();
-      if(procname.Contains("signal")) {
-        cout << "procname: " << procname.Data() << endl;
-	cout << "mj0     : " << h1nominal[ibin]->GetBinContent(1) << endl;
-	cout << "mj1     : " << h1nominal[ibin]->GetBinContent(2) << endl;
-	cout << "mj2     : " << h1nominal[ibin]->GetBinContent(3) << endl;
-      }
     }
     else if(variations=="kappa")
     {

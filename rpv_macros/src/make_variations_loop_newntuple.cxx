@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
       else if(year=="UL2016_postVFP") lumi = 16.8;
       else if(year=="UL2017") lumi = 41.5;
       else if(year=="UL2018") lumi = 59.8;
-      else if(year=="2024")   lumi = 138.;
+      else if(year=="2024")   lumi = 300.;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "There are only 5 arguments! 0 Lepton shape is entered as on..." << endl;
@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
       else if(year=="UL2016_postVFP") lumi = 16.8;
       else if(year=="UL2017") lumi = 41.5;
       else if(year=="UL2018") lumi = 59.8;
-      else if(year=="2024")   lumi = 138.;
+      else if(year=="2024")   lumi = 300.;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
       else if(year=="UL2016_postVFP") lumi = 16.8;
       else if(year=="UL2017") lumi = 41.5;
       else if(year=="UL2018") lumi = 59.8;
-      else if(year=="2024")   lumi = 138.;
+      else if(year=="2024")   lumi = 300.;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;

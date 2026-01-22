@@ -311,10 +311,10 @@ vector<TString> folder_year(TString year, bool te){
   else{
 //Run3
     ret.push_back("/mnt/data3/babies/250930/"+year+"/merged_rpvfitnbge0_mc/");
-    ret.push_back("/mnt/data3/babies/250930/"+year+"/merged_rpvfitnbge0_data/");
+    ret.push_back("/mnt/data3/babies/251207_data_cmsweek/"+year+"/merged_rpvfitnbge0_data/");
     ret.push_back("/mnt/data3/babies/250930/"+year+"/merged_rpvfitnbge0_sig/");
-    ret.push_back("/mnt/data3/babies/250930/"+year+"/merged_dy_mc/");
-    ret.push_back("/mnt/data3/babies/250930/"+year+"/merged_dy_data/");
+    ret.push_back("/mnt/data3/babies/251208_dy_cmsweek_byCG/"+year+"/merged_dy_mc/");
+    ret.push_back("/mnt/data3/babies/251207_data_cmsweek/"+year+"/merged_dy_data/");
 /*
 //UL
     ret.push_back("/mnt/data3/babies/250110/"+year+"/merged_rpvfitnbge0_mc/");

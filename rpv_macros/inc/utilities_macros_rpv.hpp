@@ -34,10 +34,10 @@ std::string cutandweight(std::string cut, std::string weight)
 std::vector<TString> getRPVProcess(TString folder, TString process){
 	std::vector<TString> files;
 	if(process=="data"){
-		files.push_back(folder+"*Run201*");
+		files.push_back(folder+"*Run20*");
 	}
 	else if(process=="data_te"){
-		files.push_back(folder+"*Run201*");
+		files.push_back(folder+"*Run20*");
 	}
 	else if(process.Contains("rpv")){
 		if(process=="rpv_m1000") files.push_back(folder+"*mGluino*1000*");
@@ -181,7 +181,7 @@ std::vector<TString> getRPVProcess(TString folder, TString process){
 		files.push_back(folder+"ZZZ-*");     // 2024
 	}
   else if(process=="DY"){
-    files.push_back(folder+"DYJetsToLL_M-50_HT*");
+    files.push_back(folder+"DYto*");
   }
   else if(process=="other_DY"){
 		files.push_back(folder+"WJetsToLNu_*"); 

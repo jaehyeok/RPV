@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
       else if(year=="UL2016_postVFP") lumi = 16.8;
       else if(year=="UL2017") lumi = 41.5;
       else if(year=="UL2018") lumi = 59.8;
-      else if(year=="2024")   lumi = 300.;
+      else if(year=="2024")   lumi = 109.;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "There are only 5 arguments! 0 Lepton shape is entered as on..." << endl;
@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
       else if(year=="UL2016_postVFP") lumi = 16.8;
       else if(year=="UL2017") lumi = 41.5;
       else if(year=="UL2018") lumi = 59.8;
-      else if(year=="2024")   lumi = 300.;
+      else if(year=="2024")   lumi = 109.;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
       else if(year=="UL2016_postVFP") lumi = 16.8;
       else if(year=="UL2017") lumi = 41.5;
       else if(year=="UL2018") lumi = 59.8;
-      else if(year=="2024")   lumi = 300.;
+      else if(year=="2024")   lumi = 109.;
       cout << "Luminosity        : " << lumi << "fb-1" << endl;
       if(onoff=="off") nl0shape = false; 
       cout << "Running variation : " << variations << endl;
@@ -258,8 +258,7 @@ int main(int argc, char *argv[])
   TString folder_sig = folder_year(year,false).at(2);
 
 
-  //vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
-  vector<TString> s_jetht = getRPVProcess("/mnt/data3/babies/250110/UL20178_comb/merged_singlemu_data","data");     // temporary setup for 2024 (yields become 0 later)
+  vector<TString> s_jetht = getRPVProcess(folder_dat,"data");
 
   vector<TString> s_qcd   = getRPVProcess(folder_bkg,"qcd");
   vector<TString> s_tt    = getRPVProcess(folder_bkg,"ttbar");
@@ -402,10 +401,10 @@ int main(int argc, char *argv[])
   TString shape = "_nl0shape";
   TString temp = argv[2];
   if(nl0shape == false) shape = "";
-  TString output_filename = Form("variations/output_%s_newnt%s_%s_run3.root", variations.Data(), shape.Data(), year.Data());
+  TString output_filename = Form("variations/output_%s_newnt%s_%s.root", variations.Data(), shape.Data(), year.Data());
   cout<<str_year<<endl;
-  if(argc==7&&str_year!="") output_filename = Form("variations/output_%s_newnt%s_%s_%s_run3.root",variations.Data(), shape.Data(), year.Data(), str_year.Data());
-  else if(argc==7) output_filename = Form("variations/output_%s_newnt%s_%s_%.0f_run3.root",variations.Data(), shape.Data(), year.Data(), lumi);
+  if(argc==7&&str_year!="") output_filename = Form("variations/output_%s_newnt%s_%s_%s.root",variations.Data(), shape.Data(), year.Data(), str_year.Data());
+  else if(argc==7) output_filename = Form("variations/output_%s_newnt%s_%s.root",variations.Data(), shape.Data(), year.Data());
   TFile *f = new TFile(output_filename, "recreate");
 
   // Depending on the process, turn on/off variation
@@ -617,10 +616,10 @@ void getSyst(small_tree_rpv &tree, TString variations, TString year, TFile *f, T
   float other_wgt_up[3][52];
   float other_wgt_down[3][nbins];
   float qcd_nb0_sf[2][3][3];
-  //TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root","read");
   // FIXME
   // temporary setup for 2024
-  TFile *f_kappa_syst = TFile::Open("data/result_kappa_UL201678.root","read");
+  //TFile *f_kappa_syst = TFile::Open("data/result_kappa_UL201678.root","read");
+  TFile *f_kappa_syst = TFile::Open("data/result_kappa_"+year+".root","read");
   TFile *f_other_syst = TFile::Open("data/other_syst_"+year+".root","read");
   if(str_year=="UL2016"){
     f_kappa_syst = TFile::Open("data/result_kappa_UL2016.root","read");

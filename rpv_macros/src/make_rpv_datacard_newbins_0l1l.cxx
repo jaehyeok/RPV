@@ -356,30 +356,30 @@ int main(int argc, char *argv[])
   //outputOnlyNormalization(file, bins.at(ipair), year);
 
   //output the W+jet normalization and Njets connection
-  outputWjets(file, bins.at(ipair), cardType, year);
+////  outputWjets(file, bins.at(ipair), cardType, year);
 
   //output the QCD normalization and Nleps connection
-  outputQCD(file, bins.at(ipair), cardType, year);
+////  outputQCD(file, bins.at(ipair), cardType, year);
 
-  outputQCD_relative_year(file, bins.at(ipair), cardType, year);
+////  outputQCD_relative_year(file, bins.at(ipair), cardType, year);
   
   // output MC kappa systematics
-  outputMCkappaSystematics(file, bins.at(ipair), filename, year);
-  outputMCkappaJECSystematics(file, bins.at(ipair), filename, year);   //JEC
-  outputMCkappaJERSystematics(file, bins.at(ipair), filename, year);   //JER
+////  outputMCkappaSystematics(file, bins.at(ipair), filename, year);
+////  outputMCkappaJECSystematics(file, bins.at(ipair), filename, year);   //JEC
+////  outputMCkappaJERSystematics(file, bins.at(ipair), filename, year);   //JER
   //outputMCkappaMURSystematics(file, bins.at(ipair), filename, year);   //MURF
   //outputMCkappaMURFSystematics(file, bins.at(ipair), filename, year);  //MUR
 
   // output MJ systematics
-  outputMJSystematics(file, bins.at(ipair), filename, year);
+////  outputMJSystematics(file, bins.at(ipair), filename, year);
 
   // output kappa DY-Wjets MJ shape uncertainty systematics
-  outputkappaDYUncSystematics(file, bins.at(ipair), filename, year);
+////  outputkappaDYUncSystematics(file, bins.at(ipair), filename, year);
 
   // output kappa systematics
   outputkappaSystematics(file, bins.at(ipair), filename, year);
 
-  outputShapeSystematics(file, shapeSysts, shapeSysts_name, bins.at(ipair), year);
+////  outputShapeSystematics(file, shapeSysts, shapeSysts_name, bins.at(ipair), year);
 
   if(sig_onoff=="on"){
   // output shape systematics

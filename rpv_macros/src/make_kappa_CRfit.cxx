@@ -112,7 +112,7 @@ int main(int argc, char *argv[]){
     return 0;
   }
 
-  if(!(year=="UL2016_preVFP"||year=="UL2016_postVFP"||year=="UL2017"||year=="UL2018"||year=="UL2016"||year=="UL20178")) return 0;
+  if(!(year=="UL2016_preVFP"||year=="UL2016_postVFP"||year=="UL2017"||year=="UL2018"||year=="UL2016"||year=="UL20178"||year=="2024")) return 0;
 
   vector<TString> years;
   if(year=="UL2016"){
@@ -136,6 +136,7 @@ int main(int argc, char *argv[]){
       if(iyear=="UL2016_postVFP") lumi = 16.8;
       else if(iyear=="UL2017")    lumi = 41.5;
       else if(iyear=="UL2018")    lumi = 59.8;
+      else if(iyear=="2024")    lumi = 109;
     }
     cout<<argc<<endl;
 
@@ -263,7 +264,8 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
   float lflavorValError = csv_weight->GetBinError(3);
 
   // QCD SF for norm difference in Nb=0 b/w qcd and data
-  TFile* f_qcd_nb0_sf = TFile::Open(Form("data/qcd_nb0_sf_%s.root", year.Data()), "READ");
+  //TFile* f_qcd_nb0_sf = TFile::Open(Form("data/qcd_nb0_sf_%s.root", year.Data()), "READ");
+  TFile* f_qcd_nb0_sf = TFile::Open("data/qcd_nb0_sf_UL2018.root", "READ");
   TH1D* h_qcd_nb0_lownjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_lownjet_sf"));
   TH1D* h_qcd_nb0_midnjet_sf  = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_midnjet_sf"));
   TH1D* h_qcd_nb0_highnjet_sf = static_cast<TH1D*>(f_qcd_nb0_sf->Get("qcd_nb0_highnjet_sf"));
@@ -372,7 +374,7 @@ void genKappaRegions(small_tree_rpv &tree, TString year, TFile *f, bool flag_kwj
     float weight = lumi*tree.weight()*tree.pass()*tree.stitch_ht();  // After 241201, 2016 is divided into UL2016_preVFP and UL2016_postVFP, and treated as 20178. frac16 is unnecessary.
     if(procname=="data_obs") {
       if(year=="UL2016" || year=="UL2016_preVFP" || year=="UL2016_postVFP") weight = 1*tree.pass()*(tree.trig_ht900()||tree.trig_jet450());
-      else if(year=="UL20178" || year=="UL2017" || year=="UL2018") weight = 1*tree.pass()*tree.trig_ht1050();
+      else if(year=="UL20178" || year=="UL2017" || year=="UL2018" || year=="2024") weight = 1*tree.pass()*tree.trig_ht1050();
     }
     for(auto ibin : bins){
       if(tree.mj12()>0 && passKapBinCut(ibin, tree.nleps(), tree.ht(), tree.njets(), tree.mj12(), tree.nbm(), mll)) 
@@ -660,12 +662,22 @@ void genKappaFactors(TFile *f, TString year){
   TString str_mconly("off");
   if(mconly) str_mconly="on";
 
-  system("cp scripts/make_CRFit.sh .");
-  system("cp scripts/repack.C .");
-  cout<<"running    : "<<Form("./make_CRFit.sh %s %s",year.Data(),str_mconly.Data())<<endl;
-  system(Form("./make_CRFit.sh %s %s",year.Data(),str_mconly.Data()));
-  system("rm make_CRFit.sh");
-  system("rm repack.C");
+  if(year=="2024") {
+    system("cp scripts/make_CRFit_run3.sh .");
+    system("cp scripts/repack.C .");
+    cout<<"running    : "<<Form("./make_CRFit_run3.sh %s %s",year.Data(),str_mconly.Data())<<endl;
+    system(Form("./make_CRFit_run3.sh %s %s",year.Data(),str_mconly.Data()));
+    system("rm make_CRFit_run3.sh");
+    system("rm repack.C");
+  }
+  else {
+    system("cp scripts/make_CRFit.sh .");
+    system("cp scripts/repack.C .");
+    cout<<"running    : "<<Form("./make_CRFit.sh %s %s",year.Data(),str_mconly.Data())<<endl;
+    system(Form("./make_CRFit.sh %s %s",year.Data(),str_mconly.Data()));
+    system("rm make_CRFit.sh");
+    system("rm repack.C");
+  }
 
   TFile *f_CRFit = new TFile("mlfit_cr_CRFit_"+year+".root","read");
   genKappaForTTJets(f_CRFit, kappa, kappa_unc, mc_unc);

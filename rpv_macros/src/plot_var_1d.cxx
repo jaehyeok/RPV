@@ -325,22 +325,22 @@ void plot_1d_var()
   h_ttbar_mj->GetXaxis()->SetLabelOffset(1);
 
 
-  TLatex* tex_njet4  = new TLatex(0.15, 0.11,  "4");
-  TLatex* tex_njet6  = new TLatex(0.28, 0.11,  "6");
-  TLatex* tex_njet8  = new TLatex(0.415, 0.11,  "8");
-  TLatex* tex_njet10  = new TLatex(0.54, 0.11, "10");
-  TLatex* tex_njet12  = new TLatex(0.67, 0.11, "12");
-  TLatex* tex_njet14  = new TLatex(0.81, 0.11, "14");
+  TLatex* tex_njet4  = new TLatex(0.182, 0.11,  "4");
+  TLatex* tex_njet6  = new TLatex(0.318, 0.11,  "6");
+  TLatex* tex_njet8  = new TLatex(0.450, 0.11,  "8");
+  TLatex* tex_njet10  = new TLatex(0.5735, 0.11, "10");
+  TLatex* tex_njet12  = new TLatex(0.707, 0.11, "12");
+  TLatex* tex_njet14  = new TLatex(0.84, 0.11, "14");
 
   tex_njet4->SetNDC(); tex_njet6->SetNDC(); tex_njet8->SetNDC(); tex_njet10->SetNDC(); tex_njet12->SetNDC(); tex_njet14->SetNDC();
   tex_njet4->SetTextSize(0.05); tex_njet6->SetTextSize(0.05); tex_njet8->SetTextSize(0.05); tex_njet10->SetTextSize(0.05); tex_njet12->SetTextSize(0.05); tex_njet14->SetTextSize(0.05);
   tex_njet4->SetTextFont(42); tex_njet6->SetTextFont(42); tex_njet8->SetTextFont(42); tex_njet10->SetTextFont(42); tex_njet12->SetTextFont(42); tex_njet14->SetTextFont(42);
 
-  TLatex* tex_nb0  = new TLatex(0.15, 0.11,  "0");
-  TLatex* tex_nb1  = new TLatex(0.297, 0.11,  "1");
-  TLatex* tex_nb2  = new TLatex(0.445, 0.11,  "2");
-  TLatex* tex_nb3  = new TLatex(0.593, 0.11, "3");
-  TLatex* tex_nb4  = new TLatex(0.738, 0.11, "4");
+  TLatex* tex_nb0  = new TLatex(0.219, 0.11,  "0");
+  TLatex* tex_nb1  = new TLatex(0.373, 0.11,  "1");
+  TLatex* tex_nb2  = new TLatex(0.52, 0.11,  "2");
+  TLatex* tex_nb3  = new TLatex(0.668, 0.11, "3");
+  TLatex* tex_nb4  = new TLatex(0.815, 0.11, "4");
 
   tex_nb0->SetNDC(); tex_nb1->SetNDC(); tex_nb2->SetNDC(); tex_nb3->SetNDC(); tex_nb4->SetNDC();
   tex_nb0->SetTextSize(0.05); tex_nb1->SetTextSize(0.05); tex_nb2->SetTextSize(0.05); tex_nb3->SetTextSize(0.05); tex_nb4->SetTextSize(0.05);
@@ -395,8 +395,8 @@ void plot_1d_var()
   l_njet_right->SetTextSize(0.045);
   l_njet_right->SetBorderSize(0);
   l_njet_right->SetFillStyle(0);
-  l_njet_right->AddEntry(h_sig1200_njet, "m_{#tilde{g}}=1200 GeV", "l");
-  l_njet_right->AddEntry(h_sig1800_njet, "m_{#tilde{g}}=1800 GeV", "l");
+  l_njet_right->AddEntry(h_sig1200_njet, "m_{#tilde{g}} = 1200 GeV", "l");
+  l_njet_right->AddEntry(h_sig1800_njet, "m_{#tilde{g}} = 1800 GeV", "l");
       // nb
   TLegend* l_nb_left = new TLegend(0.22, 0.80, 0.66, 0.85);
   l_nb_left->SetTextSize(0.045);
@@ -407,8 +407,8 @@ void plot_1d_var()
   l_nb_right->SetTextSize(0.045);
   l_nb_right->SetBorderSize(0);
   l_nb_right->SetFillStyle(0);
-  l_nb_right->AddEntry(h_sig1200_nb, "m_{#tilde{g}}=1200 GeV", "l");
-  l_nb_right->AddEntry(h_sig1800_nb, "m_{#tilde{g}}=1800 GeV", "l");
+  l_nb_right->AddEntry(h_sig1200_nb, "m_{#tilde{g}} = 1200 GeV", "l");
+  l_nb_right->AddEntry(h_sig1800_nb, "m_{#tilde{g}} = 1800 GeV", "l");
       // mj
   TLegend* l_mj_left = new TLegend(0.22, 0.80, 0.66, 0.85);
   l_mj_left->SetTextSize(0.045);
@@ -419,8 +419,8 @@ void plot_1d_var()
   l_mj_right->SetTextSize(0.045);
   l_mj_right->SetBorderSize(0);
   l_mj_right->SetFillStyle(0);
-  l_mj_right->AddEntry(h_sig1200_mj, "m_{#tilde{g}}=1200 GeV", "l");
-  l_mj_right->AddEntry(h_sig1800_mj, "m_{#tilde{g}}=1800 GeV", "l");
+  l_mj_right->AddEntry(h_sig1200_mj, "m_{#tilde{g}} = 1200 GeV", "l");
+  l_mj_right->AddEntry(h_sig1800_mj, "m_{#tilde{g}} = 1800 GeV", "l");
 
   // Draw plots
       // njet

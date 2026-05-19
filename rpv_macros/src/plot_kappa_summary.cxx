@@ -1609,7 +1609,7 @@ void wjets_kappa_plot_dy_region(TString year)
   l_njets34_2->SetBorderSize(0);
   l_njets34_2->SetFillStyle(0);
   l_njets34_2->AddEntry(h_data_njets34,  "data", "elp");
-  l_njets34_2->AddEntry(h_dy_njets34,    "Drell-Yan", "f");
+  l_njets34_2->AddEntry(h_dy_njets34,    "DY+jets", "f");
   l_njets34_2->AddEntry(h_qcd_njets34,   "QCD", "f");
   l_njets34_2->AddEntry(h_ttbar_njets34, "t#bar{t}", "f");
   l_njets34_2->AddEntry(h_wjets_njets34, "W+jets", "f");
@@ -1623,7 +1623,7 @@ void wjets_kappa_plot_dy_region(TString year)
   l_njets56_2->SetBorderSize(0);
   l_njets56_2->SetFillStyle(0);
   l_njets56_2->AddEntry(h_data_njets56,  "data", "elp");
-  l_njets56_2->AddEntry(h_dy_njets56,    "Drell-Yan", "f");
+  l_njets56_2->AddEntry(h_dy_njets56,    "DY+jets", "f");
   l_njets56_2->AddEntry(h_qcd_njets56,   "QCD", "f");
   l_njets56_2->AddEntry(h_ttbar_njets56, "t#bar{t}", "f");
   l_njets56_2->AddEntry(h_wjets_njets56, "W+jets", "f");
@@ -1637,7 +1637,7 @@ void wjets_kappa_plot_dy_region(TString year)
   l_njets7_2->SetBorderSize(0);
   l_njets7_2->SetFillStyle(0);
   l_njets7_2->AddEntry(h_data_njets7,  "data", "elp");
-  l_njets7_2->AddEntry(h_dy_njets7,    "Drell-Yan", "f");
+  l_njets7_2->AddEntry(h_dy_njets7,    "DY+jets", "f");
   l_njets7_2->AddEntry(h_qcd_njets7,   "QCD", "f");
   l_njets7_2->AddEntry(h_ttbar_njets7, "t#bar{t}", "f");
   l_njets7_2->AddEntry(h_wjets_njets7, "W+jets", "f");
@@ -1889,9 +1889,9 @@ void ttbar_kappa_plot(TString year)
   for(int i=22; i<28; i++) {
     int ibin = i-22;
     h_data_clone[ibin]   = (TH1F*)h_data[ibin]->Clone(Form("h_data_clone_%d", ibin));
-    h_qcd_clone[ibin]    = (TH1F*)h_qcd[ibin]->Clone(Form("h_data_clone_%d", ibin));
+    h_qcd_clone[ibin]    = (TH1F*)h_qcd[ibin]->Clone(Form("h_qcd_clone_%d", ibin));
     h_ttbar_clone[ibin]  = (TH1F*)h_ttbar[ibin]->Clone(Form("h_ttbar_clone_%d", ibin));
-    h_wjets_clone[ibin]  = (TH1F*)h_wjets[ibin]->Clone(Form("h_data_clone_%d", ibin));
+    h_wjets_clone[ibin]  = (TH1F*)h_wjets[ibin]->Clone(Form("h_wjets_clone_%d", ibin));
     h_other_clone[ibin]  = (TH1F*)h_other[ibin]->Clone(Form("h_other_clone_%d", ibin));
     h_data_err[ibin]   = (TH1F*)h_data[ibin]->Clone(Form("h_data_err_%d", ibin));
   }
@@ -2022,13 +2022,13 @@ void ttbar_kappa_plot(TString year)
     l_2[ibin]->SetTextSize(0.055);
     l_2[ibin]->SetBorderSize(0);
     l_2[ibin]->SetFillStyle(0);
-    l_2[ibin]->AddEntry(h_data[ibin],  "data", "elp");
+    l_2[ibin]->AddEntry(h_data[ibin],  "Data", "elp");
     l_2[ibin]->AddEntry(h_ttbar[ibin],   "t#bar{t}", "f");
-    l_2[ibin]->AddEntry(h_qcd[ibin],    "QCD", "f");
+    l_2[ibin]->AddEntry(h_qcd[ibin],    "QCD multijet", "f");
     l_2[ibin]->AddEntry(h_wjets[ibin],  "W+jets", "f");
     l_2[ibin]->AddEntry(h_other[ibin],  "Other", "f");
-    l_2[ibin]->AddEntry(h_signal_m1200[ibin], "m_{#tilde{g}}=1200 GeV#times0.01", "l");
-    l_2[ibin]->AddEntry(h_signal_m1800[ibin], "m_{#tilde{g}}=1800 GeV", "l");
+    l_2[ibin]->AddEntry(h_signal_m1200[ibin], "m_{#tilde{g}} = 1200 GeV#times0.01", "l");
+    l_2[ibin]->AddEntry(h_signal_m1800[ibin], "m_{#tilde{g}} = 1800 GeV", "l");
   }
 
   // Draw plots
@@ -2517,6 +2517,10 @@ void qcd_kappa_plot_combine()
   float sf_njets67 = h_data_njets67->Integral(1,-1)/h_tot_mc_njets67_clone->Integral(1,-1);
   float sf_njets89 = h_data_njets89->Integral(1,-1)/h_tot_mc_njets89_clone->Integral(1,-1);
   float sf_njets10  = h_data_njets10->Integral(1,-1)/h_tot_mc_njets10_clone->Integral(1,-1);
+  cout << "For HEPData" << endl;
+  cout << "sf_njets67: " << sf_njets67 << endl;
+  cout << "sf_njets89: " << sf_njets89 << endl;
+  cout << "sf_njets10: " << sf_njets10 << endl;
 
       // other mc (total mc - qcd)
   TH1D* h_other_mc_njets67 = (TH1D*)h_ttbar_njets67_clone->Clone("h_other_mc_njets67");
@@ -2731,39 +2735,39 @@ void qcd_kappa_plot_combine()
   l_njets67_2->SetTextSize(0.055);
   l_njets67_2->SetBorderSize(0);
   l_njets67_2->SetFillStyle(0);
-  l_njets67_2->AddEntry(h_data_njets67,   "data", "elp");
-  l_njets67_2->AddEntry(h_qcd_njets67,    "QCD", "f");
+  l_njets67_2->AddEntry(h_data_njets67,   "Data", "elp");
+  l_njets67_2->AddEntry(h_qcd_njets67,    "QCD multijet", "f");
   l_njets67_2->AddEntry(h_ttbar_njets67,  "t#bar{t}", "f");
   l_njets67_2->AddEntry(h_wjets_njets67,  "W+jets", "f");
   l_njets67_2->AddEntry(h_other_njets67,  "Other", "f");
-  l_njets67_2->AddEntry(h_signal_njets67_m1200, "m_{#tilde{g}}=1200 GeV#times0.01", "l");
-  l_njets67_2->AddEntry(h_signal_njets67_m1800, "m_{#tilde{g}}=1800 GeV", "l");
+  l_njets67_2->AddEntry(h_signal_njets67_m1200, "m_{#tilde{g}} = 1200 GeV#times0.01", "l");
+  l_njets67_2->AddEntry(h_signal_njets67_m1800, "m_{#tilde{g}} = 1800 GeV", "l");
 
     // njets 5-6
   TLegend* l_njets89_2 = new TLegend(0.45, 0.45, 0.85, 0.87);
   l_njets89_2->SetTextSize(0.055);
   l_njets89_2->SetBorderSize(0);
   l_njets89_2->SetFillStyle(0);
-  l_njets89_2->AddEntry(h_data_njets89,   "data", "elp");
-  l_njets89_2->AddEntry(h_qcd_njets89,    "QCD", "f");
+  l_njets89_2->AddEntry(h_data_njets89,   "Data", "elp");
+  l_njets89_2->AddEntry(h_qcd_njets89,    "QCD multijet", "f");
   l_njets89_2->AddEntry(h_ttbar_njets89,  "t#bar{t}", "f");
   l_njets89_2->AddEntry(h_wjets_njets89,  "W+jets", "f");
   l_njets89_2->AddEntry(h_other_njets89,  "Other", "f");
-  l_njets89_2->AddEntry(h_signal_njets89_m1200, "m_{#tilde{g}}=1200 GeV#times0.01", "l");
-  l_njets89_2->AddEntry(h_signal_njets89_m1800, "m_{#tilde{g}}=1800 GeV", "l");
+  l_njets89_2->AddEntry(h_signal_njets89_m1200, "m_{#tilde{g}} = 1200 GeV#times0.01", "l");
+  l_njets89_2->AddEntry(h_signal_njets89_m1800, "m_{#tilde{g}} = 1800 GeV", "l");
 
     // njets 7
   TLegend* l_njets10_2 = new TLegend(0.45, 0.45, 0.85, 0.87);
   l_njets10_2->SetTextSize(0.055);
   l_njets10_2->SetBorderSize(0);
   l_njets10_2->SetFillStyle(0);
-  l_njets10_2->AddEntry(h_data_njets10,   "data", "elp");
-  l_njets10_2->AddEntry(h_qcd_njets10,    "QCD", "f");
+  l_njets10_2->AddEntry(h_data_njets10,   "Data", "elp");
+  l_njets10_2->AddEntry(h_qcd_njets10,    "QCD multijet", "f");
   l_njets10_2->AddEntry(h_ttbar_njets10,  "t#bar{t}", "f");
   l_njets10_2->AddEntry(h_wjets_njets10,  "W+jets", "f");
   l_njets10_2->AddEntry(h_other_njets10,  "Other", "f");
-  l_njets10_2->AddEntry(h_signal_njets10_m1200, "m_{#tilde{g}}=1200 GeV#times0.01", "l");
-  l_njets10_2->AddEntry(h_signal_njets10_m1800, "m_{#tilde{g}}=1800 GeV", "l");
+  l_njets10_2->AddEntry(h_signal_njets10_m1200, "m_{#tilde{g}} = 1200 GeV#times0.01", "l");
+  l_njets10_2->AddEntry(h_signal_njets10_m1800, "m_{#tilde{g}} = 1800 GeV", "l");
   
   // Draw plots
   TLine *line;
@@ -3466,42 +3470,42 @@ void wjets_kappa_plot_dy_region_combine()
   l_njets34_2->SetTextSize(0.05);
   l_njets34_2->SetBorderSize(0);
   l_njets34_2->SetFillStyle(0);
-  l_njets34_2->AddEntry(h_data_njets34,  "data", "elp");
-  l_njets34_2->AddEntry(h_dy_njets34,    "Drell-Yan", "f");
-  l_njets34_2->AddEntry(h_qcd_njets34,   "QCD", "f");
+  l_njets34_2->AddEntry(h_data_njets34,  "Data", "elp");
+  l_njets34_2->AddEntry(h_dy_njets34,    "DY+jets", "f");
+  l_njets34_2->AddEntry(h_qcd_njets34,   "QCD multijet", "f");
   l_njets34_2->AddEntry(h_ttbar_njets34, "t#bar{t}", "f");
   l_njets34_2->AddEntry(h_wjets_njets34, "W+jets", "f");
   l_njets34_2->AddEntry(h_other_njets34, "Other", "f");
-  l_njets34_2->AddEntry(h_signal_njets34_m1200, "m_{#tilde{g}}=1200 GeV#times0.01", "l");
-  l_njets34_2->AddEntry(h_signal_njets34_m1800, "m_{#tilde{g}}=1800 GeV", "l");
+  l_njets34_2->AddEntry(h_signal_njets34_m1200, "m_{#tilde{g}} = 1200 GeV#times0.01", "l");
+  l_njets34_2->AddEntry(h_signal_njets34_m1800, "m_{#tilde{g}} = 1800 GeV", "l");
 
     // njets 5-6
   TLegend* l_njets56_2 = new TLegend(0.49, 0.43, 0.85, 0.87);
   l_njets56_2->SetTextSize(0.05);
   l_njets56_2->SetBorderSize(0);
   l_njets56_2->SetFillStyle(0);
-  l_njets56_2->AddEntry(h_data_njets56,  "data", "elp");
-  l_njets56_2->AddEntry(h_dy_njets56,    "Drell-Yan", "f");
-  l_njets56_2->AddEntry(h_qcd_njets56,   "QCD", "f");
+  l_njets56_2->AddEntry(h_data_njets56,  "Data", "elp");
+  l_njets56_2->AddEntry(h_dy_njets56,    "DY+jets", "f");
+  l_njets56_2->AddEntry(h_qcd_njets56,   "QCD multijet", "f");
   l_njets56_2->AddEntry(h_ttbar_njets56, "t#bar{t}", "f");
   l_njets56_2->AddEntry(h_wjets_njets56, "W+jets", "f");
   l_njets56_2->AddEntry(h_other_njets56, "Other", "f");
-  l_njets56_2->AddEntry(h_signal_njets56_m1200, "m_{#tilde{g}}=1200 GeV#times0.01", "l");
-  l_njets56_2->AddEntry(h_signal_njets56_m1800, "m_{#tilde{g}}=1800 GeV", "l");
+  l_njets56_2->AddEntry(h_signal_njets56_m1200, "m_{#tilde{g}} = 1200 GeV#times0.01", "l");
+  l_njets56_2->AddEntry(h_signal_njets56_m1800, "m_{#tilde{g}} = 1800 GeV", "l");
 
     // njets 7
   TLegend* l_njets7_2 = new TLegend(0.49, 0.43, 0.85, 0.87);
   l_njets7_2->SetTextSize(0.05);
   l_njets7_2->SetBorderSize(0);
   l_njets7_2->SetFillStyle(0);
-  l_njets7_2->AddEntry(h_data_njets7,  "data", "elp");
-  l_njets7_2->AddEntry(h_dy_njets7,    "Drell-Yan", "f");
-  l_njets7_2->AddEntry(h_qcd_njets7,   "QCD", "f");
+  l_njets7_2->AddEntry(h_data_njets7,  "Data", "elp");
+  l_njets7_2->AddEntry(h_dy_njets7,    "DY+jets", "f");
+  l_njets7_2->AddEntry(h_qcd_njets7,   "QCD multijet", "f");
   l_njets7_2->AddEntry(h_ttbar_njets7, "t#bar{t}", "f");
   l_njets7_2->AddEntry(h_wjets_njets7, "W+jets", "f");
   l_njets7_2->AddEntry(h_other_njets7, "Other", "f");
-  l_njets7_2->AddEntry(h_signal_njets7_m1200, "m_{#tilde{g}}=1200 GeV#times0.01", "l");
-  l_njets7_2->AddEntry(h_signal_njets7_m1800, "m_{#tilde{g}}=1800 GeV", "l");
+  l_njets7_2->AddEntry(h_signal_njets7_m1200, "m_{#tilde{g}} = 1200 GeV#times0.01", "l");
+  l_njets7_2->AddEntry(h_signal_njets7_m1800, "m_{#tilde{g}} = 1800 GeV", "l");
   
   // Draw plots
   TLine *line;
@@ -3764,6 +3768,10 @@ void kappa_summary_plot_combine() {
 //  hist_kappa1->SetTitleSize(2);
 //  hist_kappa2->SetTitle("#kappa_{2}");
 //  hist_kappa2->SetTitleSize(0.9);
+  hist_kappa1->GetYaxis()->SetDecimals();
+  hist_kappa2->GetYaxis()->SetDecimals();
+  TGaxis::SetMaxDigits(3);
+  hist_kappa2->GetYaxis()->ChangeLabel(1,-1,-1,-1,-1,-1,"0");
   TLatex* tex_lumi = new TLatex(0.92, 0.86, Form("%d fb^{-1} (13 TeV)", int(lumi)));
   tex_lumi->SetNDC();
   tex_lumi->SetTextAlign(32);
@@ -3776,65 +3784,70 @@ void kappa_summary_plot_combine() {
   //TexCMS->SetTextSize(0.10);
   TexCMS->SetTextSize(0.11);
   TexCMS->SetLineWidth(2);
-  TLatex *TexTitle_kap1 = new TLatex(0.02,0.77,"#kappa_{1}");
+  TLatex *TexTitle_kap1 = new TLatex(0.06,0.67,"#kappa_{1}");
   TexTitle_kap1->SetNDC();
   TexTitle_kap1->SetTextSize(0.13);
-  TLatex *TexTitle_kap2 = new TLatex(0.02,0.93,"#kappa_{2}");
+  TexTitle_kap1->SetTextAngle(90);
+  TLatex *TexTitle_kap2 = new TLatex(0.06,0.868,"#kappa_{2}");
   TexTitle_kap2->SetNDC();
-  TexTitle_kap2->SetTextSize(0.12);
+  TexTitle_kap2->SetTextSize(0.13);
+  TexTitle_kap2->SetTextAngle(90);
 
   // Tex QCD, ttbar, and wjets
-  TLatex *Tex_QCD = new TLatex(0.215,0.03,"QCD");
+  //TLatex *Tex_QCD = new TLatex(0.215,0.03,"QCD");
+  TLatex *Tex_QCD = new TLatex(0.155,0.68,"QCD multijet");
   Tex_QCD->SetNDC();
   Tex_QCD->SetTextFont(42);
-  Tex_QCD->SetTextSize(0.11);
-  TLatex *Tex_wjets = new TLatex(0.45,0.03,"W+jets");
+  Tex_QCD->SetTextSize(0.09);
+  //TLatex *Tex_wjets = new TLatex(0.45,0.03,"W+jets");
+  TLatex *Tex_wjets = new TLatex(0.47,0.68,"W+jets");
   Tex_wjets->SetNDC();
   Tex_wjets->SetTextFont(42);
-  Tex_wjets->SetTextSize(0.11);
-  TLatex *Tex_ttbar = new TLatex(0.785,0.03,"t#bar{t}");
+  Tex_wjets->SetTextSize(0.09);
+  //TLatex *Tex_ttbar = new TLatex(0.785,0.03,"t#bar{t}");
+  TLatex *Tex_ttbar = new TLatex(0.785,0.68,"t#bar{t}");
   Tex_ttbar->SetNDC();
   Tex_ttbar->SetTextFont(42);
-  Tex_ttbar->SetTextSize(0.11);
-  TLatex *Tex_Njet = new TLatex(0.935,0.20,"N_{jet}");
+  Tex_ttbar->SetTextSize(0.09);
+  TLatex *Tex_Njet = new TLatex(0.925,0.09,"N_{jet}");
   Tex_Njet->SetNDC();
   Tex_Njet->SetTextFont(42);
-  Tex_Njet->SetTextSize(0.09);
+  Tex_Njet->SetTextSize(0.11);
 
   // Tex (4-5), (6-7) and (\\geq8)
-  TLatex *Tex_45_1 = new TLatex(0.152,0.165,"(4-5)");
+  TLatex *Tex_45_1 = new TLatex(0.152,0.055,"(4-5)");
   Tex_45_1->SetNDC();
   Tex_45_1->SetTextFont(42);
   Tex_45_1->SetTextSize(0.06);
-  TLatex *Tex_67_1 = new TLatex(0.242,0.165,"(6-7)");
+  TLatex *Tex_67_1 = new TLatex(0.242,0.055,"(6-7)");
   Tex_67_1->SetNDC();
   Tex_67_1->SetTextFont(42);
   Tex_67_1->SetTextSize(0.06);
-  TLatex *Tex_8_1 = new TLatex(0.332,0.165,"(\\geq8)");
+  TLatex *Tex_8_1 = new TLatex(0.332,0.055,"(\\geq8)");
   Tex_8_1->SetNDC();
   Tex_8_1->SetTextFont(42);
   Tex_8_1->SetTextSize(0.06);
-  TLatex *Tex_45_2 = new TLatex(0.415,0.165,"(4-5)");
+  TLatex *Tex_45_2 = new TLatex(0.415,0.055,"(4-5)");
   Tex_45_2->SetNDC();
   Tex_45_2->SetTextFont(42);
   Tex_45_2->SetTextSize(0.06);
-  TLatex *Tex_67_2 = new TLatex(0.505,0.165,"(6-7)");
+  TLatex *Tex_67_2 = new TLatex(0.505,0.055,"(6-7)");
   Tex_67_2->SetNDC();
   Tex_67_2->SetTextFont(42);
   Tex_67_2->SetTextSize(0.06);
-  TLatex *Tex_8_2 = new TLatex(0.595,0.165,"(\\geq8)");
+  TLatex *Tex_8_2 = new TLatex(0.595,0.055,"(\\geq8)");
   Tex_8_2->SetNDC();
   Tex_8_2->SetTextFont(42);
   Tex_8_2->SetTextSize(0.06);
-  TLatex *Tex_45_3 = new TLatex(0.678,0.165,"(4-5)");
+  TLatex *Tex_45_3 = new TLatex(0.678,0.055,"(4-5)");
   Tex_45_3->SetNDC();
   Tex_45_3->SetTextFont(42);
   Tex_45_3->SetTextSize(0.06);
-  TLatex *Tex_67_3 = new TLatex(0.768,0.165,"(6-7)");
+  TLatex *Tex_67_3 = new TLatex(0.768,0.055,"(6-7)");
   Tex_67_3->SetNDC();
   Tex_67_3->SetTextFont(42);
   Tex_67_3->SetTextSize(0.06);
-  TLatex *Tex_8_3 = new TLatex(0.858,0.165,"(\\geq8)");
+  TLatex *Tex_8_3 = new TLatex(0.858,0.055,"(\\geq8)");
   Tex_8_3->SetNDC();
   Tex_8_3->SetTextFont(42);
   Tex_8_3->SetTextSize(0.06);
@@ -3845,6 +3858,10 @@ void kappa_summary_plot_combine() {
 
   TCanvas *c = new TCanvas("c","c",1600,1600);
   c->Divide(1,2,0.01,0);
+  TPad* pad1 = (TPad*)c->cd(1);
+  pad1->SetPad(0.0,0.5,1.0,1.0);
+  TPad* pad2 = (TPad*)c->cd(2);
+  pad2->SetPad(0.0,0.0,1.0,0.5);
   // To avoid overlapping with the y-axis label ("0" of the kappa1 plot), cd(2) is drawn first
   c->cd(2);
   TBox *b4 = new TBox(0.,0., 3., 2.99*c->GetUymax());
@@ -3867,9 +3884,6 @@ void kappa_summary_plot_combine() {
   hist_kappa2->Draw("same ex0");
   ax2->Draw("same");
   TexTitle_kap2->Draw();
-  Tex_QCD->Draw();
-  Tex_wjets->Draw();
-  Tex_ttbar->Draw();
   Tex_45_1->Draw();
   Tex_67_1->Draw();
   Tex_8_1->Draw();
@@ -3884,7 +3898,7 @@ void kappa_summary_plot_combine() {
   line->Draw("same");
   gPad->SetLeftMargin(0.14);
   gPad->SetRightMargin(0.07);
-  gPad->SetBottomMargin(0.30);
+  gPad->SetBottomMargin(0.20);
   c->cd(2)->RedrawAxis();
   c->cd(2)->Modified();
   c->cd(2)->Update();
@@ -3914,6 +3928,9 @@ void kappa_summary_plot_combine() {
   tex_lumi->Draw();
   TexCMS->Draw();
   TexTitle_kap1->Draw();
+  Tex_QCD->Draw();
+  Tex_wjets->Draw();
+  Tex_ttbar->Draw();
   gPad->SetLeftMargin(0.14);
   //gPad->SetTopMargin(0.16);
   gPad->SetTopMargin(0.21);

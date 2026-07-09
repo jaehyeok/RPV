@@ -445,7 +445,7 @@ void plotresult_combine_pdf(int gluinoMass=1800)
     leg->AddEntry(h1_ttbar, "t#bar{t}", "F");
     leg->AddEntry(h1_wjets, "W+jets",   "F");
     leg->AddEntry(h1_other, "Other",    "F");
-    leg->AddEntry(h1_prefit_sig_m1200[i], Form("m_{#tilde{g}}=%i GeV#times0.01",1200) , "L");
+    leg->AddEntry(h1_prefit_sig_m1200[i], Form("m_{#tilde{g}}=%i GeV#times0.01  ",1200) , "L");
     leg->AddEntry(h1_prefit_sig_m1800[i], Form("m_{#tilde{g}}=%i GeV",gluinoMass) , "L");
     leg->AddEntry(h1_mc, "Post-fit uncertainty",    "F");
     leg->Draw();
@@ -687,7 +687,7 @@ void plotresult_combine_pdf(int gluinoMass=1800)
   h_combine_data->GetYaxis()->SetLabelOffset(0.001);
     // bpad
   h_combine_ratio->SetLineWidth(2);
-  h_combine_ratio->GetXaxis()->SetLabelSize(0.15); // 0.05
+  h_combine_ratio->GetXaxis()->SetLabelSize(0.175); // 0.05
   h_combine_ratio->GetYaxis()->SetLabelSize(0.14); // 0.05
   h_combine_ratio->GetXaxis()->SetTitleSize(0.20); // 0.06
   h_combine_ratio->GetYaxis()->SetTitleSize(0.20); // 0.06
@@ -936,20 +936,20 @@ void plotresult_combine_pdf(int gluinoMass=1800)
   b_line12->SetLineColor(kBlack); b_line12->SetLineWidth(1); b_line12->SetLineStyle(11);
 
   // Legend
-  TLegend* leg = new TLegend(0.087, 0.75, 0.913, 0.80);
+  TLegend* leg = new TLegend(0.085, 0.75, 0.911, 0.80);
   leg->SetTextAlign(12);
   leg->SetTextFont(42);
   leg->SetNColumns(8);
   leg->SetTextSize(0.060);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
-  leg->AddEntry(h_combine_data, "Data  ", "elp");
+  leg->AddEntry(h_combine_data, "Data ", "elp");
   leg->AddEntry(h_combine_qcd, "QCD multijet ", "f");
-  leg->AddEntry(h_combine_ttbar, "t#bar{t}   ", "f");
-  leg->AddEntry(h_combine_wjets, "W+jets  ", "f");
+  leg->AddEntry(h_combine_ttbar, "t#bar{t} ", "f");
+  leg->AddEntry(h_combine_wjets, "W+jets ", "f");
   leg->AddEntry(h_combine_other, "Other ", "f");
-  leg->AddEntry(h_combine_sig1200, "m_{#tilde{g}} = 1200 GeV#times0.01", "l");
-  leg->AddEntry(h_combine_sig1800, "m_{#tilde{g}} = 1800 GeV", "l");
+  leg->AddEntry(h_combine_sig1200, "m_{#tilde{g}} = 1200 GeV#times0.01 ", "l");
+  leg->AddEntry(h_combine_sig1800, "m_{#tilde{g}} = 1800 GeV ", "l");
   leg->AddEntry(h_combine_err, "Post-fit uncertainty", "f");
 
   gStyle->SetLineScalePS(1);
